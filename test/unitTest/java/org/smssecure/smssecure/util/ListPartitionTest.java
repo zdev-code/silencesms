@@ -10,7 +10,8 @@ import static org.junit.Assert.assertEquals;
 
 public class ListPartitionTest extends BaseUnitTest {
 
-  @Test public void testPartitionEven() {
+  @Test
+  public void testPartitionEven() {
     List<Integer> list = new LinkedList<>();
 
     for (int i=0;i<100;i++) {

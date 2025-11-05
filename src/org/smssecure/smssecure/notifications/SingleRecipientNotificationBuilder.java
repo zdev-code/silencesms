@@ -8,11 +8,11 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Action;
-import android.support.v4.app.RemoteInput;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationCompat.Action;
+import androidx.core.app.RemoteInput;
 import android.text.SpannableStringBuilder;
 
 import com.bumptech.glide.Glide;
@@ -235,11 +235,11 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
       @SuppressWarnings("ConstantConditions")
       Uri uri = slideDeck.getThumbnailSlide().getThumbnailUri();
 
-      return Glide.with(context)
-                  .load(new DecryptableStreamUriLoader.DecryptableUri(masterSecret, uri))
-                  .asBitmap()
-                  .into(500, 500)
-                  .get();
+  return Glide.with(context)
+      .asBitmap()
+      .load(new DecryptableStreamUriLoader.DecryptableUri(masterSecret, uri))
+      .submit(500, 500)
+      .get();
     } catch (InterruptedException | ExecutionException e) {
       throw new AssertionError(e);
     }

@@ -8,6 +8,12 @@ public class LocaleChangedReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-    NotificationChannels.create(context);
+    if (intent == null) {
+      return;
+    }
+
+    if (Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
+      NotificationChannels.create(context);
+    }
   }
 }

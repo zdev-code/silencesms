@@ -21,13 +21,12 @@ package org.smssecure.smssecure.components;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build.VERSION;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -87,7 +86,6 @@ public class RecyclerViewFastScroller extends LinearLayout {
   }
 
   @Override
-  @TargetApi(11)
   public boolean onTouchEvent(@NonNull MotionEvent event) {
     final int action = event.getAction();
     switch (action) {
@@ -175,7 +173,6 @@ public class RecyclerViewFastScroller extends LinearLayout {
                                      height - bubbleHeight));
   }
 
-  @TargetApi(11)
   private void showBubble() {
     bubble.setVisibility(VISIBLE);
     if (VERSION.SDK_INT >= 11) {
@@ -185,7 +182,6 @@ public class RecyclerViewFastScroller extends LinearLayout {
     }
   }
 
-  @TargetApi(11)
   private void hideBubble() {
     if (VERSION.SDK_INT >= 11) {
       if (currentAnimator != null) currentAnimator.cancel();

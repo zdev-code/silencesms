@@ -1,9 +1,15 @@
 package org.smssecure.smssecure.database;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.smssecure.smssecure.SilenceTestCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(AndroidJUnit4.class)
 public class CanonicalAddressDatabaseTest extends SilenceTestCase {
   private static final String AMBIGUOUS_NUMBER = "222-3333";
   private static final String SPECIFIC_NUMBER  = "+49 444 222 3333";
@@ -16,13 +22,10 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
 
   private CanonicalAddressDatabase db;
 
+  @Before
   public void setUp() throws Exception {
     super.setUp();
     this.db = CanonicalAddressDatabase.getInstance(getInstrumentation().getTargetContext());
-  }
-
-  public void tearDown() throws Exception {
-
   }
 
   /**
@@ -32,6 +35,7 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
    *
    * @throws Exception
    */
+  @Test
   public void testNumberAddressUpdates() throws Exception {
     final long id = db.getCanonicalAddressId(AMBIGUOUS_NUMBER);
 
@@ -47,6 +51,7 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
     assertThat(db.getCanonicalAddressId(AMBIGUOUS_NUMBER)).isEqualTo(id);
   }
 
+  @Test
   public void testSimilarNumbers() throws Exception {
     assertThat(db.getCanonicalAddressId("This is a phone number 222-333-444"))
         .isNotEqualTo(db.getCanonicalAddressId("222-333-4444"));
@@ -72,6 +77,7 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
 
   }
 
+  @Test
   public void testEmailAddresses() throws Exception {
     final long emailId        = db.getCanonicalAddressId(EMAIL);
     final long similarEmailId = db.getCanonicalAddressId(SIMILAR_EMAIL);
@@ -82,6 +88,7 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
     assertThat(db.getAddressFromId(similarEmailId)).isEqualTo(SIMILAR_EMAIL);
   }
 
+  @Test
   public void testGroups() throws Exception {
     final long groupId        = db.getCanonicalAddressId(GROUP);
     final long similarGroupId = db.getCanonicalAddressId(SIMILAR_GROUP);
@@ -92,6 +99,7 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
     assertThat(db.getAddressFromId(similarGroupId)).isEqualTo(SIMILAR_GROUP);
   }
 
+  @Test
   public void testAlpha() throws Exception {
     final long id        = db.getCanonicalAddressId(ALPHA);
     final long similarId = db.getCanonicalAddressId(SIMILAR_ALPHA);
@@ -102,6 +110,7 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
     assertThat(db.getAddressFromId(similarId)).isEqualTo(SIMILAR_ALPHA);
   }
 
+  @Test
   public void testIsNumber() throws Exception {
     assertThat(CanonicalAddressDatabase.isNumberAddress("+495556666777")).isTrue();
     assertThat(CanonicalAddressDatabase.isNumberAddress("(222) 333-4444")).isTrue();

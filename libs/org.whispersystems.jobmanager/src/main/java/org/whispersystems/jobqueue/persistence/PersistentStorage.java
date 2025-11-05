@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -27,6 +28,7 @@ import org.whispersystems.jobqueue.EncryptionKeys;
 import org.whispersystems.jobqueue.Job;
 import org.whispersystems.jobqueue.dependencies.AggregateDependencyInjector;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,8 +54,10 @@ public class PersistentStorage {
                            JobSerializer serializer,
                            AggregateDependencyInjector dependencyInjector)
   {
-    this.databaseHelper     = new DatabaseHelper(context, "_jobqueue-" + name);
-    this.context            = context;
+  Context appContext = context.getApplicationContext();
+
+  this.databaseHelper     = new DatabaseHelper(appContext, "_jobqueue-" + name);
+  this.context            = appContext;
     this.jobSerializer      = serializer;
     this.dependencyInjector = dependencyInjector;
   }
@@ -77,8 +81,15 @@ public class PersistentStorage {
 
   private List<Job> getJobs(EncryptionKeys keys, String where) {
     List<Job>      results  = new LinkedList<>();
-    SQLiteDatabase database = databaseHelper.getReadableDatabase();
+    SQLiteDatabase database;
     Cursor         cursor   = null;
+
+    try {
+      database = databaseHelper.getReadableDatabase();
+    } catch (SQLiteException e) {
+      Log.w("PersistentStore", "Unable to open job database", e);
+      return results;
+    }
 
     try {
       cursor = database.query(TABLE_NAME, null, where, null, null, null, ID + " ASC", null);
@@ -117,7 +128,7 @@ public class PersistentStorage {
   private static class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context, String name) {
-      super(context, name, null, DATABASE_VERSION);
+      super(context, ensureDatabaseDirectory(context, name), null, DATABASE_VERSION);
     }
 
     @Override
@@ -128,6 +139,17 @@ public class PersistentStorage {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    private static String ensureDatabaseDirectory(Context context, String name) {
+      File databasePath = context.getDatabasePath(name);
+      File parent       = databasePath != null ? databasePath.getParentFile() : null;
+
+      if (parent != null && !parent.exists() && !parent.mkdirs()) {
+        Log.w("PersistentStore", "Unable to create database directory " + parent);
+      }
+
+      return name;
     }
   }
 

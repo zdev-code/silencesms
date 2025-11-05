@@ -1,13 +1,18 @@
 package org.smssecure.smssecure.util.dualsim;
 
-import android.annotation.TargetApi;
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import org.smssecure.smssecure.util.ServiceUtil;
 
@@ -23,6 +28,7 @@ public class SubscriptionManagerCompat {
   private final Context                      context;
   private       List<String>                 displayNameList;
   private       List<SubscriptionInfoCompat> compatList;
+  private static final String TAG = SubscriptionManagerCompat.class.getSimpleName();
 
   public static SubscriptionManagerCompat from(Context context) {
     if (instance == null) {
@@ -60,7 +66,7 @@ public class SubscriptionManagerCompat {
     return Optional.absent();
   }
 
-  @TargetApi(22)
+  @RequiresApi(22)
   private void updateDisplayNameList(List<SubscriptionInfo> activeSubscriptions) {
     displayNameList = new LinkedList<String>();
 
@@ -90,16 +96,34 @@ public class SubscriptionManagerCompat {
     return compatList;
   }
 
+  @SuppressLint("HardwareIds")
   public @NonNull List<SubscriptionInfoCompat> updateActiveSubscriptionInfoList() {
     compatList = new LinkedList<>();
 
     if (Build.VERSION.SDK_INT < 22) {
       TelephonyManager telephonyManager = ServiceUtil.getTelephonyManager(context);
+
+      String lineNumber = null;
+  String simSerial  = null;
+
+      if (telephonyManager != null) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+          try {
+            lineNumber = telephonyManager.getLine1Number();
+          } catch (SecurityException securityException) {
+            Log.w(TAG, "Unable to read line1 number", securityException);
+          }
+
+        } else {
+          Log.w(TAG, "READ_PHONE_STATE permission missing; omitting line number and SIM serial");
+        }
+      }
+
       compatList.add(new SubscriptionInfoCompat(context,
                                                 -1,
-                                                telephonyManager.getSimOperatorName(),
-                                                telephonyManager.getLine1Number(),
-                                                telephonyManager.getSimSerialNumber(),
+                                                telephonyManager != null ? telephonyManager.getSimOperatorName() : null,
+                                                lineNumber,
+                                                simSerial,
                                                 1,
                                                 -1,
                                                 -1,
@@ -107,7 +131,40 @@ public class SubscriptionManagerCompat {
       return compatList;
     }
 
-    List<SubscriptionInfo> subscriptionInfos = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+      Log.w(TAG, "READ_PHONE_STATE permission missing; returning fallback subscription info");
+
+      TelephonyManager telephonyManager = ServiceUtil.getTelephonyManager(context);
+      CharSequence displayName = telephonyManager != null ? telephonyManager.getSimOperatorName() : null;
+
+      compatList.add(new SubscriptionInfoCompat(context,
+                                                -1,
+                                                displayName,
+                                                null,
+                                                null,
+                                                1,
+                                                -1,
+                                                -1,
+                                                false));
+      return compatList;
+    }
+
+    SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+
+    if (subscriptionManager == null) {
+      Log.w(TAG, "SubscriptionManager is null; returning empty list");
+      return compatList;
+    }
+
+    List<SubscriptionInfo> subscriptionInfos;
+
+    try {
+      subscriptionInfos = subscriptionManager.getActiveSubscriptionInfoList();
+    } catch (SecurityException securityException) {
+      Log.w(TAG, "Unable to query active subscriptions", securityException);
+      return compatList;
+    }
+
     updateDisplayNameList(subscriptionInfos);
 
     if (subscriptionInfos == null || subscriptionInfos.isEmpty()) {

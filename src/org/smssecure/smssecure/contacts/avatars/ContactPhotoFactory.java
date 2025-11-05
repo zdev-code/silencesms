@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
@@ -40,9 +40,12 @@ public class ContactPhotoFactory {
   public static ContactPhoto getContactPhoto(Context context, Uri uri, String name) {
     try {
       int targetSize = context.getResources().getDimensionPixelSize(R.dimen.contact_photo_target_size);
-      Bitmap bitmap = Glide.with(context)
-                           .load(new ContactPhotoUri(uri)).asBitmap()
-                           .centerCrop().into(targetSize, targetSize).get();
+  Bitmap bitmap = Glide.with(context)
+           .asBitmap()
+           .load(new ContactPhotoUri(uri))
+           .centerCrop()
+           .submit(targetSize, targetSize)
+           .get();
       return new BitmapContactPhoto(bitmap);
     } catch (ExecutionException e) {
       return getDefaultContactPhoto(name);

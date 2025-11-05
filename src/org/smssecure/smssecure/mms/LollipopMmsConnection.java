@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
+
 import org.smssecure.smssecure.util.Util;
 
 import java.util.concurrent.TimeoutException;
@@ -58,7 +60,8 @@ public abstract class LollipopMmsConnection extends BroadcastReceiver {
   }
 
   protected void beginTransaction() {
-    getContext().getApplicationContext().registerReceiver(this, new IntentFilter(action));
+    IntentFilter intentFilter = new IntentFilter(action);
+    ContextCompat.registerReceiver(getContext().getApplicationContext(), this, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   protected void endTransaction() {
@@ -77,7 +80,7 @@ public abstract class LollipopMmsConnection extends BroadcastReceiver {
   }
 
   protected PendingIntent getPendingIntent() {
-    return PendingIntent.getBroadcast(getContext(), 1, new Intent(action), PendingIntent.FLAG_ONE_SHOT);
+  return PendingIntent.getBroadcast(getContext(), 1, new Intent(action), PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
   }
 
   protected Context getContext() {

@@ -17,7 +17,6 @@
 package org.smssecure.smssecure.util;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -29,9 +28,9 @@ import android.os.Build.VERSION_CODES;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Telephony;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresPermission;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -214,7 +213,7 @@ public class Util {
     android.Manifest.permission.READ_SMS,
     android.Manifest.permission.READ_PHONE_NUMBERS
   })
-  @SuppressLint("MissingPermission")
+  @SuppressLint({"MissingPermission", "HardwareIds"})
   public static String getDeviceE164Number(Context context) {
     String localNumber = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE))
         .getLine1Number();
@@ -328,7 +327,6 @@ public class Util {
     }
   }
 
-  @TargetApi(VERSION_CODES.LOLLIPOP)
   public static boolean isMmsCapable(Context context) {
     return (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) || OutgoingLegacyMmsConnection.isConnectionPossible(context);
   }
@@ -356,7 +354,6 @@ public class Util {
     return Arrays.hashCode(objects);
   }
 
-  @TargetApi(VERSION_CODES.KITKAT)
   public static boolean isLowMemory(Context context) {
     ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 

@@ -9,7 +9,7 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">¡No ha elegido aún una clave de acceso!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 mensaje por conversación</item>
+    <item quantity="one">%d mensaje por conversación</item>
     <item quantity="other">%d mensajes por conversación</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">¿Eliminar ahora todos los mensajes antiguos?</string>
@@ -39,7 +39,7 @@
   <string name="ApplicationPreferencesActivity_appearance_summary">Tema %1$s, Idioma %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 minuto</item>
+    <item quantity="one">%d minuto</item>
     <item quantity="other">%d minutos</item>
   </plurals>
   <!--DraftDatabase-->
@@ -91,7 +91,7 @@
   <string name="ConversationActivity_group_conversation">Conversación de grupo</string>
   <string name="ConversationActivity_unnamed_group">Grupo sin nombre</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 miembro</item>
+    <item quantity="one">%d miembro</item>
     <item quantity="other">%d miembros</item>
   </plurals>
   <string name="ConversationActivity_saved_draft">Guardar borrador</string>

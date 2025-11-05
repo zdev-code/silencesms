@@ -9,7 +9,7 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Non hai ancora impostato una password!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 messaggio per conversazione</item>
+    <item quantity="one">%d messaggio per conversazione</item>
     <item quantity="other">%d messaggi per conversazione</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Eliminare tutti i messaggi vecchi ora?</string>
@@ -37,7 +37,7 @@ Attenzione, così facendo interromperai la cifratura di tutti i messaggi e le ch
   <string name="ApplicationPreferencesActivity_appearance_summary">Tema %1$s, Lingua %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 minuto</item>
+    <item quantity="one">%d minuto</item>
     <item quantity="other">%d minuti</item>
   </plurals>
   <!--DraftDatabase-->
@@ -92,7 +92,7 @@ Attenzione, così facendo interromperai la cifratura di tutti i messaggi e le ch
   <string name="ConversationActivity_group_conversation">Conversazione di gruppo</string>
   <string name="ConversationActivity_unnamed_group">Gruppo senza nome</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 membro</item>
+    <item quantity="one">%d membro</item>
     <item quantity="other">%d membri</item>
   </plurals>
   <string name="ConversationActivity_saved_draft">Bozza salvata</string>
@@ -107,7 +107,7 @@ Attenzione, così facendo interromperai la cifratura di tutti i messaggi e le ch
   <string name="ConversationActivity_install_smssecure">Installa SMSSecure: %s</string>
   <string name="ConversationActivity_recipient_self">Non puoi iniziare una sessione sicura con te stesso!</string>
   <string name="ConversationActivity_mms_not_supported_title">MMS non supportati</string>
-  <string name="ConversationActivity_mms_not_supported_message">Questo messaggio non può essere inviato perchè il tuo operatore non supporta gli MMS</string>
+  <string name="ConversationActivity_mms_not_supported_message">Questo messaggio non può essere inviato perché il tuo operatore non supporta gli MMS</string>
   <string name="ConversationActivity_specify_recipient">Scegliere un contatto</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">L\'allegato supera le dimensioni massime.</string>
   <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Silence richiede l\'autorizzazione per gli SMS per poter inviare messaggi, ma è stata negata in modo permanente. Vai nel menu di impostazioni dell\'app, seleziona \"Autorizzazioni\" ed attiva \"SMS\".</string>

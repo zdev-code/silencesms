@@ -1,20 +1,26 @@
 package org.smssecure.smssecure.service;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import org.smssecure.smssecure.ConversationListActivity;
@@ -27,11 +33,13 @@ import org.smssecure.smssecure.notifications.NotificationChannels;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 // FIXME: This class is nuts.
 public class ApplicationMigrationService extends Service
     implements SmsMigrator.SmsMigrationProgressListener
 {
+  private static final long WAKE_LOCK_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(10);
   private static final String TAG               = ApplicationMigrationService.class.getSimpleName();
   public  static final String MIGRATE_DATABASE  = "org.smssecure.smssecure.ApplicationMigration.MIGRATE_DATABSE";
   public  static final String COMPLETED_ACTION  = "org.smssecure.smssecure.ApplicationMigrationService.COMPLETED";
@@ -80,7 +88,7 @@ public class ApplicationMigrationService extends Service
     IntentFilter filter = new IntentFilter();
     filter.addAction(COMPLETED_ACTION);
 
-    registerReceiver(completedReceiver, filter);
+    ContextCompat.registerReceiver(this, completedReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   private void unregisterCompletedReceiver() {
@@ -119,11 +127,23 @@ public class ApplicationMigrationService extends Service
     }
   }
 
+  @SuppressLint({"MissingPermission", "NotificationPermission"})
   private void updateBackgroundNotification(int total, int complete) {
-    notification.setProgress(total, complete, false);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        Log.w(TAG, "Skipping migration notification; missing POST_NOTIFICATIONS permission");
+        return;
+      }
+    }
 
-    ((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE))
-      .notify(4242, notification.build());
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+    if (!notificationManager.areNotificationsEnabled()) {
+      Log.w(TAG, "Skipping migration notification; notifications disabled by user");
+      return;
+    }
+
+    notification.setProgress(total, complete, false);
+    notificationManager.notify(4242, notification.build());
   }
 
   private NotificationCompat.Builder initializeBackgroundNotification() {
@@ -135,10 +155,15 @@ public class ApplicationMigrationService extends Service
     builder.setContentText(getString(R.string.ApplicationMigrationService_import_in_progress));
     builder.setOngoing(true);
     builder.setProgress(100, 0, false);
-    builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, ConversationListActivity.class), 0));
+  builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, ConversationListActivity.class), PendingIntent.FLAG_IMMUTABLE));
 
     stopForeground(true);
-    startForeground(4242, builder.build());
+    Notification notification = builder.build();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      startForeground(4242, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+    } else {
+      startForeground(4242, notification);
+    }
 
     return builder;
   }
@@ -155,10 +180,10 @@ public class ApplicationMigrationService extends Service
     public void run() {
       notification              = initializeBackgroundNotification();
       PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-      WakeLock     wakeLock     = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Migration");
+  WakeLock     wakeLock     = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "org.smssecure.smssecure:Migration");
 
       try {
-        wakeLock.acquire();
+  wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS);
 
         setState(new ImportState(ImportState.STATE_MIGRATING_BEGIN, null));
 
@@ -185,19 +210,33 @@ public class ApplicationMigrationService extends Service
   }
 
   private static class CompletedReceiver extends BroadcastReceiver {
+  @SuppressLint({"MissingPermission", "NotificationPermission"})
     @Override
     public void onReceive(Context context, Intent intent) {
       NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannels.OTHER);
       builder.setSmallIcon(R.drawable.icon_notification);
       builder.setContentTitle(context.getString(R.string.ApplicationMigrationService_import_complete));
       builder.setContentText(context.getString(R.string.ApplicationMigrationService_system_database_import_is_complete));
-      builder.setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), 0));
+  builder.setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), PendingIntent.FLAG_IMMUTABLE));
       builder.setWhen(System.currentTimeMillis());
       builder.setDefaults(Notification.DEFAULT_VIBRATE);
       builder.setAutoCancel(true);
 
       Notification notification = builder.build();
-      ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(31337, notification);
+      NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+          Log.w(TAG, "Skipping completion notification; missing POST_NOTIFICATIONS permission");
+          return;
+        }
+      }
+
+      if (!notificationManager.areNotificationsEnabled()) {
+        Log.w(TAG, "Skipping completion notification; notifications disabled by user");
+        return;
+      }
+
+      notificationManager.notify(31337, notification);
     }
   }
 

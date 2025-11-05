@@ -9,7 +9,7 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Você ainda não definiu uma palavra-passe!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 mensagem por conversa</item>
+    <item quantity="one">%d mensagem por conversa</item>
     <item quantity="other">%d mensagens por conversa</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Apagar todas as mensagens antigas?</string>

@@ -2,14 +2,18 @@ package org.smssecure.smssecure;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.os.Build;
+import android.net.Uri;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +29,8 @@ import org.smssecure.smssecure.permissions.Permissions;
 import org.smssecure.smssecure.service.ApplicationMigrationService;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 public class ImportExportFragment extends Fragment {
@@ -32,9 +38,16 @@ public class ImportExportFragment extends Fragment {
   @SuppressWarnings("unused")
   private static final String TAG = ImportExportFragment.class.getSimpleName();
 
-  private static final int SUCCESS    = 0;
-  private static final int NO_SD_CARD = 1;
-  private static final int ERROR_IO   = 2;
+  private static final int SUCCESS                             = 0;
+  private static final int NO_SD_CARD                          = 1;
+  private static final int ERROR_IO                            = 2;
+  private static final int REQUEST_IMPORT_PLAINTEXT_DOCUMENT   = 31338;
+  private static final String[] PLAINTEXT_BACKUP_MIME_TYPES    = new String[] {
+      "application/xml",
+      "text/xml",
+      "text/plain",
+      "application/octet-stream"
+  };
 
   private MasterSecret   masterSecret;
   private ProgressDialog progressDialog;
@@ -116,13 +129,19 @@ public class ImportExportFragment extends Fragment {
     builder.setTitle(getActivity().getString(R.string.ImportFragment_restore_encrypted_backup));
     builder.setMessage(getActivity().getString(R.string.ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys));
     builder.setPositiveButton(getActivity().getString(R.string.ImportFragment_import), (dialog, which) -> {
-      Permissions.with(this)
-                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                 .ifNecessary()
-                 .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied))
-                 .onAllGranted(() -> new ImportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-                 .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage, Toast.LENGTH_LONG).show())
-                 .execute();
+      String[] permissions = getReadStoragePermissions();
+
+      if (permissions.length == 0) {
+        new ImportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+      } else {
+        Permissions.with(this)
+                   .request(permissions)
+                   .ifNecessary()
+                   .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied))
+                   .onAllGranted(() -> new ImportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
+                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage, Toast.LENGTH_LONG).show())
+                   .execute();
+      }
     });
     builder.setNegativeButton(getActivity().getString(R.string.ImportFragment_cancel), null);
     builder.show();
@@ -136,13 +155,27 @@ public class ImportExportFragment extends Fragment {
     builder.setTitle(getActivity().getString(R.string.ImportFragment_import_plaintext_backup));
     builder.setMessage(getActivity().getString(R.string.ImportFragment_this_will_import_messages_from_a_plaintext_backup));
     builder.setPositiveButton(getActivity().getString(R.string.ImportFragment_import), (dialog, which) -> {
-      Permissions.with(ImportExportFragment.this)
-                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                 .ifNecessary()
-                 .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied))
-                 .onAllGranted(() -> new ImportPlaintextBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-                 .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage, Toast.LENGTH_LONG).show())
-                 .execute();
+      String[] permissions = getReadStoragePermissions();
+
+      Runnable onGranted = () -> {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+          launchPlaintextBackupPicker();
+        } else {
+          new ImportPlaintextBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+      };
+
+      if (permissions.length == 0) {
+        onGranted.run();
+      } else {
+        Permissions.with(ImportExportFragment.this)
+                   .request(permissions)
+                   .ifNecessary()
+                   .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied))
+                   .onAllGranted(onGranted)
+                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage, Toast.LENGTH_LONG).show())
+                   .execute();
+      }
     });
     builder.setNegativeButton(getActivity().getString(R.string.ImportFragment_cancel), null);
     builder.show();
@@ -154,16 +187,36 @@ public class ImportExportFragment extends Fragment {
     builder.setTitle(getActivity().getString(R.string.ExportFragment_export_encrypted_backup));
     builder.setMessage(getActivity().getString(R.string.ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages));
     builder.setPositiveButton(getActivity().getString(R.string.ExportFragment_export), (dialog, which) -> {
-      Permissions.with(ImportExportFragment.this)
-                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                 .ifNecessary()
-                 .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-                 .onAllGranted(() -> new ExportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-                 .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage, Toast.LENGTH_LONG).show())
-                 .execute();
+      String[] permissions = getWriteStoragePermissions();
+
+      if (permissions.length == 0) {
+        new ExportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+      } else {
+        Permissions.with(ImportExportFragment.this)
+                   .request(permissions)
+                   .ifNecessary()
+                   .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
+                   .onAllGranted(() -> new ExportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
+                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage, Toast.LENGTH_LONG).show())
+                   .execute();
+      }
     });
     builder.setNegativeButton(getActivity().getString(R.string.ExportFragment_cancel), null);
     builder.show();
+  }
+
+  private void launchPlaintextBackupPicker() {
+    if (getActivity() == null) {
+      return;
+    }
+
+    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+    intent.addCategory(Intent.CATEGORY_OPENABLE);
+  intent.setType("*/*");
+    intent.putExtra(Intent.EXTRA_MIME_TYPES, PLAINTEXT_BACKUP_MIME_TYPES);
+    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+    startActivityForResult(intent, REQUEST_IMPORT_PLAINTEXT_DOCUMENT);
   }
 
   @SuppressWarnings("CodeBlock2Expr")
@@ -174,20 +227,83 @@ public class ImportExportFragment extends Fragment {
     builder.setTitle(getActivity().getString(R.string.ExportFragment_export_plaintext_to_storage));
     builder.setMessage(getActivity().getString(R.string.ExportFragment_warning_this_will_export_the_contents_of_your_messages_to_storage_in_plaintext));
     builder.setPositiveButton(getActivity().getString(R.string.ExportFragment_export), (dialog, which) -> {
-      Permissions.with(ImportExportFragment.this)
-                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                 .ifNecessary()
-                 .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-                 .onAllGranted(() -> new ExportPlaintextTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-                 .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage, Toast.LENGTH_LONG).show())
-                 .execute();
+      String[] permissions = getWriteStoragePermissions();
+
+      if (permissions.length == 0) {
+        new ExportPlaintextTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+      } else {
+        Permissions.with(ImportExportFragment.this)
+                   .request(permissions)
+                   .ifNecessary()
+                   .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
+                   .onAllGranted(() -> new ExportPlaintextTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
+                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage, Toast.LENGTH_LONG).show())
+                   .execute();
+      }
     });
     builder.setNegativeButton(getActivity().getString(R.string.ExportFragment_cancel), null);
     builder.show();
   }
 
   @SuppressLint("StaticFieldLeak")
+  private String[] getReadStoragePermissions() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      return new String[0];
+    }
+
+    return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+  }
+
+  private String[] getWriteStoragePermissions() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      return getReadStoragePermissions();
+    }
+
+    Set<String> permissions = new LinkedHashSet<>();
+    permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    for (String permission : getReadStoragePermissions()) {
+      permissions.add(permission);
+    }
+
+    return permissions.toArray(new String[0]);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == REQUEST_IMPORT_PLAINTEXT_DOCUMENT) {
+      if (resultCode == Activity.RESULT_OK && data != null) {
+        Uri uri = data.getData();
+        if (uri != null) {
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
+              (data.getFlags() & Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0) {
+            int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            try {
+              requireContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+            } catch (SecurityException e) {
+              Log.w(TAG, "Unable to persist uri permission", e);
+            }
+          }
+
+          new ImportPlaintextBackupTask(uri).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+      }
+    }
+  }
+
   private class ImportPlaintextBackupTask extends AsyncTask<Void, Void, Integer> {
+
+    @Nullable
+    private final Uri importUri;
+
+    ImportPlaintextBackupTask() {
+      this(null);
+    }
+
+    ImportPlaintextBackupTask(@Nullable Uri importUri) {
+      this.importUri = importUri;
+    }
 
     @Override
     protected void onPreExecute() {
@@ -228,7 +344,11 @@ public class ImportExportFragment extends Fragment {
     @Override
     protected Integer doInBackground(Void... params) {
       try {
-        PlaintextBackupImporter.importPlaintextFromSd(getActivity(), masterSecret);
+        if (importUri != null) {
+          PlaintextBackupImporter.importPlaintextFromUri(getActivity(), masterSecret, importUri);
+        } else {
+          PlaintextBackupImporter.importPlaintextFromSd(getActivity(), masterSecret);
+        }
         return SUCCESS;
       } catch (NoExternalStorageException e) {
         Log.w("ImportFragment", e);

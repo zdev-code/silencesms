@@ -1,20 +1,17 @@
 package org.smssecure.smssecure.mms;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.data.StreamLocalUriFetcher;
 
 import org.smssecure.smssecure.crypto.AttachmentCipherInputStream;
-import org.smssecure.smssecure.crypto.MasterSecret;
 import org.whispersystems.libsignal.util.guava.Optional;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,9 +26,14 @@ public class AttachmentStreamLocalUriFetcher implements DataFetcher<InputStream>
     this.key        = key;
   }
 
-  @Override public InputStream loadData(Priority priority) throws Exception {
-    is = new AttachmentCipherInputStream(attachment, key, Optional.<byte[]>absent());
-    return is;
+  @Override
+  public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
+    try {
+      is = new AttachmentCipherInputStream(attachment, key, Optional.<byte[]>absent());
+      callback.onDataReady(is);
+    } catch (Exception e) {
+      callback.onLoadFailed(e);
+    }
   }
 
   @Override public void cleanup() {
@@ -43,11 +45,19 @@ public class AttachmentStreamLocalUriFetcher implements DataFetcher<InputStream>
     }
   }
 
-  @Override public String getId() {
-    return AttachmentStreamLocalUriFetcher.class.getCanonicalName() + "::" + attachment.getAbsolutePath();
-  }
-
   @Override public void cancel() {
 
+  }
+
+  @NonNull
+  @Override
+  public Class<InputStream> getDataClass() {
+    return InputStream.class;
+  }
+
+  @NonNull
+  @Override
+  public DataSource getDataSource() {
+    return DataSource.LOCAL;
   }
 }

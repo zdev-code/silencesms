@@ -16,26 +16,15 @@
  */
 package org.smssecure.smssecure.mms;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.apache.http.Header;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.NoConnectionReuseStrategyHC4;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.message.BasicHeader;
 import org.smssecure.smssecure.database.ApnDatabase;
 import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.TelephonyUtil;
@@ -43,18 +32,27 @@ import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.libsignal.util.guava.Optional;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.net.URL;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.ConnectionPool;
+import okhttp3.Credentials;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 @SuppressWarnings("deprecation")
 public abstract class LegacyMmsConnection {
@@ -145,81 +143,97 @@ public abstract class LegacyMmsConnection {
     return false;
   }
 
-  protected static byte[] parseResponse(InputStream is) throws IOException {
-    InputStream           in   = new BufferedInputStream(is);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Util.copy(in, baos);
+  protected byte[] execute(Request request, @Nullable Proxy proxy) throws IOException {
+  Log.w(TAG, "connecting to " + request.url());
 
-    Log.w(TAG, "Received full server response, " + baos.size() + " bytes");
+    OkHttpClient client = buildHttpClient(proxy);
 
-    return baos.toByteArray();
+    try (Response response = client.newCall(request).execute()) {
+      if (!response.isSuccessful()) {
+        throw new IOException("Unhandled response code: " + response.code());
+      }
+
+      ResponseBody body = response.body();
+      if (body == null) {
+        throw new IOException("Empty response body");
+      }
+
+      byte[] data = body.bytes();
+      Log.w(TAG, "Received full server response, " + data.length + " bytes");
+      return data;
+    }
   }
 
-  protected CloseableHttpClient constructHttpClient() throws IOException {
-    RequestConfig config = RequestConfig.custom()
-                                        .setConnectTimeout(20 * 1000)
-                                        .setConnectionRequestTimeout(20 * 1000)
-                                        .setSocketTimeout(20 * 1000)
-                                        .setMaxRedirects(20)
-                                        .build();
+  private OkHttpClient buildHttpClient(@Nullable Proxy proxy) {
+    OkHttpClient.Builder builder = new OkHttpClient.Builder()
+        .connectTimeout(20, TimeUnit.SECONDS)
+        .readTimeout(20, TimeUnit.SECONDS)
+        .writeTimeout(20, TimeUnit.SECONDS)
+        .callTimeout(20, TimeUnit.SECONDS)
+        .followRedirects(true)
+        .followSslRedirects(true)
+        .retryOnConnectionFailure(false)
+        .connectionPool(new ConnectionPool(0, 1, TimeUnit.SECONDS));
 
-    URL                 mmsc          = new URL(apn.getMmsc());
-    CredentialsProvider credsProvider = new BasicCredentialsProvider();
+    if (proxy != null) {
+      builder.proxy(proxy);
+    }
+
+    return builder.build();
+  }
+
+  protected void applyBaseHeaders(Request.Builder builder) {
+    Headers headers = getBaseHeaders();
+    for (int i = 0; i < headers.size(); i++) {
+      builder.addHeader(headers.name(i), headers.value(i));
+    }
+  }
+
+  @SuppressLint("HardwareIds")
+  protected Headers getBaseHeaders() {
+    Headers.Builder builder = new Headers.Builder();
+    String number = null;
+
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+      try {
+        TelephonyManager telephonyManager = TelephonyUtil.getManager(context);
+
+        if (telephonyManager != null) {
+          number = telephonyManager.getLine1Number();
+        }
+      } catch (SecurityException securityException) {
+        Log.w(TAG, "Unable to read line1 number due to missing permission", securityException);
+      }
+    }
+
+    builder.add("Accept", "*/*, application/vnd.wap.mms-message, application/vnd.wap.sic");
+    builder.add("x-wap-profile", "http://www.google.com/oha/rdf/ua-profile-kila.xml");
+    builder.add("x-carrier-magic", "http://magic.google.com");
+
+    if (!TextUtils.isEmpty(number)) {
+      builder.add("x-up-calling-line-id", number);
+      builder.add("X-MDN", number);
+    }
+
+    String userAgent = SilencePreferences.getMmsUserAgent(context, USER_AGENT);
+    if (!TextUtils.isEmpty(userAgent)) {
+      builder.add("User-Agent", userAgent);
+    }
 
     if (apn.hasAuthentication()) {
-      credsProvider.setCredentials(new AuthScope(mmsc.getHost(), mmsc.getPort() > -1 ? mmsc.getPort() : mmsc.getDefaultPort()),
-                                   new UsernamePasswordCredentials(apn.getUsername(), apn.getPassword()));
+      builder.add("Authorization", Credentials.basic(apn.getUsername(), apn.getPassword() == null ? "" : apn.getPassword()));
     }
 
-    return HttpClients.custom()
-                      .setConnectionReuseStrategy(new NoConnectionReuseStrategyHC4())
-                      .setRedirectStrategy(new LaxRedirectStrategy())
-                      .setUserAgent(SilencePreferences.getMmsUserAgent(context, USER_AGENT))
-                      .setConnectionManager(new BasicHttpClientConnectionManager())
-                      .setDefaultRequestConfig(config)
-                      .setDefaultCredentialsProvider(credsProvider)
-                      .build();
+    return builder.build();
   }
 
-  protected byte[] execute(HttpUriRequest request) throws IOException {
-    Log.w(TAG, "connecting to " + apn.getMmsc());
-
-    CloseableHttpClient   client   = null;
-    CloseableHttpResponse response = null;
-    try {
-      client   = constructHttpClient();
-      response = client.execute(request);
-
-      Log.w(TAG, "* response code: " + response.getStatusLine());
-
-      if (response.getStatusLine().getStatusCode() == 200) {
-        return parseResponse(response.getEntity().getContent());
-      }
-    } catch (NullPointerException npe) {
-      // TODO determine root cause
-      // see: https://github.com/WhisperSystems/Signal-Android/issues/4379
-      throw new IOException(npe);
-    } finally {
-      if (response != null) response.close();
-      if (client != null)   client.close();
+  @Nullable
+  protected Proxy buildProxy(@Nullable String host, int port) {
+    if (TextUtils.isEmpty(host)) {
+      return null;
     }
 
-    throw new IOException("unhandled response code");
-  }
-
-  protected List<Header> getBaseHeaders() {
-    final String                number    = TelephonyUtil.getManager(context).getLine1Number(); ;
-
-    return new LinkedList<Header>() {{
-      add(new BasicHeader("Accept", "*/*, application/vnd.wap.mms-message, application/vnd.wap.sic"));
-      add(new BasicHeader("x-wap-profile", "http://www.google.com/oha/rdf/ua-profile-kila.xml"));
-      add(new BasicHeader("Content-Type", "application/vnd.wap.mms-message"));
-      add(new BasicHeader("x-carrier-magic", "http://magic.google.com"));
-      if (!TextUtils.isEmpty(number)) {
-        add(new BasicHeader("x-up-calling-line-id", number));
-        add(new BasicHeader("X-MDN", number));
-      }
-    }};
+    return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
   }
 
   public static class Apn {

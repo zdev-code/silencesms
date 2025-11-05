@@ -1,9 +1,7 @@
 package org.smssecure.smssecure;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ public class ConversationListItemAction extends LinearLayout implements Bindable
     super(context, attrs);
   }
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
   public ConversationListItemAction(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }

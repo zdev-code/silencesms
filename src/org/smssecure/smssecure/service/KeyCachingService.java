@@ -16,19 +16,19 @@
  */
 package org.smssecure.smssecure.service;
 
-import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -97,6 +97,10 @@ public class KeyCachingService extends Service {
   }
 
   public void setMasterSecret(final MasterSecret masterSecret) {
+    if (masterSecret == null) {
+      Log.w("KeyCachingService", "Ignoring null master secret");
+      return;
+    }
     synchronized (KeyCachingService.class) {
       KeyCachingService.masterSecret = masterSecret;
 
@@ -142,8 +146,8 @@ public class KeyCachingService extends Service {
   public void onCreate() {
     Log.w("KeyCachingService", "onCreate()");
     super.onCreate();
-    this.pending = PendingIntent.getService(this, 0, new Intent(PASSPHRASE_EXPIRED_EVENT, null,
-                                                                this, KeyCachingService.class), 0);
+  this.pending = PendingIntent.getService(this, 0, new Intent(PASSPHRASE_EXPIRED_EVENT, null,
+                                this, KeyCachingService.class), PendingIntent.FLAG_IMMUTABLE);
 
     if (SilencePreferences.isPasswordDisabled(this)) {
       try {
@@ -232,7 +236,6 @@ public class KeyCachingService extends Service {
     }
   }
 
-  @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
   private void foregroundServiceModern() {
     Log.w("KeyCachingService", "foregrounding KCS");
     NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationChannels.LOCKED_STATUS);
@@ -247,7 +250,7 @@ public class KeyCachingService extends Service {
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);
-    startForeground(SERVICE_RUNNING_ID, builder.build());
+    startForegroundCompat(builder.build());
   }
 
   private void foregroundServiceICS() {
@@ -261,7 +264,7 @@ public class KeyCachingService extends Service {
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);
-    startForeground(SERVICE_RUNNING_ID, builder.build());
+    startForegroundCompat(builder.build());
   }
 
   private void foregroundServiceLegacy() {
@@ -274,7 +277,15 @@ public class KeyCachingService extends Service {
     builder.setContentIntent(buildLaunchIntent());
 
     stopForeground(true);
-    startForeground(SERVICE_RUNNING_ID, builder.build());
+    startForegroundCompat(builder.build());
+  }
+
+  private void startForegroundCompat(Notification notification) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      startForeground(SERVICE_RUNNING_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+    } else {
+      startForeground(SERVICE_RUNNING_ID, notification);
+    }
   }
 
   private void foregroundService() {
@@ -304,13 +315,13 @@ public class KeyCachingService extends Service {
   private PendingIntent buildLockIntent() {
     Intent intent = new Intent(this, KeyCachingService.class);
     intent.setAction(PASSPHRASE_EXPIRED_EVENT);
-    return PendingIntent.getService(getApplicationContext(), 0, intent, 0);
+    return PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
   }
 
   private PendingIntent buildLaunchIntent() {
     Intent intent              = new Intent(this, ConversationListActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    PendingIntent launchIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+    PendingIntent launchIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
     return launchIntent;
   }
 

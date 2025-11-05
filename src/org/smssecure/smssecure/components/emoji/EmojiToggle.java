@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageButton;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.components.emoji.EmojiDrawer.EmojiDrawerListener;
 
-public class EmojiToggle extends ImageButton implements EmojiDrawerListener {
+public class EmojiToggle extends AppCompatImageButton implements EmojiDrawerListener {
 
   private Drawable emojiToggle;
   private Drawable imeToggle;

@@ -6,12 +6,14 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.support.annotation.DrawableRes;
-import android.support.v4.graphics.ColorUtils;
 import android.widget.ImageView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.makeramen.roundedimageview.RoundedDrawable;
+
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.ColorUtils;
 
 public class ResourceContactPhoto implements ContactPhoto {
 
@@ -28,8 +30,14 @@ public class ResourceContactPhoto implements ContactPhoto {
 
   @Override
   public Drawable asDrawable(Context context, int color, boolean inverted) {
-    Drawable        background = TextDrawable.builder().buildRound(" ", inverted ? Color.WHITE : color);
-    RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(context.getResources().getDrawable(resourceId));
+    Drawable background = TextDrawable.builder().buildRound(" ", inverted ? Color.WHITE : color);
+    Drawable source     = AppCompatResources.getDrawable(context, resourceId);
+
+    if (source == null) {
+      return background;
+    }
+
+    RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(source);
 
     foreground.setScaleType(ImageView.ScaleType.CENTER);
 

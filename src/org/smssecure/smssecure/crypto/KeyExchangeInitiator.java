@@ -17,9 +17,11 @@
  */
 package org.smssecure.smssecure.crypto;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -49,6 +51,8 @@ import org.whispersystems.libsignal.state.SignedPreKeyStore;
 
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
+
 public class KeyExchangeInitiator {
 
   public static void abort(final Context context, final MasterSecret masterSecret, final Recipients recipients, final int subscriptionId) {
@@ -58,9 +62,31 @@ public class KeyExchangeInitiator {
 
   public static void initiate(final Context context, final MasterSecret masterSecret, final Recipients recipients, boolean promptOnExisting) {
     if (Build.VERSION.SDK_INT >= 22) {
-      List<SubscriptionInfo> listSubscriptionInfo = SubscriptionManager.from(context).getActiveSubscriptionInfoList();
-      for (SubscriptionInfo subscriptionInfo : listSubscriptionInfo) {
-        initiate(context, masterSecret, recipients, promptOnExisting, subscriptionInfo.getSubscriptionId());
+      if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        initiate(context, masterSecret, recipients, promptOnExisting, -1);
+        return;
+      }
+
+      SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+
+      if (subscriptionManager == null) {
+        initiate(context, masterSecret, recipients, promptOnExisting, -1);
+        return;
+      }
+
+      try {
+        List<SubscriptionInfo> listSubscriptionInfo = subscriptionManager.getActiveSubscriptionInfoList();
+
+        if (listSubscriptionInfo == null || listSubscriptionInfo.isEmpty()) {
+          initiate(context, masterSecret, recipients, promptOnExisting, -1);
+          return;
+        }
+
+        for (SubscriptionInfo subscriptionInfo : listSubscriptionInfo) {
+          initiate(context, masterSecret, recipients, promptOnExisting, subscriptionInfo.getSubscriptionId());
+        }
+      } catch (SecurityException securityException) {
+        initiate(context, masterSecret, recipients, promptOnExisting, -1);
       }
     } else {
       initiate(context, masterSecret, recipients, promptOnExisting, -1);

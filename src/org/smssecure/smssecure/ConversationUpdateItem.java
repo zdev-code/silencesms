@@ -2,12 +2,15 @@ package org.smssecure.smssecure;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.model.MessageRecord;
@@ -63,7 +66,10 @@ public class ConversationUpdateItem extends LinearLayout
     this.sender.addListener(this);
 
     if (messageRecord.isGroupAction()) {
-      icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_group_grey600_24dp));
+      Drawable iconDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.ic_group_grey600_24dp);
+      if (iconDrawable != null) {
+        icon.setImageDrawable(iconDrawable);
+      }
 
       if (messageRecord.isGroupQuit() && messageRecord.isOutgoing()) {
         body.setText(R.string.MessageRecord_left_group);

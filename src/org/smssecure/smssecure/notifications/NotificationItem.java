@@ -4,9 +4,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.TaskStackBuilder;
 
 import org.smssecure.smssecure.ConversationActivity;
 import org.smssecure.smssecure.mms.SlideDeck;
@@ -77,7 +77,7 @@ public class NotificationItem {
 
     return TaskStackBuilder.create(context)
                            .addNextIntentWithParentStack(intent)
-                           .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                           .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
   }
 
   public long getId() {

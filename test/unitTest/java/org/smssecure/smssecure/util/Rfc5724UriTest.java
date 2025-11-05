@@ -82,7 +82,8 @@ public class Rfc5724UriTest extends BaseUnitTest {
     }
   }
 
-  @Test public void testGetQueryParams() throws Exception {
+  @Test
+  public void testGetQueryParams() throws Exception {
     final String[][] uriTestPairs = {
         {"sms:+15555555555",         "a", null},
         {"mms:+15555555555?b=",      "a", null},

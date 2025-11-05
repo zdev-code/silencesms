@@ -1,8 +1,7 @@
 package org.smssecure.smssecure.crypto;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.os.Build;
 
 import org.smssecure.smssecure.crypto.storage.SilenceSessionStore;
@@ -46,7 +45,6 @@ public class SessionUtil {
     }
   }
 
-  @TargetApi(22)
   public static List<Integer> getSubscriptionIdWithoutSession(Context context, MasterSecret masterSecret, @NonNull String number, List<SubscriptionInfoCompat> activeSubscriptions) {
     LinkedList<Integer> list = new LinkedList();
 

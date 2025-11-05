@@ -19,6 +19,7 @@ package org.smssecure.smssecure.contacts;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.net.Uri;
 import android.os.Parcel;
@@ -271,10 +272,11 @@ public class ContactAccessor {
       result.add("\u00A0");                               // LABEL
       result.add(cons);                                   // NAME
 
-      ArrayList<ArrayList> wrap = new ArrayList<ArrayList>();
-      wrap.add(result);
-
-      ArrayListCursor translated = new ArrayListCursor(PROJECTION_PHONE, wrap);
+      MatrixCursor translated = new MatrixCursor(PROJECTION_PHONE);
+      MatrixCursor.RowBuilder rowBuilder = translated.newRow();
+      for (Object value : result) {
+        rowBuilder.add(value);
+      }
 
       return new MergeCursor(new Cursor[] { translated, phoneCursor });
     } else {

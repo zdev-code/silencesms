@@ -72,8 +72,9 @@ public class AttachmentTypeSelectorAdapter extends ArrayAdapter<AttachmentTypeSe
   }
 
   private static List<IconListItem> getItemList(Context context) {
-    List<IconListItem> data = new ArrayList<>(4);
-    if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+  List<IconListItem> data = new ArrayList<>(4);
+  PackageManager packageManager = context.getPackageManager();
+  if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
       addItem(data, context.getString(R.string.AttachmentTypeSelectorAdapter_camera),  ResUtil.getDrawableRes(context, R.attr.conversation_attach_camera), TAKE_PHOTO);
     }
     addItem(data, context.getString(R.string.AttachmentTypeSelectorAdapter_picture), ResUtil.getDrawableRes(context, R.attr.conversation_attach_image),        ADD_IMAGE);

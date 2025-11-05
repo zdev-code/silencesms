@@ -16,9 +16,10 @@
  */
 package org.smssecure.smssecure;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -87,6 +88,7 @@ public class PassphrasePromptActivity extends PassphraseActivity {
   }
 
   @Override
+  @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
     switch (item.getItemId()) {

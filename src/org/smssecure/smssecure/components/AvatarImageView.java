@@ -7,12 +7,12 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.util.Pair;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.color.MaterialColor;
@@ -29,7 +29,7 @@ import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 
 import java.util.List;
 
-public class AvatarImageView extends ImageView {
+public class AvatarImageView extends AppCompatImageView {
 
   private boolean inverted;
   private boolean showBadge;
@@ -44,9 +44,9 @@ public class AvatarImageView extends ImageView {
     setScaleType(ScaleType.CENTER_CROP);
 
     if (attrs != null) {
-      TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AvatarImageView, 0, 0);
-      inverted = typedArray.getBoolean(0, false);
-      showBadge = typedArray.getBoolean(1, false);
+  TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AvatarImageView, 0, 0);
+  inverted = typedArray.getBoolean(R.styleable.AvatarImageView_inverted, false);
+  showBadge = typedArray.getBoolean(R.styleable.AvatarImageView_showBadge, false);
       typedArray.recycle();
     }
   }

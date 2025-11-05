@@ -16,6 +16,7 @@
  */
 package org.smssecure.smssecure;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,18 +32,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -301,8 +302,9 @@ public class ConversationListFragment extends Fragment
 
   private void handleSelectAllThreads() {
     getListAdapter().selectAllThreads();
+    int selectedCount = getListAdapter().getBatchSelections().size();
     actionMode.setSubtitle(getString(R.string.conversation_fragment_cab__batch_selection_amount,
-                                     getListAdapter().getBatchSelections().size()));
+                                     String.valueOf(selectedCount)));
   }
 
   private void handleCreateConversation(long threadId, Recipients recipients, int distributionType, long lastSeen) {
@@ -446,8 +448,8 @@ public class ConversationListFragment extends Fragment
       if (adapter.getBatchSelections().size() == 0) {
         actionMode.finish();
       } else {
-        actionMode.setSubtitle(getString(R.string.conversation_fragment_cab__batch_selection_amount,
-                                         adapter.getBatchSelections().size()));
+  actionMode.setSubtitle(getString(R.string.conversation_fragment_cab__batch_selection_amount,
+           String.valueOf(adapter.getBatchSelections().size())));
       }
 
       adapter.notifyDataSetChanged();
@@ -502,6 +504,7 @@ public class ConversationListFragment extends Fragment
   }
 
   @Override
+  @SuppressLint("NonConstantResourceId")
   public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
     switch (item.getItemId()) {
     case R.id.menu_select_all:       handleSelectAllThreads();   return true;

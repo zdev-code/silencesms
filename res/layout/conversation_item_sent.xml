@@ -144,7 +144,7 @@
                         android:layout_height="wrap_content"
                         app:iconColor="?conversation_item_sent_text_secondary_color"/>
 
-                <ImageView android:id="@+id/secure_indicator"
+                <androidx.appcompat.widget.AppCompatImageView android:id="@+id/secure_indicator"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:src="?menu_lock_icon_small"
@@ -152,7 +152,7 @@
                            android:layout_gravity="center_vertical|end"
                            android:paddingLeft="2dp"
                            android:paddingBottom="3dp"
-                           android:tint="?conversation_item_sent_text_secondary_color"
+                           app:tint="?conversation_item_sent_text_secondary_color"
                            android:tintMode="multiply"
                            android:contentDescription="@string/conversation_item__secure_message_description" />
 

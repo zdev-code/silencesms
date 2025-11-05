@@ -5,7 +5,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class SaveAttachmentTask extends ProgressDialogAsyncTask<SaveAttachmentTask.Attachment, Void, Integer> {
   private static final String TAG = SaveAttachmentTask.class.getSimpleName();
@@ -141,7 +142,7 @@ public class SaveAttachmentTask extends ProgressDialogAsyncTask<SaveAttachmentTa
 
     MimeTypeMap       mimeTypeMap   = MimeTypeMap.getSingleton();
     String            extension     = mimeTypeMap.getExtensionFromMimeType(contentType);
-    SimpleDateFormat  dateFormatter = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+  SimpleDateFormat  dateFormatter = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
     String            base          = "silence-" + dateFormatter.format(timestamp);
 
     if (extension == null) extension = "attach";

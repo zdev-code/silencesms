@@ -1,19 +1,22 @@
 package org.smssecure.smssecure.preferences;
 
+import android.app.Activity;
+import android.app.role.RoleManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.provider.Telephony;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceScreen;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceScreen;
 import android.text.TextUtils;
 
 import org.smssecure.smssecure.ApplicationPreferencesActivity;
@@ -28,18 +31,24 @@ import java.util.List;
 public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
   private static final String KITKAT_DEFAULT_PREF = "pref_set_default";
   private static final String MMS_PREF            = "pref_mms_preferences";
+  private static final int    REQUEST_DEFAULT_SMS_ROLE = 31337;
 
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
 
-    this.findPreference(MMS_PREF)
-      .setOnPreferenceClickListener(new ApnPreferencesClickListener());
   }
 
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
     addPreferencesFromResource(R.xml.preferences_sms_mms);
+
+    Preference manualMmsPreference = findPreference(MMS_PREF);
+    if (manualMmsPreference != null) {
+      manualMmsPreference.setOnPreferenceClickListener(new ApnPreferencesClickListener());
+    }
+
+    initializePlatformSpecificOptions();
   }
 
   @Override
@@ -62,15 +71,46 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
       if (allMmsPreference != null) preferenceScreen.removePreference(allMmsPreference);
 
       if (Util.isDefaultSmsProvider(getActivity())) {
-        defaultPreference.setIntent(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
         defaultPreference.setTitle(getString(R.string.ApplicationPreferencesActivity_sms_enabled));
         defaultPreference.setSummary(getString(R.string.ApplicationPreferencesActivity_tap_to_change_your_default_sms_app));
+        defaultPreference.setOnPreferenceClickListener(preference -> {
+          Activity activity = getActivity();
+          if (activity == null) {
+            return false;
+          }
+
+          Intent manageDefaultAppsIntent = new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS);
+          if (isResolvable(activity, manageDefaultAppsIntent)) {
+            startActivity(manageDefaultAppsIntent);
+            return true;
+          }
+
+          Intent changeDefaultIntent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+          changeDefaultIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
+          startActivity(changeDefaultIntent);
+          return true;
+        });
       } else {
-        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getActivity().getPackageName());
-        defaultPreference.setIntent(intent);
         defaultPreference.setTitle(getString(R.string.ApplicationPreferencesActivity_sms_disabled));
         defaultPreference.setSummary(getString(R.string.ApplicationPreferencesActivity_tap_to_make_silence_your_default_sms_app));
+
+        defaultPreference.setOnPreferenceClickListener(preference -> {
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            RoleManager roleManager = (RoleManager) getActivity().getSystemService(Context.ROLE_SERVICE);
+            if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_SMS)) {
+              if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
+                Intent roleIntent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS);
+                startActivityForResult(roleIntent, REQUEST_DEFAULT_SMS_ROLE);
+              }
+              return true;
+            }
+          }
+
+          Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+          intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getActivity().getPackageName());
+          startActivity(intent);
+          return true;
+        });
       }
     } else if (defaultPreference != null) {
       preferenceScreen.removePreference(defaultPreference);
@@ -78,6 +118,14 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
 
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && manualMmsPreference != null) {
       preferenceScreen.removePreference(manualMmsPreference);
+    }
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == REQUEST_DEFAULT_SMS_ROLE && resultCode == Activity.RESULT_OK) {
+      initializePlatformSpecificOptions();
     }
   }
 
@@ -94,6 +142,11 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
 
       return true;
     }
+  }
+
+  private boolean isResolvable(Context context, Intent intent) {
+    PackageManager packageManager = context.getPackageManager();
+    return packageManager != null && intent.resolveActivity(packageManager) != null;
   }
 
   public static CharSequence getSummary(Context context) {

@@ -165,11 +165,13 @@ public class MessageRecipientListItem extends RelativeLayout
   }
 
   private class ResendAsyncTask extends AsyncTask<Void,Void,Void> {
+    private final Context       appContext;
     private final MasterSecret   masterSecret;
     private final MessageRecord  record;
     private final NetworkFailure failure;
 
     public ResendAsyncTask(MasterSecret masterSecret, MessageRecord record, NetworkFailure failure) {
+      this.appContext = getContext().getApplicationContext();
       this.masterSecret = masterSecret;
       this.record       = record;
       this.failure      = failure;
@@ -177,7 +179,7 @@ public class MessageRecipientListItem extends RelativeLayout
 
     @Override
     protected Void doInBackground(Void... params) {
-      MessageSender.resend(getContext(), masterSecret, record);
+      MessageSender.resend(appContext, masterSecret, record);
       return null;
     }
   }

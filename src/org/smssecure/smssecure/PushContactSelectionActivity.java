@@ -18,11 +18,14 @@ package org.smssecure.smssecure;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.util.DynamicLanguage;
@@ -48,7 +51,10 @@ public class PushContactSelectionActivity extends ContactSelectionActivity {
     super.onCreate(icicle, masterSecret);
     contactsFragment.setMultiSelect(true);
 
-    action.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_white_24dp));
+    Drawable checkDrawable = AppCompatResources.getDrawable(this, R.drawable.ic_check_white_24dp);
+    if (checkDrawable != null) {
+      action.setImageDrawable(checkDrawable);
+    }
     action.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {

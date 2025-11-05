@@ -1,15 +1,13 @@
 package org.smssecure.smssecure.components;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,6 +17,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
 
@@ -35,6 +37,7 @@ import org.smssecure.smssecure.mms.SlideClickListener;
 import org.smssecure.smssecure.util.Util;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 
@@ -81,10 +84,26 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     this.seekBar.setOnSeekBarChangeListener(new SeekBarModifiedListener());
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      this.playButton.setImageDrawable(context.getDrawable(R.drawable.play_icon));
-      this.pauseButton.setImageDrawable(context.getDrawable(R.drawable.pause_icon));
-      this.playButton.setBackground(context.getDrawable(R.drawable.ic_circle_fill_white_48dp));
-      this.pauseButton.setBackground(context.getDrawable(R.drawable.ic_circle_fill_white_48dp));
+      Drawable playDrawable  = AppCompatResources.getDrawable(context, R.drawable.play_icon);
+      Drawable pauseDrawable = AppCompatResources.getDrawable(context, R.drawable.pause_icon);
+      Drawable circleDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_circle_fill_white_48dp);
+
+      if (playDrawable != null) {
+        this.playButton.setImageDrawable(playDrawable);
+      }
+
+      if (pauseDrawable != null) {
+        this.pauseButton.setImageDrawable(pauseDrawable);
+      }
+
+      if (circleDrawable != null) {
+        this.playButton.setBackground(circleDrawable);
+
+        Drawable pauseBackground = circleDrawable.getConstantState() != null
+                                    ? circleDrawable.getConstantState().newDrawable().mutate()
+                                    : circleDrawable.mutate();
+        this.pauseButton.setBackground(pauseBackground);
+      }
     }
 
     if (attrs != null) {
@@ -196,9 +215,9 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     if (seekProgress > seekBar.getProgress() || backwardsCounter > 3) {
       backwardsCounter = 0;
       this.seekBar.setProgress(seekProgress);
-      this.timestamp.setText(String.format("%02d:%02d",
-                                           TimeUnit.MILLISECONDS.toMinutes(millis),
-                                           TimeUnit.MILLISECONDS.toSeconds(millis)));
+  this.timestamp.setText(String.format(Locale.US, "%02d:%02d",
+               TimeUnit.MILLISECONDS.toMinutes(millis),
+               TimeUnit.MILLISECONDS.toSeconds(millis)));
     } else {
       backwardsCounter++;
     }
@@ -238,9 +257,15 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     controlToggle.displayQuick(pauseButton);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      AnimatedVectorDrawable playToPauseDrawable = (AnimatedVectorDrawable)getContext().getDrawable(R.drawable.play_to_pause_animation);
-      pauseButton.setImageDrawable(playToPauseDrawable);
-      playToPauseDrawable.start();
+      Drawable playToPauseDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.play_to_pause_animation);
+
+      if (playToPauseDrawable != null) {
+        pauseButton.setImageDrawable(playToPauseDrawable);
+
+        if (playToPauseDrawable instanceof Animatable) {
+          ((Animatable) playToPauseDrawable).start();
+        }
+      }
     }
   }
 
@@ -248,14 +273,19 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     controlToggle.displayQuick(playButton);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      AnimatedVectorDrawable pauseToPlayDrawable = (AnimatedVectorDrawable)getContext().getDrawable(R.drawable.pause_to_play_animation);
-      playButton.setImageDrawable(pauseToPlayDrawable);
-      pauseToPlayDrawable.start();
+      Drawable pauseToPlayDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.pause_to_play_animation);
+
+      if (pauseToPlayDrawable != null) {
+        playButton.setImageDrawable(pauseToPlayDrawable);
+
+        if (pauseToPlayDrawable instanceof Animatable) {
+          ((Animatable) pauseToPlayDrawable).start();
+        }
+      }
     }
   }
 
   private class PlayClickedListener implements View.OnClickListener {
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View v) {
       try {
@@ -271,7 +301,6 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
   }
 
   private class PauseClickedListener implements View.OnClickListener {
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View v) {
       Log.w(TAG, "pausebutton onClick");

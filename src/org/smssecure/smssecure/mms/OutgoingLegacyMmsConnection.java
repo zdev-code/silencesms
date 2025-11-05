@@ -20,22 +20,21 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.SendConf;
 
-import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpPostHC4;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.ByteArrayEntityHC4;
 import org.smssecure.smssecure.transport.UndeliverableMessageException;
 
 import java.io.IOException;
+import java.net.Proxy;
+
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 @SuppressWarnings("deprecation")
 public class OutgoingLegacyMmsConnection extends LegacyMmsConnection implements OutgoingMmsConnection {
@@ -45,21 +44,19 @@ public class OutgoingLegacyMmsConnection extends LegacyMmsConnection implements 
     super(context);
   }
 
-  private HttpUriRequest constructRequest(byte[] pduBytes, boolean useProxy)
-      throws IOException
-  {
-    try {
-      HttpPostHC4 request = new HttpPostHC4(apn.getMmsc());
-      for (Header header : getBaseHeaders()) {
-        request.addHeader(header);
-      }
+  private static final MediaType MMS_MEDIA_TYPE = MediaType.get("application/vnd.wap.mms-message");
 
-      request.setEntity(new ByteArrayEntityHC4(pduBytes));
-      if (useProxy) {
-        HttpHost proxy = new HttpHost(apn.getProxy(), apn.getPort());
-        request.setConfig(RequestConfig.custom().setProxy(proxy).build());
-      }
-      return request;
+  private Request constructRequest(byte[] pduBytes) throws IOException {
+    try {
+  RequestBody body = RequestBody.create(MMS_MEDIA_TYPE, pduBytes);
+      Request.Builder builder = new Request.Builder()
+          .url(apn.getMmsc())
+          .post(body)
+          .header("Content-Type", "application/vnd.wap.mms-message");
+
+      applyBaseHeaders(builder);
+
+      return builder.build();
     } catch (IllegalArgumentException iae) {
       throw new IOException(iae);
     }
@@ -132,8 +129,9 @@ public class OutgoingLegacyMmsConnection extends LegacyMmsConnection implements 
     try {
       if (checkRouteToHost(context, targetHost, useMmsRadio)) {
         Log.w(TAG, "got successful route to host " + targetHost);
-        byte[] response = execute(constructRequest(pduBytes, useProxy));
-        if (response != null) return response;
+  Proxy proxy = useProxy ? buildProxy(apn.getProxy(), apn.getPort()) : null;
+  byte[] response = execute(constructRequest(pduBytes), proxy);
+  if (response != null) return response;
       }
     } catch (IOException ioe) {
       Log.w(TAG, ioe);

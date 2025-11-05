@@ -19,11 +19,9 @@
               android:gravity="center_vertical">
 
     <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="24dp"
+         android:layout_width="24dp"
+         android:layout_height="24dp"
+         android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_add" />

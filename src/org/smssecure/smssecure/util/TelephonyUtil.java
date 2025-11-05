@@ -1,5 +1,7 @@
 package org.smssecure.smssecure.util;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
@@ -7,8 +9,13 @@ import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
+import android.content.pm.PackageManager;
+
+import androidx.core.content.ContextCompat;
 
 import org.smssecure.smssecure.util.ServiceUtil;
+
+import java.util.Locale;
 
 public class TelephonyUtil {
   private static final String TAG = TelephonyUtil.class.getSimpleName();
@@ -29,7 +36,7 @@ public class TelephonyUtil {
       return tm.getNetworkOperator();
     } else if (configMcc != 0 && configMnc != 0) {
       Log.w(TAG, "Choosing MCC+MNC info from current context's Configuration");
-      return String.format("%03d%d",
+    return String.format(Locale.US, "%03d%d",
           configMcc,
           configMnc == Configuration.MNC_ZERO ? 0 : configMnc);
     } else {
@@ -46,9 +53,25 @@ public class TelephonyUtil {
     return number != null && PhoneNumberUtils.compare(context, getPhoneNumber(context), number);
   }
 
+  @SuppressLint("HardwareIds")
   public static String getPhoneNumber(final Context context){
     final TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-    return tm.getLine1Number();
+
+    if (tm == null) {
+      return null;
+    }
+
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+      Log.w(TAG, "READ_PHONE_STATE permission not granted; returning null phone number");
+      return null;
+    }
+
+    try {
+      return tm.getLine1Number();
+    } catch (SecurityException securityException) {
+      Log.w(TAG, "Unable to read line1 number", securityException);
+      return null;
+    }
   }
 
   public static NetworkInfo getNetworkInfo(final Context context) {

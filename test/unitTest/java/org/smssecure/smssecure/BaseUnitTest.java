@@ -8,70 +8,78 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.smssecure.smssecure.crypto.MasterSecret;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyFloat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Log.class, Handler.class, Looper.class, TextUtils.class, PreferenceManager.class })
 public abstract class BaseUnitTest {
   protected MasterSecret masterSecret;
 
   protected Context           context           = mock(Context.class);
   protected SharedPreferences sharedPreferences = mock(SharedPreferences.class);
 
+  private MockedStatic<Looper> looperMock;
+  private MockedStatic<Log> logMock;
+  private MockedStatic<TextUtils> textUtilsMock;
+  private MockedStatic<PreferenceManager> preferenceManagerMock;
+  private MockedConstruction<Handler> handlerConstruction;
+
   @Before
   public void setUp() throws Exception {
     masterSecret = new MasterSecret(new SecretKeySpec(new byte[16], "AES"),
                                     new SecretKeySpec(new byte[16], "HmacSHA1"));
-    mockStatic(Looper.class);
-    mockStatic(Log.class);
-    mockStatic(Handler.class);
-    mockStatic(TextUtils.class);
-    mockStatic(PreferenceManager.class);
+    looperMock = Mockito.mockStatic(Looper.class);
+    looperMock.when(Looper::getMainLooper).thenReturn(null);
 
-    when(PreferenceManager.getDefaultSharedPreferences(any(Context.class))).thenReturn(sharedPreferences);
-    when(Looper.getMainLooper()).thenReturn(null);
-    PowerMockito.whenNew(Handler.class).withAnyArguments().thenReturn(null);
+    handlerConstruction = Mockito.mockConstruction(Handler.class, (mock, context) -> {});
 
-    Answer<?> logAnswer = new Answer<Void>() {
-      @Override public Void answer(InvocationOnMock invocation) throws Throwable {
-        final String tag = (String)invocation.getArguments()[0];
-        final String msg = (String)invocation.getArguments()[1];
+    logMock = Mockito.mockStatic(Log.class);
+    Answer<Integer> logAnswer = new Answer<Integer>() {
+      @Override
+      public Integer answer(InvocationOnMock invocation) {
+        final String tag = invocation.getArgument(0);
+        final String msg = invocation.getArgument(1);
         System.out.println(invocation.getMethod().getName().toUpperCase() + "/[" + tag + "] " + msg);
-        return null;
+        return 0;
       }
     };
-    PowerMockito.doAnswer(logAnswer).when(Log.class, "d", anyString(), anyString());
-    PowerMockito.doAnswer(logAnswer).when(Log.class, "i", anyString(), anyString());
-    PowerMockito.doAnswer(logAnswer).when(Log.class, "w", anyString(), anyString());
-    PowerMockito.doAnswer(logAnswer).when(Log.class, "e", anyString(), anyString());
-    PowerMockito.doAnswer(logAnswer).when(Log.class, "wtf", anyString(), anyString());
+    logMock.when(() -> Log.d(anyString(), anyString())).thenAnswer(logAnswer);
+    logMock.when(() -> Log.i(anyString(), anyString())).thenAnswer(logAnswer);
+    logMock.when(() -> Log.w(anyString(), anyString())).thenAnswer(logAnswer);
+    logMock.when(() -> Log.e(anyString(), anyString())).thenAnswer(logAnswer);
+    logMock.when(() -> Log.wtf(anyString(), anyString())).thenAnswer(logAnswer);
+    logMock.when(() -> Log.wtf(anyString(), any(Throwable.class))).thenAnswer(invocation -> {
+      final String tag = invocation.getArgument(0);
+      final Throwable throwable = invocation.getArgument(1);
+      System.out.println("WTF/[" + tag + "] " + throwable);
+      return 0;
+    });
 
-    PowerMockito.doAnswer(new Answer<Boolean>() {
-      @Override
-      public Boolean answer(InvocationOnMock invocation) throws Throwable {
-        final String s = (String)invocation.getArguments()[0];
-        return s == null || s.length() == 0;
-      }
-    }).when(TextUtils.class, "isEmpty", anyString());
+    textUtilsMock = Mockito.mockStatic(TextUtils.class);
+    textUtilsMock.when(() -> TextUtils.isEmpty(any(CharSequence.class))).thenAnswer(invocation -> {
+      CharSequence s = invocation.getArgument(0);
+      return s == null || s.length() == 0;
+    });
+
+    preferenceManagerMock = Mockito.mockStatic(PreferenceManager.class);
+    preferenceManagerMock.when(() -> PreferenceManager.getDefaultSharedPreferences(any(Context.class)))
+                         .thenReturn(sharedPreferences);
 
     when(sharedPreferences.getString(anyString(), anyString())).thenReturn("");
     when(sharedPreferences.getLong(anyString(), anyLong())).thenReturn(0L);
@@ -80,5 +88,24 @@ public abstract class BaseUnitTest {
     when(sharedPreferences.getFloat(anyString(), anyFloat())).thenReturn(0f);
     when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
     when(context.getPackageName()).thenReturn("org.smssecure.smssecure");
+  }
+
+  @After
+  public void tearDown() {
+    if (handlerConstruction != null) {
+      handlerConstruction.close();
+    }
+    if (preferenceManagerMock != null) {
+      preferenceManagerMock.close();
+    }
+    if (textUtilsMock != null) {
+      textUtilsMock.close();
+    }
+    if (logMock != null) {
+      logMock.close();
+    }
+    if (looperMock != null) {
+      looperMock.close();
+    }
   }
 }

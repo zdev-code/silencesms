@@ -24,9 +24,9 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
@@ -81,6 +81,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -141,7 +142,7 @@ public class ConversationItem extends LinearLayout
 
       String[] split = url.split(":", 2);
       if (split.length == 2){
-        return split[0].toLowerCase() + ":" + split[1];
+  return split[0].toLowerCase(Locale.ROOT) + ":" + split[1];
       }
       else{
         return "http://" + url;

@@ -3,8 +3,8 @@ package org.smssecure.smssecure.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -25,6 +25,7 @@ import org.smssecure.smssecure.providers.PersistentBlobProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class MediaUtil {
@@ -48,7 +49,7 @@ public class MediaUtil {
     }
 
     if (data != null) {
-      Log.w(TAG, String.format("generated thumbnail for part, %dx%d (%.3f:1) in %dms",
+  Log.w(TAG, String.format(Locale.US, "generated thumbnail for part, %dx%d (%.3f:1) in %dms",
                                data.getBitmap().getWidth(), data.getBitmap().getHeight(),
                                data.getAspectRatio(), System.currentTimeMillis() - startMillis));
     }
@@ -61,12 +62,12 @@ public class MediaUtil {
   {
     try {
       int maxSize = context.getResources().getDimensionPixelSize(R.dimen.media_bubble_height);
-      return Glide.with(context)
-                  .load(new DecryptableUri(masterSecret, uri))
-                  .asBitmap()
-                  .centerCrop()
-                  .into(maxSize, maxSize)
-                  .get();
+  return Glide.with(context)
+      .asBitmap()
+      .load(new DecryptableUri(masterSecret, uri))
+      .centerCrop()
+      .submit(maxSize, maxSize)
+      .get();
     } catch (InterruptedException | ExecutionException e) {
       Log.w(TAG, e);
       throw new BitmapDecodingException(e);
@@ -98,7 +99,9 @@ public class MediaUtil {
     String type = context.getContentResolver().getType(uri);
     if (type == null) {
       final String extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
-      type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.toLowerCase());
+      if (!TextUtils.isEmpty(extension)) {
+        type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.toLowerCase(Locale.ROOT));
+      }
     }
     return getCorrectedMimeType(type);
   }

@@ -1,16 +1,20 @@
 package org.smssecure.smssecure;
 
-import android.annotation.TargetApi;
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import android.util.Log;
 
 import org.smssecure.smssecure.BaseActionBarActivity;
 import org.smssecure.smssecure.notifications.NotificationChannels;
@@ -20,7 +24,11 @@ import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 
+import java.util.Arrays;
+
 public class WelcomeActivity extends BaseActionBarActivity {
+
+  private static final String TAG = WelcomeActivity.class.getSimpleName();
 
   private int backgroundColor = 0xFF7568AE;
 
@@ -46,18 +54,19 @@ public class WelcomeActivity extends BaseActionBarActivity {
 
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
   private void onContinueClicked() {
     Permissions.with(this)
-        .request(Manifest.permission.WRITE_CONTACTS,
-                 Manifest.permission.READ_CONTACTS,
-                 Manifest.permission.READ_PHONE_STATE,
-                 Manifest.permission.RECEIVE_SMS,
-                 Manifest.permission.RECEIVE_MMS,
-                 Manifest.permission.READ_SMS,
-                 Manifest.permission.SEND_SMS)
+        .request(withNotificationPermissionIfRequired(Manifest.permission.WRITE_CONTACTS,
+                                                      Manifest.permission.READ_CONTACTS,
+                                                      Manifest.permission.READ_PHONE_STATE,
+                                                      Manifest.permission.RECEIVE_SMS,
+                                                      Manifest.permission.RECEIVE_MMS,
+                                                      Manifest.permission.READ_SMS,
+                                                      Manifest.permission.SEND_SMS))
         .ifNecessary()
         .withRationaleDialog(getString(R.string.WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms),
           R.drawable.ic_contacts_white_48dp, R.drawable.ic_phone_white_48dp)
@@ -72,9 +81,9 @@ public class WelcomeActivity extends BaseActionBarActivity {
 
   private void onContinueMissingPermsClicked() {
     Permissions.with(this)
-               .request(Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.RECEIVE_SMS,
-                        Manifest.permission.RECEIVE_MMS)
+               .request(withNotificationPermissionIfRequired(Manifest.permission.READ_PHONE_STATE,
+                                                              Manifest.permission.RECEIVE_SMS,
+                                                              Manifest.permission.RECEIVE_MMS))
                .ifNecessary()
                .withPermanentDenialDialog(getString(R.string.WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied))
                .onSomeGranted((permissions) -> {
@@ -95,18 +104,34 @@ public class WelcomeActivity extends BaseActionBarActivity {
     finish();
   }
 
-  @TargetApi(Build.VERSION_CODES.LOLLIPOP)
   private void setStatusBarColor() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       getWindow().setStatusBarColor(backgroundColor);
     }
   }
 
+  private static String[] withNotificationPermissionIfRequired(String... basePermissions) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      return basePermissions;
+    }
+
+    for (String permission : basePermissions) {
+      if (Manifest.permission.POST_NOTIFICATIONS.equals(permission)) {
+        return basePermissions;
+      }
+    }
+
+    String[] extended = Arrays.copyOf(basePermissions, basePermissions.length + 1);
+    extended[basePermissions.length] = Manifest.permission.POST_NOTIFICATIONS;
+    return extended;
+  }
+
+  @SuppressLint({"MissingPermission", "NotificationPermission"})
   private static void displayPermissionsNotification(Context context) {
     Intent       targetIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
     Notification notification = new NotificationCompat.Builder(context, NotificationChannels.OTHER)
                                     .setPriority(Notification.PRIORITY_MAX)
-                                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                     .setSmallIcon(R.drawable.icon_notification)
                                     .setColor(context.getResources().getColor(R.color.silence_primary))
                                     .setContentTitle(context.getString(R.string.WelcomeActivity_action_required))
@@ -115,16 +140,32 @@ public class WelcomeActivity extends BaseActionBarActivity {
                                     .setAutoCancel(false)
                                     .setContentIntent(PendingIntent.getActivity(context, 0,
                                                                                 targetIntent,
-                                                                                PendingIntent.FLAG_UPDATE_CURRENT))
+                                                                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE))
                                     .build();
-    ServiceUtil.getNotificationManager(context).notify(NOTIFICATION_ID, notification);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        Log.w(TAG, "Skipping permissions notification; missing POST_NOTIFICATIONS permission");
+        return;
+      }
+    }
+
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+    if (!notificationManager.areNotificationsEnabled()) {
+      Log.w(TAG, "Skipping permissions notification; notifications disabled by user");
+      return;
+    }
+
+    notificationManager.notify(NOTIFICATION_ID, notification);
   }
 
   public static void checkForPermissions(Context context, Intent intent) {
     if (intent == null) return;
 
-    if (!Util.hasMandatoryPermissions(context) && !SilencePreferences.isFirstRun(context))
-    {
+    boolean missingMandatoryPermissions = !Util.hasMandatoryPermissions(context);
+    boolean missingNotificationPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED;
+
+    if ((missingMandatoryPermissions || missingNotificationPermission) && !SilencePreferences.isFirstRun(context)) {
       displayPermissionsNotification(context);
     }
   }

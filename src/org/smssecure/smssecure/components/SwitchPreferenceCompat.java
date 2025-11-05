@@ -1,9 +1,7 @@
 package org.smssecure.smssecure.components;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
-import android.support.v7.preference.CheckBoxPreference;
+import androidx.preference.CheckBoxPreference;
 import android.util.AttributeSet;
 
 import org.smssecure.smssecure.R;
@@ -15,7 +13,6 @@ public class SwitchPreferenceCompat extends CheckBoxPreference {
         setLayoutRes();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SwitchPreferenceCompat(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setLayoutRes();

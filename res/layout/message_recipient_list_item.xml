@@ -12,6 +12,7 @@
     <org.smssecure.smssecure.components.AvatarImageView
             android:id="@+id/contact_photo_image"
             android:foreground="@drawable/contact_photo_background"
+            tools:ignore="UnusedAttribute"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerVertical="true"

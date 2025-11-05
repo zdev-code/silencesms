@@ -11,7 +11,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -43,6 +45,13 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
   protected void onCreate(Bundle bundle, @NonNull MasterSecret masterSecret) {
     setContentView(R.layout.database_migration_activity);
 
+    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+      @Override
+      public void handleOnBackPressed() {
+        // Intentionally ignored to prevent users from dismissing the migration flow prematurely.
+      }
+    });
+
     initializeResources();
     initializeServiceBinding();
   }
@@ -65,11 +74,6 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
   public void onDestroy() {
     super.onDestroy();
     shutdownServiceBinding();
-  }
-
-  @Override
-  public void onBackPressed() {
-
   }
 
   private void initializeServiceBinding() {
@@ -115,7 +119,7 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
     filter.addAction(ApplicationMigrationService.COMPLETED_ACTION);
     filter.setPriority(1000);
 
-    registerReceiver(completedReceiver, filter);
+    ContextCompat.registerReceiver(this, completedReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   private void unregisterForCompletedNotification() {

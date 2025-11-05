@@ -3,7 +3,7 @@ package org.smssecure.smssecure.components;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 import org.smssecure.smssecure.TransportOption;
 import org.smssecure.smssecure.TransportOptions;
@@ -14,7 +14,7 @@ import org.whispersystems.libsignal.util.guava.Optional;
 
 import java.util.List;
 
-public class SendButton extends ImageButton
+public class SendButton extends AppCompatImageButton
     implements TransportOptions.OnTransportChangedListener,
                TransportOptionsPopup.SelectedListener,
                View.OnLongClickListener

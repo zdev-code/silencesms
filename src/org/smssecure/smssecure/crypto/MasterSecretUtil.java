@@ -114,10 +114,10 @@ public class MasterSecretUtil {
                               new SecretKeySpec(macSecret, "HmacSHA1"));
     } catch (GeneralSecurityException e) {
       Log.w("keyutil", e);
-      return null; //XXX
+      throw new InvalidPassphraseException(e);
     } catch (IOException e) {
       Log.w("keyutil", e);
-      return null; //XXX
+      throw new InvalidPassphraseException(e);
     }
   }
 

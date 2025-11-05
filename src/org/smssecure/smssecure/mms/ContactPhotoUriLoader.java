@@ -2,27 +2,34 @@ package org.smssecure.smssecure.mms;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
+import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.model.GenericLoaderFactory;
+import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.stream.StreamModelLoader;
+import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import com.bumptech.glide.signature.ObjectKey;
 
 import org.smssecure.smssecure.mms.ContactPhotoUriLoader.ContactPhotoUri;
 
 import java.io.InputStream;
 
-public class ContactPhotoUriLoader implements StreamModelLoader<ContactPhotoUri> {
+public class ContactPhotoUriLoader implements ModelLoader<ContactPhotoUri, InputStream> {
   private final Context context;
 
   /**
-   * THe default factory for {@link com.bumptech.glide.load.model.stream.StreamUriLoader}s.
+   * The default factory for {@link ContactPhotoUriLoader}s.
    */
   public static class Factory implements ModelLoaderFactory<ContactPhotoUri, InputStream> {
+    private final Context context;
+
+    public Factory(Context context) {
+      this.context = context.getApplicationContext();
+    }
 
     @Override
-    public StreamModelLoader<ContactPhotoUri> build(Context context, GenericLoaderFactory factories) {
+    public ModelLoader<ContactPhotoUri, InputStream> build(MultiModelLoaderFactory multiFactory) {
       return new ContactPhotoUriLoader(context);
     }
 
@@ -33,11 +40,20 @@ public class ContactPhotoUriLoader implements StreamModelLoader<ContactPhotoUri>
   }
 
   public ContactPhotoUriLoader(Context context) {
-    this.context = context;
+    this.context = context.getApplicationContext();
   }
 
   @Override
-  public DataFetcher<InputStream> getResourceFetcher(ContactPhotoUri model, int width, int height) {
+  public LoadData<InputStream> buildLoadData(@NonNull ContactPhotoUri model, int width, int height, @NonNull Options options) {
+    return new LoadData<>(new ObjectKey(model), createFetcher(model));
+  }
+
+  @Override
+  public boolean handles(@NonNull ContactPhotoUri model) {
+    return true;
+  }
+
+  private DataFetcher<InputStream> createFetcher(ContactPhotoUri model) {
     return new ContactPhotoLocalUriFetcher(context, model.uri);
   }
 

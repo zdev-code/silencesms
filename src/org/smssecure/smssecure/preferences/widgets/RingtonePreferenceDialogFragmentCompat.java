@@ -21,12 +21,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.preference.PreferenceDialogFragmentCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SecureRandom;
+import java.util.Locale;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static android.app.Activity.RESULT_OK;
@@ -353,8 +354,10 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
     if (mimeType == null) {
       String fileExtension = MimeTypeMap.getFileExtensionFromUrl(fileUri
                                                                      .toString());
-      mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-          fileExtension.toLowerCase());
+      if (!TextUtils.isEmpty(fileExtension)) {
+        mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+            fileExtension.toLowerCase(Locale.ROOT));
+      }
     }
 
     if (mimeType == null || !(mimeType.startsWith("audio/") || mimeType.equals("application/ogg"))) {
@@ -425,7 +428,10 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
       try {
         cursor = context.getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-          return cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+          int nameColumn = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+          if (nameColumn >= 0) {
+            return cursor.getString(nameColumn);
+          }
         }
       } finally {
         if (cursor != null) {
@@ -503,7 +509,7 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
       name = displayName.substring(0, lastDot);
       ext = displayName.substring(lastDot + 1);
       mimeTypeFromExt = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-          ext.toLowerCase());
+          ext.toLowerCase(Locale.ROOT));
     } else {
       name = displayName;
       ext = null;

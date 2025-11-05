@@ -9,7 +9,7 @@
     <!--ApplicationPreferencesActivity-->
     <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Du hast noch keine Passphrase festgelegt!</string>
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="one">1 Nachricht je Unterhaltung</item>
+        <item quantity="one">%d Nachricht je Unterhaltung</item>
         <item quantity="other">%d Nachrichten je Unterhaltung</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Alle alten Nachrichten löschen?</string>
@@ -37,7 +37,7 @@ Achtung: Deaktiviert die verschlüsselte Speicherung für alle Nachrichten und S
     <string name="ApplicationPreferencesActivity_appearance_summary">Design %1$s, Sprache %2$s</string>
     <!--AppProtectionPreferenceFragment-->
     <plurals name="AppProtectionPreferenceFragment_minutes">
-        <item quantity="one">1 Minute</item>
+        <item quantity="one">%d Minute</item>
         <item quantity="other">%d Minuten</item>
     </plurals>
     <!--DraftDatabase-->
@@ -89,7 +89,7 @@ Achtung: Deaktiviert die verschlüsselte Speicherung für alle Nachrichten und S
     <string name="ConversationActivity_group_conversation">Gruppenunterhaltung</string>
     <string name="ConversationActivity_unnamed_group">Unbenannte Gruppe</string>
     <plurals name="ConversationActivity_d_recipients_in_group">
-        <item quantity="one">1 Mitglied</item>
+        <item quantity="one">%d Mitglied</item>
         <item quantity="other">%d Mitglieder</item>
     </plurals>
     <string name="ConversationActivity_saved_draft">Entwurf gespeichert</string>

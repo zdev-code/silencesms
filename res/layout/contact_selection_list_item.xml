@@ -18,6 +18,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:foreground="@drawable/contact_photo_background"
+            tools:ignore="UnusedAttribute"
             android:cropToPadding="true"
             app:showBadge="true"
             tools:src="@color/blue_600"

@@ -2,11 +2,9 @@ package org.smssecure.smssecure.crypto;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.smssecure.smssecure.BaseUnitTest;
 import org.whispersystems.libsignal.InvalidMessageException;
 
-@PowerMockIgnore("javax.crypto.*")
 public class MasterCipherTest extends BaseUnitTest {
   private MasterCipher masterCipher;
 

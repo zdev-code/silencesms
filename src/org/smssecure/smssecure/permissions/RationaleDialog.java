@@ -4,8 +4,7 @@ package org.smssecure.smssecure.permissions;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.ViewUtil;
@@ -26,7 +29,10 @@ public class RationaleDialog {
 
     for (int i=0;i<drawables.length;i++) {
       ImageView imageView = new ImageView(context);
-      imageView.setImageDrawable(context.getResources().getDrawable(drawables[i]));
+      Drawable drawable = AppCompatResources.getDrawable(context, drawables[i]);
+      if (drawable != null) {
+        imageView.setImageDrawable(drawable);
+      }
       imageView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
       header.addView(imageView);

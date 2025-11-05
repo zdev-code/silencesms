@@ -33,6 +33,7 @@ import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class SmsListener extends BroadcastReceiver {
 
@@ -40,6 +41,8 @@ public class SmsListener extends BroadcastReceiver {
   private static final String SMS_DELIVERED_ACTION = Telephony.Sms.Intents.SMS_DELIVER_ACTION;
 
   private boolean isExemption(SmsMessage message, String messageBody) {
+
+    if (message == null || messageBody == null) return false;
 
     // ignore CLASS0 ("flash") messages
     if (message.getMessageClass() == SmsMessage.MessageClass.CLASS_0)
@@ -52,32 +55,49 @@ public class SmsListener extends BroadcastReceiver {
 
     return
       message.getOriginatingAddress().length() < 7 &&
-      (messageBody.toUpperCase().startsWith("//ANDROID:") || // Sprint Visual Voicemail
+  (messageBody.toUpperCase(Locale.ROOT).startsWith("//ANDROID:") || // Sprint Visual Voicemail
        messageBody.startsWith("//BREW:")); //BREW stands for “Binary Runtime Environment for Wireless"
   }
 
   private SmsMessage getSmsMessageFromIntent(Intent intent) {
-    Bundle bundle             = intent.getExtras();
-    Object[] pdus             = (Object[])bundle.get("pdus");
+    Bundle bundle = intent.getExtras();
 
-    if (pdus == null || pdus.length == 0)
-      return null;
+    if (bundle == null) return null;
 
-    return SmsMessage.createFromPdu((byte[])pdus[0]);
+    Object[] pdus = (Object[]) bundle.get("pdus");
+    if (pdus == null || pdus.length == 0) return null;
+
+    String format = bundle.getString("format");
+
+    return createSmsMessageFromPdu(pdus[0], format);
   }
 
   private String getSmsMessageBodyFromIntent(Intent intent) {
-    Bundle bundle             = intent.getExtras();
-    Object[] pdus             = (Object[])bundle.get("pdus");
+    Bundle bundle = intent.getExtras();
+    if (bundle == null) return null;
+
+    Object[] pdus = (Object[]) bundle.get("pdus");
+    if (pdus == null || pdus.length == 0) return null;
+
+    String format = bundle.getString("format");
     StringBuilder bodyBuilder = new StringBuilder();
 
-    if (pdus == null)
-      return null;
+    for (Object pdu : pdus) {
+      SmsMessage part = createSmsMessageFromPdu(pdu, format);
+      if (part != null) bodyBuilder.append(part.getDisplayMessageBody());
+    }
 
-    for (Object pdu : pdus)
-      bodyBuilder.append(SmsMessage.createFromPdu((byte[])pdu).getDisplayMessageBody());
+    return bodyBuilder.length() == 0 ? null : bodyBuilder.toString();
+  }
 
-    return bodyBuilder.toString();
+  private SmsMessage createSmsMessageFromPdu(Object pdu, String format) {
+    if (!(pdu instanceof byte[])) return null;
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return SmsMessage.createFromPdu((byte[]) pdu, format);
+    } else {
+      return SmsMessage.createFromPdu((byte[]) pdu);
+    }
   }
 
   private boolean isRelevant(Context context, Intent intent) {
@@ -118,8 +138,9 @@ public class SmsListener extends BroadcastReceiver {
     {
       Object[] pdus           = (Object[]) intent.getExtras().get("pdus");
       int      subscriptionId = intent.getExtras().getInt("subscription", -1);
+      String   format          = intent.getStringExtra("format");
 
-      ApplicationContext.getInstance(context).getJobManager().add(new SmsReceiveJob(context, pdus, subscriptionId));
+      ApplicationContext.getInstance(context).getJobManager().add(new SmsReceiveJob(context, pdus, subscriptionId, format));
 
       abortBroadcast();
     }

@@ -9,7 +9,7 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Você ainda não definiu uma senha!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 mensagem por conversa</item>
+    <item quantity="one">%d mensagem por conversa</item>
     <item quantity="other">%d mensagens por conversa</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Apagar todas as mensagens antigas?</string>
@@ -505,7 +505,7 @@ Uma mensagem de troca de chaves para uma versão inválida do protocolo foi rece
   <string name="AndroidManifest__verify_identity">Verificar identidade</string>
   <string name="AndroidManifest__complete_key_exchange">Completar troca de chaves</string>
   <string name="AndroidManifest__log_submit">Enviar registro de depuração</string>
-  <string name="AndroidManifest__media_preview">Pré-visualização de multimidia</string>
+  <string name="AndroidManifest__media_preview">Pré-visualização de multimídia</string>
   <string name="AndroidManifest__media_overview">Todas as imagens</string>
   <string name="AndroidManifest__media_overview_named">Todas as imagens com %1$s</string>
   <string name="AndroidManifest__message_details">Detalhes da mensagem</string>
@@ -553,7 +553,7 @@ Uma mensagem de troca de chaves para uma versão inválida do protocolo foi rece
   <string name="preferences__enable_passphrase">Ativar senha</string>
   <string name="preferences__enable_local_encryption_of_messages_and_keys">Ativar criptografia local para mensagens e chaves</string>
   <string name="preferences__screen_security">Segurança de tela</string>
-  <string name="preferences__automatically_complete_key_exchanges_for_new_sessions_or_for_existing_sessions_with_the_same_identity_key">Completar automaticamente a troca de de chaves para novas sessões ou para sessões existentes com a mesma chave de identidade</string>
+  <string name="preferences__automatically_complete_key_exchanges_for_new_sessions_or_for_existing_sessions_with_the_same_identity_key">Completar automaticamente a troca de chaves para novas sessões ou para sessões existentes com a mesma chave de identidade</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Bloquear captura de tela na lista de recentes e no aplicativo</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Exigir senha para acessar mensagens depois de um tempo</string>
   <string name="preferences__timeout_passphrase">Tempo limite da senha</string>

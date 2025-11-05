@@ -5,11 +5,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import org.smssecure.smssecure.R;
 
-public class ImageDivet extends ImageView {
+public class ImageDivet extends AppCompatImageView {
   private static final float CORNER_OFFSET = 12F;
   private static final String[] POSITIONS  = new String[] {"bottom_right"};
 
@@ -84,7 +84,7 @@ public class ImageDivet extends ImageView {
     return CORNER_OFFSET * density;
   }
 
-  public ImageView asImageView() {
+  public AppCompatImageView asImageView() {
     return this;
   }
 

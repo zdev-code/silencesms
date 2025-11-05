@@ -17,13 +17,14 @@
 
 package org.smssecure.smssecure;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +40,7 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
 import org.smssecure.smssecure.util.MediaUtil;
+import org.smssecure.smssecure.util.ShareShortcutHelper;
 import org.smssecure.smssecure.util.ViewUtil;
 
 import java.io.IOException;
@@ -84,6 +86,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
 
     initFragment(R.id.drawer_layout, new ShareFragment(), masterSecret);
     initializeMedia();
+    ShareShortcutHelper.publishShareShortcuts(this, masterSecret);
   }
 
   @Override
@@ -141,6 +144,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   }
 
   @Override
+  @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
     switch (item.getItemId()) {

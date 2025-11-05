@@ -7,14 +7,17 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class XmlBackup {
+public class XmlBackup implements Closeable {
 
   private static final String PROTOCOL       = "protocol";
   private static final String ADDRESS        = "address";
@@ -30,11 +33,17 @@ public class XmlBackup {
   private static final String LOCKED         = "locked";
 
   private final XmlPullParser parser;
+  private final InputStream   inputStream;
 
   public XmlBackup(String path) throws XmlPullParserException, FileNotFoundException {
-    this.parser = XmlPullParserFactory.newInstance().newPullParser();
+    this(new FileInputStream(path));
+  }
+
+  public XmlBackup(InputStream inputStream) throws XmlPullParserException {
+    this.inputStream = inputStream;
+    this.parser      = XmlPullParserFactory.newInstance().newPullParser();
     parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-    parser.setInput(new FileInputStream(path), null);
+    parser.setInput(inputStream, null);
   }
 
   public XmlBackupItem getNext() throws IOException, XmlPullParserException {
@@ -75,6 +84,11 @@ public class XmlBackup {
     }
 
     return null;
+  }
+
+  @Override
+  public void close() throws IOException {
+    inputStream.close();
   }
 
   public static class XmlBackupItem {
@@ -163,7 +177,7 @@ public class XmlBackup {
       bufferedWriter.newLine();
       bufferedWriter.write(CREATED_BY);
       bufferedWriter.newLine();
-      bufferedWriter.write(String.format(OPEN_TAG_SMSES, count));
+  bufferedWriter.write(String.format(Locale.US, OPEN_TAG_SMSES, count));
     }
 
     public void writeItem(XmlBackupItem item) throws IOException {

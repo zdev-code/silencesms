@@ -3,14 +3,15 @@ package org.smssecure.smssecure.preferences;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.preference.CheckBoxPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceScreen;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceScreen;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
@@ -111,15 +112,16 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-      int[]      attributes = {R.attr.app_protect_timeout_picker_color};
-      TypedArray hmsStyle   = getActivity().obtainStyledAttributes(attributes);
+  Resources.Theme theme      = getActivity().getTheme();
+  TypedValue      typedValue = new TypedValue();
 
-      new HmsPickerBuilder().setFragmentManager(getFragmentManager())
-                            .setStyleResId(hmsStyle.getResourceId(0, R.style.BetterPickersDialogFragment_Light))
-                            .addHmsPickerDialogHandler(this)
-                            .show();
+  boolean resolved = theme != null && theme.resolveAttribute(R.attr.app_protect_timeout_picker_color, typedValue, true);
+  int styleResId   = resolved && typedValue.resourceId != 0 ? typedValue.resourceId : R.style.BetterPickersDialogFragment_Light;
 
-      hmsStyle.recycle();
+  new HmsPickerBuilder().setFragmentManager(getFragmentManager())
+            .setStyleResId(styleResId)
+            .addHmsPickerDialogHandler(this)
+            .show();
 
       return true;
     }

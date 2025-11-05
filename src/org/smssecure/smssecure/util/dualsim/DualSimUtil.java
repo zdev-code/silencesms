@@ -1,12 +1,16 @@
 package org.smssecure.smssecure.util.dualsim;
 
-import android.annotation.TargetApi;
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
@@ -112,6 +116,7 @@ public class DualSimUtil {
     else                              return -1;
   }
 
+  @SuppressLint({"MissingPermission", "NotificationPermission"})
   public static void displayNotification(Context context) {
     Intent       targetIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
     Notification notification = new NotificationCompat.Builder(context)
@@ -121,11 +126,24 @@ public class DualSimUtil {
                                     .setContentText(context.getString(R.string.DualSimUtil__a_new_key_has_been_generated))
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card)))
                                     .setAutoCancel(true)
-                                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                     .setContentIntent(PendingIntent.getActivity(context.getApplicationContext(), 0,
                                                                                 targetIntent,
-                                                                                PendingIntent.FLAG_UPDATE_CURRENT))
+                                                                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE))
                                     .build();
-    ServiceUtil.getNotificationManager(context).notify(NOTIFICATION_ID, notification);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        Log.w(TAG, "Skipping dual SIM notification; missing POST_NOTIFICATIONS permission");
+        return;
+      }
+    }
+
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+    if (!notificationManager.areNotificationsEnabled()) {
+      Log.w(TAG, "Skipping dual SIM notification; notifications disabled by user");
+      return;
+    }
+
+    notificationManager.notify(NOTIFICATION_ID, notification);
   }
 }

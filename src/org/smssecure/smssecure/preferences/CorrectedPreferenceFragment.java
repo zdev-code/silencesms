@@ -1,10 +1,11 @@
 package org.smssecure.smssecure.preferences;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import org.smssecure.smssecure.components.CustomDefaultPreference;
 import org.smssecure.smssecure.preferences.widgets.ColorPickerPreference;
@@ -13,6 +14,8 @@ import org.smssecure.smssecure.preferences.widgets.RingtonePreference;
 import org.smssecure.smssecure.preferences.widgets.RingtonePreferenceDialogFragmentCompat;
 
 public abstract class CorrectedPreferenceFragment extends PreferenceFragmentCompat {
+
+  private static final String PREFERENCE_DIALOG_FRAGMENT_TAG = "androidx.preference.PreferenceFragment.DIALOG";
 
   @Override
   public void onCreate(Bundle icicle) {
@@ -41,7 +44,7 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
 
     if (dialogFragment != null) {
       dialogFragment.setTargetFragment(this, 0);
-      dialogFragment.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+      dialogFragment.show(getParentFragmentManager(), PREFERENCE_DIALOG_FRAGMENT_TAG);
     } else {
       super.onDisplayPreferenceDialog(preference);
     }

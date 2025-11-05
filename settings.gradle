@@ -1,3 +1,11 @@
+pluginManagement {
+	repositories {
+		google()
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
 include ':com.amulyakhare.textdrawable'
 project(':com.amulyakhare.textdrawable').projectDir = new File(rootDir, 'libs/com.amulyakhare.textdrawable')
 
@@ -13,5 +21,3 @@ project(':java').projectDir = new File(rootDir, 'libs/org.whispersystems.libsign
 include ':org.whispersystems.libsignal'
 project(':org.whispersystems.libsignal').projectDir = new File(rootDir, 'libs/org.whispersystems.libsignal/android')
 
-include ':org.greenrobot.eventbus'
-project(':org.greenrobot.eventbus').projectDir = new File(rootDir, 'libs/org.greenrobot.eventbus/EventBus')

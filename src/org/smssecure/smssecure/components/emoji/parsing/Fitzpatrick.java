@@ -1,5 +1,6 @@
 package org.smssecure.smssecure.components.emoji.parsing;
 
+import java.util.Locale;
 
 public enum Fitzpatrick {
   /**
@@ -55,7 +56,7 @@ public enum Fitzpatrick {
 
   public static Fitzpatrick fitzpatrickFromType(String type) {
     try {
-      return Fitzpatrick.valueOf(type.toUpperCase());
+  return Fitzpatrick.valueOf(type.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException e) {
       return null;
     }

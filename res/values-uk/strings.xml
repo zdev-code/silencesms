@@ -9,10 +9,10 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Ви ще не вказали фразу-пароль!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 повідомлення на розмову</item>
-    <item quantity="few">%d повідомлення на розмову</item>
-    <item quantity="many">%d повідомлень на розмову</item>
-    <item quantity="other">%d повідомлень на розмову</item>
+  <item quantity="one">%d повідомлення на розмову</item>
+  <item quantity="few">%d повідомлення на розмову</item>
+  <item quantity="many">%d повідомлень на розмову</item>
+  <item quantity="other">%d повідомлень на розмову</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Вилучити всі старі повідомлення зараз?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
@@ -40,10 +40,10 @@
   <string name="ApplicationPreferencesActivity_appearance_summary">Тема %1$s, Мова %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 хвилина</item>
+    <item quantity="one">%d хвилина</item>
     <item quantity="few">%d хвилини</item>
     <item quantity="many">%d хвилин</item>
-    <item quantity="other">%d хвилин</item>
+    <item quantity="other">%d хвилини</item>
   </plurals>
   <!--DraftDatabase-->
   <string name="DraftDatabase_Draft_image_snippet">(зображення)</string>
@@ -94,7 +94,7 @@
   <string name="ConversationActivity_group_conversation">Групова розмова</string>
   <string name="ConversationActivity_unnamed_group">Група без назви</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 учасник</item>
+    <item quantity="one">%d учасник</item>
     <item quantity="few">%d учасники</item>
     <item quantity="many">%d учасників</item>
     <item quantity="other">%d учасників</item>

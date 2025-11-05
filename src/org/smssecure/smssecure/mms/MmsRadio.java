@@ -9,14 +9,18 @@ import android.net.NetworkInfo;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.core.content.ContextCompat;
+
 import org.smssecure.smssecure.util.Util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 public class MmsRadio {
 
   private static final String TAG = MmsRadio.class.getSimpleName();
+  private static final long WAKE_LOCK_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(5);
 
   private static MmsRadio instance;
 
@@ -93,17 +97,17 @@ public class MmsRadio {
     Log.w(TAG, "startUsingNetworkFeature status: " + status);
 
     if (status == APN_ALREADY_ACTIVE) {
-      wakeLock.acquire();
+      wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS);
       connectedCounter++;
       return;
     } else {
-      wakeLock.acquire();
+      wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS);
       connectedCounter++;
 
       if (connectivityListener == null) {
         IntentFilter filter  = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         connectivityListener = new ConnectivityListener();
-        context.registerReceiver(connectivityListener, filter);
+        ContextCompat.registerReceiver(context, connectivityListener, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
       }
 
       Util.wait(this, 30000);

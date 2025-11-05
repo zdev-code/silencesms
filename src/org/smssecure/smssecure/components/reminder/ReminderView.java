@@ -1,8 +1,6 @@
 package org.smssecure.smssecure.components.reminder;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +31,6 @@ public class ReminderView extends LinearLayout {
     initialize();
   }
 
-  @TargetApi(VERSION_CODES.HONEYCOMB)
   public ReminderView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initialize();

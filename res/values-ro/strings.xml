@@ -9,7 +9,7 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Nu ați setat încă o parola!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 mesaj per conversație</item>
+    <item quantity="one">%d mesaj per conversație</item>
     <item quantity="few">%d mesaje per conversație</item>
     <item quantity="other">%d de mesaje per conversație</item>
   </plurals>
@@ -39,7 +39,7 @@ Atenție, acestă acțiune va dezactiva stocarea criptată a tuturor mesajelor �
   <string name="ApplicationPreferencesActivity_appearance_summary">Tema %1$s, Limba %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 minut</item>
+    <item quantity="one">%d minut</item>
     <item quantity="few">%d minute</item>
     <item quantity="other">%d minute</item>
   </plurals>
@@ -92,7 +92,7 @@ Atenție, acestă acțiune va dezactiva stocarea criptată a tuturor mesajelor �
   <string name="ConversationActivity_group_conversation">Grupează conversaţia</string>
   <string name="ConversationActivity_unnamed_group">Grup nedenumit</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 membru</item>
+    <item quantity="one">%d membru</item>
     <item quantity="few">%d membrii</item>
     <item quantity="other">%d membrii</item>
   </plurals>

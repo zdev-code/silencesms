@@ -18,8 +18,8 @@ package org.smssecure.smssecure.mms;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.mms.InvalidHeaderValueException;
@@ -29,14 +29,11 @@ import com.google.android.mms.pdu_alt.PduHeaders;
 import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.RetrieveConf;
 
-import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGetHC4;
-import org.apache.http.client.methods.HttpUriRequest;
-
 import java.io.IOException;
+import java.net.Proxy;
 import java.util.Arrays;
+
+import okhttp3.Request;
 
 @SuppressWarnings("deprecation")
 public class IncomingLegacyMmsConnection extends LegacyMmsConnection implements IncomingMmsConnection {
@@ -46,16 +43,17 @@ public class IncomingLegacyMmsConnection extends LegacyMmsConnection implements 
     super(context);
   }
 
-  private HttpUriRequest constructRequest(Apn contentApn, boolean useProxy) throws IOException {
-    HttpGetHC4 request = new HttpGetHC4(contentApn.getMmsc());
-    for (Header header : getBaseHeaders()) {
-      request.addHeader(header);
+  private Request constructRequest(Apn contentApn) throws IOException {
+    try {
+      Request.Builder builder = new Request.Builder()
+          .url(contentApn.getMmsc())
+          .get();
+
+      applyBaseHeaders(builder);
+      return builder.build();
+    } catch (IllegalArgumentException iae) {
+      throw new IOException(iae);
     }
-    if (useProxy) {
-      HttpHost proxy = new HttpHost(contentApn.getProxy(), contentApn.getPort());
-      request.setConfig(RequestConfig.custom().setProxy(proxy).build());
-    }
-    return request;
   }
 
   @Override
@@ -107,7 +105,8 @@ public class IncomingLegacyMmsConnection extends LegacyMmsConnection implements 
                              : Uri.parse(contentApn.getMmsc()).getHost();
     if (checkRouteToHost(context, targetHost, usingMmsRadio)) {
       Log.w(TAG, "got successful route to host " + targetHost);
-      pdu = execute(constructRequest(contentApn, useProxy));
+      Proxy proxy = useProxy ? buildProxy(contentApn.getProxy(), contentApn.getPort()) : null;
+      pdu = execute(constructRequest(contentApn), proxy);
     }
 
     if (pdu == null) {

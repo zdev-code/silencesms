@@ -11,7 +11,8 @@ public class HexTest {
             testBytes[i] = (byte) i;
         }
     }
-    @Test public void testBytesToStringCondensed() {
+    @Test
+    public void testBytesToStringCondensed() {
         String hexOfTestBytes = "000102030405060708090a0b0c0d0e0f";
         assertEquals(hexOfTestBytes,Hex.toStringCondensed(testBytes));
     }
@@ -30,7 +31,8 @@ public class HexTest {
         String hexOfTestBytes = "00000000: 0001 0203 0405 0607 0809 0a0b 0c0d 0e0f ................\n";
         assertEquals(hexOfTestBytes,Hex.dump(testBytes));
     }
-    @Test public void testBytesDumpWithOffset() {
+    @Test
+    public void testBytesDumpWithOffset() {
         String hexOfTestBytes = "00000000: 0304 0506 0708 09                       .......\n";
         assertEquals(hexOfTestBytes,Hex.dump(testBytes,3,7));
     }

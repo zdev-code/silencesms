@@ -4,9 +4,9 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import org.smssecure.smssecure.ConversationListActivity;
 import org.smssecure.smssecure.R;
@@ -27,7 +27,7 @@ public class MultipleRecipientNotificationBuilder extends AbstractNotificationBu
     setColor(context.getResources().getColor(R.color.silence_primary));
     setSmallIcon(R.drawable.icon_notification);
     setContentTitle(context.getString(R.string.app_name));
-    setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), 0));
+  setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), PendingIntent.FLAG_IMMUTABLE));
     setCategory(NotificationCompat.CATEGORY_MESSAGE);
     setPriority(NotificationCompat.PRIORITY_HIGH);
     setGroupSummary(true);

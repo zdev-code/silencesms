@@ -16,14 +16,18 @@
  */
 package org.smssecure.smssecure.database;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -206,6 +210,7 @@ public class MmsDatabase extends MessagingDatabase {
     }
   }
 
+  @SuppressLint("HardwareIds")
   private long getThreadIdFor(IncomingMediaMessage retrieved) throws RecipientFormattingException, MmsException {
     if (retrieved.getGroupId() != null) {
       Recipients groupRecipients = RecipientFactory.getRecipientsFromString(context, retrieved.getGroupId(), true);
@@ -224,7 +229,17 @@ public class MmsDatabase extends MessagingDatabase {
     if (SilencePreferences.isPushRegistered(context)) {
       localNumber = SilencePreferences.getLocalNumber(context);
     } else {
-      localNumber = ServiceUtil.getTelephonyManager(context).getLine1Number();
+      if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+        try {
+          TelephonyManager telephonyManager = ServiceUtil.getTelephonyManager(context);
+          localNumber = telephonyManager != null ? telephonyManager.getLine1Number() : null;
+        } catch (SecurityException securityException) {
+          Log.w(TAG, "Unable to read local line1 number", securityException);
+          localNumber = null;
+        }
+      } else {
+        localNumber = null;
+      }
     }
 
     for (String cc : retrieved.getAddresses().getCc()) {

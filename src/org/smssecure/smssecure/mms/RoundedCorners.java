@@ -8,71 +8,59 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 
 import org.smssecure.smssecure.util.ResUtil;
 
+import java.security.MessageDigest;
+
 public class RoundedCorners extends BitmapTransformation {
   private final boolean crop;
   private final int     radius;
   private final int     colorHint;
 
-  public RoundedCorners(@NonNull Context context, boolean crop, int radius, int colorHint) {
-    super(context);
+  public RoundedCorners(boolean crop, int radius, int colorHint) {
     this.crop      = crop;
     this.radius    = radius;
     this.colorHint = colorHint;
   }
 
   public RoundedCorners(@NonNull Context context, int radius) {
-    this(context, true, radius, ResUtil.getColor(context, android.R.attr.windowBackground));
+    this(true, radius, ResUtil.getColor(context, android.R.attr.windowBackground));
   }
 
-  @Override protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth,
-                                       int outHeight)
-  {
-    final Bitmap toRound = crop ? centerCrop(pool, toTransform, outWidth, outHeight)
-                                : fitCenter(pool, toTransform, outWidth, outHeight);
+  @Override
+  protected Bitmap transform(@NonNull BitmapPool pool,
+                             @NonNull Bitmap toTransform,
+                             int outWidth,
+                             int outHeight) {
+    final Bitmap toRound = crop
+                           ? TransformationUtils.centerCrop(pool, toTransform, outWidth, outHeight)
+                           : TransformationUtils.fitCenter(pool, toTransform, outWidth, outHeight);
 
     final Bitmap rounded = round(pool, toRound);
 
-    if (toRound != null && toRound != rounded && toRound != toTransform && !pool.put(toRound)) {
-      toRound.recycle();
+    if (toRound != rounded && toRound != toTransform) {
+      pool.put(toRound);
     }
 
     return rounded;
   }
 
-  private Bitmap centerCrop(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-    final Bitmap toReuse     = pool.get(outWidth, outHeight, getSafeConfig(toTransform));
-    final Bitmap transformed = TransformationUtils.centerCrop(toReuse, toTransform, outWidth, outHeight);
-
-    if (toReuse != null && toReuse != transformed && !pool.put(toReuse)) {
-      toReuse.recycle();
-    }
-
-    return transformed;
-  }
-
-  private Bitmap fitCenter(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-    return TransformationUtils.fitCenter(toTransform, pool, outWidth, outHeight);
-  }
-
-  private Bitmap round(@NonNull BitmapPool pool, @Nullable Bitmap toRound) {
-    if (toRound == null) {
-      return null;
-    }
-
+  private Bitmap round(@NonNull BitmapPool pool, @NonNull Bitmap toRound) {
     Bitmap result = pool.get(toRound.getWidth(), toRound.getHeight(), getSafeConfig(toRound));
 
     if (result == null) {
       result = Bitmap.createBitmap(toRound.getWidth(), toRound.getHeight(), getSafeConfig(toRound));
     }
+
+    result.setHasAlpha(true);
 
     Canvas canvas = new Canvas(result);
 
@@ -99,7 +87,24 @@ public class RoundedCorners extends BitmapTransformation {
   }
 
   @Override
-  public String getId() {
-    return RoundedCorners.class.getCanonicalName();
+  public boolean equals(Object o) {
+    if (o instanceof RoundedCorners) {
+      RoundedCorners other = (RoundedCorners) o;
+      return other.crop == crop && other.radius == radius && other.colorHint == colorHint;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = crop ? 1 : 0;
+    result = 31 * result + radius;
+    result = 31 * result + colorHint;
+    return result;
+  }
+
+  @Override
+  public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+    messageDigest.update((RoundedCorners.class.getName() + crop + radius + colorHint).getBytes(Key.CHARSET));
   }
 }

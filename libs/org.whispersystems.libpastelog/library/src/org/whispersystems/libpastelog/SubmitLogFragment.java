@@ -31,7 +31,7 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;

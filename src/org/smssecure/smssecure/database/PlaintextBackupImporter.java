@@ -3,6 +3,7 @@ package org.smssecure.smssecure.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -15,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +32,28 @@ public class PlaintextBackupImporter {
     Log.w("PlaintextBackupImporter", "Importing plaintext...");
     backupPath = getPlaintextExportDirectoryPath();
     verifyExternalStorageForPlaintextImport();
-    importPlaintext(context, masterSecret, backupPath);
+    try (XmlBackup backup = new XmlBackup(backupPath)) {
+      importPlaintext(context, masterSecret, backup);
+    } catch (XmlPullParserException e) {
+      Log.w("PlaintextBackupImporter", e);
+      throw new IOException("Unable to open plaintext backup", e);
+    }
+  }
+
+  public static void importPlaintextFromUri(Context context, MasterSecret masterSecret, Uri uri)
+      throws IOException
+  {
+    Log.w("PlaintextBackupImporter", "Importing plaintext from uri..." + uri);
+
+    try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
+      if (inputStream == null) throw new IOException("Unable to open plaintext backup input stream");
+      try (XmlBackup backup = new XmlBackup(inputStream)) {
+        importPlaintext(context, masterSecret, backup);
+      } catch (XmlPullParserException e) {
+        Log.w("PlaintextBackupImporter", e);
+        throw new IOException("Unable to parse plaintext backup", e);
+      }
+    }
   }
 
   private static void verifyExternalStorageForPlaintextImport() throws NoExternalStorageException {
@@ -54,7 +77,7 @@ public class PlaintextBackupImporter {
     throw new NoExternalStorageException();
   }
 
-  private static void importPlaintext(Context context, MasterSecret masterSecret, String path)
+  private static void importPlaintext(Context context, MasterSecret masterSecret, XmlBackup backup)
       throws IOException
   {
     Log.w("PlaintextBackupImporter", "importPlaintext()");
@@ -63,7 +86,6 @@ public class PlaintextBackupImporter {
 
     try {
       ThreadDatabase threads         = DatabaseFactory.getThreadDatabase(context);
-      XmlBackup      backup          = new XmlBackup(path);
       MasterCipher   masterCipher    = new MasterCipher(masterSecret);
       Set<Long>      modifiedThreads = new HashSet<Long>();
       XmlBackup.XmlBackupItem item;

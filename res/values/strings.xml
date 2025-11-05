@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Silence</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="delete">Delete</string>
     <string name="please_wait">Please wait…</string>
+    <string name="conversation_list_empty_placeholder" translatable="false">Placeholder</string>
 
     <!-- AbstractNotificationBuilder -->
     <string name="AbstractNotificationBuilder_new_message">New message</string>
@@ -12,7 +13,7 @@
     <!-- ApplicationPreferencesActivity -->
     <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">You haven\'t set a passphrase yet!</string>
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="one">1 message per conversation</item>
+        <item quantity="one">%d message per conversation</item>
         <item quantity="other">%d messages per conversation</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Delete all old messages now?</string>
@@ -44,8 +45,8 @@
 
     <!-- AppProtectionPreferenceFragment -->
     <plurals name="AppProtectionPreferenceFragment_minutes">
-        <item quantity="one">1 minute</item>
-        <item quantity="other">%d minutes</item>
+    <item quantity="one">%d minute</item>
+    <item quantity="other">%d minutes</item>
     </plurals>
 
     <!-- DraftDatabase -->
@@ -106,8 +107,8 @@
     <string name="ConversationActivity_group_conversation">Group conversation</string>
     <string name="ConversationActivity_unnamed_group">Unnamed group</string>
     <plurals name="ConversationActivity_d_recipients_in_group">
-        <item quantity="one">1 member</item>
-        <item quantity="other">%d members</item>
+    <item quantity="one">%d member</item>
+    <item quantity="other">%d members</item>
     </plurals>
     <string name="ConversationActivity_saved_draft">Saved draft</string>
     <string name="ConversationActivity_invalid_recipient">Invalid recipient!</string>
@@ -295,6 +296,8 @@
     <string name="KeyScanningActivity_no_scanned_key_found_exclamation">No scanned key found!</string>
     <string name="KeyScanningActivity_install_barcode_Scanner">Install Barcode Scanner?</string>
     <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Silence needs Barcode Scanner for QR codes.</string>
+    <string name="KeyScanningActivity_no_identity_key">No identity key available.</string>
+    <string name="KeyScanningActivity_unable_to_generate_qr_code">Unable to generate QR code.</string>
 
     <!-- MessageDetailsRecipient -->
     <string name="MessageDetailsRecipient_failed_to_send">Failed to send</string>
@@ -435,7 +438,7 @@
     <string name="KeyCachingService_lock">Lock with passphrase</string>
 
     <!-- MessageNotifier -->
-    <string name="MessageNotifier_d_new_messages_in_d_conversations">%1$d new messages in %2$d conversations</string>
+    <string name="MessageNotifier_d_new_messages_in_d_conversations" tools:ignore="PluralsCandidate">%1$d new messages in %2$d conversations</string>
     <string name="MessageNotifier_most_recent_from_s">Most recent from: %1$s</string>
     <string name="MessageNotifier_encrypted_message">Encrypted message</string>
     <string name="MessageNotifier_media_message_with_text">Media message: %s</string>
@@ -460,7 +463,7 @@
     <string name="QuickResponseService_problem_sending_message">Problem sending message!</string>
 
     <!-- SingleRecipientNotificationBuilder -->
-    <string name="SingleRecipientNotificationBuilder_silence" translatable="false">Silence</string>
+    <string name="SingleRecipientNotificationBuilder_silence">Silence</string>
     <string name="SingleRecipientNotificationBuilder_new_message">New message</string>
 
     <!-- SubscriptionInfoCompat -->

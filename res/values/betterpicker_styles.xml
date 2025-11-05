@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BetterPickersDialogFragment" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="colorAccent">@color/silence_primary</item>
+    </style>
+
+    <style name="BetterPickersDialogFragment.Light" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorAccent">@color/silence_primary</item>
+    </style>
+</resources>

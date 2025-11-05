@@ -1,11 +1,12 @@
 package org.smssecure.smssecure;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -75,6 +76,7 @@ public class ConversationPopupActivity extends ConversationActivity {
   }
 
   @Override
+  @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.menu_expand:

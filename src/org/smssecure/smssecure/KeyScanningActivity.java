@@ -16,15 +16,25 @@
  */
 package org.smssecure.smssecure;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.util.Base64;
@@ -40,6 +50,8 @@ import org.whispersystems.libsignal.IdentityKey;
  * @author Moxie Marlinspike
  */
 public abstract class KeyScanningActivity extends PassphraseRequiredActionBarActivity {
+
+  private static final String TAG = KeyScanningActivity.class.getSimpleName();
 
   private final DynamicTheme    dynamicTheme    = new DynamicTheme();
   private final DynamicLanguage dynamicLanguage = new DynamicLanguage();
@@ -73,6 +85,7 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
   }
 
   @Override
+  @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 
@@ -88,6 +101,7 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
     IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
 
     if ((scanResult != null) && (scanResult.getContents() != null)) {
@@ -106,10 +120,10 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
 
   private IntentIntegrator getIntentIntegrator() {
     IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-    intentIntegrator.setButtonYesByID(R.string.yes);
-    intentIntegrator.setButtonNoByID(R.string.no);
-    intentIntegrator.setTitleByID(R.string.KeyScanningActivity_install_barcode_Scanner);
-    intentIntegrator.setMessageByID(R.string.KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it);
+    intentIntegrator.setOrientationLocked(false);
+    intentIntegrator.setBeepEnabled(false);
+    intentIntegrator.setPrompt(getScanString());
+    intentIntegrator.setBarcodeImageEnabled(false);
     return intentIntegrator;
   }
 
@@ -120,13 +134,36 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
 
   protected void initiateDisplay() {
     IdentityKey identityKey = getIdentityKeyToDisplay();
-    if (identityKey != null) {
-      IntentIntegrator intentIntegrator = getIntentIntegrator();
-      intentIntegrator.shareText(Base64.encodeBytes(identityKey.serialize()));
-    } else {
-      Toast.makeText(this, R.string.VerifyIdentityActivity_you_do_not_have_an_identity_key,
-              Toast.LENGTH_LONG).show(); 
-    } 
+
+    if (identityKey == null) {
+      Toast.makeText(this, R.string.KeyScanningActivity_no_identity_key,
+                     Toast.LENGTH_LONG).show();
+      return;
+    }
+
+    String encodedIdentity = Base64.encodeBytes(identityKey.serialize());
+
+    try {
+      int qrSize = getQrCodeSizePx();
+      Bitmap qrBitmap = new BarcodeEncoder().encodeBitmap(encodedIdentity, BarcodeFormat.QR_CODE, qrSize, qrSize);
+
+      ImageView imageView = new ImageView(this);
+      int padding = dpToPx(16);
+      imageView.setPadding(padding, padding, padding, padding);
+      imageView.setAdjustViewBounds(true);
+      imageView.setImageBitmap(qrBitmap);
+      imageView.setContentDescription(getDisplayString());
+
+      new AlertDialog.Builder(this)
+          .setTitle(getDisplayString())
+          .setView(imageView)
+          .setPositiveButton(android.R.string.ok, null)
+          .show();
+    } catch (WriterException e) {
+      Log.w(TAG, "Unable to generate QR code", e);
+      Toast.makeText(this, R.string.KeyScanningActivity_unable_to_generate_qr_code,
+                     Toast.LENGTH_LONG).show();
+    }
   }
 
   protected void initiateShare() {
@@ -134,6 +171,21 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
     shareIntent.setType("text/plain");
     shareIntent.putExtra(Intent.EXTRA_TEXT, Hex.toString(getIdentityKeyToDisplay().serialize()));
     startActivity(shareIntent.createChooser(shareIntent, getString(R.string.share_identity_fingerprint)));
+  }
+
+  private int getQrCodeSizePx() {
+    DisplayMetrics metrics = getResources().getDisplayMetrics();
+    int maxSize = Math.min(metrics.widthPixels, metrics.heightPixels);
+    int target = dpToPx(280);
+    int available = maxSize - dpToPx(64);
+
+    if (available <= 0) available = maxSize;
+
+    return Math.max(dpToPx(160), Math.min(target, available));
+  }
+
+  private int dpToPx(int dp) {
+    return Math.round(dp * getResources().getDisplayMetrics().density);
   }
 
   protected abstract String getScanString();

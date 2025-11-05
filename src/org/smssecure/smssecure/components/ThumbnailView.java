@@ -1,23 +1,25 @@
 package org.smssecure.smssecure.components;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.crypto.MasterSecret;
@@ -118,18 +120,19 @@ public class ThumbnailView extends FrameLayout {
 
     this.slide = slide;
 
-    if      (slide.getThumbnailUri() != null) buildThumbnailGlideRequest(slide, masterSecret).into(image);
-    else if (slide.hasPlaceholder())          buildPlaceholderGlideRequest(slide).into(image);
-    else                                      Glide.clear(image);
+  if      (slide.getThumbnailUri() != null) buildThumbnailGlideRequest(slide, masterSecret).into(image);
+  else if (slide.hasPlaceholder())          buildPlaceholderGlideRequest(slide).into(image);
+  else                                      Glide.with(image).clear(image);
   }
 
   public void setImageResource(@NonNull MasterSecret masterSecret, @NonNull Uri uri) {
     if (transferControls.isPresent()) getTransferControls().setVisibility(View.GONE);
 
-    Glide.with(getContext()).load(new DecryptableUri(masterSecret, uri))
-         .crossFade()
-         .transform(new RoundedCorners(getContext(), true, radius, backgroundColorHint))
-         .into(image);
+    Glide.with(getContext())
+      .load(new DecryptableUri(masterSecret, uri))
+      .transition(DrawableTransitionOptions.withCrossFade())
+      .apply(RequestOptions.bitmapTransform(new RoundedCorners(true, radius, backgroundColorHint)))
+      .into(image);
   }
 
   public void setThumbnailClickListener(SlideClickListener listener) {
@@ -141,7 +144,9 @@ public class ThumbnailView extends FrameLayout {
   }
 
   public void clear() {
-    if (isContextValid())             Glide.clear(image);
+    if (isContextValid()) {
+      Glide.with(image).clear(image);
+    }
     if (transferControls.isPresent()) getTransferControls().clear();
 
     slide = null;
@@ -151,26 +156,27 @@ public class ThumbnailView extends FrameLayout {
     getTransferControls().showProgressSpinner();
   }
 
-  @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
   private boolean isContextValid() {
     return !(getContext() instanceof Activity)            ||
            VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN_MR1 ||
            !((Activity)getContext()).isDestroyed();
   }
 
-  private GenericRequestBuilder buildThumbnailGlideRequest(@NonNull Slide slide, @NonNull MasterSecret masterSecret) {
-    @SuppressWarnings("ConstantConditions")
-    DrawableRequestBuilder<DecryptableUri> builder = Glide.with(getContext()).load(new DecryptableUri(masterSecret, slide.getThumbnailUri()))
-                                                                             .crossFade()
-                                                                             .transform(new RoundedCorners(getContext(), true, radius, backgroundColorHint));
+  private RequestBuilder<Drawable> buildThumbnailGlideRequest(@NonNull Slide slide, @NonNull MasterSecret masterSecret) {
+  RequestOptions requestOptions = RequestOptions.bitmapTransform(new RoundedCorners(true, radius, backgroundColorHint));
+
+    RequestBuilder<Drawable> builder = Glide.with(getContext())
+                                     .load(new DecryptableUri(masterSecret, slide.getThumbnailUri()))
+                                     .apply(requestOptions)
+                                     .transition(DrawableTransitionOptions.withCrossFade());
 
     if (slide.isInProgress()) return builder;
     else                      return builder.error(R.drawable.ic_missing_thumbnail_picture);
   }
 
-  private GenericRequestBuilder buildPlaceholderGlideRequest(Slide slide) {
-    return Glide.with(getContext()).load(slide.getPlaceholderRes(getContext().getTheme()))
-                                   .asBitmap()
+  private RequestBuilder<Bitmap> buildPlaceholderGlideRequest(Slide slide) {
+    return Glide.with(getContext()).asBitmap()
+                                   .load(slide.getPlaceholderRes(getContext().getTheme()))
                                    .fitCenter();
   }
 

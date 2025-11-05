@@ -2,13 +2,14 @@ package org.smssecure.smssecure.mms;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
+import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.stream.StreamModelLoader;
+import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import com.bumptech.glide.signature.ObjectKey;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.mms.DecryptableStreamUriLoader.DecryptableUri;
@@ -16,20 +17,23 @@ import org.smssecure.smssecure.mms.DecryptableStreamUriLoader.DecryptableUri;
 import java.io.InputStream;
 
 /**
- * A {@link ModelLoader} for translating uri models into {@link InputStream} data. Capable of handling 'http',
- * 'https', 'android.resource', 'content', and 'file' schemes. Unsupported schemes will throw an exception in
- * {@link #getResourceFetcher(Uri, int, int)}.
+ * A {@link ModelLoader} for translating decryptable Uris into {@link InputStream} data.
  */
-public class DecryptableStreamUriLoader implements StreamModelLoader<DecryptableUri> {
+public class DecryptableStreamUriLoader implements ModelLoader<DecryptableUri, InputStream> {
   private final Context context;
 
   /**
-   * THe default factory for {@link com.bumptech.glide.load.model.stream.StreamUriLoader}s.
+   * The default factory for {@link DecryptableStreamUriLoader}s.
    */
   public static class Factory implements ModelLoaderFactory<DecryptableUri, InputStream> {
+    private final Context context;
+
+    public Factory(Context context) {
+      this.context = context.getApplicationContext();
+    }
 
     @Override
-    public StreamModelLoader<DecryptableUri> build(Context context, GenericLoaderFactory factories) {
+    public ModelLoader<DecryptableUri, InputStream> build(MultiModelLoaderFactory multiFactory) {
       return new DecryptableStreamUriLoader(context);
     }
 
@@ -40,11 +44,20 @@ public class DecryptableStreamUriLoader implements StreamModelLoader<Decryptable
   }
 
   public DecryptableStreamUriLoader(Context context) {
-    this.context = context;
+    this.context = context.getApplicationContext();
   }
 
   @Override
-  public DataFetcher<InputStream> getResourceFetcher(DecryptableUri model, int width, int height) {
+  public LoadData<InputStream> buildLoadData(@NonNull DecryptableUri model, int width, int height, @NonNull Options options) {
+    return new LoadData<>(new ObjectKey(model), createFetcher(model));
+  }
+
+  @Override
+  public boolean handles(@NonNull DecryptableUri model) {
+    return true;
+  }
+
+  private DataFetcher<InputStream> createFetcher(DecryptableUri model) {
     return new DecryptableStreamLocalUriFetcher(context, model.masterSecret, model.uri);
   }
 

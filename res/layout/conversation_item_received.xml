@@ -30,9 +30,10 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginRight="0dp">
 
-        <org.smssecure.smssecure.components.AvatarImageView
-            android:id="@+id/contact_photo"
-            android:foreground="@drawable/contact_photo_background"
+                        <org.smssecure.smssecure.components.AvatarImageView
+                                android:id="@+id/contact_photo"
+                                android:foreground="@drawable/contact_photo_background"
+                                tools:ignore="UnusedAttribute"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
@@ -103,7 +104,7 @@
                           android:orientation="horizontal"
                           android:gravity="left">
 
-                <ImageView android:id="@+id/secure_indicator"
+                <androidx.appcompat.widget.AppCompatImageView android:id="@+id/secure_indicator"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:layout_gravity="center_vertical"
@@ -113,7 +114,7 @@
                            android:src="?menu_lock_icon_small"
                            android:contentDescription="@string/conversation_item__secure_message_description"
                            android:visibility="gone"
-                           android:tint="?conversation_item_received_text_secondary_color"
+                           app:tint="?conversation_item_received_text_secondary_color"
                            android:tintMode="multiply"/>
 
                 <org.smssecure.smssecure.components.DeliveryStatusView

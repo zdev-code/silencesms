@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <org.smssecure.smssecure.ShareListItem
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     <org.smssecure.smssecure.components.AvatarImageView
         android:id="@+id/contact_photo_image"
         android:foreground="@drawable/contact_photo_background"
+        tools:ignore="UnusedAttribute"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"

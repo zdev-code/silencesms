@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<share-targets xmlns:android="http://schemas.android.com/apk/res/android">
+    <share-target android:targetClass="org.smssecure.smssecure.ShareActivity">
+        <data android:mimeType="text/plain" />
+        <data android:mimeType="image/*" />
+        <data android:mimeType="video/*" />
+        <data android:mimeType="audio/*" />
+        <category android:name="org.smssecure.smssecure.SHARE_TARGET" />
+    </share-target>
+</share-targets>

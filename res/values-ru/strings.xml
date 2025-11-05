@@ -9,10 +9,10 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Вы еще не задали парольную фразу!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 сообщение в разговоре</item>
-    <item quantity="few">%d сообщения в разговоре</item>
-    <item quantity="many">%d сообщений в разговоре</item>
-    <item quantity="other">%d сообщений в разговоре</item>
+  <item quantity="one">%d сообщение в разговоре</item>
+  <item quantity="few">%d сообщения в разговоре</item>
+  <item quantity="many">%d сообщений в разговоре</item>
+  <item quantity="other">%d сообщений в разговоре</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Удалить все старые сообщения?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
@@ -44,7 +44,7 @@
   <string name="ApplicationPreferencesActivity_appearance_summary">Тема %1$s, Язык %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 минута</item>
+    <item quantity="one">%d минута</item>
     <item quantity="few">%d минуты</item>
     <item quantity="many">%d минут</item>
     <item quantity="other">%d минут</item>
@@ -101,10 +101,10 @@
   <string name="ConversationActivity_group_conversation">Групповой разговор</string>
   <string name="ConversationActivity_unnamed_group">Группа без названия</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 участник</item>
+    <item quantity="one">%d участник</item>
     <item quantity="few">%d участника</item>
     <item quantity="many">%d участников</item>
-    <item quantity="other">%d участников</item>
+    <item quantity="other">%d участника</item>
   </plurals>
   <string name="ConversationActivity_saved_draft">Черновик сохранен</string>
   <string name="ConversationActivity_invalid_recipient">Неверный получатель!</string>

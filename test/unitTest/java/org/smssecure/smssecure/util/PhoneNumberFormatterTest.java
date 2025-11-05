@@ -3,8 +3,6 @@ package org.smssecure.smssecure.util;
 import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
-import org.smssecure.smssecure.util.InvalidNumberException;
-import org.smssecure.smssecure.util.PhoneNumberFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

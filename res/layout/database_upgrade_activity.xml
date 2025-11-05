@@ -7,8 +7,8 @@
             android:background="@drawable/background_pattern_repeat">
 
     <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
             android:gravity="center" >
 
         <LinearLayout android:paddingRight="16dip"

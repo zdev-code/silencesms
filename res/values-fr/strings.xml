@@ -9,7 +9,7 @@
     <!--ApplicationPreferencesActivity-->
     <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Vous n’avez pas encore défini de phrase de passe !</string>
     <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-        <item quantity="one">1 message par conversation</item>
+        <item quantity="one">%d message par conversation</item>
         <item quantity="other">%d messages par conversation</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Supprimer tous les anciens messages maintenant ?</string>
@@ -39,7 +39,7 @@ en mesure de les lire.</string>
     <string name="ApplicationPreferencesActivity_appearance_summary">Thème %1$s, Langue %2$s</string>
     <!--AppProtectionPreferenceFragment-->
     <plurals name="AppProtectionPreferenceFragment_minutes">
-        <item quantity="one">1 minute</item>
+        <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
     <!--DraftDatabase-->
@@ -94,7 +94,7 @@ en mesure de les lire.</string>
     <string name="ConversationActivity_group_conversation">Conversation de groupe</string>
     <string name="ConversationActivity_unnamed_group">Groupe sans nom</string>
     <plurals name="ConversationActivity_d_recipients_in_group">
-        <item quantity="one">1 membre</item>
+        <item quantity="one">%d membre</item>
         <item quantity="other">%d membres</item>
     </plurals>
     <string name="ConversationActivity_saved_draft">Brouillon sauvegardé</string>

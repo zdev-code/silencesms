@@ -1,38 +1,38 @@
 package org.smssecure.smssecure.mms;
 
 import android.content.Context;
-import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
+import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.stream.StreamModelLoader;
+import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import com.bumptech.glide.signature.ObjectKey;
 
-import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.mms.AttachmentStreamUriLoader.AttachmentModel;
-import org.smssecure.smssecure.mms.DecryptableStreamUriLoader.DecryptableUri;
-import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
 
 import java.io.File;
 import java.io.InputStream;
 
 /**
- * A {@link ModelLoader} for translating uri models into {@link InputStream} data. Capable of handling 'http',
- * 'https', 'android.resource', 'content', and 'file' schemes. Unsupported schemes will throw an exception in
- * {@link #getResourceFetcher(Uri, int, int)}.
+ * A {@link ModelLoader} for translating attachment models into {@link InputStream} data.
  */
-public class AttachmentStreamUriLoader implements StreamModelLoader<AttachmentModel> {
+public class AttachmentStreamUriLoader implements ModelLoader<AttachmentModel, InputStream> {
   private final Context context;
 
   /**
-   * THe default factory for {@link com.bumptech.glide.load.model.stream.StreamUriLoader}s.
+   * The default factory for {@link AttachmentStreamUriLoader}s.
    */
   public static class Factory implements ModelLoaderFactory<AttachmentModel, InputStream> {
+    private final Context context;
+
+    public Factory(Context context) {
+      this.context = context.getApplicationContext();
+    }
 
     @Override
-    public StreamModelLoader<AttachmentModel> build(Context context, GenericLoaderFactory factories) {
+    public ModelLoader<AttachmentModel, InputStream> build(MultiModelLoaderFactory multiFactory) {
       return new AttachmentStreamUriLoader(context);
     }
 
@@ -43,11 +43,20 @@ public class AttachmentStreamUriLoader implements StreamModelLoader<AttachmentMo
   }
 
   public AttachmentStreamUriLoader(Context context) {
-    this.context = context;
+    this.context = context.getApplicationContext();
   }
 
   @Override
-  public DataFetcher<InputStream> getResourceFetcher(AttachmentModel model, int width, int height) {
+  public LoadData<InputStream> buildLoadData(@NonNull AttachmentModel model, int width, int height, @NonNull Options options) {
+  return new LoadData<>(new ObjectKey(model), createFetcher(model));
+  }
+
+  @Override
+  public boolean handles(@NonNull AttachmentModel model) {
+    return true;
+  }
+
+  private DataFetcher<InputStream> createFetcher(AttachmentModel model) {
     return new AttachmentStreamLocalUriFetcher(model.attachment, model.key);
   }
 

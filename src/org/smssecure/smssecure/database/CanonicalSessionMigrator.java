@@ -23,24 +23,26 @@ import java.io.File;
 
 public class CanonicalSessionMigrator {
 
+  private static final String TAG = "CanSessionMigrator";
+
   private static void migrateSession(File sessionFile, File sessionsDirectory, long canonicalAddress) {
     File canonicalSessionFile = new File(sessionsDirectory.getAbsolutePath() + File.separatorChar + canonicalAddress);
     sessionFile.renameTo(canonicalSessionFile);
-    Log.w("CanonicalSessionMigrator", "Moving: " + sessionFile.toString() + " to " + canonicalSessionFile.toString());
+    Log.w(TAG, "Moving: " + sessionFile + " to " + canonicalSessionFile);
 
     File canonicalSessionFileLocal = new File(sessionsDirectory.getAbsolutePath() + File.separatorChar + canonicalAddress + "-local");
     File localFile                 = new File(sessionFile.getAbsolutePath() + "-local");
     if (localFile.exists())
       localFile.renameTo(canonicalSessionFileLocal);
 
-    Log.w("CanonicalSessionMigrator", "Moving " + localFile + " to " + canonicalSessionFileLocal);
+  Log.w(TAG, "Moving " + localFile + " to " + canonicalSessionFileLocal);
 
     File canonicalSessionFileRemote = new File(sessionsDirectory.getAbsolutePath() + File.separatorChar + canonicalAddress + "-remote");
     File remoteFile                 = new File(sessionFile.getAbsolutePath() + "-remote");
     if (remoteFile.exists())
       remoteFile.renameTo(canonicalSessionFileRemote);
 
-    Log.w("CanonicalSessionMigrator", "Moving " + remoteFile + " to " + canonicalSessionFileRemote);
+    Log.w(TAG, "Moving " + remoteFile + " to " + canonicalSessionFileRemote);
 
   }
 

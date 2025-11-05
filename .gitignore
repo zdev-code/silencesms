@@ -16,7 +16,9 @@ ant.properties
 build.log
 build-log.xml
 .gradle
-build
+build/
+debug/
+release/
 signing.properties
 library/lib/
 library/obj/

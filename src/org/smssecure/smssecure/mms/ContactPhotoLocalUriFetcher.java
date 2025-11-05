@@ -16,7 +16,7 @@ public class ContactPhotoLocalUriFetcher extends StreamLocalUriFetcher {
   private static final String TAG = ContactPhotoLocalUriFetcher.class.getSimpleName();
 
   public ContactPhotoLocalUriFetcher(Context context, Uri uri) {
-    super(context, uri);
+    super(context.getContentResolver(), uri);
   }
 
   @Override

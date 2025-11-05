@@ -22,10 +22,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.util.Log;
 
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import org.smssecure.smssecure.crypto.PRNGFixes;
-import org.smssecure.smssecure.dependencies.InjectableType;
 import org.smssecure.smssecure.jobs.persistence.EncryptingJobSerializer;
 import org.smssecure.smssecure.jobs.requirements.MasterSecretRequirementProvider;
 import org.smssecure.smssecure.jobs.requirements.MediaNetworkRequirementProvider;
@@ -41,7 +40,6 @@ import org.whispersystems.libsignal.util.AndroidSignalProtocolLogger;
 
 import java.security.Security;
 
-import dagger.ObjectGraph;
 
 /**
  * Will be called once when the Silence process is created.
@@ -54,8 +52,7 @@ import dagger.ObjectGraph;
 public class ApplicationContext extends Application implements DependencyInjector {
   private static final String TAG = ApplicationContext.class.getSimpleName();
 
-  private JobManager  jobManager;
-  private ObjectGraph objectGraph;
+  private JobManager jobManager;
 
   private MediaNetworkRequirementProvider mediaNetworkRequirementProvider = new MediaNetworkRequirementProvider();
 
@@ -75,9 +72,7 @@ public class ApplicationContext extends Application implements DependencyInjecto
 
   @Override
   public void injectDependencies(Object object) {
-    if (object instanceof InjectableType) {
-      objectGraph.inject(object);
-    }
+    // Dependency injection is no longer used; method retained for API compatibility.
   }
 
   public JobManager getJobManager() {

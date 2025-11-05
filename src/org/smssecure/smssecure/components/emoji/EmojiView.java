@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -53,14 +53,14 @@ public class EmojiView extends View implements Drawable.Callback {
       paint.setTextSize(targetFontSize);
       paint.setColor(ResUtil.getColor(getContext(), R.attr.emoji_text_color));
       paint.setTextAlign(Paint.Align.CENTER);
-      int xPos = (canvas.getWidth() / 2);
-      int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+    int xPos = getWidth() / 2;
+    int yPos = (int) ((getHeight() / 2f) - ((paint.descent() + paint.ascent()) / 2));
 
       float overflow = paint.measureText(emoji) /
           (getWidth() - getPaddingLeft() - getPaddingRight());
       if (overflow > 1f) {
         paint.setTextSize(targetFontSize / overflow);
-        yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+    yPos = (int) ((getHeight() / 2f) - ((paint.descent() + paint.ascent()) / 2));
       }
       canvas.drawText(emoji, xPos, yPos, paint);
     }

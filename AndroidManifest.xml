@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="org.smssecure.smssecure">
+          xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk tools:overrideLibrary="com.amulyakhare.textdrawable,com.astuetz.pagerslidingtabstrip,pl.tajchert.waitingdots,android.support.v13,com.davemorrissey.labs.subscaleview,,com.klinker.android.send_message"/>
+    <uses-sdk tools:overrideLibrary="com.amulyakhare.textdrawable,com.astuetz.pagerslidingtabstrip,pl.tajchert.waitingdots,com.davemorrissey.labs.subscaleview,com.klinker.android.send_message"/>
 
     <permission android:name="org.smssecure.smssecure.ACCESS_SECRETS"
                 android:label="Access to Silence Secrets"
@@ -16,6 +15,7 @@
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>
     <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <uses-permission android:name="org.smssecure.smssecure.ACCESS_SECRETS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
@@ -26,15 +26,30 @@
     <uses-permission android:name="android.permission.RECEIVE_MMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
     <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_SMS" tools:ignore="SystemPermissionTypo"/>
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
+    <uses-permission android:name="android.permission.READ_CELL_BROADCASTS" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission
+        android:name="android.permission.POST_NOTIFICATIONS"
+        tools:targetApi="tiramisu" />
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
     <application android:name=".ApplicationContext"
                  android:icon="@drawable/icon"
@@ -42,10 +57,14 @@
                  android:supportsRtl="true"
                  tools:replace="android:allowBackup"
                  android:allowBackup="false"
+                 android:dataExtractionRules="@xml/data_extraction_rules"
                  android:theme="@style/Silence.LightTheme"
-                 android:largeHeap="true">
+                 android:largeHeap="true"
+                 android:enableOnBackInvokedCallback="true"
+                 tools:targetApi="tiramisu">
 
     <receiver android:name="org.smssecure.smssecure.providers.BadgeWidgetProvider"
+              android:exported="true"
               android:icon="@drawable/icon"
               android:label="@string/app_name">
         <intent-filter>
@@ -55,7 +74,8 @@
                    android:resource="@xml/badge_widget_provider"/>
     </receiver>
 
-    <receiver android:name="org.smssecure.smssecure.util.dualsim.SimChangedReceiver">
+    <receiver android:name="org.smssecure.smssecure.util.dualsim.SimChangedReceiver"
+              android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.SIM_STATE_CHANGED"/>
         </intent-filter>
@@ -73,6 +93,12 @@
     <activity android:name=".ImportExportActivity"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
 
+    <activity
+        android:name="com.journeyapps.barcodescanner.CaptureActivity"
+        android:screenOrientation="fullSensor"
+        android:stateNotNeeded="true"
+        tools:replace="android:screenOrientation" />
+
     <activity android:name=".PromptMmsActivity"
               android:label="@string/AndroidManifest_configure_mms_settings"
               android:windowSoftInputMode="stateUnchanged"
@@ -82,6 +108,7 @@
                android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
 
     <activity android:name=".ShareActivity"
+              android:exported="true"
               android:excludeFromRecents="true"
               android:launchMode="singleTask"
               android:noHistory="true"
@@ -98,13 +125,12 @@
         </intent-filter>
 
         <meta-data
-                android:name="android.service.chooser.chooser_target_service"
-                android:value=".service.DirectShareService" />
+                android:name="android.app.shortcuts"
+                android:resource="@xml/share_targets" />
 
     </activity>
 
     <activity android:name=".ConversationListActivity"
-          android:label="@string/app_name"
           android:launchMode="singleTask"
           android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
           android:exported="true" />
@@ -125,9 +151,9 @@
               android:launchMode="singleTask"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
               android:parentActivityName=".ConversationListActivity">
-        <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.smssecure.smssecure.ConversationListActivity" />
+    <meta-data
+        android:name="androidx.core.app.NavUtils.PARENT_ACTIVITY"
+        android:value="org.smssecure.smssecure.ConversationListActivity" />
     </activity>
 
     <activity android:name=".ConversationActivity"
@@ -135,9 +161,9 @@
               android:launchMode="singleTask"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
               android:parentActivityName=".ConversationListActivity">
-        <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.smssecure.smssecure.ConversationListActivity" />
+    <meta-data
+        android:name="androidx.core.app.NavUtils.PARENT_ACTIVITY"
+        android:value="org.smssecure.smssecure.ConversationListActivity" />
     </activity>
 
     <activity android:name=".ConversationPopupActivity"
@@ -200,10 +226,6 @@
     <activity android:name=".ViewIdentityActivity"
               android:label="@string/AndroidManifest__public_identity_key"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
-
-    <activity android:name=".ViewLocalIdentityActivity"
-              android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
-
     <activity android:name=".PassphraseChangeActivity"
               android:label="@string/AndroidManifest__change_passphrase"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
@@ -242,7 +264,8 @@
               android:clearTaskOnLaunch="true"
               android:finishOnTaskLaunch="true" />
 
-    <activity android:name=".SmsSendtoActivity">
+    <activity android:name=".SmsSendtoActivity"
+              android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.SENDTO" />
             <action android:name="android.intent.action.VIEW" />
@@ -263,21 +286,15 @@
               android:theme="@style/Silence.LightTheme"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
 
-    <!-- this can never have launchMode singleTask or singleInstance! -->
-    <activity android:name=".PanicResponderActivity"
-              android:noHistory="true"
-              android:theme="@android:style/Theme.NoDisplay">
-        <intent-filter>
-            <action android:name="info.guardianproject.panic.action.TRIGGER" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-    </activity>
-
     <activity android:name=".ExitActivity"
               android:theme="@android:style/Theme.NoDisplay" />
 
-    <service android:enabled="true" android:name=".service.ApplicationMigrationService"/>
-    <service android:enabled="true" android:name=".service.KeyCachingService"/>
+    <service android:enabled="true"
+             android:name=".service.ApplicationMigrationService"
+             android:foregroundServiceType="dataSync"/>
+    <service android:enabled="true"
+             android:name=".service.KeyCachingService"
+             android:foregroundServiceType="dataSync"/>
 
     <service android:name=".service.QuickResponseService"
              android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
@@ -289,13 +306,6 @@
             <data android:scheme="smsto" />
             <data android:scheme="mms" />
             <data android:scheme="mmsto" />
-        </intent-filter>
-    </service>
-
-    <service android:name=".service.DirectShareService"
-             android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE">
-        <intent-filter>
-            <action android:name="android.service.chooser.ChooserTargetService" />
         </intent-filter>
     </service>
 
@@ -312,11 +322,7 @@
     </receiver>
 
     <receiver android:name=".service.SmsDeliveryListener"
-              android:exported="true">
-        <intent-filter>
-            <action android:name="org.smssecure.smssecure.services.MESSAGE_SENT"/>
-        </intent-filter>
-    </receiver>
+              android:exported="false" />
 
     <receiver android:name=".service.MmsListener"
               android:enabled="true"
@@ -393,41 +399,38 @@
               android:authorities="org.smssecure.smssecure.database.recipients"
               android:exported="false" />
 
-    <receiver android:name=".service.RegistrationNotifier"
-              android:exported="false">
-        <intent-filter>
-            <action android:name="org.smssecure.smssecure.REGISTRATION_EVENT" />
-        </intent-filter>
-    </receiver>
-
-    <receiver android:name=".notifications.LocaleChangedReceiver">
+    <receiver android:name=".notifications.LocaleChangedReceiver"
+              android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.LOCALE_CHANGED"/>
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".notifications.MessageNotifier$ReminderReceiver">
+    <receiver android:name=".notifications.MessageNotifier$ReminderReceiver"
+              android:exported="false">
         <intent-filter>
             <action android:name="org.smssecure.smssecure.MessageNotifier.REMINDER_ACTION"/>
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".notifications.DeleteNotificationReceiver">
+    <receiver android:name=".notifications.DeleteNotificationReceiver"
+              android:exported="false">
         <intent-filter>
             <action android:name="org.smssecure.smssecure.DELETE_NOTIFICATION"/>
         </intent-filter>
     </receiver>
 
-    <provider android:name="android.support.v4.content.FileProvider"
+    <provider android:name="androidx.core.content.FileProvider"
               android:authorities="org.smssecure.smssecure.fileprovider"
               android:exported="false"
               android:grantUriPermissions="true">
 
-        <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider_paths" />
+        <meta-data android:name="androidx.core.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider_paths" />
 
     </provider>
 
-    <receiver android:name=".service.BootReceiver">
+    <receiver android:name=".service.BootReceiver"
+              android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             <data android:scheme="package" />

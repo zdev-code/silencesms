@@ -17,13 +17,14 @@
 package org.smssecure.smssecure.contacts;
 
 import android.content.Context;
-import android.content.res.TypedArray;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -32,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.util.TypedValue;
 import android.widget.TextView;
 
 import org.smssecure.smssecure.R;
@@ -42,6 +44,7 @@ import org.smssecure.smssecure.contacts.ContactSelectionListAdapter.ViewHolder;
 import org.smssecure.smssecure.database.CursorRecyclerViewAdapter;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -55,12 +58,10 @@ public class ContactSelectionListAdapter extends CursorRecyclerViewAdapter<ViewH
 {
   private final static String TAG = ContactSelectionListAdapter.class.getSimpleName();
 
-  private final static int STYLE_ATTRIBUTES[] = new int[]{R.attr.contact_selection_push_user,
-                                                          R.attr.contact_selection_lay_user};
-
   private final boolean           multiSelect;
   private final LayoutInflater    li;
-  private final TypedArray        drawables;
+  private final int               pushUserColor;
+  private final int               layUserColor;
   private final ItemClickListener clickListener;
 
   private final HashMap<Long, String> selectedContacts = new HashMap<>();
@@ -96,8 +97,9 @@ public class ContactSelectionListAdapter extends CursorRecyclerViewAdapter<ViewH
   {
     super(context, cursor);
     this.li           = LayoutInflater.from(context);
-    this.drawables    = context.obtainStyledAttributes(STYLE_ATTRIBUTES);
     this.multiSelect  = multiSelect;
+    this.pushUserColor = resolveThemeColor(context, R.attr.contact_selection_push_user, 0xa0000000);
+    this.layUserColor  = resolveThemeColor(context, R.attr.contact_selection_lay_user, 0xff000000);
     this.clickListener = clickListener;
   }
 
@@ -128,8 +130,7 @@ public class ContactSelectionListAdapter extends CursorRecyclerViewAdapter<ViewH
     String labelText   = ContactsContract.CommonDataKinds.Phone.getTypeLabel(getContext().getResources(),
                                                                              numberType, label).toString();
 
-    int color = (contactType == ContactsDatabase.PUSH_TYPE) ? drawables.getColor(0, 0xa0000000) :
-                drawables.getColor(1, 0xff000000);
+  int color = (contactType == ContactsDatabase.PUSH_TYPE) ? pushUserColor : layUserColor;
 
     viewHolder.getView().unbind();
     viewHolder.getView().set(id, contactType, name, number, labelText, color, multiSelect);
@@ -155,11 +156,33 @@ public class ContactSelectionListAdapter extends CursorRecyclerViewAdapter<ViewH
     return selectedContacts;
   }
 
+  private int resolveThemeColor(@NonNull Context context, int attr, int defaultColor) {
+    Resources.Theme theme = context.getTheme();
+    if (theme == null) {
+      return defaultColor;
+    }
+
+    TypedValue typedValue = new TypedValue();
+    if (!theme.resolveAttribute(attr, typedValue, true)) {
+      return defaultColor;
+    }
+
+    if (typedValue.resourceId != 0) {
+      return ContextCompat.getColor(context, typedValue.resourceId);
+    }
+
+    if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+      return typedValue.data;
+    }
+
+    return defaultColor;
+  }
+
   private @NonNull String getHeaderString(int position) {
     Cursor cursor = getCursorAtPositionOrThrow(position);
     String letter = cursor.getString(cursor.getColumnIndexOrThrow(ContactsDatabase.NAME_COLUMN));
     if (!TextUtils.isEmpty(letter)) {
-      String firstChar = letter.trim().substring(0, 1).toUpperCase();
+      String firstChar = letter.trim().substring(0, 1).toUpperCase(Locale.getDefault());
       if (Character.isLetterOrDigit(firstChar.codePointAt(0))) {
         return firstChar;
       }

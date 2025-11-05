@@ -16,11 +16,18 @@
  */
 package org.whispersystems.jobqueue.requirements;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.os.Build;
 
 import org.whispersystems.jobqueue.dependencies.ContextDependent;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * A requirement that is satisfied when a network connection is present.
@@ -35,12 +42,77 @@ public class NetworkRequirement implements Requirement, ContextDependent {
 
   public NetworkRequirement() {}
 
+  @SuppressLint("MissingPermission")
   @Override
   public boolean isPresent() {
-    ConnectivityManager cm      = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo         netInfo = cm.getActiveNetworkInfo();
+    final Context localContext = context;
 
-    return netInfo != null && netInfo.isConnected();
+    if (localContext == null) {
+      return false;
+    }
+
+    if (ContextCompat.checkSelfPermission(localContext, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+      return false;
+    }
+
+    ConnectivityManager cm = (ConnectivityManager) localContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+    if (cm == null) {
+      return false;
+    }
+
+    try {
+      Network activeNetwork = cm.getActiveNetwork();
+      if (activeNetwork == null) {
+        return false;
+      }
+
+      NetworkCapabilities capabilities = cm.getNetworkCapabilities(activeNetwork);
+      return hasInternetCapability(capabilities);
+    } catch (SecurityException e) {
+      return false;
+    }
+  }
+
+  private static boolean hasInternetCapability(NetworkCapabilities capabilities) {
+    if (capabilities == null) {
+      return false;
+    }
+
+    if (!capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
+      return false;
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
+      return true;
+    }
+
+    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+      return true;
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+      return true;
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH)) {
+      return true;
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_USB)) {
+      return true;
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE)) {
+      return true;
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_LOWPAN)) {
+      return true;
+    }
+
+    return false;
   }
 
   @Override

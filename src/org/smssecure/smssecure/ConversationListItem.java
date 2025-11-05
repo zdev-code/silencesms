@@ -16,7 +16,6 @@
  */
 package org.smssecure.smssecure;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
@@ -24,8 +23,8 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Handler;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -222,7 +221,6 @@ public class ConversationListItem extends RelativeLayout
     else                 setBackgroundResource(unreadBackround);
   }
 
-  @TargetApi(VERSION_CODES.LOLLIPOP)
   private void setRippleColor(Recipients recipients) {
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
       ((RippleDrawable)(getBackground()).mutate())

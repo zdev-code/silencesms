@@ -1,6 +1,7 @@
 package org.smssecure.smssecure.jobs;
 
 import android.content.Context;
+import android.os.Build;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.util.Pair;
@@ -34,8 +35,9 @@ public class SmsReceiveJob extends ContextJob {
 
   private final Object[] pdus;
   private final int      subscriptionId;
+  private final String   format;
 
-  public SmsReceiveJob(Context context, Object[] pdus, int subscriptionId) {
+  public SmsReceiveJob(Context context, Object[] pdus, int subscriptionId, String format) {
     super(context, JobParameters.newBuilder()
                                 .withPersistence()
                                 .withWakeLock(true)
@@ -46,6 +48,7 @@ public class SmsReceiveJob extends ContextJob {
 
     this.pdus           = pdus;
     this.subscriptionId = DualSimUtil.getSubscriptionIdFromDeviceSubscriptionId(context, subscriptionId);
+    this.format         = format;
   }
 
   @Override
@@ -54,7 +57,7 @@ public class SmsReceiveJob extends ContextJob {
   @Override
   public void onRun() {
     MasterSecret masterSecret = KeyCachingService.getMasterSecret(context);
-    Optional<IncomingTextMessage> message = assembleMessageFragments(pdus, subscriptionId, masterSecret);
+    Optional<IncomingTextMessage> message = assembleMessageFragments(pdus, subscriptionId, masterSecret, format);
 
     if (message.isPresent() && !isBlocked(message.get())) {
       Pair<Long, Long> messageAndThreadId = storeMessage(message.get());
@@ -120,11 +123,11 @@ public class SmsReceiveJob extends ContextJob {
     return messageAndThreadId;
   }
 
-  private Optional<IncomingTextMessage> assembleMessageFragments(Object[] pdus, int subscriptionId, MasterSecret masterSecret) {
+  private Optional<IncomingTextMessage> assembleMessageFragments(Object[] pdus, int subscriptionId, MasterSecret masterSecret, String format) {
     List<IncomingTextMessage> messages = new LinkedList<>();
 
     for (Object pdu : pdus) {
-      SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdu);
+      SmsMessage msg = createSmsMessageFromPdu(pdu, format);
       if (msg != null){
         messages.add(new IncomingTextMessage(msg, subscriptionId, masterSecret == null));
       }
@@ -140,6 +143,16 @@ public class SmsReceiveJob extends ContextJob {
       return Optional.fromNullable(multipartMessageHandler.processPotentialMultipartMessage(message));
     } else {
       return Optional.of(message);
+    }
+  }
+
+  private SmsMessage createSmsMessageFromPdu(Object pdu, String format) {
+    if (!(pdu instanceof byte[])) return null;
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return SmsMessage.createFromPdu((byte[]) pdu, format);
+    } else {
+      return SmsMessage.createFromPdu((byte[]) pdu);
     }
   }
 }

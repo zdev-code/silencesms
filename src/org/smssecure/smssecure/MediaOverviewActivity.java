@@ -16,7 +16,7 @@
  */
 package org.smssecure.smssecure;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -24,11 +24,11 @@ import android.database.Cursor;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -96,7 +96,6 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity i
     if (gridManager != null) gridManager.setSpanCount(getResources().getInteger(R.integer.media_overview_cols));
   }
 
-  @TargetApi(VERSION_CODES.JELLY_BEAN)
   private void setFullscreenIfPossible() {
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                          WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -201,6 +200,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity i
   }
 
   @Override
+  @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 

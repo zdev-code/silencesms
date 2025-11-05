@@ -6,8 +6,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -76,7 +76,7 @@ public class BadgeWidgetProvider extends AppWidgetProvider {
   private PendingIntent getPendingIntent(Context context) {
     Intent intent = new Intent(context, getActivityToLaunch());
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+  return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
   }
 
   public void updateBadge(int unreadCount) {

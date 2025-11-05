@@ -17,6 +17,7 @@
 package org.smssecure.smssecure;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,10 +36,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.WindowCompat;
-import android.support.v7.app.AlertDialog;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -181,6 +184,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private   BroadcastReceiver             securityUpdateReceiver;
   private   Stub<EmojiDrawer>             emojiDrawerStub;
   private   EmojiToggle                   emojiToggle;
+  private   OnBackPressedCallback         backPressedCallback;
 
   private Recipients recipients;
   private long       threadId;
@@ -216,6 +220,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     initializeReceivers();
     initializeActionBar();
     initializeViews();
+  initializeBackPressedCallback();
     initializeResources();
     initializeSecurity();
     updateRecipientPreferences();
@@ -224,6 +229,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
     Log.w(TAG, "onNewIntent()");
 
     if (isFinishing()) {
@@ -401,6 +407,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   @Override
+  @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
     switch (item.getItemId()) {
@@ -427,13 +434,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
 
     return false;
-  }
-
-  @Override
-  public void onBackPressed() {
-    Log.w(TAG, "onBackPressed()");
-    if (container.isInputOpen()) container.hideCurrentInput(composeText);
-    else                         super.onBackPressed();
   }
 
   @Override
@@ -525,6 +525,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
@@ -1010,6 +1011,28 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     composeText.setOnFocusChangeListener(composeKeyPressedListener);
   }
 
+  private void initializeBackPressedCallback() {
+    if (backPressedCallback != null) {
+      backPressedCallback.remove();
+    }
+
+    backPressedCallback = new OnBackPressedCallback(true) {
+      @Override
+      public void handleOnBackPressed() {
+        Log.w(TAG, "onBackPressed()");
+        if (container != null && container.isInputOpen()) {
+          container.hideCurrentInput(composeText);
+        } else {
+          setEnabled(false);
+          ConversationActivity.super.onBackPressed();
+          setEnabled(true);
+        }
+      }
+    };
+
+    getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+  }
+
   protected void initializeActionBar() {
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setCustomView(R.layout.conversation_title_view);
@@ -1061,9 +1084,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       }
     };
 
-    registerReceiver(securityUpdateReceiver,
-                     new IntentFilter(SecurityEvent.SECURITY_UPDATE_EVENT),
-                     KeyCachingService.KEY_PERMISSION, null);
+  ContextCompat.registerReceiver(this,
+                   securityUpdateReceiver,
+                   new IntentFilter(SecurityEvent.SECURITY_UPDATE_EVENT),
+                   KeyCachingService.KEY_PERMISSION,
+                   null,
+                   ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   //////// Helper Methods

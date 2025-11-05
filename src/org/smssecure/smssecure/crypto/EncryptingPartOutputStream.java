@@ -40,6 +40,8 @@ import android.util.Log;
 
 public class EncryptingPartOutputStream extends FileOutputStream {
 
+  private static final String TAG = "EncPartOutStream";
+
   private Cipher cipher;
   private Mac mac;
   private boolean closed;
@@ -52,7 +54,7 @@ public class EncryptingPartOutputStream extends FileOutputStream {
       cipher = initializeCipher(mac, masterSecret.getEncryptionKey());
       closed = false;
     } catch (IOException ioe) {
-      Log.w("EncryptingPartOutputStream", ioe);
+      Log.w(TAG, ioe);
       throw new FileNotFoundException("Couldn't write IV");
     } catch (InvalidKeyException e) {
       throw new AssertionError(e);

@@ -3,7 +3,7 @@ package org.smssecure.smssecure.attachments;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
@@ -28,6 +28,7 @@ import java.security.MessageDigest;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Locale;
 
 /**
  * @author      Stefan "frostymarvelous" Froelich <stefan d0t froelich At whisppa DoT com>
@@ -63,7 +64,7 @@ public class AttachmentServer implements Runnable {
   }
 
   public Uri getUri() {
-    return Uri.parse(String.format("http://127.0.0.1:%d/%s", port, auth));
+  return Uri.parse(String.format(Locale.US, "http://127.0.0.1:%d/%s", port, auth));
   }
 
   public void start() {
@@ -307,7 +308,7 @@ public class AttachmentServer implements Runnable {
           while (line != null && line.trim().length() > 0) {
             int p = line.indexOf(':');
             if (p >= 0)
-              header.put(line.substring(0, p).trim().toLowerCase(),
+              header.put(line.substring(0, p).trim().toLowerCase(Locale.ROOT),
                          line.substring(p + 1).trim());
             line = in.readLine();
           }

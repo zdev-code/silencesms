@@ -2,8 +2,8 @@ package org.smssecure.smssecure.util.dualsim;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.SilencePreferences;
@@ -45,14 +45,14 @@ public class SubscriptionInfoCompat {
   }
 
   public @NonNull CharSequence getDisplayName() {
-        return (displayName != null && !displayName.equals("")) ? getEligibleDisplayName() : context.getString(R.string.SubscriptionInfoCompat_slot, iccSlot);
+  return (displayName != null && !displayName.equals("")) ? getEligibleDisplayName() : context.getString(R.string.SubscriptionInfoCompat_slot, String.valueOf(iccSlot));
   }
 
   private String getEligibleDisplayName() {
     if (duplicateDisplayName && !getNumber().equals("")) {
       return getNumber();
     } else if (duplicateDisplayName) {
-      return context.getString(R.string.SubscriptionInfoCompat_display_name, displayName, iccSlot);
+  return context.getString(R.string.SubscriptionInfoCompat_display_name, displayName, String.valueOf(iccSlot));
     } else {
       return displayName.toString();
     }

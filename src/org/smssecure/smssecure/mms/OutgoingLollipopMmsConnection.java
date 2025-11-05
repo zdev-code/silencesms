@@ -16,14 +16,13 @@
  */
 package org.smssecure.smssecure.mms;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.telephony.SmsManager;
 import android.util.Log;
 
@@ -49,7 +48,6 @@ public class OutgoingLollipopMmsConnection extends LollipopMmsConnection impleme
     super(context, ACTION);
   }
 
-  @TargetApi(VERSION_CODES.LOLLIPOP_MR1)
   @Override
   public synchronized void onResult(Context context, Intent intent) {
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP_MR1) {
@@ -60,7 +58,6 @@ public class OutgoingLollipopMmsConnection extends LollipopMmsConnection impleme
   }
 
   @Override
-  @TargetApi(VERSION_CODES.LOLLIPOP)
   public @Nullable synchronized SendConf send(@NonNull byte[] pduBytes, int subscriptionId)
       throws UndeliverableMessageException
   {

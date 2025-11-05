@@ -1,12 +1,16 @@
 package org.smssecure.smssecure.util.dualsim;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
+
+import androidx.core.content.ContextCompat;
 
 import org.smssecure.smssecure.ApplicationContext;
 import org.smssecure.smssecure.util.SilencePreferences;
@@ -53,8 +57,26 @@ public class SimChangedReceiver extends BroadcastReceiver {
   private static String getDeviceSubscriptions(Context context) {
     if (Build.VERSION.SDK_INT < 22) return "1";
 
-    SubscriptionManager    subscriptionManager = SubscriptionManager.from(context);
-    List<SubscriptionInfo> activeSubscriptions = subscriptionManager.getActiveSubscriptionInfoList();
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+      Log.w(TAG, "Missing READ_PHONE_STATE permission; using default subscription identifier");
+      return "1";
+    }
+
+    SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+
+    if (subscriptionManager == null) {
+      Log.w(TAG, "SubscriptionManager was null");
+      return "1";
+    }
+
+    List<SubscriptionInfo> activeSubscriptions;
+
+    try {
+      activeSubscriptions = subscriptionManager.getActiveSubscriptionInfoList();
+    } catch (SecurityException securityException) {
+      Log.w(TAG, "Unable to query subscription info", securityException);
+      return "1";
+    }
 
     if (activeSubscriptions == null) return "1";
 

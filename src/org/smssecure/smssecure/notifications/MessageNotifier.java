@@ -16,25 +16,29 @@
  */
 package org.smssecure.smssecure.notifications;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Looper;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -60,6 +64,8 @@ import org.smssecure.smssecure.util.SilencePreferences;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -123,8 +129,7 @@ public class MessageNotifier {
       intent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
 
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, SilencePreferences.getNotificationPrivacy(context), intent);
-      ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE))
-        .notify((int)threadId, builder.build());
+      notifyWithPermissionCheck(context, (int) threadId, builder.build());
     }
   }
 
@@ -266,6 +271,7 @@ public class MessageNotifier {
       }
   }
 
+  @SuppressLint("MissingPermission")
   private static void sendSingleThreadNotification(Context context,
                                                    MasterSecret masterSecret,
                                                    NotificationState notificationState,
@@ -318,9 +324,16 @@ public class MessageNotifier {
       builder.setGroupSummary(true);
     }
 
-    NotificationManagerCompat.from(context).notify(notificationId, builder.build());
+    if (Build.VERSION.SDK_INT >= 33 &&
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      Log.w(TAG, "Skipping message notification: POST_NOTIFICATIONS permission not granted");
+      return;
+    }
+
+    notifyWithPermissionCheck(context, notificationId, builder.build());
   }
 
+  @SuppressLint("MissingPermission")
   private static void sendMultipleThreadNotification(Context context,
                                                      NotificationState notificationState,
                                                      int flags)
@@ -352,7 +365,13 @@ public class MessageNotifier {
                         notifications.get(0).getText());
     }
 
-    NotificationManagerCompat.from(context).notify(SUMMARY_NOTIFICATION_ID, builder.build());
+    if (Build.VERSION.SDK_INT >= 33 &&
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      Log.w(TAG, "Skipping summary notification: POST_NOTIFICATIONS permission not granted");
+      return;
+    }
+
+    notifyWithPermissionCheck(context, SUMMARY_NOTIFICATION_ID, builder.build());
   }
 
   private static void sendInThreadNotification(Context context, Recipients recipients) {
@@ -450,6 +469,32 @@ public class MessageNotifier {
     return notificationState;
   }
 
+  private static boolean canPostNotifications(@NonNull Context context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+    }
+    return true;
+  }
+
+  private static boolean notificationsEnabled(@NonNull Context context) {
+    return NotificationManagerCompat.from(context).areNotificationsEnabled();
+  }
+
+  @SuppressLint({"MissingPermission", "NotificationPermission"})
+  private static void notifyWithPermissionCheck(@NonNull Context context, int notificationId, @NonNull Notification notification) {
+    if (!canPostNotifications(context)) {
+      Log.w(TAG, "Skipping notification; missing POST_NOTIFICATIONS permission");
+      return;
+    }
+
+    if (!notificationsEnabled(context)) {
+      Log.w(TAG, "Skipping notification; notifications disabled by user");
+      return;
+    }
+
+    NotificationManagerCompat.from(context).notify(notificationId, notification);
+  }
+
   private static void scheduleReminder(Context context, int count) {
     if (count >= SilencePreferences.getRepeatAlertsCount(context)) {
       return;
@@ -459,7 +504,7 @@ public class MessageNotifier {
     Intent       alarmIntent  = new Intent(ReminderReceiver.REMINDER_ACTION);
     alarmIntent.putExtra("reminder_count", count);
 
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+  PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     long          timeout       = TimeUnit.MINUTES.toMillis(2);
 
     alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timeout, pendingIntent);
@@ -467,7 +512,7 @@ public class MessageNotifier {
 
   public static void clearReminder(Context context) {
     Intent        alarmIntent   = new Intent(ReminderReceiver.REMINDER_ACTION);
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+  PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     AlarmManager  alarmManager  = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     alarmManager.cancel(pendingIntent);
   }
@@ -476,18 +521,26 @@ public class MessageNotifier {
 
     public static final String REMINDER_ACTION = "org.smssecure.smssecure.MessageNotifier.REMINDER_ACTION";
 
+    private static final ExecutorService REMINDER_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
+      Thread thread = new Thread(r, "MessageNotifier-Reminder");
+      thread.setPriority(Thread.NORM_PRIORITY);
+      return thread;
+    });
+
     @Override
     public void onReceive(final Context context, final Intent intent) {
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... params) {
-          MasterSecret masterSecret  = KeyCachingService.getMasterSecret(context);
-          int          reminderCount = intent.getIntExtra("reminder_count", 0);
-          MessageNotifier.updateNotification(context, masterSecret, MNF_DEFAULTS, reminderCount + 1);
+      final BroadcastReceiver.PendingResult pendingResult = goAsync();
+      final Context applicationContext = context.getApplicationContext();
 
-          return null;
+      REMINDER_EXECUTOR.execute(() -> {
+        try {
+          MasterSecret masterSecret  = KeyCachingService.getMasterSecret(applicationContext);
+          int          reminderCount = intent.getIntExtra("reminder_count", 0);
+          MessageNotifier.updateNotification(applicationContext, masterSecret, MNF_DEFAULTS, reminderCount + 1);
+        } finally {
+          pendingResult.finish();
         }
-      }.execute();
+      });
     }
   }
 

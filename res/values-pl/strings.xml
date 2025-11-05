@@ -9,10 +9,10 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Nie masz jeszcze ustawionego hasła!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 wiadomość na konwersację</item>
-    <item quantity="few">%d wiadomości na konwersację</item>
-    <item quantity="many">%d wiadomości na konwersację</item>
-    <item quantity="other">%d wiadomości na konwersację</item>
+  <item quantity="one">%d wiadomość na konwersację</item>
+  <item quantity="few">%d wiadomości na konwersację</item>
+  <item quantity="many">%d wiadomości na konwersację</item>
+  <item quantity="other">%d wiadomości na konwersację</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Usunąć wszystkie stare wiadomości?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
@@ -41,8 +41,8 @@ Uwaga, szyfrowanie wszystkich Twoich wiadomości i kluczy zostanie wyłączone. 
   <string name="ApplicationPreferencesActivity_appearance_summary">Motyw %1$s, język %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 minuta</item>
-    <item quantity="few">%d minut</item>
+    <item quantity="one">%d minuta</item>
+    <item quantity="few">%d minuty</item>
     <item quantity="many">%d minut</item>
     <item quantity="other">%d minut</item>
   </plurals>
@@ -98,7 +98,7 @@ Uwaga, szyfrowanie wszystkich Twoich wiadomości i kluczy zostanie wyłączone. 
   <string name="ConversationActivity_group_conversation">Grupowa konwersacja</string>
   <string name="ConversationActivity_unnamed_group">Grupa bez nazwy</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 uczestnik</item>
+    <item quantity="one">%d uczestnik</item>
     <item quantity="few">%d uczestników</item>
     <item quantity="many">%d uczestników</item>
     <item quantity="other">%d uczestników</item>

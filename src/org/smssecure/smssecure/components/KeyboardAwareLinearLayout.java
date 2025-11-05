@@ -16,13 +16,13 @@
  */
 package org.smssecure.smssecure.components;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.LinearLayoutCompat;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
@@ -32,7 +32,6 @@ import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.Util;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +49,7 @@ public class KeyboardAwareLinearLayout extends LinearLayoutCompat {
   private final int                           minCustomKeyboardSize;
   private final int                           defaultCustomKeyboardSize;
   private final int                           minCustomKeyboardTopMargin;
-  private final int                           statusBarHeight;
+  private Insets systemBarInsets = Insets.NONE;
 
   private int viewInset;
 
@@ -67,13 +66,17 @@ public class KeyboardAwareLinearLayout extends LinearLayoutCompat {
 
   public KeyboardAwareLinearLayout(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
-    final int statusBarRes = getResources().getIdentifier("status_bar_height", "dimen", "android");
     minKeyboardSize            = getResources().getDimensionPixelSize(R.dimen.min_keyboard_size);
     minCustomKeyboardSize      = getResources().getDimensionPixelSize(R.dimen.min_custom_keyboard_size);
     defaultCustomKeyboardSize  = getResources().getDimensionPixelSize(R.dimen.default_custom_keyboard_size);
     minCustomKeyboardTopMargin = getResources().getDimensionPixelSize(R.dimen.min_custom_keyboard_top_margin);
-    statusBarHeight            = statusBarRes > 0 ? getResources().getDimensionPixelSize(statusBarRes) : 0;
-    viewInset                  = getViewInset();
+    ViewCompat.setOnApplyWindowInsetsListener(this, (v, insets) -> {
+      systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+      viewInset       = systemBarInsets.bottom;
+      return insets;
+    });
+    ViewCompat.requestApplyInsets(this);
+    viewInset = getViewInset();
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -97,8 +100,10 @@ public class KeyboardAwareLinearLayout extends LinearLayoutCompat {
       return;
     }
 
-    if (viewInset == 0 && Build.VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) viewInset = getViewInset();
-    final int availableHeight = this.getRootView().getHeight() - statusBarHeight - viewInset;
+    if (viewInset == 0) {
+      viewInset = getViewInset();
+    }
+    final int availableHeight = getRootView().getHeight() - systemBarInsets.top - viewInset;
     getWindowVisibleDisplayFrame(rect);
 
     final int keyboardHeight = availableHeight - (rect.bottom - rect.top);
@@ -110,25 +115,13 @@ public class KeyboardAwareLinearLayout extends LinearLayoutCompat {
       onKeyboardClose();
     }
   }
-
-  @TargetApi(VERSION_CODES.LOLLIPOP)
   private int getViewInset() {
-    try {
-      Field attachInfoField = View.class.getDeclaredField("mAttachInfo");
-      attachInfoField.setAccessible(true);
-      Object attachInfo = attachInfoField.get(this);
-      if (attachInfo != null) {
-        Field stableInsetsField = attachInfo.getClass().getDeclaredField("mStableInsets");
-        stableInsetsField.setAccessible(true);
-        Rect insets = (Rect)stableInsetsField.get(attachInfo);
-        return insets.bottom;
-      }
-    } catch (NoSuchFieldException nsfe) {
-      Log.w(TAG, "field reflection error when measuring view inset", nsfe);
-    } catch (IllegalAccessException iae) {
-      Log.w(TAG, "access reflection error when measuring view inset", iae);
+    WindowInsetsCompat insets = ViewCompat.getRootWindowInsets(this);
+    if (insets != null) {
+      systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+      return systemBarInsets.bottom;
     }
-    return 0;
+    return systemBarInsets.bottom;
   }
 
   protected void onKeyboardOpen(int keyboardHeight) {
