@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import android.os.Build;
+
 import androidx.core.content.ContextCompat;
 
 import org.smssecure.smssecure.util.Util;
@@ -80,7 +82,16 @@ public abstract class LollipopMmsConnection extends BroadcastReceiver {
   }
 
   protected PendingIntent getPendingIntent() {
-  return PendingIntent.getBroadcast(getContext(), 1, new Intent(action), PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+    int flags = PendingIntent.FLAG_ONE_SHOT;
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      flags |= PendingIntent.FLAG_MUTABLE;
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      flags |= PendingIntent.FLAG_IMMUTABLE;
+    }
+
+    Intent callbackIntent = new Intent(action).setPackage(getContext().getPackageName());
+    return PendingIntent.getBroadcast(getContext(), 1, callbackIntent, flags);
   }
 
   protected Context getContext() {
