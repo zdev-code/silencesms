@@ -17,35 +17,29 @@
 
 package org.whispersystems.libpastelog.util;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 
-public abstract class ProgressDialogAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
-  private final Context        context;
-  private       ProgressDialog progress;
-  private final String         title;
-  private final String         message;
+/**
+ * Deprecated placeholder retained for binary compatibility.
+ *
+ * <p>No-op implementation that signals callers to migrate to
+ * executor-based helpers. All usage should be replaced and this
+ * class will be removed in a future release.</p>
+ */
+@Deprecated
+public abstract class ProgressDialogAsyncTask<Params, Progress, Result> {
 
-  public ProgressDialogAsyncTask(Context context, String title, String message) {
-    super();
-    this.context = context;
-    this.title   = title;
-    this.message = message;
+  protected ProgressDialogAsyncTask(Context context, String title, String message) {
+    throw new UnsupportedOperationException("ProgressDialogAsyncTask has been removed; migrate to executor-based helpers.");
   }
 
-  public ProgressDialogAsyncTask(Context context, int title, int message) {
+  protected ProgressDialogAsyncTask(Context context, int title, int message) {
     this(context, context.getString(title), context.getString(message));
   }
 
-  @Override
-  protected void onPreExecute() {
-    progress = ProgressDialog.show(context, title, message, true);
-  }
-
-  @Override
-  protected void onPostExecute(Result result) {
-    if (progress != null) progress.dismiss();
+  @SafeVarargs
+  public final void execute(Params... params) {
+    throw new UnsupportedOperationException("ProgressDialogAsyncTask has been removed; migrate to executor-based helpers.");
   }
 }
 

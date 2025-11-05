@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.provider.Telephony;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -31,7 +33,13 @@ import java.util.List;
 public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
   private static final String KITKAT_DEFAULT_PREF = "pref_set_default";
   private static final String MMS_PREF            = "pref_mms_preferences";
-  private static final int    REQUEST_DEFAULT_SMS_ROLE = 31337;
+
+  private final ActivityResultLauncher<Intent> roleRequestLauncher =
+      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+          initializePlatformSpecificOptions();
+        }
+      });
 
   @Override
   public void onCreate(Bundle paramBundle) {
@@ -100,7 +108,7 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
             if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_SMS)) {
               if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
                 Intent roleIntent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS);
-                startActivityForResult(roleIntent, REQUEST_DEFAULT_SMS_ROLE);
+                roleRequestLauncher.launch(roleIntent);
               }
               return true;
             }
@@ -118,14 +126,6 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
 
     if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && manualMmsPreference != null) {
       preferenceScreen.removePreference(manualMmsPreference);
-    }
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == REQUEST_DEFAULT_SMS_ROLE && resultCode == Activity.RESULT_OK) {
-      initializePlatformSpecificOptions();
     }
   }
 

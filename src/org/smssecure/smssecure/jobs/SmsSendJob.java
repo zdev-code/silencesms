@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -26,9 +25,10 @@ import org.smssecure.smssecure.service.SmsDeliveryListener;
 import org.smssecure.smssecure.sms.MultipartSmsMessageHandler;
 import org.smssecure.smssecure.sms.OutgoingTextMessage;
 import org.smssecure.smssecure.transport.UndeliverableMessageException;
-import org.smssecure.smssecure.util.dualsim.DualSimUtil;
 import org.smssecure.smssecure.util.NumberUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.util.SmsManagerUtil;
+import org.smssecure.smssecure.util.dualsim.DualSimUtil;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.libsignal.NoSessionException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
@@ -104,6 +104,8 @@ public class SmsSendJob extends SendJob {
       throw new UndeliverableMessageException("Not a valid SMS destination! " + recipient);
     }
 
+    SmsManager defaultSmsManager = SmsManagerUtil.getSystemSmsManager(context);
+
     if (message.isSecure() || message.isKeyExchange() || message.isEndSession()) {
       MultipartSmsMessageHandler multipartMessageHandler = new MultipartSmsMessageHandler();
       OutgoingTextMessage        transportMessage        = OutgoingTextMessage.from(message);
@@ -112,9 +114,9 @@ public class SmsSendJob extends SendJob {
         transportMessage = getAsymmetricEncrypt(masterSecret, transportMessage);
       }
 
-      messages = SmsManager.getDefault().divideMessage(multipartMessageHandler.getEncodedMessage(transportMessage));
+      messages = defaultSmsManager.divideMessage(multipartMessageHandler.getEncodedMessage(transportMessage));
     } else {
-      messages = SmsManager.getDefault().divideMessage(message.getBody().getBody());
+      messages = defaultSmsManager.divideMessage(message.getBody().getBody());
     }
 
     ArrayList<PendingIntent> sentIntents      = constructSentIntents(message.getId(), message.getType(), messages, message.isSecure());
@@ -127,7 +129,8 @@ public class SmsSendJob extends SendJob {
     // catching it and marking the message as a failure.  That way at least it doesn't
     // repeatedly crash every time you start the app.
     try {
-      getSmsManagerFor(deviceSubscriptionId).sendMultipartTextMessage(recipient, null, messages, sentIntents, deliveredIntents);
+  SmsManager smsManager = SmsManagerUtil.getSystemSmsManager(context, deviceSubscriptionId);
+  smsManager.sendMultipartTextMessage(recipient, null, messages, sentIntents, deliveredIntents);
     } catch (NullPointerException npe) {
       Log.w(TAG, npe);
       Log.w(TAG, "Recipient: " + recipient);
@@ -204,15 +207,6 @@ public class SmsSendJob extends SendJob {
     pending.putExtra("message_id", messageId);
 
     return pending;
-  }
-
-  private SmsManager getSmsManagerFor(int subscriptionId) {
-    Log.w(TAG, "getSmsManagerFor(" + subscriptionId + ")");
-    if (Build.VERSION.SDK_INT >= 22 && subscriptionId != -1) {
-      return SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
-    } else {
-      return SmsManager.getDefault();
-    }
   }
 
   private static JobParameters constructParameters(Context context, String name) {

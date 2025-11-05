@@ -2,9 +2,8 @@ package org.smssecure.smssecure.components.emoji;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -16,11 +15,19 @@ import org.smssecure.smssecure.util.JsonUtils;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RecentEmojiPageModel implements EmojiPageModel {
   private static final String TAG                  = RecentEmojiPageModel.class.getSimpleName();
   private static final String EMOJI_LRU_PREFERENCE = "pref_recent_emoji2";
   private static final int    EMOJI_LRU_SIZE       = 50;
+
+  private static final ExecutorService PERSIST_EXECUTOR = Executors.newSingleThreadExecutor(runnable -> {
+    Thread thread = new Thread(runnable, "recent-emoji-persist");
+    thread.setDaemon(true);
+    return thread;
+  });
 
   private final SharedPreferences     prefs;
   private final LinkedHashSet<String> recentlyUsed;
@@ -74,22 +81,16 @@ public class RecentEmojiPageModel implements EmojiPageModel {
     }
 
     final LinkedHashSet<String> latestRecentlyUsed = new LinkedHashSet<>(recentlyUsed);
-    new AsyncTask<Void, Void, Void>() {
-
-      @Override
-      protected Void doInBackground(Void... params) {
-        try {
-          String serialized = JsonUtils.toJson(latestRecentlyUsed);
-          prefs.edit()
-               .putString(EMOJI_LRU_PREFERENCE, serialized)
-               .apply();
-        } catch (IOException e) {
-          Log.w(TAG, e);
-        }
-
-        return null;
+    PERSIST_EXECUTOR.execute(() -> {
+      try {
+        String serialized = JsonUtils.toJson(latestRecentlyUsed);
+        prefs.edit()
+             .putString(EMOJI_LRU_PREFERENCE, serialized)
+             .apply();
+      } catch (IOException e) {
+        Log.w(TAG, e);
       }
-    }.execute();
+    });
   }
 
   private String[] toReversePrimitiveArray(@NonNull LinkedHashSet<String> emojiSet) {

@@ -33,6 +33,7 @@ import com.google.android.mms.pdu_alt.SendConf;
 import org.smssecure.smssecure.providers.MmsBodyProvider;
 import org.smssecure.smssecure.transport.UndeliverableMessageException;
 import org.smssecure.smssecure.util.Util;
+import org.smssecure.smssecure.util.SmsManagerUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -66,13 +67,7 @@ public class OutgoingLollipopMmsConnection extends LollipopMmsConnection impleme
       MmsBodyProvider.Pointer pointer = MmsBodyProvider.makeTemporaryPointer(getContext());
       Util.copy(new ByteArrayInputStream(pduBytes), pointer.getOutputStream());
 
-      SmsManager smsManager;
-
-      if (VERSION.SDK_INT >= 22 && subscriptionId != -1) {
-        smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
-      } else {
-        smsManager = SmsManager.getDefault();
-      }
+      SmsManager smsManager = SmsManagerUtil.getSystemSmsManager(getContext(), subscriptionId);
 
       Bundle configOverrides = new Bundle();
       configOverrides.putBoolean(SmsManager.MMS_CONFIG_GROUP_MMS_ENABLED, true);

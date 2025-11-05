@@ -67,7 +67,7 @@ public class KeyExchangeInitiator {
         return;
       }
 
-      SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+    SubscriptionManager subscriptionManager = getSubscriptionManager(context);
 
       if (subscriptionManager == null) {
         initiate(context, masterSecret, recipients, promptOnExisting, -1);
@@ -91,6 +91,25 @@ public class KeyExchangeInitiator {
     } else {
       initiate(context, masterSecret, recipients, promptOnExisting, -1);
     }
+
+  }
+
+  private static SubscriptionManager getSubscriptionManager(Context context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      SubscriptionManager subscriptionManager = context.getSystemService(SubscriptionManager.class);
+      if (subscriptionManager != null) {
+        return subscriptionManager;
+      }
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+      Object service = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+      if (service instanceof SubscriptionManager) {
+        return (SubscriptionManager) service;
+      }
+    }
+
+    return null;
   }
 
   public static void initiate(final Context context, final MasterSecret masterSecret, final Recipients recipients, boolean promptOnExisting, final int subscriptionId) {

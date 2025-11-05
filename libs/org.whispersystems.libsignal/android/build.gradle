@@ -2,6 +2,8 @@ plugins {
     id 'com.android.library'
 }
 
+evaluationDependsOn(':tests')
+
 version          = version_number
 group            = group_info
 
@@ -14,15 +16,17 @@ android {
         targetSdkVersion = 34
     }
 
-    sourceSets {
-        androidTest {
-            java.srcDirs = ['src/androidTest/java', project(':tests').file('src/test/java')]
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+    }
+
+    testOptions {
+        unitTests.all { unitTestTask ->
+            unitTestTask.dependsOn project(':tests').tasks.named('testClasses')
+            unitTestTask.testClassesDirs.from(project(':tests').sourceSets.test.output.classesDirs)
+            unitTestTask.classpath += project(':tests').sourceSets.test.runtimeClasspath
+        }
     }
 }
 
@@ -34,4 +38,5 @@ repositories {
 
 dependencies {
     api(project(':java'))
+    testImplementation project(path: ':tests', configuration: 'testArtifacts')
 }

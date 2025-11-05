@@ -2,6 +2,7 @@ package org.smssecure.smssecure.color;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import android.util.TypedValue;
 
 import org.smssecure.smssecure.R;
@@ -62,35 +63,35 @@ public enum MaterialColor {
 
   public int toConversationColor(@NonNull Context context) {
     if (getAttribute(context, R.attr.theme_type, "light").equals("dark")) {
-      return context.getResources().getColor(conversationColorDark);
+      return ContextCompat.getColor(context, conversationColorDark);
     } else {
-      return context.getResources().getColor(conversationColorLight);
+      return ContextCompat.getColor(context, conversationColorLight);
     }
   }
 
   public int toActionBarColor(@NonNull Context context) {
     if (getAttribute(context, R.attr.theme_type, "light").equals("dark")) {
-      return context.getResources().getColor(actionBarColorDark);
+      return ContextCompat.getColor(context, actionBarColorDark);
     } else {
-      return context.getResources().getColor(actionBarColorLight);
+      return ContextCompat.getColor(context, actionBarColorLight);
     }
   }
 
   public int toStatusBarColor(@NonNull Context context) {
     if (getAttribute(context, R.attr.theme_type, "light").equals("dark")) {
-      return context.getResources().getColor(statusBarColorDark);
+      return ContextCompat.getColor(context, statusBarColorDark);
     } else {
-      return context.getResources().getColor(statusBarColorLight);
+      return ContextCompat.getColor(context, statusBarColorLight);
     }
   }
 
   public boolean represents(Context context, int colorValue) {
-    return context.getResources().getColor(conversationColorDark)  == colorValue ||
-           context.getResources().getColor(conversationColorLight) == colorValue ||
-           context.getResources().getColor(actionBarColorDark) == colorValue ||
-           context.getResources().getColor(actionBarColorLight) == colorValue ||
-           context.getResources().getColor(statusBarColorLight) == colorValue ||
-           context.getResources().getColor(statusBarColorDark) == colorValue;
+    return ContextCompat.getColor(context, conversationColorDark)  == colorValue ||
+           ContextCompat.getColor(context, conversationColorLight) == colorValue ||
+           ContextCompat.getColor(context, actionBarColorDark) == colorValue ||
+           ContextCompat.getColor(context, actionBarColorLight) == colorValue ||
+           ContextCompat.getColor(context, statusBarColorLight) == colorValue ||
+           ContextCompat.getColor(context, statusBarColorDark) == colorValue;
   }
 
   public String serialize() {

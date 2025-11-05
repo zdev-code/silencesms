@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
-import androidx.core.util.Pair;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -28,11 +28,20 @@ import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AvatarImageView extends AppCompatImageView {
 
   private boolean inverted;
   private boolean showBadge;
+
+  private static final ExecutorService BADGE_EXECUTOR = Executors.newSingleThreadExecutor(runnable -> {
+    Thread thread = new Thread(runnable, "avatar-badge");
+    thread.setDaemon(true);
+    return thread;
+  });
+  private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
   public AvatarImageView(Context context) {
     super(context);
@@ -60,7 +69,9 @@ public class AvatarImageView extends AppCompatImageView {
       setImageDrawable(recipients.getContactPhoto().asDrawable(getContext(), backgroundColor.toConversationColor(getContext()), inverted));
       setAvatarClickHandler(recipients, quickContactEnabled);
       setTag(recipients);
-      if (showBadge) new BadgeResolutionTask(context, masterSecret).execute(recipients);
+      if (showBadge) {
+        submitBadgeResolution(context.getApplicationContext(), masterSecret, recipients);
+      }
     } else {
       setImageDrawable(ContactPhotoFactory.getDefaultContactPhoto(null).asDrawable(getContext(), ContactColors.UNKNOWN_COLOR.toConversationColor(getContext()), inverted));
       setOnClickListener(null);
@@ -94,34 +105,32 @@ public class AvatarImageView extends AppCompatImageView {
     }
   }
 
-  private class BadgeResolutionTask extends AsyncTask<Recipients,Void,Pair<Recipients, Boolean>> {
-    private final Context context;
-    private       MasterSecret masterSecret;
-    private final List<SubscriptionInfoCompat> activeSubscriptions;
+  private void submitBadgeResolution(Context context, MasterSecret masterSecret, Recipients recipients) {
+    BADGE_EXECUTOR.execute(() -> {
+      List<SubscriptionInfoCompat> activeSubscriptions = SubscriptionManagerCompat.from(context).getActiveSubscriptionInfoList();
+      boolean hasSecureSession = masterSecret != null &&
+                                 recipients.getPrimaryRecipient() != null &&
+                                 SessionUtil.hasAtLeastOneSession(context, masterSecret,
+                                                                  recipients.getPrimaryRecipient().getNumber(),
+                                                                  activeSubscriptions);
 
-    public BadgeResolutionTask(Context context, MasterSecret masterSecret) {
-      this.context = context;
-      this.masterSecret = masterSecret;
-      this.activeSubscriptions = SubscriptionManagerCompat.from(context).getActiveSubscriptionInfoList();
+      MAIN_HANDLER.post(() -> applyBadgeResult(recipients, hasSecureSession));
+    });
+  }
+
+  private void applyBadgeResult(Recipients recipients, boolean hasSecureSession) {
+    if (!hasSecureSession || getTag() != recipients) {
+      return;
     }
 
-    @Override
-    protected Pair<Recipients, Boolean> doInBackground(Recipients... recipients) {
-      Boolean isSecureSmsDestination = masterSecret != null &&
-                                       SessionUtil.hasAtLeastOneSession(context, masterSecret, recipients[0].getPrimaryRecipient().getNumber(), activeSubscriptions);
-      return new Pair<>(recipients[0], isSecureSmsDestination);
+    Drawable badgeDrawable = ContextCompat.getDrawable(getContext(), R.drawable.badge_drawable);
+    Drawable current = getDrawable();
+
+    if (badgeDrawable == null || current == null) {
+      return;
     }
 
-    @Override
-    protected void onPostExecute(Pair<Recipients, Boolean> result) {
-      if (getTag() == result.first && result.second) {
-        final Drawable badged = new LayerDrawable(new Drawable[] {
-            getDrawable(),
-            ContextCompat.getDrawable(context, R.drawable.badge_drawable)
-        });
-
-        setImageDrawable(badged);
-      }
-    }
+    Drawable badged = new LayerDrawable(new Drawable[] { current, badgeDrawable });
+    setImageDrawable(badged);
   }
 }

@@ -19,6 +19,7 @@ package org.smssecure.smssecure;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
@@ -44,7 +45,7 @@ public class ShareListItem extends RelativeLayout
 
   private AvatarImageView contactPhotoImage;
 
-  private final Handler handler = new Handler();
+  private final Handler handler = new Handler(Looper.getMainLooper());
   private int distributionType;
 
   public ShareListItem(Context context) {

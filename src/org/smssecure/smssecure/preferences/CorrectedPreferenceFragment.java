@@ -3,6 +3,8 @@ package org.smssecure.smssecure.preferences;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -12,6 +14,8 @@ import org.smssecure.smssecure.preferences.widgets.ColorPickerPreference;
 import org.smssecure.smssecure.preferences.widgets.ColorPickerPreferenceDialogFragmentCompat;
 import org.smssecure.smssecure.preferences.widgets.RingtonePreference;
 import org.smssecure.smssecure.preferences.widgets.RingtonePreferenceDialogFragmentCompat;
+import org.smssecure.smssecure.components.OutgoingSmsPreference;
+import org.smssecure.smssecure.components.OutgoingSmsPreference.OutgoingSmsPreferenceDialogFragmentCompat;
 
 public abstract class CorrectedPreferenceFragment extends PreferenceFragmentCompat {
 
@@ -23,11 +27,13 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
   }
 
   @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-    View lv = getView().findViewById(android.R.id.list);
-    if (lv != null) lv.setPadding(0, 0, 0, 0);
+    View listView = view.findViewById(android.R.id.list);
+    if (listView != null) {
+      listView.setPadding(0, 0, 0, 0);
+    }
   }
 
   @Override
@@ -40,10 +46,11 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
       dialogFragment = ColorPickerPreferenceDialogFragmentCompat.newInstance(preference.getKey());
     } else if (preference instanceof CustomDefaultPreference) {
       dialogFragment = CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.newInstance(preference.getKey());
+    } else if (preference instanceof OutgoingSmsPreference) {
+      dialogFragment = OutgoingSmsPreferenceDialogFragmentCompat.newInstance(preference.getKey());
     }
 
     if (dialogFragment != null) {
-      dialogFragment.setTargetFragment(this, 0);
       dialogFragment.show(getParentFragmentManager(), PREFERENCE_DIALOG_FRAGMENT_TAG);
     } else {
       super.onDisplayPreferenceDialog(preference);

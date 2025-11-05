@@ -18,21 +18,25 @@
 package org.whispersystems.libpastelog;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.fragment.app.Fragment;
-import android.text.ClipboardManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -43,19 +47,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.whispersystems.libpastelog.util.ProgressDialogAsyncTask;
 import org.whispersystems.libpastelog.util.Scrubber;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -85,6 +91,12 @@ public class SubmitLogFragment extends Fragment {
   private boolean  emailActivityWasStarted = false;
 
   private static final String API_ENDPOINT = "https://paste.silence.dev";
+  private static final MediaType PLAIN_TEXT = MediaType.get("text/plain; charset=utf-8");
+  private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+
+  private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
+  private final Handler mainHandler = new Handler(Looper.getMainLooper());
+  private AlertDialog progressDialog;
 
   private OnLogSubmittedListener mListener;
 
@@ -131,12 +143,12 @@ public class SubmitLogFragment extends Fragment {
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-    try {
-      mListener = (OnLogSubmittedListener) activity;
-    } catch (ClassCastException e) {
-      throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
+  public void onAttach(@NonNull Context context) {
+    super.onAttach(context);
+    if (context instanceof OnLogSubmittedListener) {
+      mListener = (OnLogSubmittedListener) context;
+    } else {
+      throw new ClassCastException(context.toString() + " must implement OnFragmentInteractionListener");
     }
   }
 
@@ -154,6 +166,18 @@ public class SubmitLogFragment extends Fragment {
     mListener = null;
   }
 
+  @Override
+  public void onDestroyView() {
+    dismissProgressDialog();
+    super.onDestroyView();
+  }
+
+  @Override
+  public void onDestroy() {
+    backgroundExecutor.shutdownNow();
+    super.onDestroy();
+  }
+
   private void initializeResources() {
     logPreview   = (EditText) getView().findViewById(R.id.log_preview);
     okButton     = (Button  ) getView().findViewById(R.id.ok         );
@@ -162,7 +186,7 @@ public class SubmitLogFragment extends Fragment {
     okButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        new SubmitToPastebinAsyncTask(logPreview.getText().toString()).execute();
+        submitLogAsync(logPreview.getText().toString());
       }
     });
 
@@ -172,7 +196,7 @@ public class SubmitLogFragment extends Fragment {
         if (mListener != null) mListener.onCancel();
       }
     });
-    new PopulateLogcatAsyncTask(getActivity()).execute();
+    populateLogPreviewAsync();
   }
 
   private static String grabLogcat() {
@@ -243,19 +267,19 @@ public class SubmitLogFragment extends Fragment {
     showText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
     showText.setPadding(15, 30, 15, 30);
     showText.setText(getString(R.string.log_submit_activity__copy_this_url_and_add_it_to_your_issue, logUrl));
-    showText.setAutoLinkMask(Activity.RESULT_OK);
+    showText.setAutoLinkMask(Linkify.WEB_URLS);
     showText.setMovementMethod(LinkMovementMethod.getInstance());
     showText.setOnLongClickListener(new View.OnLongClickListener() {
 
       @Override
       public boolean onLongClick(View v) {
-        @SuppressWarnings("deprecation")
-        ClipboardManager manager =
-            (ClipboardManager) getActivity().getSystemService(Activity.CLIPBOARD_SERVICE);
-        manager.setText(logUrl);
-        Toast.makeText(getActivity(),
-                       R.string.log_submit_activity__copied_to_clipboard,
-                       Toast.LENGTH_SHORT).show();
+        ClipboardManager manager = ContextCompat.getSystemService(requireContext(), ClipboardManager.class);
+        if (manager != null) {
+          manager.setPrimaryClip(ClipData.newPlainText("log-url", logUrl));
+          Toast.makeText(getActivity(),
+                         R.string.log_submit_activity__copied_to_clipboard,
+                         Toast.LENGTH_SHORT).show();
+        }
         return true;
       }
     });
@@ -265,6 +289,9 @@ public class SubmitLogFragment extends Fragment {
   }
 
   private void handleShowSuccessDialog(final String logUrl) {
+    if (!isAdded()) {
+      return;
+    }
     TextView            showText = handleBuildSuccessTextView(logUrl);
     AlertDialog.Builder builder  = new AlertDialog.Builder(getActivity());
 
@@ -294,88 +321,127 @@ public class SubmitLogFragment extends Fragment {
     hackSavedLogUrl = logUrl;
   }
 
-  private class PopulateLogcatAsyncTask extends AsyncTask<Void,Void,String> {
-    private WeakReference<Context> weakContext;
-
-    public PopulateLogcatAsyncTask(Context context) {
-      this.weakContext = new WeakReference<>(context);
+  private void populateLogPreviewAsync() {
+    if (!isAdded()) {
+      return;
     }
 
-    @Override
-    protected String doInBackground(Void... voids) {
-      Context context = weakContext.get();
-      if (context == null) return null;
+    logPreview.setText(R.string.log_submit_activity__loading_logs);
+    okButton.setEnabled(false);
 
-      return buildDescription(context) + "\n" + new Scrubber().scrub(grabLogcat());
+    final Context appContext = requireContext().getApplicationContext();
+
+    backgroundExecutor.execute(() -> {
+      String description = buildDescription(appContext);
+      String logcat = new Scrubber().scrub(grabLogcat());
+      final String combined = TextUtils.isEmpty(logcat) ? description : description + "\n" + logcat;
+
+      mainHandler.post(() -> {
+        if (!isAdded()) {
+          return;
+        }
+
+        if (TextUtils.isEmpty(combined)) {
+          if (mListener != null) mListener.onFailure();
+          return;
+        }
+
+        logPreview.setText(combined);
+        okButton.setEnabled(true);
+      });
+    });
+  }
+
+  private void submitLogAsync(final String paste) {
+    if (!isAdded()) {
+      return;
     }
 
-    @Override
-    protected void onPreExecute() {
-      super.onPreExecute();
-      logPreview.setText(R.string.log_submit_activity__loading_logs);
-      okButton.setEnabled(false);
-    }
+    showProgressDialog();
 
-    @Override
-    protected void onPostExecute(String logcat) {
-      super.onPostExecute(logcat);
-      if (TextUtils.isEmpty(logcat)) {
-        if (mListener != null) mListener.onFailure();
-        return;
+    backgroundExecutor.execute(() -> {
+      String response = uploadPaste(paste);
+
+      mainHandler.post(() -> {
+        if (!isAdded()) {
+          dismissProgressDialog();
+          return;
+        }
+
+        dismissProgressDialog();
+
+        if (response != null) {
+          handleShowSuccessDialog(response);
+        } else {
+          Log.w(TAG, "Response was null from paste service.");
+          Toast.makeText(requireContext(), R.string.log_submit_activity__network_failure, Toast.LENGTH_LONG).show();
+        }
+      });
+    });
+  }
+
+  private @Nullable String uploadPaste(String paste) {
+    try {
+  RequestBody body = RequestBody.create(paste, PLAIN_TEXT);
+
+      Request request = new Request.Builder()
+                                   .url(API_ENDPOINT + "/documents")
+                                   .post(body)
+                                   .build();
+
+      try (Response postResponse = HTTP_CLIENT.newCall(request).execute()) {
+        ResponseBody responseBody = postResponse.body();
+
+        if (!postResponse.isSuccessful() || responseBody == null) {
+          throw new IOException("Bad response: " + postResponse);
+        }
+
+        JSONObject responseJson = new JSONObject(responseBody.string());
+        Object key = responseJson.opt("key");
+
+        if (key == null) {
+          throw new IOException("Bad response: " + postResponse);
+        }
+
+        return API_ENDPOINT + "/" + key;
       }
-      logPreview.setText(logcat);
-      okButton.setEnabled(true);
+    } catch (IOException | JSONException e) {
+      Log.w(TAG, e);
+      return null;
     }
   }
 
-  private class SubmitToPastebinAsyncTask extends ProgressDialogAsyncTask<Void,Void,String> {
-    private final String         paste;
-
-    public SubmitToPastebinAsyncTask(String paste) {
-      super(getActivity(), R.string.log_submit_activity__submitting, R.string.log_submit_activity__uploading_logs);
-      this.paste = paste;
+  private void showProgressDialog() {
+    if (!isAdded()) {
+      return;
     }
 
-    @Override
-    protected String doInBackground(Void... voids) {
-      try {
-        OkHttpClient client = new OkHttpClient();
-        RequestBody  body   = RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), paste.getBytes());
-
-        Request request = new Request.Builder()
-                                     .url(API_ENDPOINT + "/documents")
-                                     .post(body)
-                                     .build();
-
-        Response postResponse = client.newCall(request).execute();
-
-        if (!postResponse.isSuccessful() || postResponse.body() == null) {
-          throw new IOException("Bad response: " + postResponse);
-        }
-
-        JSONObject responseJson = new JSONObject(postResponse.body().string());
-
-        if (responseJson.get("key") == null) {
-          throw new IOException("Bad response: " + postResponse);
-        }
-
-        return API_ENDPOINT + "/" + responseJson.get("key");
-      } catch (IOException | JSONException e) {
-        Log.w(TAG, e);
-      }
-      return null;
+    if (progressDialog != null && progressDialog.isShowing()) {
+      return;
     }
 
-    @Override
-    protected void onPostExecute(final String response) {
-      super.onPostExecute(response);
+    Context context = requireContext();
+    ProgressBar progressBar = new ProgressBar(context);
+    progressBar.setIndeterminate(true);
 
-      if (response != null)
-        handleShowSuccessDialog(response);
-      else {
-        Log.w(TAG, "Response was null from Gist API.");
-        Toast.makeText(getActivity(), R.string.log_submit_activity__network_failure, Toast.LENGTH_LONG).show();
-      }
+    int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, context.getResources().getDisplayMetrics());
+    FrameLayout frameLayout = new FrameLayout(context);
+    frameLayout.setPadding(padding, padding, padding, padding);
+    frameLayout.addView(progressBar);
+
+    progressDialog = new AlertDialog.Builder(context)
+        .setTitle(R.string.log_submit_activity__submitting)
+        .setMessage(R.string.log_submit_activity__uploading_logs)
+        .setView(frameLayout)
+        .setCancelable(false)
+        .create();
+    progressDialog.show();
+  }
+
+  private void dismissProgressDialog() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+      progressDialog = null;
     }
   }
 

@@ -6,9 +6,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build.VERSION;
+import android.os.LocaleList;
 import android.text.TextUtils;
-import android.os.Build.VERSION_CODES;
 
 import java.util.Locale;
 
@@ -50,19 +49,18 @@ public class DynamicLanguage {
   @SuppressLint("AppBundleLocaleChanges")
   private static void setContextLocale(Context context, Locale selectedLocale) {
     Configuration configuration = context.getResources().getConfiguration();
+    Locale current = getConfigurationLocale(configuration);
 
-    if (!configuration.locale.equals(selectedLocale)) {
-      configuration.locale = selectedLocale;
-      if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-        configuration.setLayoutDirection(selectedLocale);
-      }
-      context.getResources().updateConfiguration(configuration,
-                                                 context.getResources().getDisplayMetrics());
+    if (!selectedLocale.equals(current)) {
+      configuration.setLocale(selectedLocale);
+      configuration.setLocales(new LocaleList(selectedLocale));
+      configuration.setLayoutDirection(selectedLocale);
+      context.createConfigurationContext(configuration);
     }
   }
 
   private static Locale getActivityLocale(Activity activity) {
-    return activity.getResources().getConfiguration().locale;
+    return getConfigurationLocale(activity.getResources().getConfiguration());
   }
 
   private static Locale getSelectedLocale(Context context) {
@@ -75,6 +73,15 @@ public class DynamicLanguage {
     } else {
       return new Locale(language[0]);
     }
+  }
+
+  private static Locale getConfigurationLocale(Configuration configuration) {
+    LocaleList locales = configuration.getLocales();
+    if (locales != null && !locales.isEmpty()) {
+      return locales.get(0);
+    }
+    Locale legacyLocale = configuration.locale;
+    return legacyLocale != null ? legacyLocale : Locale.getDefault();
   }
 
   private static final class OverridePendingTransition {

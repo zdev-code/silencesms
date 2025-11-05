@@ -2,6 +2,8 @@ plugins {
     id 'java-library'
 }
 
+evaluationDependsOn(':tests')
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -15,19 +17,12 @@ repositories {
     mavenLocal()
 }
 
-sourceSets {
-    test {
-        java {
-            srcDirs = ['src/test/java/', project(':tests').file('src/test/java')]
-        }
-    }
-}
-
 dependencies {
     api "org.whispersystems:curve25519-java:${curve25519_version}"
     api 'com.google.protobuf:protobuf-java:3.25.3'
 
     testImplementation 'junit:junit:4.13.2'
+    testImplementation project(path: ':tests', configuration: 'testArtifacts')
 }
 
 
@@ -38,6 +33,10 @@ test {
     }
 
     include 'org/whispersystems/**'
+
+    dependsOn project(':tests').tasks.named('testClasses')
+    testClassesDirs = files(testClassesDirs, project(':tests').sourceSets.test.output.classesDirs)
+    classpath += project(':tests').sourceSets.test.runtimeClasspath
 }
 
 // Legacy publishing tasks removed; configure modern publishing if required.

@@ -25,9 +25,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.os.BundleCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -103,14 +103,6 @@ public class ApplicationPreferencesActivity extends PassphraseRequiredActionBarA
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data)
-  {
-    super.onActivityResult(requestCode, resultCode, data);
-    Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
-    fragment.onActivityResult(requestCode, resultCode, data);
-  }
-
-  @Override
   public boolean onSupportNavigateUp() {
     FragmentManager fragmentManager = getSupportFragmentManager();
     if (fragmentManager.getBackStackEntryCount() > 0) {
@@ -144,7 +136,11 @@ public class ApplicationPreferencesActivity extends PassphraseRequiredActionBarA
     public void onCreate(Bundle icicle) {
       super.onCreate(icicle);
 
-      MasterSecret masterSecret = getArguments().getParcelable("master_secret");
+      MasterSecret masterSecret = null;
+      Bundle arguments = getArguments();
+      if (arguments != null) {
+        masterSecret = BundleCompat.getParcelable(arguments, "master_secret", MasterSecret.class);
+      }
       this.findPreference(PREFERENCE_CATEGORY_SMS_MMS)
         .setOnPreferenceClickListener(new CategoryClickListener(masterSecret, PREFERENCE_CATEGORY_SMS_MMS));
       this.findPreference(PREFERENCE_CATEGORY_NOTIFICATIONS)

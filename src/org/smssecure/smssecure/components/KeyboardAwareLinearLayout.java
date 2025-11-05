@@ -18,13 +18,15 @@ package org.smssecure.smssecure.components;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.preference.PreferenceManager;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.os.Build;
+import androidx.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.Surface;
 import android.view.View;
 
@@ -150,7 +152,23 @@ public class KeyboardAwareLinearLayout extends LinearLayoutCompat {
     return rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270;
   }
   private int getDeviceRotation() {
-    return ServiceUtil.getWindowManager(getContext()).getDefaultDisplay().getRotation();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      Display display = getDisplay();
+      if (display == null) {
+        display = getContext().getDisplay();
+      }
+      if (display != null) {
+        return display.getRotation();
+      }
+    } else {
+      @SuppressWarnings("deprecation")
+      Display display = ServiceUtil.getWindowManager(getContext()).getDefaultDisplay();
+      if (display != null) {
+        return display.getRotation();
+      }
+    }
+
+    return Surface.ROTATION_0;
   }
 
   private int getKeyboardLandscapeHeight() {
@@ -158,14 +176,14 @@ public class KeyboardAwareLinearLayout extends LinearLayoutCompat {
   }
 
   private int getKeyboardPortraitHeight() {
-    int keyboardHeight = PreferenceManager.getDefaultSharedPreferences(getContext())
-                                          .getInt("keyboard_height_portrait", defaultCustomKeyboardSize);
+  int keyboardHeight = PreferenceManager.getDefaultSharedPreferences(getContext())
+                      .getInt("keyboard_height_portrait", defaultCustomKeyboardSize);
     return Util.clamp(keyboardHeight, minCustomKeyboardSize, getRootView().getHeight() - minCustomKeyboardTopMargin);
   }
 
   private void setKeyboardPortraitHeight(int height) {
-    PreferenceManager.getDefaultSharedPreferences(getContext())
-                     .edit().putInt("keyboard_height_portrait", height).apply();
+  PreferenceManager.getDefaultSharedPreferences(getContext())
+           .edit().putInt("keyboard_height_portrait", height).apply();
   }
 
   public void postOnKeyboardClose(final Runnable runnable) {

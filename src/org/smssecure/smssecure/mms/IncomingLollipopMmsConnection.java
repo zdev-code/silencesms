@@ -29,6 +29,7 @@ import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.RetrieveConf;
 
 import org.smssecure.smssecure.providers.MmsBodyProvider;
+import org.smssecure.smssecure.util.SmsManagerUtil;
 import org.smssecure.smssecure.util.Util;
 
 import java.io.ByteArrayOutputStream;
@@ -64,13 +65,7 @@ public class IncomingLollipopMmsConnection extends LollipopMmsConnection impleme
 
       Log.w(TAG, "downloading multimedia from " + contentLocation + " to " + pointer.getUri());
 
-      SmsManager smsManager;
-
-      if (VERSION.SDK_INT >= 22 && subscriptionId != -1) {
-        smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
-      } else {
-        smsManager = SmsManager.getDefault();
-      }
+      SmsManager smsManager = SmsManagerUtil.getSystemSmsManager(getContext(), subscriptionId);
 
       smsManager.downloadMultimediaMessage(getContext(),
                                            contentLocation,

@@ -20,6 +20,7 @@ package org.smssecure.smssecure;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.IntentCompat;
 import android.annotation.SuppressLint;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -161,7 +162,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
 
   private @Nullable IdentityKey getRemoteIdentityKey(MasterSecret masterSecret, Recipient recipient) {
     int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
-    IdentityKeyParcelable identityKeyParcelable = getIntent().getParcelableExtra("remote_identity");
+  IdentityKeyParcelable identityKeyParcelable = IntentCompat.getParcelableExtra(getIntent(), "remote_identity", IdentityKeyParcelable.class);
 
     if (identityKeyParcelable != null) {
       return identityKeyParcelable.get();

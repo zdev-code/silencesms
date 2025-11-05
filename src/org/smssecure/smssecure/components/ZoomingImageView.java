@@ -4,7 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -33,12 +34,21 @@ import org.smssecure.smssecure.util.BitmapUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ZoomingImageView extends FrameLayout {
 
   private static final String TAG = ZoomingImageView.class.getName();
+
+  private static final ExecutorService DIMENSION_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
+    Thread thread = new Thread(r, "zooming-image-dimensions");
+    thread.setDaemon(true);
+    return thread;
+  });
+  private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
   private final ImageView                 imageView;
   private final PhotoViewAttacher         imageViewAttacher;
@@ -72,32 +82,31 @@ public class ZoomingImageView extends FrameLayout {
 
     Log.w(TAG, "Max texture size: " + maxTextureSize);
 
-    new AsyncTask<Void, Void, Pair<Integer, Integer>>() {
-      @Override
-      protected @Nullable Pair<Integer, Integer> doInBackground(Void... params) {
-        if (contentType.equals("image/gif")) return null;
+    DIMENSION_EXECUTOR.execute(() -> {
+      Pair<Integer, Integer> dimensions = null;
 
+      if (!"image/gif".equals(contentType)) {
         try {
           InputStream inputStream = PartAuthority.getAttachmentStream(context, masterSecret, uri);
-          return BitmapUtil.getDimensions(inputStream);
+          dimensions = BitmapUtil.getDimensions(inputStream);
         } catch (IOException | BitmapDecodingException e) {
           Log.w(TAG, e);
-          return null;
         }
       }
 
-      protected void onPostExecute(@Nullable Pair<Integer, Integer> dimensions) {
-        Log.w(TAG, "Dimensions: " + (dimensions == null ? "(null)" : dimensions.first + ", " + dimensions.second));
+      Pair<Integer, Integer> finalDimensions = dimensions;
+      MAIN_HANDLER.post(() -> {
+        Log.w(TAG, "Dimensions: " + (finalDimensions == null ? "(null)" : finalDimensions.first + ", " + finalDimensions.second));
 
-        if (dimensions == null || (dimensions.first <= maxTextureSize && dimensions.second <= maxTextureSize)) {
+        if (finalDimensions == null || (finalDimensions.first <= maxTextureSize && finalDimensions.second <= maxTextureSize)) {
           Log.w(TAG, "Loading in standard image view...");
           setImageViewUri(masterSecret, uri);
         } else {
           Log.w(TAG, "Loading in subsampling image view...");
           setSubsamplingImageViewUri(uri);
         }
-      }
-    }.execute();
+      });
+    });
   }
 
   private void setImageViewUri(MasterSecret masterSecret, Uri uri) {

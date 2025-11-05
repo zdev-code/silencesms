@@ -2,7 +2,7 @@ package org.smssecure.smssecure.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.provider.Settings;
 import androidx.annotation.ArrayRes;
 import androidx.annotation.NonNull;

@@ -46,7 +46,7 @@ public class SessionUtil {
   }
 
   public static List<Integer> getSubscriptionIdWithoutSession(Context context, MasterSecret masterSecret, @NonNull String number, List<SubscriptionInfoCompat> activeSubscriptions) {
-    LinkedList<Integer> list = new LinkedList();
+  LinkedList<Integer> list = new LinkedList<>();
 
     for (SubscriptionInfoCompat subscriptionInfo : activeSubscriptions) {
       int subscriptionId = subscriptionInfo.getSubscriptionId();

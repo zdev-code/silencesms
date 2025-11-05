@@ -22,8 +22,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
@@ -55,6 +56,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -85,6 +88,8 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
   private MasterSecret   masterSecret;
   private Bitmap         avatarBmp;
   private Set<Recipient> selectedContacts;
+  private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
+  private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
   @Override
   protected void onPreCreate() {
@@ -109,6 +114,12 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
     dynamicTheme.onResume(this);
     dynamicLanguage.onResume(this);
     getSupportActionBar().setTitle(R.string.GroupCreateActivity_actionbar_title);
+  }
+
+  @Override
+  protected void onDestroy() {
+    backgroundExecutor.shutdownNow();
+    super.onDestroy();
   }
 
   private void addSelectedContact(Recipient contact) {
@@ -187,7 +198,11 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
       Toast.makeText(getApplicationContext(), R.string.GroupCreateActivity_contacts_no_members, Toast.LENGTH_SHORT).show();
       return;
     }
-    new CreateMmsGroupAsyncTask().execute();
+    final Set<Recipient> contactsSnapshot = new HashSet<>(selectedContacts);
+    backgroundExecutor.execute(() -> {
+      long resultThread = handleCreateMmsGroup(contactsSnapshot);
+      mainHandler.post(() -> handleGroupCreateResult(resultThread, contactsSnapshot));
+    });
   }
 
   private void syncAdapterWithSelectedContacts() {
@@ -254,33 +269,20 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
     return results;
   }
 
-  private class CreateMmsGroupAsyncTask extends AsyncTask<Void,Void,Long> {
+  private void handleGroupCreateResult(long resultThread, Set<Recipient> contactsSnapshot) {
+    if (resultThread > -1) {
+      Intent intent = new Intent(GroupCreateActivity.this, ConversationActivity.class);
+      intent.putExtra(ConversationActivity.THREAD_ID_EXTRA, resultThread);
+      intent.putExtra(ConversationActivity.DISTRIBUTION_TYPE_EXTRA, ThreadDatabase.DistributionTypes.DEFAULT);
 
-    @Override
-    protected Long doInBackground(Void... voids) {
-      return handleCreateMmsGroup(selectedContacts);
-    }
-
-    @Override
-    protected void onPostExecute(Long resultThread) {
-      if (resultThread > -1) {
-        Intent intent = new Intent(GroupCreateActivity.this, ConversationActivity.class);
-        intent.putExtra(ConversationActivity.THREAD_ID_EXTRA, resultThread.longValue());
-        intent.putExtra(ConversationActivity.DISTRIBUTION_TYPE_EXTRA, ThreadDatabase.DistributionTypes.DEFAULT);
-
-        ArrayList<Recipient> selectedContactsList = setToArrayList(selectedContacts);
-        intent.putExtra(ConversationActivity.RECIPIENTS_EXTRA, RecipientFactory.getRecipientsFor(GroupCreateActivity.this, selectedContactsList, true).getIds());
-        startActivity(intent);
-        finish();
-      } else {
-        Toast.makeText(getApplicationContext(), R.string.GroupCreateActivity_contacts_mms_exception, Toast.LENGTH_LONG).show();
-        finish();
-      }
-    }
-
-    @Override
-    protected void onProgressUpdate(Void... values) {
-      super.onProgressUpdate(values);
+      ArrayList<Recipient> selectedContactsList = setToArrayList(contactsSnapshot);
+      intent.putExtra(ConversationActivity.RECIPIENTS_EXTRA,
+                      RecipientFactory.getRecipientsFor(GroupCreateActivity.this, selectedContactsList, true).getIds());
+      startActivity(intent);
+      finish();
+    } else {
+      Toast.makeText(getApplicationContext(), R.string.GroupCreateActivity_contacts_mms_exception, Toast.LENGTH_LONG).show();
+      finish();
     }
   }
 }

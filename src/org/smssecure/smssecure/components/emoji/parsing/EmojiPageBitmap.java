@@ -2,7 +2,8 @@ package org.smssecure.smssecure.components.emoji.parsing;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
@@ -15,6 +16,8 @@ import org.smssecure.smssecure.util.Util;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EmojiPageBitmap {
 
@@ -23,6 +26,13 @@ public class EmojiPageBitmap {
   private final Context        context;
   private final EmojiPageModel model;
   private final float          decodeScale;
+
+  private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor(r -> {
+    Thread thread = new Thread(r, "emoji-page-loader");
+    thread.setDaemon(true);
+    return thread;
+  });
+  private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
   private SoftReference<Bitmap>        bitmapReference;
   private ListenableFutureTask<Bitmap> task;
@@ -53,16 +63,13 @@ public class EmojiPageBitmap {
         }
       };
       task = new ListenableFutureTask<>(callable);
-      new AsyncTask<Void, Void, Void>() {
-        @Override protected Void doInBackground(Void... params) {
+      EXECUTOR.execute(() -> {
+        try {
           task.run();
-          return null;
+        } finally {
+          MAIN_HANDLER.post(() -> task = null);
         }
-
-        @Override protected void onPostExecute(Void aVoid) {
-          task = null;
-        }
-      }.execute();
+      });
     }
     return task;
   }
