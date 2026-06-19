@@ -1,6 +1,6 @@
 plugins {
-    id 'com.android.application' version '8.13.2'
-    id 'com.android.library' version '8.13.2' apply false
+    id 'com.android.application' version '9.2.1'
+    id 'com.android.library' version '9.2.1' apply false
 }
 
 repositories {
@@ -71,6 +71,8 @@ dependencies {
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.mockito:mockito-core:3.12.4'
@@ -94,15 +96,15 @@ dependencies {
 
 android {
     namespace = 'org.smssecure.smssecure'
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = 'org.smssecure.smssecure'
         versionCode = 212
         versionName = "0.16.13-unstable"
 
-        minSdkVersion = 21
-        targetSdkVersion = 34
+        minSdkVersion = 23
+        targetSdkVersion = 36
 
     testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
 
@@ -114,8 +116,9 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -165,8 +168,8 @@ android {
     buildTypes {
         debug {
             minifyEnabled = false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
-            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
+            testProguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
         }
         release {
             minifyEnabled = true

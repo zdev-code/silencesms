@@ -105,6 +105,12 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   }
 
   @Override
+  protected boolean applyDefaultWindowInsets() {
+    // Immersive media viewer draws edge-to-edge; it manages its own insets.
+    return false;
+  }
+
+  @Override
   public void onModified(Recipient recipient) {
     initializeActionBar();
   }

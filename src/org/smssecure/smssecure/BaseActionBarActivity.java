@@ -7,6 +7,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,6 +30,41 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
     initializeScreenshotSecurity();
+  }
+
+  @Override
+  public void onContentChanged() {
+    super.onContentChanged();
+    applyWindowInsets();
+  }
+
+  /**
+   * Pads the activity content with system-bar and display-cutout insets so that nothing is hidden
+   * behind the status/navigation bars under the edge-to-edge layout that Android 15+ (targetSdk 35+)
+   * enforces. On older releases the reported insets are zero, so this is a no-op there. Fullscreen
+   * activities (e.g. media viewers) override {@link #applyDefaultWindowInsets()} to opt out.
+   */
+  private void applyWindowInsets() {
+    if (!applyDefaultWindowInsets()) return;
+
+    final View content = findViewById(android.R.id.content);
+    if (content == null) return;
+
+    ViewCompat.setOnApplyWindowInsetsListener(content, (view, windowInsets) -> {
+      Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() |
+                                           WindowInsetsCompat.Type.displayCutout());
+      view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+      return windowInsets;
+    });
+    ViewCompat.requestApplyInsets(content);
+  }
+
+  /**
+   * Whether {@link #applyWindowInsets()} should pad this activity's content with system-bar insets.
+   * Fullscreen activities should override this to return {@code false} and handle insets themselves.
+   */
+  protected boolean applyDefaultWindowInsets() {
+    return true;
   }
 
   @Override
