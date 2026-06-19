@@ -120,6 +120,9 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   }
 
   private void routeApplicationState(MasterSecret masterSecret) {
+    if (masterSecret == null && SilencePreferences.isPasswordDisabled(this)) {
+      masterSecret = KeyCachingService.getMasterSecret(this);
+    }
     Intent intent = getIntentForState(masterSecret, getApplicationState(masterSecret));
     if (intent != null) {
       startActivity(intent);
