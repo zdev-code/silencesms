@@ -29,7 +29,7 @@ import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.Hex;
 
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
 
 /**
  * Activity for displaying an identity key.

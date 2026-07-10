@@ -112,7 +112,7 @@ public class ReceiveKeyDialog extends AlertDialog {
                               public void onClick(View widget) {
                                 Intent intent = new Intent(getContext(), VerifyIdentityActivity.class);
                                 intent.putExtra("recipient", messageRecord.getIndividualRecipient().getRecipientId());
-                                intent.putExtra("remote_identity", new IdentityKeyParcelable(identityKey));
+                                intent.putExtra("remote_identity", new IdentityKeyParcelable(toNew(identityKey)));
                                 getContext().startActivity(intent);
                               }
                             }, introText.length() + 1,
@@ -163,6 +163,17 @@ public class ReceiveKeyDialog extends AlertDialog {
     }
   }
 
+  // ReceiveKeyDialog is part of the vendored Key-Exchange trust UI, so it works in vendored
+  // IdentityKey; the app's IdentityDatabase / IdentityKeyParcelable are now maintained-library typed,
+  // so convert at those seams (serialization is byte-identical across the two libraries).
+  private static org.signal.libsignal.protocol.IdentityKey toNew(IdentityKey vendored) {
+    try {
+      return new org.signal.libsignal.protocol.IdentityKey(vendored.serialize(), 0);
+    } catch (org.signal.libsignal.protocol.InvalidKeyException e) {
+      throw new AssertionError(e);
+    }
+  }
+
   private class CancelListener implements OnClickListener {
     @Override
     public void onClick(DialogInterface dialog, int which) {
@@ -200,7 +211,7 @@ public class ReceiveKeyDialog extends AlertDialog {
 
           identityDatabase.saveIdentity(masterSecret,
                   messageRecord.getIndividualRecipient().getRecipientId(),
-                  identityKey);
+                  toNew(identityKey));
 
           if (message.isIdentityUpdate()) {
             smsDatabase.markAsProcessedKeyExchange(messageRecord.getId());

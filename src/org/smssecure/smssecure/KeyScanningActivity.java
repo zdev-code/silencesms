@@ -42,7 +42,7 @@ import org.smssecure.smssecure.util.Dialogs;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
 import org.smssecure.smssecure.util.Hex;
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
 
 /**
  * Activity for initiating/receiving key QR code scans.

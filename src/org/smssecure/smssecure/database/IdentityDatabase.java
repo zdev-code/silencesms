@@ -28,8 +28,8 @@ import org.smssecure.smssecure.database.DatabaseContentProviders;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.Base64;
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.InvalidKeyException;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.InvalidKeyException;
 import org.smssecure.smssecure.crypto.MasterCipher;
 import org.smssecure.smssecure.crypto.MasterSecret;
 

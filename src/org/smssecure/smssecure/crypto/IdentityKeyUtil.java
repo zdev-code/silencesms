@@ -25,12 +25,12 @@ import android.util.Log;
 
 import org.smssecure.smssecure.util.Base64;
 import org.smssecure.smssecure.util.dualsim.DualSimUtil;
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.IdentityKeyPair;
-import org.whispersystems.libsignal.InvalidKeyException;
-import org.whispersystems.libsignal.ecc.Curve;
-import org.whispersystems.libsignal.ecc.ECKeyPair;
-import org.whispersystems.libsignal.ecc.ECPrivateKey;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKeyPair;
+import org.signal.libsignal.protocol.InvalidKeyException;
+import org.signal.libsignal.protocol.ecc.Curve;
+import org.signal.libsignal.protocol.ecc.ECKeyPair;
+import org.signal.libsignal.protocol.ecc.ECPrivateKey;
 
 import java.io.IOException;
 

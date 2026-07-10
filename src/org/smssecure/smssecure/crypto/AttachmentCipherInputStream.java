@@ -1,8 +1,7 @@
 package org.smssecure.smssecure.crypto;
 
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.InvalidMacException;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 import java.util.Optional;
 
 import java.io.File;
@@ -71,7 +70,7 @@ public class AttachmentCipherInputStream extends FileInputStream {
     } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
       throw new AssertionError(e);
     } catch (InvalidMacException e) {
-      throw new InvalidMessageException(e);
+      throw new InvalidMessageException("Attachment MAC/digest verification failed", e);
     }
   }
 

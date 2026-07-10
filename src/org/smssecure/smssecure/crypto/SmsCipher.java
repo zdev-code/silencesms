@@ -21,13 +21,12 @@ import org.smssecure.smssecure.crypto.storage.VendoredSignalProtocolStore;
 import org.smssecure.smssecure.crypto.storage.SilenceSignalProtocolStore;
 import org.smssecure.smssecure.protocol.KeyExchangeMessage;
 import org.whispersystems.libsignal.SignalProtocolAddress;
-import org.whispersystems.libsignal.DuplicateMessageException;
+import org.signal.libsignal.protocol.DuplicateMessageException;
 import org.whispersystems.libsignal.InvalidKeyException;
-import org.whispersystems.libsignal.InvalidKeyIdException;
-import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.InvalidVersionException;
-import org.whispersystems.libsignal.LegacyMessageException;
-import org.whispersystems.libsignal.NoSessionException;
+import org.signal.libsignal.protocol.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidVersionException;
+import org.signal.libsignal.protocol.LegacyMessageException;
+import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.StaleKeyExchangeException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
 import org.whispersystems.libsignal.state.SignalProtocolStore;
@@ -75,17 +74,9 @@ public class SmsCipher {
       }
 
       return message.withMessageBody(new String(plaintext));
-    } catch (org.signal.libsignal.protocol.NoSessionException e) {
-      throw new NoSessionException(e);
-    } catch (org.signal.libsignal.protocol.DuplicateMessageException e) {
-      throw new DuplicateMessageException(e.getMessage());
-    } catch (org.signal.libsignal.protocol.LegacyMessageException e) {
-      throw new LegacyMessageException(e.getMessage());
     } catch (org.signal.libsignal.protocol.UntrustedIdentityException e) {
       throw toVendored(e);
     } catch (org.signal.libsignal.protocol.InvalidVersionException | org.signal.libsignal.protocol.InvalidKeyException e) {
-      throw new InvalidMessageException(e);
-    } catch (org.signal.libsignal.protocol.InvalidMessageException e) {
       throw new InvalidMessageException(e);
     } catch (IOException | IllegalArgumentException | NullPointerException e) {
       throw new InvalidMessageException(e);
@@ -104,17 +95,9 @@ public class SmsCipher {
       byte[]                                                    plaintext     = transportDetails.getStrippedPaddingMessageBody(padded);
 
       return new IncomingEncryptedMessage(message, new String(plaintext));
-    } catch (org.signal.libsignal.protocol.DuplicateMessageException e) {
-      throw new DuplicateMessageException(e.getMessage());
-    } catch (org.signal.libsignal.protocol.LegacyMessageException e) {
-      throw new LegacyMessageException(e.getMessage());
-    } catch (org.signal.libsignal.protocol.InvalidVersionException e) {
-      throw new InvalidVersionException(e.getMessage());
     } catch (org.signal.libsignal.protocol.UntrustedIdentityException e) {
       throw toVendored(e);
     } catch (org.signal.libsignal.protocol.InvalidKeyException | org.signal.libsignal.protocol.InvalidKeyIdException e) {
-      throw new InvalidMessageException(e);
-    } catch (org.signal.libsignal.protocol.InvalidMessageException e) {
       throw new InvalidMessageException(e);
     } catch (IOException e) {
       throw new InvalidMessageException(e);
@@ -144,7 +127,7 @@ public class SmsCipher {
         return message.withBody(encodedCiphertext);
       }
     } catch (org.signal.libsignal.protocol.NoSessionException e) {
-      throw new NoSessionException(e);
+      throw new NoSessionException(e.getMessage());
     } catch (org.signal.libsignal.protocol.UntrustedIdentityException e) {
       throw toVendored(e);
     }
@@ -182,8 +165,14 @@ public class SmsCipher {
       } else {
         return null;
       }
+    } catch (org.whispersystems.libsignal.InvalidVersionException e) {
+      throw new InvalidVersionException(e.getMessage());
+    } catch (org.whispersystems.libsignal.LegacyMessageException e) {
+      throw new LegacyMessageException(e.getMessage());
+    } catch (org.whispersystems.libsignal.InvalidMessageException e) {
+      throw new InvalidMessageException(e.getMessage());
     } catch (IOException | InvalidKeyException e) {
-      throw new InvalidMessageException(e);
+      throw new InvalidMessageException(e.getMessage());
     }
   }
 

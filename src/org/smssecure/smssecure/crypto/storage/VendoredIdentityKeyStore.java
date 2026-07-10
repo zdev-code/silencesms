@@ -28,7 +28,13 @@ public class VendoredIdentityKeyStore implements IdentityKeyStore {
 
   @Override
   public IdentityKeyPair getIdentityKeyPair() {
-    return IdentityKeyUtil.getIdentityKeyPair(context, masterSecret, subscriptionId);
+    org.signal.libsignal.protocol.IdentityKeyPair current =
+        IdentityKeyUtil.getIdentityKeyPair(context, masterSecret, subscriptionId);
+    try {
+      return new IdentityKeyPair(current.serialize());
+    } catch (org.whispersystems.libsignal.InvalidKeyException e) {
+      throw new AssertionError(e);
+    }
   }
 
   @Override
@@ -40,7 +46,7 @@ public class VendoredIdentityKeyStore implements IdentityKeyStore {
   public boolean saveIdentity(SignalProtocolAddress address, IdentityKey identityKey) {
     synchronized (LOCK) {
       long recipientId = RecipientFactory.getRecipientsFromString(context, address.getName(), true).getPrimaryRecipient().getRecipientId();
-      DatabaseFactory.getIdentityDatabase(context).saveIdentity(masterSecret, recipientId, identityKey);
+      DatabaseFactory.getIdentityDatabase(context).saveIdentity(masterSecret, recipientId, toNew(identityKey));
       return true;
     }
   }
@@ -59,11 +65,21 @@ public class VendoredIdentityKeyStore implements IdentityKeyStore {
   public boolean isTrustedIdentity(SignalProtocolAddress address, IdentityKey identityKey) {
     long recipientId = RecipientFactory.getRecipientsFromString(context, address.getName(), true).getPrimaryRecipient().getRecipientId();
     return DatabaseFactory.getIdentityDatabase(context)
-                          .isValidIdentity(masterSecret, recipientId, identityKey);
+                          .isValidIdentity(masterSecret, recipientId, toNew(identityKey));
   }
 
   @Override
   public IdentityKey getIdentity(SignalProtocolAddress address) {
     return null;
+  }
+
+  // The app's IdentityDatabase is now maintained-library ({@code org.signal.libsignal.protocol})
+  // typed; the vendored Key-Exchange path hands it identities in the vendored type, so convert here.
+  private static org.signal.libsignal.protocol.IdentityKey toNew(IdentityKey identityKey) {
+    try {
+      return new org.signal.libsignal.protocol.IdentityKey(identityKey.serialize(), 0);
+    } catch (org.signal.libsignal.protocol.InvalidKeyException e) {
+      throw new AssertionError(e);
+    }
   }
 }

@@ -6,7 +6,7 @@ import android.util.Log;
 import org.smssecure.smssecure.crypto.MasterCipher;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.whispersystems.libsignal.InvalidKeyIdException;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyStore;
 import org.whispersystems.libsignal.state.PreKeyRecord;

@@ -19,8 +19,8 @@ package org.smssecure.smssecure.crypto;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.InvalidKeyException;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.InvalidKeyException;
 
 public class IdentityKeyParcelable implements Parcelable {
 

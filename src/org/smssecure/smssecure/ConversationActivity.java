@@ -126,7 +126,7 @@ import org.smssecure.smssecure.util.concurrent.ListenableFuture;
 import org.smssecure.smssecure.util.concurrent.SettableFuture;
 import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 import java.util.Optional;
 
 import java.io.IOException;

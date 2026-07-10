@@ -54,7 +54,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
     synchronized (FILE_LOCK) {
       try {
         return new PreKeyRecord(loadSerializedRecord(getPreKeyFile(preKeyId)));
-      } catch (IOException | InvalidMessageException | org.whispersystems.libsignal.InvalidMessageException e) {
+      } catch (IOException | InvalidMessageException e) {
         Log.w(TAG, e);
         throw new InvalidKeyIdException(e);
       }
@@ -66,7 +66,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
     synchronized (FILE_LOCK) {
       try {
         return new SignedPreKeyRecord(loadSerializedRecord(getSignedPreKeyFile(signedPreKeyId)));
-      } catch (IOException | InvalidMessageException | org.whispersystems.libsignal.InvalidMessageException e) {
+      } catch (IOException | InvalidMessageException e) {
         Log.w(TAG, e);
         throw new InvalidKeyIdException(e);
       }
@@ -82,7 +82,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
       for (File signedPreKeyFile : directory.listFiles()) {
         try {
           results.add(new SignedPreKeyRecord(loadSerializedRecord(signedPreKeyFile)));
-        } catch (IOException | InvalidMessageException | org.whispersystems.libsignal.InvalidMessageException e) {
+        } catch (IOException | InvalidMessageException e) {
           Log.w(TAG, e);
         }
       }
@@ -134,7 +134,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
   }
 
   private byte[] loadSerializedRecord(File recordFile)
-      throws IOException, org.whispersystems.libsignal.InvalidMessageException
+      throws IOException, InvalidMessageException
   {
     MasterCipher    masterCipher  = new MasterCipher(masterSecret);
     FileInputStream fin           = new FileInputStream(recordFile);

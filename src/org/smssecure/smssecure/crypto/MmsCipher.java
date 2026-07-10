@@ -9,11 +9,11 @@ import org.smssecure.smssecure.recipients.RecipientFormattingException;
 import org.smssecure.smssecure.transport.UndeliverableMessageException;
 import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.crypto.storage.SilenceSignalProtocolStore;
-import org.whispersystems.libsignal.DuplicateMessageException;
+import org.signal.libsignal.protocol.DuplicateMessageException;
 import org.whispersystems.libsignal.InvalidKeyException;
-import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.LegacyMessageException;
-import org.whispersystems.libsignal.NoSessionException;
+import org.signal.libsignal.protocol.InvalidMessageException;
+import org.signal.libsignal.protocol.LegacyMessageException;
+import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
 import java.util.Optional;
 
@@ -76,17 +76,9 @@ public class MmsCipher {
       }
 
       return (MultimediaMessagePdu) new PduParser(plaintext).parse();
-    } catch (org.signal.libsignal.protocol.NoSessionException e) {
-      throw new NoSessionException(e);
-    } catch (org.signal.libsignal.protocol.DuplicateMessageException e) {
-      throw new DuplicateMessageException(e.getMessage());
-    } catch (org.signal.libsignal.protocol.LegacyMessageException e) {
-      throw new LegacyMessageException(e.getMessage());
     } catch (org.signal.libsignal.protocol.UntrustedIdentityException e) {
       throw toVendored(e);
     } catch (org.signal.libsignal.protocol.InvalidVersionException | org.signal.libsignal.protocol.InvalidKeyException e) {
-      throw new InvalidMessageException(e);
-    } catch (org.signal.libsignal.protocol.InvalidMessageException e) {
       throw new InvalidMessageException(e);
     } catch (IOException e) {
       throw new InvalidMessageException(e);
@@ -129,7 +121,7 @@ public class MmsCipher {
 
       return message;
     } catch (org.signal.libsignal.protocol.NoSessionException e) {
-      throw new NoSessionException(e);
+      throw new NoSessionException(e.getMessage());
     } catch (org.signal.libsignal.protocol.UntrustedIdentityException e) {
       throw toVendored(e);
     }

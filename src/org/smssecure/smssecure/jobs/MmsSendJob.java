@@ -42,7 +42,7 @@ import org.smssecure.smssecure.util.NumberUtil;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
-import org.whispersystems.libsignal.NoSessionException;
+import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
 
 import java.io.ByteArrayOutputStream;

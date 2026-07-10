@@ -35,8 +35,8 @@ import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.util.Base64;
 import org.smssecure.smssecure.util.MediaUtil;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.InvalidMessageException;
 
 import java.io.File;
 import java.io.FileInputStream;

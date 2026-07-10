@@ -14,12 +14,9 @@ import org.signal.libsignal.protocol.state.IdentityKeyStore;
 
 /**
  * New-API ({@code org.signal.libsignal.protocol}) identity key store for the hybrid crypto setup
- * (maintained libsignal for message encrypt/decrypt, vendored library for Key Exchange). Bridges to
- * the existing identity storage:
- * the long-term keypair is loaded via {@link IdentityKeyUtil} and re-wrapped into the new
- * {@link IdentityKeyPair} (byte pass-through, proven by {@code OldToNewKeyRecordsTest}); remote
- * identities round-trip through the vendored {@code IdentityDatabase} by converting the new-API
- * {@link IdentityKey} to the vendored form ({@code new IdentityKey(bytes, 0)}) and back.
+ * (maintained libsignal for message encrypt/decrypt, vendored library for Key Exchange). The app's
+ * identity storage ({@link IdentityKeyUtil} + {@code IdentityDatabase}) is now maintained-library
+ * typed, so this store passes identities straight through with no conversion.
  */
 public class SilenceIdentityKeyStore implements IdentityKeyStore {
 
@@ -37,9 +34,7 @@ public class SilenceIdentityKeyStore implements IdentityKeyStore {
 
   @Override
   public IdentityKeyPair getIdentityKeyPair() {
-    org.whispersystems.libsignal.IdentityKeyPair vendored =
-        IdentityKeyUtil.getIdentityKeyPair(context, masterSecret, subscriptionId);
-    return new IdentityKeyPair(vendored.serialize());
+    return IdentityKeyUtil.getIdentityKeyPair(context, masterSecret, subscriptionId);
   }
 
   @Override
@@ -51,7 +46,7 @@ public class SilenceIdentityKeyStore implements IdentityKeyStore {
   public IdentityChange saveIdentity(SignalProtocolAddress address, IdentityKey identityKey) {
     synchronized (LOCK) {
       long recipientId = RecipientFactory.getRecipientsFromString(context, address.getName(), true).getPrimaryRecipient().getRecipientId();
-      DatabaseFactory.getIdentityDatabase(context).saveIdentity(masterSecret, recipientId, toVendored(identityKey));
+      DatabaseFactory.getIdentityDatabase(context).saveIdentity(masterSecret, recipientId, identityKey);
       // Silence tracks identity changes via IdentityDatabase / isTrustedIdentity, not this return value.
       return IdentityChange.NEW_OR_UNCHANGED;
     }
@@ -71,19 +66,11 @@ public class SilenceIdentityKeyStore implements IdentityKeyStore {
   private boolean isTrustedIdentity(SignalProtocolAddress address, IdentityKey identityKey) {
     long recipientId = RecipientFactory.getRecipientsFromString(context, address.getName(), true).getPrimaryRecipient().getRecipientId();
     return DatabaseFactory.getIdentityDatabase(context)
-                          .isValidIdentity(masterSecret, recipientId, toVendored(identityKey));
+                          .isValidIdentity(masterSecret, recipientId, identityKey);
   }
 
   @Override
   public IdentityKey getIdentity(SignalProtocolAddress address) {
     return null;
-  }
-
-  private static org.whispersystems.libsignal.IdentityKey toVendored(IdentityKey identityKey) {
-    try {
-      return new org.whispersystems.libsignal.IdentityKey(identityKey.serialize(), 0);
-    } catch (org.whispersystems.libsignal.InvalidKeyException e) {
-      throw new AssertionError(e);
-    }
   }
 }

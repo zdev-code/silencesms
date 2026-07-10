@@ -38,10 +38,10 @@ import org.smssecure.smssecure.service.KeyCachingService;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
-import org.whispersystems.libsignal.DuplicateMessageException;
-import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.LegacyMessageException;
-import org.whispersystems.libsignal.NoSessionException;
+import org.signal.libsignal.protocol.DuplicateMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
+import org.signal.libsignal.protocol.LegacyMessageException;
+import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
 import java.util.Optional;
 

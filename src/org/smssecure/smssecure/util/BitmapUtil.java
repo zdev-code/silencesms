@@ -22,7 +22,7 @@ import org.smssecure.smssecure.mms.AttachmentStreamUriLoader;
 import org.smssecure.smssecure.mms.DecryptableStreamUriLoader;
 import org.smssecure.smssecure.mms.MediaConstraints;
 import org.smssecure.smssecure.mms.PartAuthority;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 import java.util.Optional;
 
 import java.io.BufferedInputStream;

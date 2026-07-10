@@ -21,7 +21,11 @@ repositories {
 }
 
 dependencies {
-    api "org.whispersystems:curve25519-java:${curve25519_version}"
+    // The vendored ecc.Curve now delegates to the maintained Rust core. It is compiled against the
+    // maintained API here (compileOnly, so the maintained classes are NOT bundled/duplicated by this
+    // module); at runtime they are provided by the app's libsignal-android (and, for this module's own
+    // JVM tests, by the testImplementation libsignal-client below).
+    compileOnly 'org.signal:libsignal-client:0.72.1'
     api 'com.google.protobuf:protobuf-java:3.25.3'
 
     testImplementation 'junit:junit:4.13.2'
@@ -36,6 +40,11 @@ dependencies {
     // (org.signal.libsignal.protocol.*) so it coexists with the vendored
     // org.whispersystems.libsignal classes on the test classpath.
     testImplementation 'org.signal:libsignal-client:0.72.1'
+
+    // The archived curve25519-java is retained on the TEST classpath only, to cross-verify that the
+    // maintained Rust engine's X25519 agreement and XEd25519 signatures interoperate with the old
+    // implementation (i.e. peers on the previous build). It is no longer a main/runtime dependency.
+    testImplementation "org.whispersystems:curve25519-java:${curve25519_version}"
 }
 
 

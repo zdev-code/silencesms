@@ -66,7 +66,7 @@ import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobManager;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 import java.util.Optional;
 
 import java.io.IOException;

@@ -12,7 +12,7 @@ import org.smssecure.smssecure.database.documents.Document;
 import org.smssecure.smssecure.database.documents.IdentityKeyMismatch;
 import org.smssecure.smssecure.database.documents.IdentityKeyMismatchList;
 import org.smssecure.smssecure.util.JsonUtils;
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
 
 import java.io.IOException;
 import java.util.ArrayList;

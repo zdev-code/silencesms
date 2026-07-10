@@ -176,7 +176,6 @@ android {
             excludes += ['**/*.dll', '**/*.dylib', '**/*_amd64.so', '**/*_aarch64.so']
         }
         jniLibs {
-            keepDebugSymbols += ['**/libcurve25519.so']
             // libsignal-android bundles a testing-only native lib alongside the real one; it must never
             // ship in the app. Excluding it removes ~130 MB across the two ARM ABIs.
             excludes += ['**/libsignal_jni_testing.so']

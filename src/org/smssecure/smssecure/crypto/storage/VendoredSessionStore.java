@@ -10,7 +10,7 @@ import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.util.Conversions;
 import org.whispersystems.libsignal.SignalProtocolAddress;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SessionState;
 import org.whispersystems.libsignal.state.SessionStore;

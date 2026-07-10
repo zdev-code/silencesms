@@ -79,7 +79,7 @@ public class SilenceSessionStore implements SessionStore {
         Log.w(TAG, "Legacy single-state session (marker " + marker + ") unreadable by the "
                    + "maintained library; re-handshake will occur.");
         return new SessionRecord();
-      } catch (org.whispersystems.libsignal.InvalidMessageException | InvalidMessageException e) {
+      } catch (InvalidMessageException e) {
         // A stored record that will not deserialize under the maintained library; re-handshake.
         Log.w(TAG, "Stored session failed to deserialize; re-handshake will occur.", e);
         return new SessionRecord();

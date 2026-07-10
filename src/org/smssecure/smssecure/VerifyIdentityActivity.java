@@ -34,7 +34,8 @@ import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.Hex;
 import org.whispersystems.libsignal.SignalProtocolAddress;
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.InvalidKeyException;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SessionStore;
 
@@ -176,6 +177,16 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
       return null;
     }
 
-    return record.getSessionState().getRemoteIdentityKey();
+    org.whispersystems.libsignal.IdentityKey remote = record.getSessionState().getRemoteIdentityKey();
+    if (remote == null) {
+      return null;
+    }
+    // The remote identity comes from a vendored Key-Exchange SessionRecord; the UI/type layer is now
+    // maintained-library typed, so convert (serialization is byte-identical across the two libraries).
+    try {
+      return new IdentityKey(remote.serialize(), 0);
+    } catch (InvalidKeyException e) {
+      throw new AssertionError(e);
+    }
   }
 }
