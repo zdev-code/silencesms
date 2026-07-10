@@ -28,7 +28,7 @@ import org.smssecure.smssecure.attachments.UriAttachment;
 import org.smssecure.smssecure.database.AttachmentDatabase;
 import org.smssecure.smssecure.util.MediaUtil;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 public abstract class Slide {
 
@@ -57,7 +57,7 @@ public abstract class Slide {
 
   @NonNull
   public Optional<String> getBody() {
-    return Optional.absent();
+    return Optional.empty();
   }
 
   public boolean hasImage() {
@@ -104,8 +104,8 @@ public abstract class Slide {
                                                          @NonNull String  defaultMime,
                                                                   long     size)
   {
-    Optional<String> resolvedType = Optional.fromNullable(MediaUtil.getMimeType(context, uri));
-    return new UriAttachment(uri, resolvedType.or(defaultMime), AttachmentDatabase.TRANSFER_PROGRESS_STARTED, size);
+    Optional<String> resolvedType = Optional.ofNullable(MediaUtil.getMimeType(context, uri));
+    return new UriAttachment(uri, resolvedType.orElse(defaultMime), AttachmentDatabase.TRANSFER_PROGRESS_STARTED, size);
   }
 
   @Override

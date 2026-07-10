@@ -23,7 +23,7 @@ import org.smssecure.smssecure.mms.DecryptableStreamUriLoader;
 import org.smssecure.smssecure.mms.MediaConstraints;
 import org.smssecure.smssecure.mms.PartAuthority;
 import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -193,7 +193,7 @@ public class BitmapUtil {
     } else if (model instanceof AttachmentStreamUriLoader.AttachmentModel) {
       AttachmentStreamUriLoader.AttachmentModel attachmentModel = (AttachmentStreamUriLoader.AttachmentModel) model;
       try {
-        return new AttachmentCipherInputStream(attachmentModel.attachment, attachmentModel.key, Optional.<byte[]>absent());
+        return new AttachmentCipherInputStream(attachmentModel.attachment, attachmentModel.key, Optional.<byte[]>empty());
       } catch (InvalidMessageException e) {
         throw new IOException("Unable to decrypt attachment stream", e);
       }

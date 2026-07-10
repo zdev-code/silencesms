@@ -9,11 +9,11 @@ import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.util.Conversions;
-import org.signal.libsignal.protocol.InvalidMessageException;
-import org.signal.libsignal.protocol.NoSessionException;
-import org.signal.libsignal.protocol.SignalProtocolAddress;
-import org.signal.libsignal.protocol.state.SessionRecord;
-import org.signal.libsignal.protocol.state.SessionStore;
+import org.whispersystems.libsignal.SignalProtocolAddress;
+import org.whispersystems.libsignal.InvalidMessageException;
+import org.whispersystems.libsignal.state.SessionRecord;
+import org.whispersystems.libsignal.state.SessionState;
+import org.whispersystems.libsignal.state.SessionStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,22 +21,14 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * New-API ({@code org.signal.libsignal.protocol}) session store for the hybrid crypto setup
- * (maintained libsignal for message encrypt/decrypt, vendored library for Key Exchange). Backs the
- * SAME on-disk files as the
- * vendored {@link VendoredSessionStore} (directory {@code sessions-v2}, MasterCipher-encrypted, version
- * marker {@code 2} = serialized record), so the maintained {@code SessionCipher} and the vendored
- * Key-Exchange {@code SessionBuilder} read/write the same sessions. Record byte-compatibility across
- * the two libraries is proven by the migration test ({@code OldToNewSessionRecordTest}).
- */
-public class SilenceSessionStore implements SessionStore {
+import static org.whispersystems.libsignal.state.StorageProtos.SessionStructure;
 
-  private static final String TAG                   = SilenceSessionStore.class.getSimpleName();
+public class VendoredSessionStore implements SessionStore {
+
+  private static final String TAG                   = VendoredSessionStore.class.getSimpleName();
   private static final String SESSIONS_DIRECTORY_V2 = "sessions-v2";
   private static final Object FILE_LOCK             = new Object();
 
@@ -48,7 +40,10 @@ public class SilenceSessionStore implements SessionStore {
   private final MasterSecret masterSecret;
   private final int          subscriptionId;
 
-  public SilenceSessionStore(Context context, MasterSecret masterSecret, int subscriptionId) {
+  public VendoredSessionStore(Context context, MasterSecret masterSecret, int subscriptionId) {
+    Log.w(TAG, "VendoredSessionStore for subscription ID " + subscriptionId);
+    if (subscriptionId == -1) Log.w(TAG, "Subscription ID should not be -1!");
+
     this.context        = context.getApplicationContext();
     this.masterSecret   = masterSecret;
     this.subscriptionId = subscriptionId;
@@ -57,47 +52,33 @@ public class SilenceSessionStore implements SessionStore {
   @Override
   public SessionRecord loadSession(SignalProtocolAddress address) {
     synchronized (FILE_LOCK) {
-      File sessionFile = getSessionFile(address);
-      if (!sessionFile.exists()) {
-        return new SessionRecord();   // no session yet — normal
-      }
-
       try {
-        MasterCipher    cipher     = new MasterCipher(masterSecret);
-        FileInputStream in         = new FileInputStream(sessionFile);
-        int             marker     = readInteger(in);
-        byte[]          serialized = cipher.decryptBytes(readBlob(in));
-        in.close();
+        MasterCipher    cipher = new MasterCipher(masterSecret);
+        FileInputStream in     = new FileInputStream(getSessionFile(address));
 
-        if (marker == ARCHIVE_STATES_VERSION) {
-          return new SessionRecord(serialized);
+        int versionMarker  = readInteger(in);
+
+        if (versionMarker > CURRENT_VERSION) {
+          throw new AssertionError("Unknown version: " + versionMarker);
         }
 
-        // A very old raw SessionStructure (marker 1) that the maintained library cannot parse. Fall
-        // through to a fresh session so the next message triggers a re-handshake. No stored message
-        // is lost.
-        Log.w(TAG, "Legacy single-state session (marker " + marker + ") unreadable by the "
-                   + "maintained library; re-handshake will occur.");
-        return new SessionRecord();
-      } catch (org.whispersystems.libsignal.InvalidMessageException | InvalidMessageException e) {
-        // A stored record that will not deserialize under the maintained library; re-handshake.
-        Log.w(TAG, "Stored session failed to deserialize; re-handshake will occur.", e);
-        return new SessionRecord();
-      } catch (IOException e) {
-        Log.w(TAG, "Session read error; treating as no session.", e);
+        byte[] serialized = cipher.decryptBytes(readBlob(in));
+        in.close();
+
+        if (versionMarker == SINGLE_STATE_VERSION) {
+          SessionStructure sessionStructure = SessionStructure.parseFrom(serialized);
+          SessionState     sessionState     = new SessionState(sessionStructure);
+          return new SessionRecord(sessionState);
+        } else if (versionMarker == ARCHIVE_STATES_VERSION) {
+          return new SessionRecord(serialized);
+        } else {
+          throw new AssertionError("Unknown version: " + versionMarker);
+        }
+      } catch (InvalidMessageException | IOException e) {
+        Log.w(TAG, "No existing session information found.");
         return new SessionRecord();
       }
     }
-  }
-
-  @Override
-  public List<SessionRecord> loadExistingSessions(List<SignalProtocolAddress> addresses) throws NoSessionException {
-    List<SessionRecord> result = new ArrayList<>(addresses.size());
-    for (SignalProtocolAddress address : addresses) {
-      if (!containsSession(address)) throw new NoSessionException("No session for: " + address);
-      result.add(loadSession(address));
-    }
-    return result;
   }
 
   @Override
@@ -122,7 +103,8 @@ public class SilenceSessionStore implements SessionStore {
 
   @Override
   public boolean containsSession(SignalProtocolAddress address) {
-    return getSessionFile(address).exists() && loadSession(address).hasSenderChain();
+    return getSessionFile(address).exists() &&
+           loadSession(address).getSessionState().hasSenderChain();
   }
 
   @Override
@@ -167,11 +149,41 @@ public class SilenceSessionStore implements SessionStore {
   }
 
   private File getSessionFile(SignalProtocolAddress address) {
-    return new File(getSessionDirectory(), getSessionName(address));
+    String sessionName = getSessionName(address);
+    return new File(getSessionDirectory(), sessionName);
+  }
+
+  /**
+   * The on-disk directory name used by this store. Subclasses may override this to isolate
+   * their session records from the shared {@code sessions-v2} directory (for example, the
+   * transitional Key-Exchange handshake state that must not be seen by the libsignal cipher).
+   */
+  protected String getSessionsDirectoryName() {
+    return SESSIONS_DIRECTORY_V2;
   }
 
   private File getSessionDirectory() {
-    return VendoredSessionStore.getSessionDirectory(context);
+    File directory = new File(context.getFilesDir(), getSessionsDirectoryName());
+
+    if (!directory.exists()) {
+      if (!directory.mkdirs()) {
+        Log.w(TAG, "Session directory creation failed!");
+      }
+    }
+
+    return directory;
+  }
+
+  public static File getSessionDirectory(Context context) {
+    File directory = new File(context.getFilesDir(), SESSIONS_DIRECTORY_V2);
+
+    if (!directory.exists()) {
+      if (!directory.mkdirs()) {
+        Log.w(TAG, "Session directory creation failed!");
+      }
+    }
+
+    return directory;
   }
 
   private String getSessionName(SignalProtocolAddress axolotlAddress) {
@@ -182,7 +194,7 @@ public class SilenceSessionStore implements SessionStore {
   }
 
   private byte[] readBlob(FileInputStream in) throws IOException {
-    int    length    = readInteger(in);
+    int length       = readInteger(in);
     byte[] blobBytes = new byte[length];
 
     in.read(blobBytes, 0, blobBytes.length);
@@ -204,4 +216,5 @@ public class SilenceSessionStore implements SessionStore {
     byte[] valueBytes = Conversions.intToByteArray(value);
     out.write(ByteBuffer.wrap(valueBytes));
   }
+
 }

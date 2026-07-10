@@ -83,7 +83,7 @@ import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.util.ViewUtil;
 import org.smssecure.smssecure.util.task.SnackbarAsyncTask;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -185,7 +185,7 @@ public class ConversationListFragment extends Fragment
         } else if (StoreRatingReminder.isEligible(context)) {
           return Optional.of((new StoreRatingReminder(context)));
         } else {
-          return Optional.absent();
+          return Optional.empty();
         }
       }
 
@@ -351,7 +351,7 @@ public class ConversationListFragment extends Fragment
                 recipients = getListAdapter().getRecipientsFromThreadId(threadId);
 
                 if (recipients != null) {
-                  int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
+                  int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
                   isSingleConversation = recipients.isSingleRecipient() && !recipients.isGroupRecipient();
                   isSecureDestination  = isSingleConversation && SessionUtil.hasSession(context, masterSecret, recipients.getPrimaryRecipient().getNumber(), subscriptionId);
 
@@ -506,12 +506,11 @@ public class ConversationListFragment extends Fragment
   @Override
   @SuppressLint("NonConstantResourceId")
   public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-    switch (item.getItemId()) {
-    case R.id.menu_select_all:       handleSelectAllThreads();   return true;
-    case R.id.menu_delete_selected:  handleDeleteAllSelected();  return true;
-    case R.id.menu_archive_selected: handleArchiveAllSelected(); return true;
-    case R.id.menu_send_drafts:      handleSendDrafts();         return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_select_all)       { handleSelectAllThreads();   return true; }
+    else if (itemId == R.id.menu_delete_selected)  { handleDeleteAllSelected();  return true; }
+    else if (itemId == R.id.menu_archive_selected) { handleArchiveAllSelected(); return true; }
+    else if (itemId == R.id.menu_send_drafts)      { handleSendDrafts();         return true; }
 
     return false;
   }

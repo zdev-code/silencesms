@@ -85,7 +85,14 @@ public class KeyCachingService extends Service {
         MasterSecret masterSecret = MasterSecretUtil.getMasterSecret(context, MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
         Intent       intent       = new Intent(context, KeyCachingService.class);
 
-        context.startService(intent);
+        try {
+          context.startService(intent);
+        } catch (IllegalStateException e) {
+          // Android O+ forbids starting a background service when the app is not in the
+          // foreground (e.g. launched from a notification while locked). The master secret
+          // has already been retrieved above, so it is safe to skip the caching start here.
+          Log.w("KeyCachingService", "Unable to start service from background", e);
+        }
 
         return masterSecret;
       } catch (InvalidPassphraseException e) {
@@ -339,12 +346,20 @@ public class KeyCachingService extends Service {
   public static void registerPassphraseActivityStarted(Context activity) {
     Intent intent = new Intent(activity, KeyCachingService.class);
     intent.setAction(KeyCachingService.ACTIVITY_START_EVENT);
-    activity.startService(intent);
+    try {
+      activity.startService(intent);
+    } catch (IllegalStateException e) {
+      Log.w("KeyCachingService", "Unable to start service from background", e);
+    }
   }
 
   public static void registerPassphraseActivityStopped(Context activity) {
     Intent intent = new Intent(activity, KeyCachingService.class);
     intent.setAction(KeyCachingService.ACTIVITY_STOP_EVENT);
-    activity.startService(intent);
+    try {
+      activity.startService(intent);
+    } catch (IllegalStateException e) {
+      Log.w("KeyCachingService", "Unable to start service from background", e);
+    }
   }
 }

@@ -16,7 +16,7 @@ import org.smssecure.smssecure.attachments.AttachmentServer;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.mms.AudioSlide;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -25,7 +25,7 @@ public class AudioSlidePlayer {
 
   private static final String TAG = AudioSlidePlayer.class.getSimpleName();
 
-  private static @NonNull Optional<AudioSlidePlayer> playing = Optional.absent();
+  private static @NonNull Optional<AudioSlidePlayer> playing = Optional.empty();
 
   private final @NonNull Context      context;
   private final @NonNull MasterSecret masterSecret;
@@ -231,7 +231,7 @@ public class AudioSlidePlayer {
 
   private synchronized static void removePlaying(@NonNull AudioSlidePlayer player) {
     if (playing.isPresent() && playing.get() == player) {
-      playing = Optional.absent();
+      playing = Optional.empty();
     }
   }
 

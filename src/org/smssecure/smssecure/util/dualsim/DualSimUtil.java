@@ -18,12 +18,12 @@ import android.util.Log;
 import org.smssecure.smssecure.crypto.IdentityKeyUtil;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
-import org.smssecure.smssecure.crypto.storage.SilenceSessionStore;
+import org.smssecure.smssecure.crypto.storage.VendoredSessionStore;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.notifications.NotificationChannels;
 import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -61,7 +61,7 @@ public class DualSimUtil {
   }
 
   private static void moveSessionsToSubscriptionId(Context context, int originalSubscriptionId, int subscriptionId) {
-    File sessionDirectory = SilenceSessionStore.getSessionDirectory(context);
+    File sessionDirectory = VendoredSessionStore.getSessionDirectory(context);
 
     File[] sessionList = sessionDirectory.listFiles();
 

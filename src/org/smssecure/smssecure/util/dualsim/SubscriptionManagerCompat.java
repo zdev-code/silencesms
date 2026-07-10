@@ -16,7 +16,7 @@ import android.util.Log;
 
 import org.smssecure.smssecure.util.ServiceUtil;
 
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,26 +44,26 @@ public class SubscriptionManagerCompat {
 
   public Optional<SubscriptionInfoCompat> getActiveSubscriptionInfo(int subscriptionId) {
     if (getActiveSubscriptionInfoList().size() <= 0) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     for (SubscriptionInfoCompat subscriptionInfo : getActiveSubscriptionInfoList()) {
       if (subscriptionInfo.getSubscriptionId() == subscriptionId) return Optional.of(subscriptionInfo);
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
   public Optional<SubscriptionInfoCompat> getActiveSubscriptionInfoFromDeviceSubscriptionId(int subscriptionId) {
     if (getActiveSubscriptionInfoList().size() <= 0) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     for (SubscriptionInfoCompat subscriptionInfo : getActiveSubscriptionInfoList()) {
       if (subscriptionInfo.getDeviceSubscriptionId() == subscriptionId) return Optional.of(subscriptionInfo);
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
   @RequiresApi(22)
@@ -188,10 +188,10 @@ public class SubscriptionManagerCompat {
 
   public static Optional<Integer> getDefaultMessagingSubscriptionId() {
     if (Build.VERSION.SDK_INT < 22) {
-      return Optional.absent();
+      return Optional.empty();
     }
     if(SmsManager.getDefaultSmsSubscriptionId() < 0) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     return Optional.of(SmsManager.getDefaultSmsSubscriptionId());

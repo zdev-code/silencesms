@@ -9,7 +9,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
 
 import org.smssecure.smssecure.crypto.AttachmentCipherInputStream;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class AttachmentStreamLocalUriFetcher implements DataFetcher<InputStream>
   @Override
   public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
     try {
-      is = new AttachmentCipherInputStream(attachment, key, Optional.<byte[]>absent());
+      is = new AttachmentCipherInputStream(attachment, key, Optional.<byte[]>empty());
       callback.onDataReady(is);
     } catch (Exception e) {
       callback.onLoadFailed(e);

@@ -127,7 +127,7 @@ import org.smssecure.smssecure.util.concurrent.SettableFuture;
 import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.util.List;
@@ -198,6 +198,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private DynamicLanguage dynamicLanguage = new DynamicLanguage();
 
   private List<SubscriptionInfoCompat> activeSubscriptions;
+
+  @Override
+  protected boolean isActionBarOverlay() {
+    return true;
+  }
 
   @Override
   protected void onPreCreate() {
@@ -410,28 +415,27 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
-    switch (item.getItemId()) {
-    case R.id.menu_call:                          handleDial(getRecipients().getPrimaryRecipient()); return true;
-    case R.id.menu_delete_conversation:           handleDeleteConversation();                        return true;
-    case R.id.menu_archive_conversation:          handleArchiveConversation();                       return true;
-    case R.id.menu_add_attachment:                handleAddAttachment();                             return true;
-    case R.id.menu_view_media:                    handleViewMedia();                                 return true;
-    case R.id.menu_add_to_contacts:               handleAddToContacts();                             return true;
-    case R.id.menu_start_secure_session:          handleStartSecureSession();                        return true;
-    case R.id.menu_start_secure_session_dual_sim: handleStartSecureSession();                        return true;
-    case R.id.menu_abort_session:                 handleAbortSecureSession();                        return true;
-    case R.id.menu_abort_session_dual_sim:        handleAbortSecureSession();                        return true;
-    case R.id.menu_verify_identity:               handleVerifyIdentity();                            return true;
-    case R.id.menu_verify_identity_dual_sim:      handleVerifyIdentity();                            return true;
-    case R.id.menu_group_recipients:              handleDisplayGroupRecipients();                    return true;
-    case R.id.menu_distribution_broadcast:        handleDistributionBroadcastEnabled(item);          return true;
-    case R.id.menu_distribution_conversation:     handleDistributionConversationEnabled(item);       return true;
-    case R.id.menu_invite:                        handleInviteLink();                                return true;
-    case R.id.menu_mute_notifications:            handleMuteNotifications();                         return true;
-    case R.id.menu_unmute_notifications:          handleUnmuteNotifications();                       return true;
-    case R.id.menu_conversation_settings:         handleConversationSettings();                      return true;
-    case android.R.id.home:                       handleReturnToConversationList();                  return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_call)                          { handleDial(getRecipients().getPrimaryRecipient()); return true; }
+    else if (itemId == R.id.menu_delete_conversation)           { handleDeleteConversation();                        return true; }
+    else if (itemId == R.id.menu_archive_conversation)          { handleArchiveConversation();                       return true; }
+    else if (itemId == R.id.menu_add_attachment)                { handleAddAttachment();                             return true; }
+    else if (itemId == R.id.menu_view_media)                    { handleViewMedia();                                 return true; }
+    else if (itemId == R.id.menu_add_to_contacts)               { handleAddToContacts();                             return true; }
+    else if (itemId == R.id.menu_start_secure_session)          { handleStartSecureSession();                        return true; }
+    else if (itemId == R.id.menu_start_secure_session_dual_sim) { handleStartSecureSession();                        return true; }
+    else if (itemId == R.id.menu_abort_session)                 { handleAbortSecureSession();                        return true; }
+    else if (itemId == R.id.menu_abort_session_dual_sim)        { handleAbortSecureSession();                        return true; }
+    else if (itemId == R.id.menu_verify_identity)               { handleVerifyIdentity();                            return true; }
+    else if (itemId == R.id.menu_verify_identity_dual_sim)      { handleVerifyIdentity();                            return true; }
+    else if (itemId == R.id.menu_group_recipients)              { handleDisplayGroupRecipients();                    return true; }
+    else if (itemId == R.id.menu_distribution_broadcast)        { handleDistributionBroadcastEnabled(item);          return true; }
+    else if (itemId == R.id.menu_distribution_conversation)     { handleDistributionConversationEnabled(item);       return true; }
+    else if (itemId == R.id.menu_invite)                        { handleInviteLink();                                return true; }
+    else if (itemId == R.id.menu_mute_notifications)            { handleMuteNotifications();                         return true; }
+    else if (itemId == R.id.menu_unmute_notifications)          { handleUnmuteNotifications();                       return true; }
+    else if (itemId == R.id.menu_conversation_settings)         { handleConversationSettings();                      return true; }
+    else if (itemId == android.R.id.home)                       { handleReturnToConversationList();                  return true; }
 
     return false;
   }
@@ -902,7 +906,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void updateDefaultSubscriptionId(Optional<Integer> defaultSubscriptionId) {
-    Log.w(TAG, "updateDefaultSubscriptionId(" + defaultSubscriptionId.orNull() + ")");
+    Log.w(TAG, "updateDefaultSubscriptionId(" + defaultSubscriptionId.orElse(null) + ")");
     sendButton.setDefaultSubscriptionId(defaultSubscriptionId);
   }
 
@@ -1280,7 +1284,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private MediaConstraints getCurrentMediaConstraints() {
-    return MediaConstraints.getMmsMediaConstraints(sendButton.getSelectedTransport().getSimSubscriptionId().or(-1), isSecureSmsDestination);
+    return MediaConstraints.getMmsMediaConstraints(sendButton.getSelectedTransport().getSimSubscriptionId().orElse(-1), isSecureSmsDestination);
   }
 
   private void markThreadAsRead() {
@@ -1338,7 +1342,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       }
 
       boolean    forcePlaintext = sendButton.getSelectedTransport().isPlaintext();
-      int        subscriptionId = sendButton.getSelectedTransport().getSimSubscriptionId().or(-1);
+      int        subscriptionId = sendButton.getSelectedTransport().getSimSubscriptionId().orElse(-1);
 
       Log.w(TAG, "isManual Selection: " + sendButton.isManualSelection());
       Log.w(TAG, "forcePlaintext: " + forcePlaintext);
@@ -1455,7 +1459,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       @Override
       protected Void doInBackground(Void... params) {
         DatabaseFactory.getRecipientPreferenceDatabase(ConversationActivity.this)
-                       .setDefaultSubscriptionId(recipients, subscriptionId.or(-1));
+                       .setDefaultSubscriptionId(recipients, subscriptionId.orElse(-1));
         return null;
       }
     }.execute();
@@ -1605,7 +1609,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
       Optional<RecipientsPreferences> prefs = DatabaseFactory.getRecipientPreferenceDatabase(ConversationActivity.this)
                                                              .getRecipientsPreferences(recipients[0].getIds());
-      return new Pair<>(recipients[0], prefs.orNull());
+      return new Pair<>(recipients[0], prefs.orElse(null));
     }
 
     @Override

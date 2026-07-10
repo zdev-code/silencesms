@@ -38,7 +38,7 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.sms.MessageSender;
 import org.smssecure.smssecure.sms.OutgoingEncryptedMessage;
 import org.smssecure.smssecure.sms.OutgoingTextMessage;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class AndroidAutoReplyReceiver extends MasterSecretBroadcastReceiver {
           long replyThreadId;
 
           Optional<RecipientsPreferences> preferences = DatabaseFactory.getRecipientPreferenceDatabase(context).getRecipientsPreferences(recipientIds);
-          int  subscriptionId = preferences.isPresent() ? preferences.get().getDefaultSubscriptionId().or(-1) : -1;
+          int  subscriptionId = preferences.isPresent() ? preferences.get().getDefaultSubscriptionId().orElse(-1) : -1;
 
           if (recipients.isGroupRecipient()) {
             Log.i(TAG, "GroupRecipient, Sending media message");

@@ -47,7 +47,7 @@ import org.smssecure.smssecure.util.MediaUtil;
 import org.smssecure.smssecure.util.ViewUtil;
 import org.smssecure.smssecure.util.concurrent.ListenableFuture.Listener;
 import org.smssecure.smssecure.util.views.Stub;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -68,7 +68,7 @@ public class AttachmentManager {
   private AudioView          audioView;
 
   private @NonNull  List<Uri>       garbage = new LinkedList<>();
-  private @NonNull  Optional<Slide> slide   = Optional.absent();
+  private @NonNull  Optional<Slide> slide   = Optional.empty();
   private @Nullable Uri             captureUri;
 
   public AttachmentManager(@NonNull Activity activity, @NonNull AttachmentListener listener) {
@@ -107,7 +107,7 @@ public class AttachmentManager {
       });
 
       markGarbage(getSlideUri());
-      slide = Optional.absent();
+      slide = Optional.empty();
 
       audioView.cleanup();
     }
@@ -118,7 +118,7 @@ public class AttachmentManager {
     cleanup(getSlideUri());
 
     captureUri = null;
-    slide      = Optional.absent();
+    slide      = Optional.empty();
 
     Iterator<Uri> iterator = garbage.listIterator();
 

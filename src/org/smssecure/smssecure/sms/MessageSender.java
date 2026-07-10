@@ -40,7 +40,7 @@ import org.smssecure.smssecure.util.InvalidNumberException;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobManager;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.util.LinkedList;

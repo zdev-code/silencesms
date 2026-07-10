@@ -180,14 +180,14 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
-    switch (item.getItemId()) {
-      case android.R.id.home:
+    int itemId = item.getItemId();
+    if (itemId == android.R.id.home) {
         finish();
         return true;
-      case R.id.menu_create_group:
+      } else if (itemId == R.id.menu_create_group) {
         handleGroupCreate();
         return true;
-    }
+      }
 
     return false;
   }

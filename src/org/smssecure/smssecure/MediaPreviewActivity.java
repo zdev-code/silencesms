@@ -250,12 +250,11 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 
-    switch (item.getItemId()) {
-      case R.id.media_preview__overview: showOverview(); return true;
-      case R.id.media_preview__forward:  forward();      return true;
-      case R.id.save:                    saveToDisk();   return true;
-      case android.R.id.home:            finish();       return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.media_preview__overview) { showOverview(); return true; }
+    else if (itemId == R.id.media_preview__forward)  { forward();      return true; }
+    else if (itemId == R.id.save)                    { saveToDisk();   return true; }
+    else if (itemId == android.R.id.home)            { finish();       return true; }
 
     return false;
   }

@@ -20,7 +20,7 @@ import org.smssecure.smssecure.sms.IncomingTextMessage;
 import org.smssecure.smssecure.sms.MultipartSmsMessageHandler;
 import org.smssecure.smssecure.util.dualsim.DualSimUtil;
 import org.whispersystems.jobqueue.JobParameters;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -134,13 +134,13 @@ public class SmsReceiveJob extends ContextJob {
     }
 
     if (messages.isEmpty()) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     IncomingTextMessage message = new IncomingTextMessage(messages);
 
     if (WirePrefix.isPrefixedMessage(message.getMessageBody())) {
-      return Optional.fromNullable(multipartMessageHandler.processPotentialMultipartMessage(message));
+      return Optional.ofNullable(multipartMessageHandler.processPotentialMultipartMessage(message));
     } else {
       return Optional.of(message);
     }

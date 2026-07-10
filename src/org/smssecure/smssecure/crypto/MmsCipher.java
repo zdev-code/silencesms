@@ -8,17 +8,14 @@ import org.smssecure.smssecure.protocol.WirePrefix;
 import org.smssecure.smssecure.recipients.RecipientFormattingException;
 import org.smssecure.smssecure.transport.UndeliverableMessageException;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.SignalProtocolAddress;
+import org.smssecure.smssecure.crypto.storage.SilenceSignalProtocolStore;
 import org.whispersystems.libsignal.DuplicateMessageException;
+import org.whispersystems.libsignal.InvalidKeyException;
 import org.whispersystems.libsignal.InvalidMessageException;
 import org.whispersystems.libsignal.LegacyMessageException;
 import org.whispersystems.libsignal.NoSessionException;
-import org.whispersystems.libsignal.SessionCipher;
 import org.whispersystems.libsignal.UntrustedIdentityException;
-import org.whispersystems.libsignal.protocol.CiphertextMessage;
-import org.whispersystems.libsignal.protocol.SignalMessage;
-import org.whispersystems.libsignal.state.SignalProtocolStore;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 
@@ -37,10 +34,10 @@ public class MmsCipher {
   private static final String TAG = MmsCipher.class.getSimpleName();
 
   private final TextTransport textTransport = new TextTransport();
-  private final SignalProtocolStore axolotlStore;
+  private final SilenceSignalProtocolStore axolotlStore;
 
-  public MmsCipher(SignalProtocolStore axolotlStore) {
-    this.axolotlStore = axolotlStore;
+  public MmsCipher(Context context, MasterSecret masterSecret, int subscriptionId) {
+    this.axolotlStore = new SilenceSignalProtocolStore(context, masterSecret, subscriptionId);
   }
 
   public MultimediaMessagePdu decrypt(Context context, MultimediaMessagePdu pdu)
@@ -48,7 +45,7 @@ public class MmsCipher {
              NoSessionException, UntrustedIdentityException
   {
     try {
-      SessionCipher sessionCipher = new SessionCipher(axolotlStore, new SignalProtocolAddress(pdu.getFrom().getString(), 1));
+      org.signal.libsignal.protocol.SessionCipher sessionCipher = new org.signal.libsignal.protocol.SessionCipher(axolotlStore, new org.signal.libsignal.protocol.SignalProtocolAddress(pdu.getFrom().getString(), 1));
       Optional<byte[]> ciphertext = getEncryptedData(pdu);
 
       if (!ciphertext.isPresent()) {
@@ -63,8 +60,8 @@ public class MmsCipher {
       }
 
       try {
-        plaintext = sessionCipher.decrypt(new SignalMessage(decodedCiphertext));
-      } catch (InvalidMessageException e) {
+        plaintext = sessionCipher.decrypt(new org.signal.libsignal.protocol.message.SignalMessage(decodedCiphertext));
+      } catch (org.signal.libsignal.protocol.InvalidMessageException e) {
         // NOTE - For some reason, Sprint seems to append a single character to the
         // end of message text segments.  I don't know why, so here we just try
         // truncating the message by one if the MAC fails.
@@ -72,13 +69,25 @@ public class MmsCipher {
           Log.w(TAG, "Attempting truncated decrypt...");
           byte[] truncated = Util.trim(ciphertext.get(), ciphertext.get().length - 1);
           decodedCiphertext = textTransport.getDecodedMessage(truncated);
-          plaintext = sessionCipher.decrypt(new SignalMessage(decodedCiphertext));
+          plaintext = sessionCipher.decrypt(new org.signal.libsignal.protocol.message.SignalMessage(decodedCiphertext));
         } else {
           throw e;
         }
       }
 
       return (MultimediaMessagePdu) new PduParser(plaintext).parse();
+    } catch (org.signal.libsignal.protocol.NoSessionException e) {
+      throw new NoSessionException(e);
+    } catch (org.signal.libsignal.protocol.DuplicateMessageException e) {
+      throw new DuplicateMessageException(e.getMessage());
+    } catch (org.signal.libsignal.protocol.LegacyMessageException e) {
+      throw new LegacyMessageException(e.getMessage());
+    } catch (org.signal.libsignal.protocol.UntrustedIdentityException e) {
+      throw toVendored(e);
+    } catch (org.signal.libsignal.protocol.InvalidVersionException | org.signal.libsignal.protocol.InvalidKeyException e) {
+      throw new InvalidMessageException(e);
+    } catch (org.signal.libsignal.protocol.InvalidMessageException e) {
+      throw new InvalidMessageException(e);
     } catch (IOException e) {
       throw new InvalidMessageException(e);
     }
@@ -96,26 +105,34 @@ public class MmsCipher {
       throw new UndeliverableMessageException("PDU composition failed, null payload");
     }
 
-    if (!axolotlStore.containsSession(new SignalProtocolAddress(recipientString, 1))) {
+    org.signal.libsignal.protocol.SignalProtocolAddress address = new org.signal.libsignal.protocol.SignalProtocolAddress(recipientString, 1);
+
+    if (!axolotlStore.containsSession(address)) {
       throw new NoSessionException("No session for: " + recipientString);
     }
 
-    SessionCipher     cipher            = new SessionCipher(axolotlStore, new SignalProtocolAddress(recipientString, 1));
-    CiphertextMessage ciphertextMessage = cipher.encrypt(pduBytes);
-    byte[]            encryptedPduBytes = textTransport.getEncodedMessage(ciphertextMessage.serialize());
+    try {
+      org.signal.libsignal.protocol.SessionCipher             cipher            = new org.signal.libsignal.protocol.SessionCipher(axolotlStore, address);
+      org.signal.libsignal.protocol.message.CiphertextMessage ciphertextMessage = cipher.encrypt(pduBytes);
+      byte[]                                                  encryptedPduBytes = textTransport.getEncodedMessage(ciphertextMessage.serialize());
 
-    PduBody body         = new PduBody();
-    PduPart part         = new PduPart();
+      PduBody body         = new PduBody();
+      PduPart part         = new PduPart();
 
-    part.setContentId((System.currentTimeMillis()+"").getBytes());
-    part.setContentType(ContentType.TEXT_PLAIN.getBytes());
-    part.setName((System.currentTimeMillis()+"").getBytes());
-    part.setData(encryptedPduBytes);
-    body.addPart(part);
-    message.setSubject(new EncodedStringValue(WirePrefix.calculateEncryptedMmsSubject()));
-    message.setBody(body);
+      part.setContentId((System.currentTimeMillis()+"").getBytes());
+      part.setContentType(ContentType.TEXT_PLAIN.getBytes());
+      part.setName((System.currentTimeMillis()+"").getBytes());
+      part.setData(encryptedPduBytes);
+      body.addPart(part);
+      message.setSubject(new EncodedStringValue(WirePrefix.calculateEncryptedMmsSubject()));
+      message.setBody(body);
 
-    return message;
+      return message;
+    } catch (org.signal.libsignal.protocol.NoSessionException e) {
+      throw new NoSessionException(e);
+    } catch (org.signal.libsignal.protocol.UntrustedIdentityException e) {
+      throw toVendored(e);
+    }
   }
 
 
@@ -126,8 +143,20 @@ public class MmsCipher {
       }
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
+  private static UntrustedIdentityException toVendored(org.signal.libsignal.protocol.UntrustedIdentityException e) {
+    org.signal.libsignal.protocol.IdentityKey untrusted = e.getUntrustedIdentity();
+    org.whispersystems.libsignal.IdentityKey  vendored  = null;
+    if (untrusted != null) {
+      try {
+        vendored = new org.whispersystems.libsignal.IdentityKey(untrusted.serialize(), 0);
+      } catch (InvalidKeyException ike) {
+        throw new AssertionError(ike);
+      }
+    }
+    return new UntrustedIdentityException(e.getName(), vendored);
+  }
 
 }

@@ -601,32 +601,32 @@ public class ConversationFragment extends Fragment
   @Override
   @SuppressLint("NonConstantResourceId")
   public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-      switch(item.getItemId()) {
-        case R.id.menu_context_copy:
+      int itemId = item.getItemId();
+      if (itemId == R.id.menu_context_copy) {
           handleCopyMessage(getListAdapter().getSelectedItems());
           actionMode.finish();
           return true;
-        case R.id.menu_context_delete_message:
+        } else if (itemId == R.id.menu_context_delete_message) {
           handleDeleteMessages(getListAdapter().getSelectedItems());
           actionMode.finish();
           return true;
-        case R.id.menu_context_details:
+        } else if (itemId == R.id.menu_context_details) {
           handleDisplayDetails(getSelectedMessageRecord());
           actionMode.finish();
           return true;
-        case R.id.menu_context_forward:
+        } else if (itemId == R.id.menu_context_forward) {
           handleForwardMessage(getSelectedMessageRecord());
           actionMode.finish();
           return true;
-        case R.id.menu_context_resend:
+        } else if (itemId == R.id.menu_context_resend) {
           handleResendMessage(getSelectedMessageRecord());
           actionMode.finish();
           return true;
-        case R.id.menu_context_save_attachment:
+        } else if (itemId == R.id.menu_context_save_attachment) {
           handleSaveAttachment((MediaMmsMessageRecord)getSelectedMessageRecord());
           actionMode.finish();
           return true;
-      }
+        }
 
       return false;
     }

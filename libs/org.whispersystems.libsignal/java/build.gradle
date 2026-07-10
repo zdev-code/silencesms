@@ -5,8 +5,8 @@ plugins {
 evaluationDependsOn(':tests')
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 version          = version_number
@@ -15,6 +15,9 @@ group            = group_info
 repositories {
     mavenCentral()
     mavenLocal()
+    // Pin target is org.signal:libsignal-client:0.72.1, which is hosted on Maven Central
+    // (immutable, GPG-signed). We deliberately do NOT add Signal's own build-artifacts repo:
+    // it can prune old releases, and everything we need (<= 0.86.5) is on Central.
 }
 
 dependencies {
@@ -23,6 +26,16 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation project(path: ':tests', configuration: 'testArtifacts')
+
+    // Cross-validation tests: the maintained libsignal-client (Rust core + host-native JNI),
+    // pinned to 0.72.1 — the last release whose Java API can both CREATE and RECEIVE a classic
+    // X3DH (session v3) PreKeyBundle. 0.73.0 removed the no-Kyber PreKeyBundle ctor; 0.75.0
+    // removed the Rust X3DH protocol entirely (everything after forces PQXDH/v4).
+    // The JVM artifact bundles desktop .so (incl. Windows x86_64) so the cross-validation tests
+    // run on the dev host without an Android device. Different namespace
+    // (org.signal.libsignal.protocol.*) so it coexists with the vendored
+    // org.whispersystems.libsignal classes on the test classpath.
+    testImplementation 'org.signal:libsignal-client:0.72.1'
 }
 
 

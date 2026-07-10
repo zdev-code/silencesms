@@ -11,7 +11,6 @@ import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.crypto.SecurityEvent;
 import org.smssecure.smssecure.crypto.SmsCipher;
-import org.smssecure.smssecure.crypto.storage.SilenceSignalProtocolStore;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.EncryptingSmsDatabase;
 import org.smssecure.smssecure.database.NoSuchMessageException;
@@ -40,7 +39,7 @@ import org.whispersystems.libsignal.LegacyMessageException;
 import org.whispersystems.libsignal.NoSessionException;
 import org.whispersystems.libsignal.StaleKeyExchangeException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.util.List;
@@ -132,7 +131,7 @@ public class SmsDecryptJob extends MasterSecretJob {
              UntrustedIdentityException
   {
     EncryptingSmsDatabase database  = DatabaseFactory.getEncryptingSmsDatabase(context);
-    SmsCipher             cipher    = new SmsCipher(new SilenceSignalProtocolStore(context, masterSecret, message.getSubscriptionId()));
+    SmsCipher             cipher    = new SmsCipher(context, masterSecret, message.getSubscriptionId());
     IncomingTextMessage   plaintext = cipher.decrypt(context, message);
 
     database.updateMessageBody(masterSecret, messageId, plaintext.getMessageBody());
@@ -148,7 +147,7 @@ public class SmsDecryptJob extends MasterSecretJob {
     EncryptingSmsDatabase database = DatabaseFactory.getEncryptingSmsDatabase(context);
 
     try {
-      SmsCipher                smsCipher = new SmsCipher(new SilenceSignalProtocolStore(context, masterSecret, message.getSubscriptionId()));
+      SmsCipher                smsCipher = new SmsCipher(context, masterSecret, message.getSubscriptionId());
       IncomingEncryptedMessage plaintext = smsCipher.decrypt(context, message);
 
       database.updateBundleMessageBody(masterSecret, messageId, plaintext.getMessageBody());
@@ -168,7 +167,7 @@ public class SmsDecryptJob extends MasterSecretJob {
     EncryptingSmsDatabase database = DatabaseFactory.getEncryptingSmsDatabase(context);
 
     try {
-      SmsCipher                  cipher   = new SmsCipher(new SilenceSignalProtocolStore(context, masterSecret, message.getSubscriptionId()));
+      SmsCipher                  cipher   = new SmsCipher(context, masterSecret, message.getSubscriptionId());
       OutgoingKeyExchangeMessage response = cipher.process(context, message);
 
       if (shouldSend()) {

@@ -46,7 +46,7 @@ public class ViewIdentityActivity extends KeyScanningActivity {
 
   @Override
   protected void onCreate(Bundle icicle, @NonNull MasterSecret masterSecret) {
-    int subscriptionId = getIntent().getIntExtra("subscription_id", SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1));
+    int subscriptionId = getIntent().getIntExtra("subscription_id", SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1));
 
     getIntent().putExtra(ViewIdentityActivity.IDENTITY_KEY,
                          new IdentityKeyParcelable(IdentityKeyUtil.getIdentityKey(this, subscriptionId)));

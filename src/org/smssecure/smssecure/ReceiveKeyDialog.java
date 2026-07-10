@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 import org.smssecure.smssecure.crypto.IdentityKeyParcelable;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.crypto.storage.SilenceIdentityKeyStore;
+import org.smssecure.smssecure.crypto.storage.VendoredIdentityKeyStore;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.EncryptingSmsDatabase;
 import org.smssecure.smssecure.database.IdentityDatabase;
@@ -52,7 +52,7 @@ import org.whispersystems.libsignal.InvalidVersionException;
 import org.whispersystems.libsignal.LegacyMessageException;
 import org.whispersystems.libsignal.protocol.PreKeySignalMessage;
 import org.whispersystems.libsignal.state.IdentityKeyStore;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 
@@ -122,7 +122,7 @@ public class ReceiveKeyDialog extends AlertDialog {
   }
 
   private boolean isTrusted(MasterSecret masterSecret, IdentityKey identityKey, Recipient recipient, int subscriptionId) {
-    IdentityKeyStore identityKeyStore = new SilenceIdentityKeyStore(getContext(), masterSecret, subscriptionId);
+    IdentityKeyStore identityKeyStore = new VendoredIdentityKeyStore(getContext(), masterSecret, subscriptionId);
 
     return identityKeyStore.isTrustedIdentity(new SignalProtocolAddress(recipient.getNumber(), 1), identityKey, IdentityKeyStore.Direction.RECEIVING);
   }

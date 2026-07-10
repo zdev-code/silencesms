@@ -10,7 +10,7 @@ import org.smssecure.smssecure.TransportOptions;
 import org.smssecure.smssecure.TransportOptions.OnTransportChangedListener;
 import org.smssecure.smssecure.TransportOptionsPopup;
 import org.smssecure.smssecure.util.ViewUtil;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class SendButton extends AppCompatImageButton
 
   private final TransportOptions transportOptions;
 
-  private Optional<TransportOptionsPopup> transportOptionsPopup = Optional.absent();
+  private Optional<TransportOptionsPopup> transportOptionsPopup = Optional.empty();
 
   private boolean forceSend = false;
 

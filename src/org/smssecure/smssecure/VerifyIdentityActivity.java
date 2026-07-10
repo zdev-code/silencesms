@@ -28,7 +28,7 @@ import android.widget.Toast;
 import org.smssecure.smssecure.crypto.IdentityKeyParcelable;
 import org.smssecure.smssecure.crypto.IdentityKeyUtil;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.crypto.storage.SilenceSessionStore;
+import org.smssecure.smssecure.crypto.storage.VendoredSessionStore;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
@@ -74,7 +74,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
   }
 
   private void initializeFingerprints() {
-    int subscriptionId = getIntent().getIntExtra("subscription_id", SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1));
+    int subscriptionId = getIntent().getIntExtra("subscription_id", SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1));
 
     if (!IdentityKeyUtil.hasIdentityKey(this, subscriptionId)) {
       localIdentityFingerprint.setText(R.string.VerifyIdentityActivity_you_do_not_have_an_identity_key);
@@ -94,7 +94,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
 
   @Override
   protected void initiateDisplay() {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
+    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
 
     if (!IdentityKeyUtil.hasIdentityKey(this, subscriptionId)) {
       Toast.makeText(this,
@@ -135,7 +135,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
 
   @Override
   protected IdentityKey getIdentityKeyToDisplay() {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
+    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
 
     return IdentityKeyUtil.getIdentityKey(this, subscriptionId);
   }
@@ -161,14 +161,14 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
   }
 
   private @Nullable IdentityKey getRemoteIdentityKey(MasterSecret masterSecret, Recipient recipient) {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
+    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
   IdentityKeyParcelable identityKeyParcelable = IntentCompat.getParcelableExtra(getIntent(), "remote_identity", IdentityKeyParcelable.class);
 
     if (identityKeyParcelable != null) {
       return identityKeyParcelable.get();
     }
 
-    SessionStore   sessionStore   = new SilenceSessionStore(this, masterSecret, subscriptionId);
+    SessionStore   sessionStore   = new VendoredSessionStore(this, masterSecret, subscriptionId);
     SignalProtocolAddress axolotlAddress = new SignalProtocolAddress(recipient.getNumber(), 1);
     SessionRecord  record         = sessionStore.loadSession(axolotlAddress);
 

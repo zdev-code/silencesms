@@ -67,7 +67,7 @@ import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobManager;
 import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -416,7 +416,7 @@ public class MmsDatabase extends MessagingDatabase {
                                                    cursor.getString(cursor.getColumnIndexOrThrow(TRANSACTION_ID)),
                                                    cursor.getInt(cursor.getColumnIndexOrThrow(SUBSCRIPTION_ID))));
       } else {
-        return Optional.absent();
+        return Optional.empty();
       }
     } finally {
       if (cursor != null)

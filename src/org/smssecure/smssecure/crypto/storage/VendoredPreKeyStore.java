@@ -5,13 +5,13 @@ import android.util.Log;
 
 import org.smssecure.smssecure.crypto.MasterCipher;
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.whispersystems.libsignal.InvalidKeyIdException;
+import org.whispersystems.libsignal.InvalidMessageException;
+import org.whispersystems.libsignal.state.SignedPreKeyRecord;
+import org.whispersystems.libsignal.state.SignedPreKeyStore;
+import org.whispersystems.libsignal.state.PreKeyRecord;
+import org.whispersystems.libsignal.state.PreKeyStore;
 import org.smssecure.smssecure.util.Conversions;
-import org.signal.libsignal.protocol.InvalidKeyIdException;
-import org.signal.libsignal.protocol.InvalidMessageException;
-import org.signal.libsignal.protocol.state.PreKeyRecord;
-import org.signal.libsignal.protocol.state.PreKeyStore;
-import org.signal.libsignal.protocol.state.SignedPreKeyRecord;
-import org.signal.libsignal.protocol.state.SignedPreKeyStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,28 +22,21 @@ import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * New-API ({@code org.signal.libsignal.protocol}) prekey / signed-prekey store for the hybrid
- * crypto setup (maintained libsignal for message encrypt/decrypt, vendored library for Key Exchange).
- * Backs the SAME on-disk files as
- * the vendored {@link VendoredPreKeyStore} ({@code prekeys} / {@code signed_prekeys} directories,
- * MasterCipher-encrypted, version marker {@code 1} = serialized record). Record byte-compatibility
- * across the two libraries is proven by the migration test ({@code OldToNewKeyRecordsTest}).
- */
-public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
+public class VendoredPreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   public  static final String PREKEY_DIRECTORY        = "prekeys";
   public  static final String SIGNED_PREKEY_DIRECTORY = "signed_prekeys";
 
+
   private static final int    CURRENT_VERSION_MARKER = 1;
   private static final Object FILE_LOCK              = new Object();
-  private static final String TAG                    = SilencePreKeyStore.class.getSimpleName();
+  private static final String TAG                    = VendoredPreKeyStore.class.getSimpleName();
 
   private final Context      context;
   private final MasterSecret masterSecret;
   private final int          subscriptionId;
 
-  public SilencePreKeyStore(Context context, MasterSecret masterSecret, int subscriptionId) {
+  public VendoredPreKeyStore(Context context, MasterSecret masterSecret, int subscriptionId) {
     this.context        = context;
     this.masterSecret   = masterSecret;
     this.subscriptionId = subscriptionId;
@@ -54,7 +47,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
     synchronized (FILE_LOCK) {
       try {
         return new PreKeyRecord(loadSerializedRecord(getPreKeyFile(preKeyId)));
-      } catch (IOException | InvalidMessageException | org.whispersystems.libsignal.InvalidMessageException e) {
+      } catch (IOException | InvalidMessageException e) {
         Log.w(TAG, e);
         throw new InvalidKeyIdException(e);
       }
@@ -66,7 +59,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
     synchronized (FILE_LOCK) {
       try {
         return new SignedPreKeyRecord(loadSerializedRecord(getSignedPreKeyFile(signedPreKeyId)));
-      } catch (IOException | InvalidMessageException | org.whispersystems.libsignal.InvalidMessageException e) {
+      } catch (IOException | InvalidMessageException e) {
         Log.w(TAG, e);
         throw new InvalidKeyIdException(e);
       }
@@ -82,7 +75,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
       for (File signedPreKeyFile : directory.listFiles()) {
         try {
           results.add(new SignedPreKeyRecord(loadSerializedRecord(signedPreKeyFile)));
-        } catch (IOException | InvalidMessageException | org.whispersystems.libsignal.InvalidMessageException e) {
+        } catch (IOException | InvalidMessageException e) {
           Log.w(TAG, e);
         }
       }
@@ -115,28 +108,33 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   @Override
   public boolean containsPreKey(int preKeyId) {
-    return getPreKeyFile(preKeyId).exists();
+    File record = getPreKeyFile(preKeyId);
+    return record.exists();
   }
 
   @Override
   public boolean containsSignedPreKey(int signedPreKeyId) {
-    return getSignedPreKeyFile(signedPreKeyId).exists();
+    File record = getSignedPreKeyFile(signedPreKeyId);
+    return record.exists();
   }
+
 
   @Override
   public void removePreKey(int preKeyId) {
-    getPreKeyFile(preKeyId).delete();
+    File record = getPreKeyFile(preKeyId);
+    record.delete();
   }
 
   @Override
   public void removeSignedPreKey(int signedPreKeyId) {
-    getSignedPreKeyFile(signedPreKeyId).delete();
+    File record = getSignedPreKeyFile(signedPreKeyId);
+    record.delete();
   }
 
   private byte[] loadSerializedRecord(File recordFile)
-      throws IOException, org.whispersystems.libsignal.InvalidMessageException
+      throws IOException, InvalidMessageException
   {
-    MasterCipher    masterCipher  = new MasterCipher(masterSecret);
+    MasterCipher masterCipher  = new MasterCipher(masterSecret);
     FileInputStream fin           = new FileInputStream(recordFile);
     int             recordVersion = readInteger(fin);
 
@@ -190,7 +188,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
   }
 
   private byte[] readBlob(FileInputStream in) throws IOException {
-    int    length    = readInteger(in);
+    int length       = readInteger(in);
     byte[] blobBytes = new byte[length];
 
     in.read(blobBytes, 0, blobBytes.length);
@@ -212,4 +210,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
     byte[] valueBytes = Conversions.intToByteArray(value);
     out.write(ByteBuffer.wrap(valueBytes));
   }
+
+
+
 }

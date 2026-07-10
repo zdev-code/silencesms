@@ -89,12 +89,11 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 
-    switch (item.getItemId()) {
-    case R.id.menu_scan:              initiateScan();    return true;
-    case R.id.menu_get_scanned:       initiateDisplay(); return true;
-    case R.id.menu_share_fingerprint: initiateShare();   return true;
-    case android.R.id.home:           finish();          return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_scan)              { initiateScan();    return true; }
+    else if (itemId == R.id.menu_get_scanned)       { initiateDisplay(); return true; }
+    else if (itemId == R.id.menu_share_fingerprint) { initiateShare();   return true; }
+    else if (itemId == android.R.id.home)           { finish();          return true; }
 
     return false;
   }

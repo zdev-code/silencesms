@@ -74,7 +74,7 @@ import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.TelephonyUtil;
 import org.smssecure.smssecure.util.views.Stub;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.HashSet;
 import java.util.List;

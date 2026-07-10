@@ -46,9 +46,7 @@ dependencies {
     implementation 'com.melnykov:floatingactionbutton:1.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.zxing:core:3.5.3'
-    implementation('com.davemorrissey.labs:subsampling-scale-image-view:3.6.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
     implementation("com.doomonafireball.betterpickers:library:1.5.3") {
         exclude group: 'com.android.support', module: 'support-v4'
@@ -57,6 +55,12 @@ dependencies {
     implementation project(':org.whispersystems.jobmanager')
     implementation project(':org.whispersystems.libpastelog')
     implementation project(':org.whispersystems.libsignal')
+
+    // Maintained Rust-core Signal Protocol, pinned at 0.72.1 (last release able to CREATE and RECEIVE a
+    // classic X3DH session v3). Different namespace (org.signal.libsignal.protocol.*) so it coexists
+    // with the vendored org.whispersystems.libsignal during the incremental crypto migration. Android
+    // AAR bundles native .so per ABI.
+    implementation 'org.signal:libsignal-android:0.72.1'
 
     implementation 'com.annimon:stream:1.2.2'
 
@@ -98,12 +102,19 @@ android {
     namespace = 'org.smssecure.smssecure'
     compileSdk = 36
 
+    // NDK provides llvm-strip so AGP can strip the (unstripped) libsignal_jni.so shipped in the AAR.
+    // Matches libsignal's r28 build toolchain. Local SDK component only — not committed to git.
+    ndkVersion = '28.2.13676358'
+
     defaultConfig {
         applicationId = 'org.smssecure.smssecure'
         versionCode = 212
         versionName = "0.16.13-unstable"
 
         minSdkVersion = 23
+        // Edge-to-edge (enforced on Android 15+/targetSdk 35+) is handled centrally in
+        // BaseActionBarActivity, which applies the system-bar/cutout insets as padding to the action
+        // bar and content and repaints the bar regions with each theme's declared colours.
         targetSdkVersion = 36
 
     testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
@@ -159,9 +170,16 @@ android {
     packaging {
         resources {
             excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE']
+            // The libsignal-client JVM jar (transitive of libsignal-android) bundles DESKTOP natives
+            // (Windows .dll, macOS .dylib, Linux amd64/aarch64 .so) as Java resources. On Android these
+            // are dead weight (~180 MB). The real Android libs live under lib/<abi>/ and are unaffected.
+            excludes += ['**/*.dll', '**/*.dylib', '**/*_amd64.so', '**/*_aarch64.so']
         }
         jniLibs {
             keepDebugSymbols += ['**/libcurve25519.so']
+            // libsignal-android bundles a testing-only native lib alongside the real one; it must never
+            // ship in the app. Excluding it removes ~130 MB across the two ARM ABIs.
+            excludes += ['**/libsignal_jni_testing.so']
         }
     }
 
@@ -245,4 +263,52 @@ allprojects {
         options.deprecation = true
         options.warnings = true
     }
+}
+
+// --- Supply-chain pin: verify the libsignal-android AAR hash before every build ---
+// Enforces the immutable 0.72.1 pin. The expected value is the official SHA-256 published on Maven
+// Central for libsignal-android-0.72.1.aar; if the resolved artifact ever differs (silent swap, cache
+// poisoning, coordinate change) the build fails loudly.
+// Deliberately scoped to this ONE security-critical artifact — full Gradle dependency verification
+// (gradle/verification-metadata.xml) would require a trusted checksum for every dependency and break the
+// build on any unrelated version bump.
+ext.libsignalPinnedCoordinate = 'org.signal:libsignal-android:0.72.1'
+ext.libsignalPinnedSha256     = '9859acc14aab4f4744abbc9ad150829afce090aa143a58a95af7da1767a6761f'
+
+def verifyLibsignalPin = tasks.register('verifyLibsignalPin') {
+    description = 'Verifies the pinned libsignal-android AAR matches its known-good SHA-256.'
+    group = 'verification'
+    doLast {
+        def cfg = configurations.detachedConfiguration(
+                dependencies.create(project.ext.libsignalPinnedCoordinate))
+        cfg.transitive = false
+        def artifact = cfg.resolve().find { it.name.endsWith('.aar') }
+        if (artifact == null) {
+            throw new GradleException(
+                    "verifyLibsignalPin: could not resolve an AAR for ${project.ext.libsignalPinnedCoordinate}")
+        }
+        def md = java.security.MessageDigest.getInstance('SHA-256')
+        artifact.withInputStream { input ->
+            byte[] buf = new byte[65536]
+            int n
+            while ((n = input.read(buf)) != -1) {
+                md.update(buf, 0, n)
+            }
+        }
+        def actual = md.digest().encodeHex().toString()
+        if (actual != project.ext.libsignalPinnedSha256) {
+            throw new GradleException(
+                    "libsignal-android pin verification FAILED — refusing to build.\n" +
+                    "  coordinate:       ${project.ext.libsignalPinnedCoordinate}\n" +
+                    "  expected SHA-256: ${project.ext.libsignalPinnedSha256}\n" +
+                    "  actual   SHA-256: ${actual}\n" +
+                    "  artifact:         ${artifact}")
+        }
+        logger.lifecycle("verifyLibsignalPin: ${project.ext.libsignalPinnedCoordinate} SHA-256 OK")
+    }
+}
+
+// Gate the build on the pin check.
+tasks.matching { it.name == 'preBuild' }.configureEach {
+    dependsOn verifyLibsignalPin
 }

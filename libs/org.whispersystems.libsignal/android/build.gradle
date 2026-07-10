@@ -24,7 +24,9 @@ android {
     testOptions {
         unitTests.all { unitTestTask ->
             unitTestTask.dependsOn project(':tests').tasks.named('testClasses')
-            unitTestTask.testClassesDirs.from(project(':tests').sourceSets.test.output.classesDirs)
+            // Gradle 9: Test.testClassesDirs is a read-only FileCollection (no .from()); reassign via the
+            // property setter using a union instead of mutating in place.
+            unitTestTask.testClassesDirs = unitTestTask.testClassesDirs + project(':tests').sourceSets.test.output.classesDirs
             unitTestTask.classpath += project(':tests').sourceSets.test.runtimeClasspath
         }
     }

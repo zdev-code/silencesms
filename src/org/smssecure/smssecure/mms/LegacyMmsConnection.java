@@ -30,7 +30,7 @@ import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.TelephonyUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

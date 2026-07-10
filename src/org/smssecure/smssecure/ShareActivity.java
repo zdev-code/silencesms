@@ -147,10 +147,9 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
-    switch (item.getItemId()) {
-    case R.id.menu_new_message: handleNewConversation(); return true;
-    case android.R.id.home:     finish();                return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_new_message) { handleNewConversation(); return true; }
+    else if (itemId == android.R.id.home)     { finish();                return true; }
     return false;
   }
 

@@ -30,7 +30,7 @@ import org.smssecure.smssecure.mms.Slide;
 import org.smssecure.smssecure.mms.SlideClickListener;
 import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.util.ViewUtil;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 public class ThumbnailView extends FrameLayout {
 
@@ -41,7 +41,7 @@ public class ThumbnailView extends FrameLayout {
   private int             radius;
   private OnClickListener parentClickListener;
 
-  private Optional<TransferControlView> transferControls       = Optional.absent();
+  private Optional<TransferControlView> transferControls       = Optional.empty();
   private SlideClickListener            thumbnailClickListener = null;
   private SlideClickListener            downloadClickListener  = null;
   private Slide                         slide                  = null;

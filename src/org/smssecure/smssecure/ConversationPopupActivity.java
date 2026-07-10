@@ -78,8 +78,7 @@ public class ConversationPopupActivity extends ConversationActivity {
   @Override
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_expand:
+    if (item.getItemId() == R.id.menu_expand) {
         saveDraft().addListener(new ListenableFuture.Listener<Long>() {
           @Override
           public void onSuccess(Long result) {

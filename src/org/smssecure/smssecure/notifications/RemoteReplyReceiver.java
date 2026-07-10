@@ -35,7 +35,7 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.sms.MessageSender;
 import org.smssecure.smssecure.sms.OutgoingEncryptedMessage;
 import org.smssecure.smssecure.sms.OutgoingTextMessage;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.LinkedList;
 
@@ -68,7 +68,7 @@ public class RemoteReplyReceiver extends MasterSecretBroadcastReceiver {
           long threadId;
 
           Optional<RecipientsPreferences> preferences = DatabaseFactory.getRecipientPreferenceDatabase(context).getRecipientsPreferences(recipientIds);
-          int subscriptionId = preferences.isPresent() ? preferences.get().getDefaultSubscriptionId().or(-1) : -1;
+          int subscriptionId = preferences.isPresent() ? preferences.get().getDefaultSubscriptionId().orElse(-1) : -1;
 
           Recipients recipients = RecipientFactory.getRecipientsForIds(context, recipientIds, false);
           if (recipients.isGroupRecipient()) {

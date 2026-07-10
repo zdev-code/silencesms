@@ -11,7 +11,7 @@ import com.android.mms.service_alt.MmsConfig;
 
 import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.HashMap;
 import java.util.Map;
