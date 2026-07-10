@@ -40,6 +40,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.core.view.WindowCompat;
 import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
@@ -281,10 +283,17 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   @Override
+  @SuppressWarnings("deprecation") // overridePendingTransition retained as pre-API-34 fallback
   protected void onPause() {
     super.onPause();
     MessageNotifier.setVisibleThread(-1L);
-    if (isFinishing()) overridePendingTransition(R.anim.fade_scale_in, R.anim.slide_to_right);
+    if (isFinishing()) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, R.anim.fade_scale_in, R.anim.slide_to_right);
+      } else {
+        overridePendingTransition(R.anim.fade_scale_in, R.anim.slide_to_right);
+      }
+    }
     fragment.setLastSeen(System.currentTimeMillis());
     markLastSeen();
     AudioSlidePlayer.stopAll();
@@ -784,6 +793,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     finish();
   }
 
+  @SuppressWarnings("deprecation") // startActivityForResult/onActivityResult; Activity Result API migration is a separate cross-cutting effort
   private void handleAddToContacts() {
     try {
       final Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
@@ -947,7 +957,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     int[]      attributes   = new int[]{R.attr.conversation_item_bubble_background};
     TypedArray colors       = obtainStyledAttributes(attributes);
     int        defaultColor = colors.getColor(0, Color.WHITE);
-    composeBubble.getBackground().setColorFilter(defaultColor, PorterDuff.Mode.MULTIPLY);
+    composeBubble.getBackground().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(defaultColor, BlendModeCompat.MODULATE));
     colors.recycle();
 
     attachmentAdapter = new AttachmentTypeSelectorAdapter(this);
@@ -982,7 +992,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       public void onChange(TransportOption newTransport, boolean manuallySelected) {
         calculateCharactersRemaining();
         composeText.setTransport(newTransport);
-        buttonToggle.getBackground().setColorFilter(newTransport.getBackgroundColor(), Mode.MULTIPLY);
+        buttonToggle.getBackground().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(newTransport.getBackgroundColor(), BlendModeCompat.MODULATE));
         buttonToggle.getBackground().invalidateSelf();
         if (manuallySelected) {
           recordSubscriptionIdPreference(newTransport.getSimSubscriptionId());
@@ -1022,6 +1032,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     backPressedCallback = new OnBackPressedCallback(true) {
       @Override
+      @SuppressWarnings("deprecation") // super.onBackPressed() is the documented disable-and-dispatch fallback
       public void handleOnBackPressed() {
         Log.w(TAG, "onBackPressed()");
         if (container != null && container.isInputOpen()) {
@@ -1209,13 +1220,14 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     return future;
   }
 
+  @SuppressWarnings("deprecation") // Window.set{Status,Navigation}BarColor intentionally paint the bars below API 35
   private void setActionBarColor(MaterialColor color) {
     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color.toActionBarColor(this)));
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       Window window = getWindow();
       window.setStatusBarColor(color.toStatusBarColor(this));
-      window.setNavigationBarColor(getResources().getColor(android.R.color.black));
+      window.setNavigationBarColor(ContextCompat.getColor(this, android.R.color.black));
     }
   }
 

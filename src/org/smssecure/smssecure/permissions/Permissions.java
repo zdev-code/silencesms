@@ -19,9 +19,6 @@ import android.view.Display;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.annimon.stream.Stream;
-import com.annimon.stream.function.Consumer;
-
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.LRUCache;
 import org.smssecure.smssecure.util.ServiceUtil;
@@ -31,6 +28,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Permissions {
 
@@ -183,7 +181,7 @@ public class Permissions {
       }
 
       String[] permissions  = filterNotGranted(permissionObject.getContext(), requestedPermissions);
-      int[]    grantResults = Stream.of(permissions).mapToInt(permission -> PackageManager.PERMISSION_DENIED).toArray();
+      int[]    grantResults = Arrays.stream(permissions).mapToInt(permission -> PackageManager.PERMISSION_DENIED).toArray();
       boolean[] showDialog   = new boolean[permissions.length];
       Arrays.fill(showDialog, true);
 
@@ -201,21 +199,20 @@ public class Permissions {
   }
 
   private static String[] filterNotGranted(@NonNull Context context, String... permissions) {
-    return Stream.of(permissions)
+    return Arrays.stream(permissions)
                  .filter(permission -> ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED)
-                 .toList()
-                 .toArray(new String[0]);
+                 .toArray(String[]::new);
   }
 
   public static boolean hasAny(@NonNull Context context, String... permissions) {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-        Stream.of(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
+        Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
 
   }
 
   public static boolean hasAll(@NonNull Context context, String... permissions) {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-        Stream.of(permissions).allMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
+        Arrays.stream(permissions).allMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
 
   }
 

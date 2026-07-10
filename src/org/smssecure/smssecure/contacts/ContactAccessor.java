@@ -210,6 +210,7 @@ public class ContactAccessor {
    * directly from the Android source, where shitty code is all you get.
    */
 
+  @SuppressWarnings("deprecation") // Contacts.TIMES_CONTACTED deprecated in API 30; retained for legacy sort parity
   public Cursor getCursorForRecipientFilter(CharSequence constraint,
       ContentResolver mContentResolver)
   {
@@ -258,7 +259,7 @@ public class ContactAccessor {
                                                 SORT_ORDER);
 
     if (phone.length() > 0) {
-      ArrayList result = new ArrayList();
+      ArrayList<Object> result = new ArrayList<>();
       result.add(-1);                    // ID
       result.add((long) -1);             // CONTACT_ID
       result.add(Phone.TYPE_CUSTOM);     // TYPE

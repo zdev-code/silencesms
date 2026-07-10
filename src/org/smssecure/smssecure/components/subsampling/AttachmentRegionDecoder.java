@@ -31,6 +31,7 @@ public class AttachmentRegionDecoder implements ImageRegionDecoder {
 
   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
   @Override
+  @SuppressWarnings("deprecation") // BitmapRegionDecoder.newInstance(InputStream) is API 31; deprecated overload kept for minSdk 23
   public Point init(Context context, Uri uri) throws Exception {
     Log.w(TAG, "Init!");
     if (!PartAuthority.isLocalUri(uri)) {

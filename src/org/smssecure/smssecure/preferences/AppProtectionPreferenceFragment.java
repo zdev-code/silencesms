@@ -3,7 +3,6 @@ package org.smssecure.smssecure.preferences;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -11,11 +10,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceScreen;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.NumberPicker;
 import android.widget.Toast;
-
-import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
-import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
 
 import org.smssecure.smssecure.ApplicationPreferencesActivity;
 import org.smssecure.smssecure.BlockedContactsActivity;
@@ -108,32 +106,39 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
     }
   }
 
-  private class PassphraseIntervalClickListener implements Preference.OnPreferenceClickListener, HmsPickerDialogFragment.HmsPickerDialogHandler {
+  private class PassphraseIntervalClickListener implements Preference.OnPreferenceClickListener {
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-  Resources.Theme theme      = getActivity().getTheme();
-  TypedValue      typedValue = new TypedValue();
+      int          timeoutMinutes = SilencePreferences.getPassphraseTimeoutInterval(getActivity());
+      View         view           = LayoutInflater.from(getActivity()).inflate(R.layout.passphrase_timeout_picker, null);
+      NumberPicker hours          = view.findViewById(R.id.hours_picker);
+      NumberPicker minutes        = view.findViewById(R.id.minutes_picker);
+      NumberPicker seconds        = view.findViewById(R.id.seconds_picker);
 
-  boolean resolved = theme != null && theme.resolveAttribute(R.attr.app_protect_timeout_picker_color, typedValue, true);
-  int styleResId   = resolved && typedValue.resourceId != 0 ? typedValue.resourceId : R.style.BetterPickersDialogFragment_Light;
+      hours.setMinValue(0);   hours.setMaxValue(23);
+      minutes.setMinValue(0); minutes.setMaxValue(59);
+      seconds.setMinValue(0); seconds.setMaxValue(59);
 
-  new HmsPickerBuilder().setFragmentManager(getFragmentManager())
-            .setStyleResId(styleResId)
-            .addHmsPickerDialogHandler(this)
-            .show();
+      hours.setValue(timeoutMinutes / 60);
+      minutes.setValue(timeoutMinutes % 60);
+      seconds.setValue(0);
+
+      new AlertDialog.Builder(getActivity())
+          .setTitle(R.string.AppProtectionPreferenceFragment_inactivity_timeout_interval)
+          .setView(view)
+          .setNegativeButton(android.R.string.cancel, null)
+          .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            int newTimeoutMinutes = Math.max((int) TimeUnit.HOURS.toMinutes(hours.getValue()) +
+                                             minutes.getValue()                               +
+                                             (int) TimeUnit.SECONDS.toMinutes(seconds.getValue()), 1);
+
+            SilencePreferences.setPassphraseTimeoutInterval(getActivity(), newTimeoutMinutes);
+            initializeTimeoutSummary();
+          })
+          .show();
 
       return true;
-    }
-
-    @Override
-    public void onDialogHmsSet(int reference, int hours, int minutes, int seconds) {
-      int timeoutMinutes = Math.max((int)TimeUnit.HOURS.toMinutes(hours) +
-                                    minutes                         +
-                                    (int)TimeUnit.SECONDS.toMinutes(seconds), 1);
-
-      SilencePreferences.setPassphraseTimeoutInterval(getActivity(), timeoutMinutes);
-      initializeTimeoutSummary();
     }
   }
 

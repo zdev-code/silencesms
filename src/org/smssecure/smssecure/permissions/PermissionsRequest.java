@@ -4,7 +4,7 @@ package org.smssecure.smssecure.permissions;
 import android.content.pm.PackageManager;
 import androidx.annotation.Nullable;
 
-import com.annimon.stream.function.Consumer;
+import java.util.function.Consumer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

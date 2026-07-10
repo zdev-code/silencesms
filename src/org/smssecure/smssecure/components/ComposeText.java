@@ -130,6 +130,10 @@ public class ComposeText extends EmojiEditText {
                 : null);
   }
 
+  // InputConnectionCompat.createWrapper(InputConnection, EditorInfo, OnCommitContentListener) is
+  // deprecated in favour of the OnReceiveContentListener API; retained deliberately because the
+  // replacement changes the content-commit flow. Suppressed rather than rewritten.
+  @SuppressWarnings("deprecation")
   @Override
   public InputConnection onCreateInputConnection(EditorInfo editorInfo) {
     InputConnection inputConnection = super.onCreateInputConnection(editorInfo);
@@ -168,7 +172,7 @@ public class ComposeText extends EmojiEditText {
 
     @Override
     public boolean onCommitContent(InputContentInfoCompat inputContentInfo, int flags, Bundle opts) {
-      if (BuildCompat.isAtLeastNMR1() && (flags & InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0) {
+      if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) && (flags & InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0) {
         try {
           inputContentInfo.requestPermission();
         } catch (Exception e) {

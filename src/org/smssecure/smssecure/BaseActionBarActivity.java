@@ -75,6 +75,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
    * insets are zero and this is a no-op. Fullscreen activities (e.g. media viewers) override
    * {@link #applyDefaultWindowInsets()} to opt out entirely.
    */
+  @SuppressWarnings("deprecation") // android.R.attr.statusBarColor/navigationBarColor read intentionally to paint edge-to-edge bar scrims
   private void applyWindowInsets() {
     if (!applyDefaultWindowInsets()) return;
 
@@ -266,6 +267,6 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   protected void startActivitySceneTransition(Intent intent, View sharedView, String transitionName) {
     Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedView, transitionName)
                                          .toBundle();
-    ActivityCompat.startActivity(this, intent, bundle);
+    startActivity(intent, bundle);
   }
 }

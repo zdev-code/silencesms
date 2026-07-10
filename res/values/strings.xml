@@ -48,6 +48,10 @@
     <item quantity="one">%d minute</item>
     <item quantity="other">%d minutes</item>
     </plurals>
+    <string name="AppProtectionPreferenceFragment_hours">h</string>
+    <string name="AppProtectionPreferenceFragment_minutes_short">m</string>
+    <string name="AppProtectionPreferenceFragment_seconds">s</string>
+    <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Inactivity timeout interval</string>
 
     <!-- DraftDatabase -->
     <string name="DraftDatabase_Draft_image_snippet">(image)</string>

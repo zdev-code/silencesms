@@ -1,9 +1,11 @@
 package org.smssecure.smssecure.audio;
 
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,7 +72,10 @@ public class AudioSlidePlayer {
     audioAttachmentServer.start();
 
     mediaPlayer.setDataSource(context, audioAttachmentServer.getUri());
-    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                                       .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                       .setUsage(AudioAttributes.USAGE_MEDIA)
+                                       .build());
     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
       @Override
       public void onPrepared(MediaPlayer mp) {
@@ -246,6 +251,7 @@ public class AudioSlidePlayer {
     private final WeakReference<AudioSlidePlayer> playerReference;
 
     private ProgressEventHandler(@NonNull AudioSlidePlayer player) {
+      super(Looper.getMainLooper());
       this.playerReference = new WeakReference<>(player);
     }
 

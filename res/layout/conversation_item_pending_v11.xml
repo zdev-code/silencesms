@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:dots="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <pl.tajchert.sample.DotsTextView
+    <org.smssecure.smssecure.components.AnimatedDotsView
             android:id="@+id/pending_indicator"
             android:layout_width="match_parent"
             android:layout_height="20dp"
@@ -12,8 +11,6 @@
             android:textSize="@dimen/conversation_item_date_text_size"
             android:paddingTop="1dip"
             android:paddingLeft="2dip"
-            android:paddingBottom="5dp"
-            dots:period="150"
-            dots:autoplay="true"/>
+            android:paddingBottom="5dp" />
 
 </merge>

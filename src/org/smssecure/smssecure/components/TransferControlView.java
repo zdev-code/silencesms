@@ -1,5 +1,8 @@
 package org.smssecure.smssecure.components;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
@@ -8,6 +11,8 @@ import android.os.Build.VERSION_CODES;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,10 +20,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.ValueAnimator;
-import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
-import com.pnikosis.materialishprogress.ProgressWheel;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,7 +38,7 @@ public class TransferControlView extends FrameLayout {
   @Nullable private Slide slide;
   @Nullable private View  current;
 
-  private final ProgressWheel progressWheel;
+  private final CircularProgressIndicator progressWheel;
   private final TextView      downloadDetails;
   private final int           contractedWidth;
   private final int           expandedWidth;
@@ -55,7 +57,7 @@ public class TransferControlView extends FrameLayout {
 
     final Drawable background = ContextCompat.getDrawable(context, R.drawable.transfer_controls_background);
     if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-      background.setColorFilter(0x66ffffff, Mode.MULTIPLY);
+      background.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(0x66ffffff, BlendModeCompat.MODULATE));
     }
     setLongClickable(false);
     ViewUtil.setBackground(this, background);
@@ -104,7 +106,7 @@ public class TransferControlView extends FrameLayout {
   }
 
   public void showProgressSpinner() {
-    progressWheel.spin();
+    if (progressWheel.getVisibility() != View.VISIBLE) progressWheel.setIndeterminate(true);
     display(progressWheel);
   }
 
@@ -169,7 +171,7 @@ public class TransferControlView extends FrameLayout {
       Util.runOnMain(new Runnable() {
         @Override
         public void run() {
-          progressWheel.setInstantProgress(((float)event.progress) / event.total);
+          progressWheel.setProgressCompat((int) ((((float) event.progress) / event.total) * 100), true);
         }
       });
     }

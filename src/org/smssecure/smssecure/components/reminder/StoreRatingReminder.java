@@ -42,6 +42,7 @@ public class StoreRatingReminder extends Reminder {
     setDismissListener(dismissListener);
   }
 
+  @SuppressWarnings("deprecation") // getInstallerPackageName works on all API levels; getInstallSourceInfo is API 30+
   public static boolean isEligible(Context context) {
 
     if (!SilencePreferences.isRatingEnabled(context))

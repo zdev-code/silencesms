@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import org.smssecure.smssecure.permissions.Permissions;
 import org.smssecure.smssecure.util.CharacterCalculator;
@@ -138,23 +139,23 @@ public class TransportOptions {
 
     if (isMediaMessage) {
       results.addAll(getTransportOptionsForSimCards(Type.INSECURE_SMS, R.drawable.ic_send_insecure_white_24dp,
-                                                    context.getResources().getColor(R.color.grey_600),
+                                                    ContextCompat.getColor(context, R.color.grey_600),
                                                     context.getString(R.string.ConversationActivity_transport_insecure_mms),
                                                     context.getString(R.string.conversation_activity__type_message_mms_insecure),
                                                     new MmsCharacterCalculator()));
       results.addAll(getTransportOptionsForSimCards(Type.SECURE_SMS, R.drawable.ic_send_secure_white_24dp,
-                                                    context.getResources().getColor(R.color.silence_primary),
+                                                    ContextCompat.getColor(context, R.color.silence_primary),
                                                     context.getString(R.string.ConversationActivity_transport_secure_mms),
                                                     context.getString(R.string.conversation_activity__type_message_mms_secure),
                                                     new MmsCharacterCalculator()));
     } else {
       results.addAll(getTransportOptionsForSimCards(Type.INSECURE_SMS, R.drawable.ic_send_insecure_white_24dp,
-                                                    context.getResources().getColor(R.color.grey_600),
+                                                    ContextCompat.getColor(context, R.color.grey_600),
                                                     context.getString(R.string.ConversationActivity_transport_insecure_sms),
                                                     context.getString(R.string.conversation_activity__type_message_sms_insecure),
                                                     new SmsCharacterCalculator()));
       results.addAll(getTransportOptionsForSimCards(Type.SECURE_SMS, R.drawable.ic_send_secure_white_24dp,
-                                                    context.getResources().getColor(R.color.silence_primary),
+                                                    ContextCompat.getColor(context, R.color.silence_primary),
                                                     context.getString(R.string.ConversationActivity_transport_secure_sms),
                                                     context.getString(R.string.conversation_activity__type_message_sms_secure),
                                                     new EncryptedSmsCharacterCalculator()));
@@ -225,7 +226,7 @@ public class TransportOptions {
   private TransportOption getDefaultTransportOption() {
     return new TransportOption(Type.DISABLED,
                                R.drawable.ic_send_insecure_white_24dp,
-                               context.getResources().getColor(R.color.grey_600),
+                               ContextCompat.getColor(context, R.color.grey_600),
                                context.getString(R.string.TransportOptions_sms_disabled),
                                context.getString(R.string.TransportOptions_no_sim_card_found),
                                new DummyCharacterCalculator(),

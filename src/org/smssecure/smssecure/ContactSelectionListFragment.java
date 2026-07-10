@@ -76,9 +76,8 @@ public class ContactSelectionListFragment extends    Fragment
   private boolean                   multi = false;
 
   @Override
-  public void onActivityCreated(Bundle icicle) {
-    super.onActivityCreated(icicle);
-    super.onCreate(icicle);
+  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
     initializeCursor();
   }
 
@@ -113,6 +112,7 @@ public class ContactSelectionListFragment extends    Fragment
   }
 
   @Override
+  @SuppressWarnings("deprecation") // part of the custom Permissions framework; Activity Result migration is a separate effort
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
@@ -163,7 +163,7 @@ public class ContactSelectionListFragment extends    Fragment
 
   public void setQueryFilter(String filter) {
     this.cursorFilter = filter;
-    this.getLoaderManager().restartLoader(0, null, this);
+    LoaderManager.getInstance(this).restartLoader(0, null, this);
   }
 
   @Override
@@ -194,7 +194,7 @@ public class ContactSelectionListFragment extends    Fragment
 
   @SuppressLint("StaticFieldLeak")
   private void handleContactPermissionGranted() {
-    this.getLoaderManager().initLoader(0, null, this);
+    LoaderManager.getInstance(this).initLoader(0, null, this);
     showContactsLayout.setVisibility(View.GONE);
     emptyText.setVisibility(View.GONE);
   }
