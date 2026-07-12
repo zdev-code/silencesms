@@ -75,7 +75,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
   }
 
   private void initializeFingerprints() {
-    int subscriptionId = getIntent().getIntExtra("subscription_id", SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1));
+    int subscriptionId = getSubscriptionId();
 
     if (!IdentityKeyUtil.hasIdentityKey(this, subscriptionId)) {
       localIdentityFingerprint.setText(R.string.VerifyIdentityActivity_you_do_not_have_an_identity_key);
@@ -95,7 +95,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
 
   @Override
   protected void initiateDisplay() {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
+    int subscriptionId = getSubscriptionId();
 
     if (!IdentityKeyUtil.hasIdentityKey(this, subscriptionId)) {
       Toast.makeText(this,
@@ -136,7 +136,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
 
   @Override
   protected IdentityKey getIdentityKeyToDisplay() {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
+    int subscriptionId = getSubscriptionId();
 
     return IdentityKeyUtil.getIdentityKey(this, subscriptionId);
   }
@@ -162,8 +162,8 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
   }
 
   private @Nullable IdentityKey getRemoteIdentityKey(MasterSecret masterSecret, Recipient recipient) {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
-  IdentityKeyParcelable identityKeyParcelable = IntentCompat.getParcelableExtra(getIntent(), "remote_identity", IdentityKeyParcelable.class);
+    int subscriptionId = getSubscriptionId();
+    IdentityKeyParcelable identityKeyParcelable = IntentCompat.getParcelableExtra(getIntent(), "remote_identity", IdentityKeyParcelable.class);
 
     if (identityKeyParcelable != null) {
       return identityKeyParcelable.get();
@@ -188,5 +188,10 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
     } catch (InvalidKeyException e) {
       throw new AssertionError(e);
     }
+  }
+
+  private int getSubscriptionId() {
+    return getIntent().getIntExtra("subscription_id",
+                                   SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1));
   }
 }
