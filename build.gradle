@@ -66,9 +66,12 @@ dependencies {
     // AAR bundles native .so per ABI.
     implementation 'org.signal:libsignal-android:0.72.1'
 
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.19.0'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.19.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
+    // 2.22.1 is the latest stable 2.x; patches CVE-2026-5451/5513/5454 (PTV bypasses + InetSocketAddress
+    // SSRF, fixed 2.21.4) and CVE-2026-54515 (@JsonIgnoreProperties bypass, fixed 2.22.1). annotations
+    // tracks the minor (2.22) since it only bumps per-minor. Jackson 3.x is a coordinate/package migration.
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.22'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.22.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
     implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.32'
 
     implementation project(':com.amulyakhare.textdrawable')

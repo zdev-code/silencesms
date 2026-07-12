@@ -105,6 +105,46 @@ public class IdentityDatabase extends Database {
     }
   }
 
+  /**
+   * Tri-state lookup of the identity currently on file for {@code recipientId}. Distinguishes an
+   * absent row from a present-but-unreadable one (corrupt bytes or a failed MAC) so callers do not
+   * conflate "no prior identity" with "a prior identity we cannot verify". Reporting the latter as a
+   * first use would suppress libsignal's identity-change handling.
+   */
+  public StoredIdentity getStoredIdentity(MasterSecret masterSecret, long recipientId) {
+    SQLiteDatabase database     = databaseHelper.getReadableDatabase();
+    MasterCipher   masterCipher = new MasterCipher(masterSecret);
+    Cursor         cursor       = null;
+
+    try {
+      cursor = database.query(TABLE_NAME, null, RECIPIENT + " = ?",
+                              new String[] {recipientId + ""}, null, null, null);
+
+      if (cursor == null || !cursor.moveToFirst()) {
+        return new StoredIdentity(IdentityLookupStatus.NOT_PRESENT, null);
+      }
+
+      String serializedIdentity = cursor.getString(cursor.getColumnIndexOrThrow(IDENTITY_KEY));
+      String mac                = cursor.getString(cursor.getColumnIndexOrThrow(MAC));
+
+      if (!masterCipher.verifyMacFor(recipientId + serializedIdentity, Base64.decode(mac))) {
+        Log.w("IdentityDatabase", "MAC failed");
+        return new StoredIdentity(IdentityLookupStatus.PRESENT_UNREADABLE, null);
+      }
+
+      return new StoredIdentity(IdentityLookupStatus.PRESENT_VALID,
+                                new IdentityKey(Base64.decode(serializedIdentity), 0));
+    } catch (IOException | InvalidKeyException e) {
+      // A row was found but its stored bytes will not decode: present, but unreadable.
+      Log.w("IdentityDatabase", e);
+      return new StoredIdentity(IdentityLookupStatus.PRESENT_UNREADABLE, null);
+    } finally {
+      if (cursor != null) {
+        cursor.close();
+      }
+    }
+  }
+
   public void saveIdentity(MasterSecret masterSecret, long recipientId, IdentityKey identityKey)
   {
     SQLiteDatabase database   = databaseHelper.getWritableDatabase();
@@ -180,6 +220,35 @@ public class IdentityDatabase extends Database {
       return recipients;
     }
 
+    public IdentityKey getIdentityKey() {
+      return identityKey;
+    }
+  }
+
+  /** Outcome of {@link #getStoredIdentity(MasterSecret, long)}. */
+  public enum IdentityLookupStatus {
+    /** No identity row exists for the recipient. */
+    NOT_PRESENT,
+    /** A row exists and its MAC verified; {@link StoredIdentity#getIdentityKey()} is non-null. */
+    PRESENT_VALID,
+    /** A row exists but its bytes will not decode or its MAC failed; the key is unavailable. */
+    PRESENT_UNREADABLE
+  }
+
+  public static final class StoredIdentity {
+    private final IdentityLookupStatus status;
+    private final IdentityKey          identityKey;
+
+    private StoredIdentity(IdentityLookupStatus status, IdentityKey identityKey) {
+      this.status      = status;
+      this.identityKey = identityKey;
+    }
+
+    public IdentityLookupStatus getStatus() {
+      return status;
+    }
+
+    /** The stored key, or {@code null} unless {@link #getStatus()} is {@link IdentityLookupStatus#PRESENT_VALID}. */
     public IdentityKey getIdentityKey() {
       return identityKey;
     }

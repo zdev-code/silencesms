@@ -18,6 +18,7 @@ import android.util.Log;
 import org.smssecure.smssecure.crypto.IdentityKeyUtil;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
+import org.smssecure.smssecure.crypto.storage.StorageFileLock;
 import org.smssecure.smssecure.crypto.storage.VendoredSessionStore;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.notifications.NotificationChannels;
@@ -63,31 +64,41 @@ public class DualSimUtil {
   private static void moveSessionsToSubscriptionId(Context context, int originalSubscriptionId, int subscriptionId) {
     File sessionDirectory = VendoredSessionStore.getSessionDirectory(context);
 
-    File[] sessionList = sessionDirectory.listFiles();
+    // Serialize against the session stores (which share this directory) so a rename never races a
+    // concurrent ratchet read/write over the same file.
+    synchronized (StorageFileLock.forDirectory(sessionDirectory)) {
+      File[] sessionList = sessionDirectory.listFiles();
 
-    String destinationSuffix = subscriptionId != -1 ? "." + subscriptionId : "";
+      if (sessionList == null) return;
 
-    for (File session : sessionList){
-      if (session.isFile()){
-        String absolutePath = session.getAbsolutePath();
-        String newSessionName = null;
+      String destinationSuffix = subscriptionId != -1 ? "." + subscriptionId : "";
 
-        if (originalSubscriptionId != -1 && absolutePath.endsWith("." + originalSubscriptionId)) {
-          newSessionName = absolutePath.replaceAll("/\\." + originalSubscriptionId + "/g", destinationSuffix);
-        } else if (originalSubscriptionId == -1) {
-          newSessionName = absolutePath + destinationSuffix;
-        }
+      for (File session : sessionList){
+        if (session.isFile()){
+          String absolutePath = session.getAbsolutePath();
+          String newSessionName = null;
 
-        if (newSessionName != null) {
-          Log.w(TAG, "Moving session " + absolutePath + " to " + newSessionName);
-          File newFile = new File(newSessionName);
-          if (session.renameTo(newFile)) {
-            Log.w(TAG, "Done!");
-          } else {
-            Log.w(TAG, "Failed!");
+          if (originalSubscriptionId != -1 && absolutePath.endsWith("." + originalSubscriptionId)) {
+            // Strip the trailing ".<originalSubscriptionId>" suffix and append the destination
+            // suffix. (The previous replaceAll used a JS-style "/.../g" literal, which is not a Java
+            // regex, so the rename silently no-op'd and cross-subscription migration never happened.)
+            String originalSuffix = "." + originalSubscriptionId;
+            newSessionName = absolutePath.substring(0, absolutePath.length() - originalSuffix.length()) + destinationSuffix;
+          } else if (originalSubscriptionId == -1) {
+            newSessionName = absolutePath + destinationSuffix;
           }
-        }
 
+          if (newSessionName != null) {
+            Log.w(TAG, "Moving session " + absolutePath + " to " + newSessionName);
+            File newFile = new File(newSessionName);
+            if (session.renameTo(newFile)) {
+              Log.w(TAG, "Done!");
+            } else {
+              Log.w(TAG, "Failed!");
+            }
+          }
+
+        }
       }
     }
   }

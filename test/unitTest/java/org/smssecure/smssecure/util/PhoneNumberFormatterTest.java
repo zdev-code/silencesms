@@ -3,10 +3,11 @@ package org.smssecure.smssecure.util;
 import junit.framework.AssertionFailedError;
 
 import org.junit.Test;
+import org.smssecure.smssecure.BaseUnitTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PhoneNumberFormatterTest {
+public class PhoneNumberFormatterTest extends BaseUnitTest {
   private static final String LOCAL_NUMBER = "+15555555555";
 
   @Test public void testFormatNumberE164() throws Exception, InvalidNumberException {

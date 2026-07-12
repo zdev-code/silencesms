@@ -3,7 +3,7 @@ package org.smssecure.smssecure.crypto;
 import org.junit.Before;
 import org.junit.Test;
 import org.smssecure.smssecure.BaseUnitTest;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 
 public class MasterCipherTest extends BaseUnitTest {
   private MasterCipher masterCipher;
