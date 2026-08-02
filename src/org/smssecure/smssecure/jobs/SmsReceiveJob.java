@@ -149,10 +149,6 @@ public class SmsReceiveJob extends ContextJob {
   private SmsMessage createSmsMessageFromPdu(Object pdu, String format) {
     if (!(pdu instanceof byte[])) return null;
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      return SmsMessage.createFromPdu((byte[]) pdu, format);
-    } else {
-      return SmsMessage.createFromPdu((byte[]) pdu);
-    }
+    return SmsMessage.createFromPdu((byte[]) pdu, format);
   }
 }

@@ -94,7 +94,7 @@ public class ViewIdentityActivity extends KeyScanningActivity {
   }
 
   private void initializeResources() {
-    IdentityKeyParcelable identityKeyParcelable = getIntent().getParcelableExtra(IDENTITY_KEY);
+    IdentityKeyParcelable identityKeyParcelable = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), IDENTITY_KEY, IdentityKeyParcelable.class);
 
     if (identityKeyParcelable == null) {
       throw new AssertionError("No identity key!");

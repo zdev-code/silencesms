@@ -40,6 +40,6 @@ repositories {
 
 dependencies {
     api(project(':java'))
-    testImplementation project(path: ':tests', configuration: 'testArtifacts')
+    testImplementation(project(path: ':tests', configuration: 'testArtifacts'))
     androidTestImplementation 'junit:junit:4.13.2'
 }

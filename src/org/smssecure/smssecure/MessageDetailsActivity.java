@@ -19,10 +19,10 @@ package org.smssecure.smssecure;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
 import androidx.loader.app.LoaderManager.LoaderCallbacks;
 import androidx.loader.content.Loader;
 import android.util.Log;
@@ -51,6 +51,7 @@ import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -85,6 +86,7 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
   private TextView         toFrom;
   private ListView         recipientsList;
   private LayoutInflater   inflater;
+  private AppTaskExecutor.TaskHandle recipientTask;
 
   private DynamicTheme     dynamicTheme    = new DynamicTheme();
   private DynamicLanguage  dynamicLanguage = new DynamicLanguage();
@@ -101,7 +103,7 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
 
     initializeResources();
     initializeActionBar();
-    getSupportLoaderManager().initLoader(0, null, this);
+    LoaderManager.getInstance(this).initLoader(0, null, this);
   }
 
   @Override
@@ -120,6 +122,13 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
     MessageNotifier.setVisibleThread(-1L);
   }
 
+  @Override
+  protected void onDestroy() {
+    if (recipientTask != null) recipientTask.cancel();
+    recipientTask = null;
+    super.onDestroy();
+  }
+
   private void initializeActionBar() {
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -133,7 +142,7 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color.toActionBarColor(this)));
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      getWindow().setStatusBarColor(color.toStatusBarColor(this));
+      setStatusBarColorCompat(color.toStatusBarColor(this));
     }
   }
 
@@ -151,7 +160,7 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
     inflater       = LayoutInflater.from(this);
     View header = inflater.inflate(R.layout.message_details_header, recipientsList, false);
 
-    masterSecret      = getIntent().getParcelableExtra(MASTER_SECRET_EXTRA);
+    masterSecret      = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), MASTER_SECRET_EXTRA, MasterSecret.class);
     threadId          = getIntent().getLongExtra(THREAD_ID_EXTRA, -1);
     itemParent        = (ViewGroup) header.findViewById(R.id.item_container);
     recipientsList    = (ListView ) findViewById(R.id.recipients_list);
@@ -268,7 +277,19 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
   @Override
   public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
     final MessageRecord messageRecord = getMessageRecord(this, cursor, getIntent().getStringExtra(TYPE_EXTRA));
-    new MessageRecipientAsyncTask(this, messageRecord).execute();
+    if (recipientTask != null) recipientTask.cancel();
+
+    Context context = getApplicationContext();
+    WeakReference<MessageDetailsActivity> owner = new WeakReference<>(this);
+    recipientTask = AppTaskExecutor.getInstance().submitSerial(
+        () -> resolveRecipients(context, messageRecord),
+        recipients -> {
+          MessageDetailsActivity activity = owner.get();
+          if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+            activity.handleRecipientsResolved(messageRecord, recipients);
+          }
+        },
+        exception -> Log.w(TAG, "Unable to resolve message recipients", exception));
   }
 
   @Override
@@ -287,64 +308,17 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
     return false;
   }
 
-  private class MessageRecipientAsyncTask extends AsyncTask<Void,Void,Recipients> {
-    private WeakReference<Context> weakContext;
-    private MessageRecord          messageRecord;
+  private static Recipients resolveRecipients(Context context, MessageRecord messageRecord) {
+      if (messageRecord == null) return null;
 
-    public MessageRecipientAsyncTask(Context context, MessageRecord messageRecord) {
-      this.weakContext   = new WeakReference<>(context);
-      this.messageRecord = messageRecord;
-    }
-
-    protected Context getContext() {
-      return weakContext.get();
-    }
-
-    @Override
-    public Recipients doInBackground(Void... voids) {
-      Context context = getContext();
-      if (context == null) {
-        Log.w(TAG, "associated context is destroyed, finishing early");
-        return null;
-      }
-
-      if (messageRecord == null){
-        Log.w(TAG, "messageRecord is null");
-        return null;
-      }
-
-      Recipients recipients;
-
-      final Recipients intermediaryRecipients;
       if (messageRecord.isMms()) {
-        intermediaryRecipients = DatabaseFactory.getMmsAddressDatabase(context).getRecipientsForId(messageRecord.getId());
+        return DatabaseFactory.getMmsAddressDatabase(context).getRecipientsForId(messageRecord.getId());
       } else {
-        intermediaryRecipients = messageRecord.getRecipients();
+        return messageRecord.getRecipients();
       }
+  }
 
-      /*
-       * isGroupRecipient() will always return false as encrypted group messages
-       * are not implemented yet.
-       */
-      //if (!intermediaryRecipients.isGroupRecipient()) {
-      //  Log.w(TAG, "Recipient is not a group, resolving members immediately.");
-      //  recipients = intermediaryRecipients;
-      //} else {
-      //  // TODO
-      //}
-      recipients = intermediaryRecipients;
-
-      return recipients;
-    }
-
-    @Override
-    public void onPostExecute(Recipients recipients) {
-      Context context = getContext();
-      if (context == null) {
-        Log.w(TAG, "AsyncTask finished with a destroyed context, leaving early.");
-        return;
-      }
-
+  private void handleRecipientsResolved(MessageRecord messageRecord, Recipients recipients) {
       if (messageRecord == null) {
         Log.w(TAG, "messageRecord is null, finishing activity...");
         finish();
@@ -359,10 +333,9 @@ public class MessageDetailsActivity extends PassphraseRequiredActionBarActivity 
         metadataContainer.setVisibility(View.GONE);
       } else {
         updateTransport(messageRecord);
-        updateTime(context, messageRecord);
+        updateTime(this, messageRecord);
         errorText.setVisibility(View.GONE);
         metadataContainer.setVisibility(View.VISIBLE);
       }
-    }
   }
 }

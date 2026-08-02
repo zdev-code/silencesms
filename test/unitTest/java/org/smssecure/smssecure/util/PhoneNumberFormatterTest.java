@@ -5,6 +5,8 @@ import junit.framework.AssertionFailedError;
 import org.junit.Test;
 import org.smssecure.smssecure.BaseUnitTest;
 
+import java.util.Locale;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PhoneNumberFormatterTest extends BaseUnitTest {
@@ -23,5 +25,36 @@ public class PhoneNumberFormatterTest extends BaseUnitTest {
     } catch (InvalidNumberException ine) {
       // success
     }
+  }
+
+  @Test public void testCanonicalizeNumberFallsBackForMalformedInput() {
+    assertThat(PhoneNumberFormatter.canonicalizeNumber("not-a-number", LOCAL_NUMBER))
+        .isEqualTo("not-a-number");
+  }
+
+  @Test public void testCanonicalizeNumberUsesLocalRegion() {
+    assertThat(PhoneNumberFormatter.canonicalizeNumber("020 7946 0958", "+442079460000"))
+        .isEqualTo("+442079460958");
+  }
+
+  @Test public void testFormatNumberForDisplay() {
+    Locale previous = Locale.getDefault();
+    try {
+      Locale.setDefault(Locale.US);
+      assertThat(PhoneNumberFormatter.formatNumberForDisplay("+15555555555"))
+          .isEqualTo("+1 555-555-5555");
+      assertThat(PhoneNumberFormatter.formatNumberForDisplay("12345")).isEqualTo("12345");
+      assertThat(PhoneNumberFormatter.formatNumberForDisplay("person@domain.com"))
+          .isEqualTo("person@domain.com");
+    } finally {
+      Locale.setDefault(previous);
+    }
+  }
+
+  @Test public void testNumbersMatchAcrossRepresentations() {
+    assertThat(PhoneNumberFormatter.areSameNumber("+1 555-555-5555", "(555) 555-5555")).isTrue();
+    assertThat(PhoneNumberFormatter.areSameNumber("+1 555-555-5555", "555-5555")).isTrue();
+    assertThat(PhoneNumberFormatter.areSameNumber("+1 555-555-5555", "+1 212-555-5555")).isFalse();
+    assertThat(PhoneNumberFormatter.areSameNumber(null, "+1 555-555-5555")).isFalse();
   }
 }

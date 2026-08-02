@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
@@ -20,6 +19,7 @@ import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.preferences.widgets.AdvancedRingtonePreference;
 import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragment {
 
@@ -30,7 +30,7 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
-    masterSecret = getArguments().getParcelable("master_secret");
+    masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
 
     this.findPreference(SilencePreferences.LED_COLOR_PREF)
         .setOnPreferenceChangeListener(new ListSummaryListener());
@@ -98,13 +98,19 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
   private class NotificationPrivacyListener extends ListSummaryListener {
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... params) {
-          MessageNotifier.updateNotification(getActivity(), masterSecret);
-          return null;
-        }
-      }.execute();
+      Context context = getContext();
+      if (context != null) {
+        Context appContext = context.getApplicationContext();
+        MasterSecret currentMasterSecret = masterSecret;
+
+        AppTaskExecutor.getInstance().submitSerial(
+            () -> {
+              MessageNotifier.updateNotification(appContext, currentMasterSecret);
+              return null;
+            },
+            ignored -> {},
+            exception -> Log.w(TAG, "Unable to refresh notification privacy", exception));
+      }
 
       return super.onPreferenceChange(preference, value);
     }

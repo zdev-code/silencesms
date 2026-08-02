@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
@@ -157,7 +158,7 @@ public class ApplicationMigrationService extends Service
     builder.setProgress(100, 0, false);
   builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, ConversationListActivity.class), PendingIntent.FLAG_IMMUTABLE));
 
-    stopForeground(true);
+    ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
     Notification notification = builder.build();
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       startForeground(4242, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
@@ -172,7 +173,7 @@ public class ApplicationMigrationService extends Service
     private final MasterSecret masterSecret;
 
     public ImportRunnable(Intent intent) {
-      this.masterSecret = intent.getParcelableExtra("master_secret");
+      this.masterSecret = androidx.core.content.IntentCompat.getParcelableExtra(intent, "master_secret", MasterSecret.class);
       Log.w(TAG, "Service got mastersecret: " + masterSecret);
     }
 
@@ -194,7 +195,7 @@ public class ApplicationMigrationService extends Service
         setState(new ImportState(ImportState.STATE_MIGRATING_COMPLETE, null));
 
         setDatabaseImported(ApplicationMigrationService.this);
-        stopForeground(true);
+        ServiceCompat.stopForeground(ApplicationMigrationService.this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         notifyImportComplete();
         stopSelf();
       } finally {

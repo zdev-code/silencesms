@@ -17,13 +17,11 @@
 package org.smssecure.smssecure.mms;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -33,6 +31,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
 
 import org.smssecure.smssecure.MediaPreviewActivity;
 import org.smssecure.smssecure.R;
@@ -46,6 +45,7 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.MediaUtil;
 import org.smssecure.smssecure.util.ViewUtil;
 import org.smssecure.smssecure.util.concurrent.ListenableFuture.Listener;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 import org.smssecure.smssecure.util.views.Stub;
 import java.util.Optional;
 
@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AttachmentManager {
 
@@ -70,11 +71,13 @@ public class AttachmentManager {
   private @NonNull  List<Uri>       garbage = new LinkedList<>();
   private @NonNull  Optional<Slide> slide   = Optional.empty();
   private @Nullable Uri             captureUri;
+  private final AtomicInteger mediaGeneration = new AtomicInteger();
+  private AppTaskExecutor.TaskHandle mediaTask;
 
   public AttachmentManager(@NonNull Activity activity, @NonNull AttachmentListener listener) {
     this.context            = activity;
     this.attachmentListener = listener;
-    this.attachmentViewStub = ViewUtil.findStubById(activity, R.id.attachment_editor_stub);
+    this.attachmentViewStub = ViewUtil.findStubById(activity, R.id.attachment_editor_stub, View.class);
   }
 
   private void inflateStub() {
@@ -114,6 +117,10 @@ public class AttachmentManager {
   }
 
   public void cleanup() {
+    mediaGeneration.incrementAndGet();
+    if (mediaTask != null) mediaTask.cancel();
+    mediaTask = null;
+
     cleanup(captureUri);
     cleanup(getSlideUri());
 
@@ -150,7 +157,6 @@ public class AttachmentManager {
     this.slide      = Optional.of(slide);
   }
 
-  @SuppressLint("StaticFieldLeak")
   public void setMedia(@NonNull final MasterSecret masterSecret,
                        @NonNull final Uri uri,
                        @NonNull final MediaType mediaType,
@@ -158,53 +164,59 @@ public class AttachmentManager {
   {
     inflateStub();
 
-    new AsyncTask<Void, Void, Slide>() {
-      @Override protected void onPreExecute() {
-        thumbnail.clear();
-        thumbnail.showProgressSpinner();
-        attachmentViewStub.get().setVisibility(View.VISIBLE);
-      }
+    if (mediaTask != null) mediaTask.cancel();
+    int generation = mediaGeneration.incrementAndGet();
+    Context appContext = context.getApplicationContext();
 
-      @Override protected @Nullable Slide doInBackground(Void... params) {
-        long start = System.currentTimeMillis();
-        try {
-          final long  mediaSize = MediaUtil.getMediaSize(context, masterSecret, uri);
-          final Slide slide     = mediaType.createSlide(context, uri, mediaSize);
+    thumbnail.clear();
+    thumbnail.showProgressSpinner();
+    attachmentViewStub.get().setVisibility(View.VISIBLE);
+
+    mediaTask = AppTaskExecutor.getInstance().submitSerial(
+        () -> {
+          long start = System.currentTimeMillis();
+          long mediaSize = MediaUtil.getMediaSize(appContext, masterSecret, uri);
+          Slide resolvedSlide = mediaType.createSlide(appContext, uri, mediaSize);
           Log.w(TAG, "slide with size " + mediaSize + " took " + (System.currentTimeMillis() - start) + "ms");
-          return slide;
-        } catch (IOException ioe) {
-          Log.w(TAG, ioe);
-          return null;
-        }
-      }
+          return resolvedSlide;
+        },
+        resolvedSlide -> {
+          if (mediaGeneration.get() == generation) handleResolvedMedia(masterSecret, constraints, resolvedSlide);
+        },
+        exception -> {
+          Log.w(TAG, "Unable to resolve attachment", exception);
+          if (mediaGeneration.get() == generation) handleResolvedMedia(masterSecret, constraints, null);
+        });
+  }
 
-      @Override protected void onPostExecute(@Nullable final Slide slide) {
-        if (slide == null) {
+  private void handleResolvedMedia(@NonNull MasterSecret masterSecret,
+                                   @NonNull MediaConstraints constraints,
+                                   @Nullable Slide resolvedSlide)
+  {
+        if (resolvedSlide == null) {
           attachmentViewStub.get().setVisibility(View.GONE);
           Toast.makeText(context,
                          R.string.ConversationActivity_sorry_there_was_an_error_adding_your_attachment,
                          Toast.LENGTH_SHORT).show();
-        } else if (!areConstraintsSatisfied(context, masterSecret, slide, constraints)) {
+        } else if (!areConstraintsSatisfied(context, masterSecret, resolvedSlide, constraints)) {
           attachmentViewStub.get().setVisibility(View.GONE);
           Toast.makeText(context,
                          R.string.ConversationActivity_attachment_exceeds_size_limits,
                          Toast.LENGTH_SHORT).show();
         } else {
-          setSlide(slide);
+          setSlide(resolvedSlide);
           attachmentViewStub.get().setVisibility(View.VISIBLE);
 
-          if (slide.hasAudio()) {
-            audioView.setAudio(masterSecret, (AudioSlide)slide, false);
+          if (resolvedSlide.hasAudio()) {
+            audioView.setAudio(masterSecret, (AudioSlide)resolvedSlide, false);
             removableMediaView.display(audioView);
           } else {
-            thumbnail.setImageResource(masterSecret, slide, false);
+            thumbnail.setImageResource(masterSecret, resolvedSlide, false);
             removableMediaView.display(thumbnail);
           }
 
           attachmentListener.onAttachmentChanged();
         }
-      }
-    }.execute();
   }
 
   public boolean isAttachmentPresent() {
@@ -217,41 +229,26 @@ public class AttachmentManager {
     return deck;
   }
 
-  public static void selectVideo(Activity activity, int requestCode) {
-    Permissions.with(activity)
-               .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-               .ifNecessary()
-               .withPermanentDenialDialog(activity.getString(R.string.AttachmentManager_silence_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio))
-               .onAllGranted(() -> selectMediaType(activity, "video/*", requestCode))
-               .execute();
+  public static void selectVideo(Activity activity, ActivityResultLauncher<Intent> launcher) {
+    selectVisualMedia(activity, "video/*", launcher);
   }
 
-  public static void selectImage(Activity activity, int requestCode) {
-    Permissions.with(activity)
-               .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-               .ifNecessary()
-               .withPermanentDenialDialog(activity.getString(R.string.AttachmentManager_silence_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio))
-               .onAllGranted(() -> selectMediaType(activity, "image/*", requestCode))
-               .execute();
+  public static void selectImage(Activity activity, ActivityResultLauncher<Intent> launcher) {
+    selectVisualMedia(activity, "image/*", launcher);
   }
 
-  public static void selectAudio(Activity activity, int requestCode) {
-    Permissions.with(activity)
-               .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-               .ifNecessary()
-               .withPermanentDenialDialog(activity.getString(R.string.AttachmentManager_silence_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio))
-               .onAllGranted(() -> selectMediaType(activity, "audio/*", requestCode))
-               .execute();
+  public static void selectAudio(Activity activity, ActivityResultLauncher<Intent> launcher) {
+    selectMediaType(activity, "audio/*", launcher);
   }
 
-  public static void selectContactInfo(Activity activity, int requestCode) {
+  public static void selectContactInfo(Activity activity, ActivityResultLauncher<Intent> launcher) {
     Permissions.with(activity)
                .request(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CONTACTS)
                .ifNecessary()
                .withPermanentDenialDialog(activity.getString(R.string.AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information))
                .onAllGranted(() -> {
                  Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                 activity.startActivityForResult(intent, requestCode);
+                 launcher.launch(intent);
                })
                .execute();
   }
@@ -264,7 +261,7 @@ public class AttachmentManager {
     return captureUri;
   }
 
-  public void capturePhoto(Activity activity, int requestCode) {
+  public void capturePhoto(Activity activity, ActivityResultLauncher<Intent> launcher) {
     try {
       Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       if (captureIntent.resolveActivity(activity.getPackageManager()) != null) {
@@ -274,21 +271,22 @@ public class AttachmentManager {
         }
         Log.w(TAG, "captureUri path is " + captureUri.getPath());
         captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, captureUri);
-        activity.startActivityForResult(captureIntent, requestCode);
+        captureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        launcher.launch(captureIntent);
       }
     } catch (IOException ioe) {
       Log.w(TAG, ioe);
     }
   }
 
-  private static void selectMediaType(Activity activity, String type, int requestCode) {
+  private static void selectMediaType(Activity activity, String type, ActivityResultLauncher<Intent> launcher) {
     final Intent intent = new Intent();
     intent.setType(type);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
       intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
       try {
-        activity.startActivityForResult(intent, requestCode);
+        launcher.launch(intent);
         return;
       } catch (ActivityNotFoundException anfe) {
         Log.w(TAG, "couldn't complete ACTION_OPEN_DOCUMENT, no activity found. falling back.");
@@ -297,11 +295,27 @@ public class AttachmentManager {
 
     intent.setAction(Intent.ACTION_GET_CONTENT);
     try {
-      activity.startActivityForResult(intent, requestCode);
+      launcher.launch(intent);
     } catch (ActivityNotFoundException anfe) {
       Log.w(TAG, "couldn't complete ACTION_GET_CONTENT intent, no activity found. falling back.");
       Toast.makeText(activity, R.string.AttachmentManager_cant_open_media_selection, Toast.LENGTH_LONG).show();
     }
+  }
+
+  private static void selectVisualMedia(Activity activity, String type, ActivityResultLauncher<Intent> launcher) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+      intent.setType(type);
+
+      try {
+        launcher.launch(intent);
+        return;
+      } catch (ActivityNotFoundException anfe) {
+        Log.w(TAG, "couldn't complete ACTION_PICK_IMAGES, falling back.");
+      }
+    }
+
+    selectMediaType(activity, type, launcher);
   }
 
   private boolean areConstraintsSatisfied(final @NonNull  Context context,
@@ -319,7 +333,7 @@ public class AttachmentManager {
       Intent intent = new Intent(context, MediaPreviewActivity.class);
       intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
       intent.putExtra(MediaPreviewActivity.SIZE_EXTRA, slide.asAttachment().getSize());
-      intent.setDataAndType(slide.getUri(), slide.getContentType());
+        intent.setDataAndType(slide.getUri(), slide.getContentType());
 
       context.startActivity(intent);
     }

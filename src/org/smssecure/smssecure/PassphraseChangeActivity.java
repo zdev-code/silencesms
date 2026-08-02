@@ -17,7 +17,6 @@
 package org.smssecure.smssecure;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -32,6 +31,7 @@ import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
 import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 /**
  * Activity for changing a user's local encryption passphrase.
@@ -40,6 +40,7 @@ import org.smssecure.smssecure.util.SilencePreferences;
  */
 
 public class PassphraseChangeActivity extends PassphraseActivity {
+  private static final String TAG = PassphraseChangeActivity.class.getSimpleName();
 
   private DynamicTheme    dynamicTheme    = new DynamicTheme();
   private DynamicLanguage dynamicLanguage = new DynamicLanguage();
@@ -49,6 +50,7 @@ public class PassphraseChangeActivity extends PassphraseActivity {
   private EditText repeatPassphrase;
   private Button   okButton;
   private Button   cancelButton;
+  private AppTaskExecutor.TaskHandle changeTask;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,13 @@ public class PassphraseChangeActivity extends PassphraseActivity {
     super.onResume();
     dynamicTheme.onResume(this);
     dynamicLanguage.onResume(this);
+  }
+
+  @Override
+  protected void onDestroy() {
+    if (changeTask != null) changeTask.cancel();
+    changeTask = null;
+    super.onDestroy();
   }
 
   private void initializeResources() {
@@ -125,7 +134,10 @@ public class PassphraseChangeActivity extends PassphraseActivity {
       this.newPassphrase.setError(getString(R.string.PassphraseChangeActivity_enter_new_passphrase_exclamation));
       this.newPassphrase.requestFocus();
     } else {
-      new ChangePassphraseTask(this).execute(original, passphrase);
+      originalPassphrase.setText("");
+      newPassphrase.setText("");
+      repeatPassphrase.setText("");
+      changePassphrase(original, passphrase);
     }
   }
 
@@ -141,45 +153,28 @@ public class PassphraseChangeActivity extends PassphraseActivity {
     }
   }
 
-  private class ChangePassphraseTask extends AsyncTask<String, Void, MasterSecret> {
-    private final Context context;
-
-    public ChangePassphraseTask(Context context) {
-      this.context = context;
-    }
-
-    @Override
-    protected void onPreExecute() {
+  private void changePassphrase(String original, String passphrase) {
+      Context context = getApplicationContext();
       okButton.setEnabled(false);
-    }
-
-    @Override
-    protected MasterSecret doInBackground(String... params) {
-      try {
-        MasterSecret masterSecret = MasterSecretUtil.changeMasterSecretPassphrase(context, params[0], params[1]);
+      changeTask = AppTaskExecutor.getInstance().submitSerial(
+          () -> {
+        MasterSecret masterSecret = MasterSecretUtil.changeMasterSecretPassphrase(context, original, passphrase);
         SilencePreferences.setPasswordDisabled(context, false);
-
         return masterSecret;
-
-      } catch (InvalidPassphraseException e) {
-        Log.w(PassphraseChangeActivity.class.getSimpleName(), e);
-        return null;
-      }
+          },
+          masterSecret -> {
+            okButton.setEnabled(true);
+            setMasterSecret(masterSecret);
+          },
+          exception -> {
+            okButton.setEnabled(true);
+            Log.w(TAG, "Unable to change passphrase", exception);
+            if (exception instanceof InvalidPassphraseException) {
+              originalPassphrase.setError(getString(R.string.PassphraseChangeActivity_incorrect_old_passphrase_exclamation));
+              originalPassphrase.requestFocus();
+            }
+          });
     }
-
-    @Override
-    protected void onPostExecute(MasterSecret masterSecret) {
-      okButton.setEnabled(true);
-
-      if (masterSecret != null) {
-        setMasterSecret(masterSecret);
-      } else {
-        originalPassphrase.setText("");
-        originalPassphrase.setError(getString(R.string.PassphraseChangeActivity_incorrect_old_passphrase_exclamation));
-        originalPassphrase.requestFocus();
-      }
-    }
-  }
 
   @Override
   protected void cleanup() {

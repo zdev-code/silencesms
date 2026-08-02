@@ -19,7 +19,6 @@ package org.smssecure.smssecure;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -62,6 +61,8 @@ public class ContactSelectionListFragment extends    Fragment
 {
   private static final String TAG = ContactSelectionListFragment.class.getSimpleName();
 
+  private final Permissions.FragmentPermissionLauncher permissionLauncher = Permissions.registerForResult(this);
+
   private TextView emptyText;
 
   private Map<Long, String>         selectedContacts;
@@ -86,7 +87,7 @@ public class ContactSelectionListFragment extends    Fragment
     super.onStart();
     Log.w(TAG, "onStart()");
 
-    Permissions.with(this)
+    Permissions.with(this, permissionLauncher)
                .request(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CONTACTS)
                .ifNecessary()
                .onAllGranted(() -> handleContactPermissionGranted())
@@ -109,12 +110,6 @@ public class ContactSelectionListFragment extends    Fragment
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
     return view;
-  }
-
-  @Override
-  @SuppressWarnings("deprecation") // part of the custom Permissions framework; Activity Result migration is a separate effort
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
   public List<String> getSelectedContacts() {
@@ -148,7 +143,7 @@ public class ContactSelectionListFragment extends    Fragment
     showContactsButton.setVisibility(View.VISIBLE);
 
     showContactsButton.setOnClickListener(v -> {
-      Permissions.with(this)
+      Permissions.with(this, permissionLauncher)
                  .request(Manifest.permission.WRITE_CONTACTS, Manifest.permission.READ_CONTACTS)
                  .ifNecessary()
                  .withPermanentDenialDialog(getString(R.string.ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts))

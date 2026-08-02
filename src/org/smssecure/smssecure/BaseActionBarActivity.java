@@ -31,6 +31,8 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
 
   private View statusBarScrim;
   private View navigationBarScrim;
+  private Integer statusBarColorOverride;
+  private Integer navigationBarColorOverride;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +92,12 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     final View decorView          = getWindow().getDecorView();
     final View actionBarContainer = findViewById(androidx.appcompat.R.id.action_bar_container);
 
-    final int statusBarColor     = resolveThemeColor(android.R.attr.statusBarColor, Color.TRANSPARENT);
-    final int navigationBarColor = resolveThemeColor(android.R.attr.navigationBarColor, Color.TRANSPARENT);
+    final int statusBarColor = statusBarColorOverride != null
+      ? statusBarColorOverride
+      : resolveThemeColor(android.R.attr.statusBarColor, Color.TRANSPARENT);
+    final int navigationBarColor = navigationBarColorOverride != null
+      ? navigationBarColorOverride
+      : resolveThemeColor(android.R.attr.navigationBarColor, Color.TRANSPARENT);
     ensureBarScrims(statusBarColor, navigationBarColor);
 
     ViewCompat.setOnApplyWindowInsetsListener(decorView, (view, windowInsets) -> {
@@ -132,13 +138,13 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
             content.setPadding(bars.left, childTop, bars.right, contentBottom);
           }
         }
-        setScrimHeight(statusBarScrim, 0);
       } else {
         // Toolbar (or plain) content: pad the content view for every edge.
         content.setPadding(bars.left, bars.top, bars.right, contentBottom);
-        setScrimHeight(statusBarScrim, bars.top);
       }
+      setScrimHeight(statusBarScrim, bars.top);
       setScrimHeight(navigationBarScrim, bars.bottom);
+      applyBarIconAppearance(statusBarColor, navigationBarColor);
       return WindowInsetsCompat.CONSUMED;
     });
     ViewCompat.requestApplyInsets(decorView);
@@ -155,7 +161,45 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
       });
     }
 
-    applyBarIconAppearance();
+  }
+
+  public void setSystemBarColors(int statusBarColor, int navigationBarColor) {
+    statusBarColorOverride = statusBarColor;
+    navigationBarColorOverride = navigationBarColor;
+    ensureBarScrims(statusBarColor, navigationBarColor);
+    setLegacySystemBarColors(statusBarColor, navigationBarColor);
+  }
+
+  @SuppressWarnings("deprecation") // Theme colors remain the source for edge-to-edge scrims.
+  public void setStatusBarColorCompat(int statusBarColor) {
+    statusBarColorOverride = statusBarColor;
+    ensureBarScrims(statusBarColor,
+                    navigationBarColorOverride != null ? navigationBarColorOverride
+                                                       : resolveThemeColor(android.R.attr.navigationBarColor, Color.TRANSPARENT));
+    setLegacyStatusBarColor(statusBarColor);
+  }
+
+  @SuppressWarnings("deprecation") // Theme colors remain the source for edge-to-edge scrims.
+  public void resetSystemBarColors() {
+    statusBarColorOverride = null;
+    navigationBarColorOverride = null;
+    int statusBarColor = resolveThemeColor(android.R.attr.statusBarColor, Color.TRANSPARENT);
+    int navigationBarColor = resolveThemeColor(android.R.attr.navigationBarColor, Color.TRANSPARENT);
+    ensureBarScrims(statusBarColor, navigationBarColor);
+    setLegacySystemBarColors(statusBarColor, navigationBarColor);
+  }
+
+  @SuppressWarnings("deprecation")
+  private void setLegacySystemBarColors(int statusBarColor, int navigationBarColor) {
+    if (Build.VERSION.SDK_INT < 35) {
+      getWindow().setStatusBarColor(statusBarColor);
+      getWindow().setNavigationBarColor(navigationBarColor);
+    }
+  }
+
+  @SuppressWarnings("deprecation")
+  private void setLegacyStatusBarColor(int statusBarColor) {
+    if (Build.VERSION.SDK_INT < 35) getWindow().setStatusBarColor(statusBarColor);
   }
 
   /**
@@ -207,13 +251,29 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     scrim.setVisibility(height > 0 ? View.VISIBLE : View.GONE);
   }
 
-  private void applyBarIconAppearance() {
+  private void applyBarIconAppearance(int statusBarColor, int navigationBarColor) {
     WindowInsetsControllerCompat controller =
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-    controller.setAppearanceLightStatusBars(resolveThemeBool(android.R.attr.windowLightStatusBar, false));
+    controller.setAppearanceLightStatusBars(hasLightBackground(statusBarColor));
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-      controller.setAppearanceLightNavigationBars(resolveThemeBool(android.R.attr.windowLightNavigationBar, false));
+      controller.setAppearanceLightNavigationBars(hasLightBackground(navigationBarColor));
     }
+  }
+
+  static boolean hasLightBackground(int color) {
+    if ((color >>> 24) == 0) return false;
+
+    double red   = linearizeColorComponent((color >> 16) & 0xff);
+    double green = linearizeColorComponent((color >> 8)  & 0xff);
+    double blue  = linearizeColorComponent(color         & 0xff);
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue > 0.5;
+  }
+
+  private static double linearizeColorComponent(int component) {
+    double normalized = component / 255.0;
+    return normalized <= 0.04045
+           ? normalized / 12.92
+           : Math.pow((normalized + 0.055) / 1.055, 2.4);
   }
 
   private int resolveThemeColor(int attr, int fallback) {
@@ -232,12 +292,6 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
       return TypedValue.complexToDimensionPixelSize(value.data, getResources().getDisplayMetrics());
     }
     return 0;
-  }
-
-  private boolean resolveThemeBool(int attr, boolean fallback) {
-    TypedValue value = new TypedValue();
-    if (getTheme().resolveAttribute(attr, value, true)) return value.data != 0;
-    return fallback;
   }
 
   @Override

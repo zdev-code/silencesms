@@ -56,7 +56,7 @@ public abstract class PassphraseActivity extends BaseActionBarActivity {
         masterSecret = null;
         cleanup();
 
-        Intent nextIntent = getIntent().getParcelableExtra("next_intent");
+        Intent nextIntent = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class);
         if (nextIntent != null) startActivity(nextIntent);
         finish();
       }

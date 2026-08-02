@@ -354,19 +354,8 @@
         </intent-filter>
     </receiver>
 
-    <receiver android:name=".notifications.AndroidAutoHeardReceiver"
-              android:exported="false">
-        <intent-filter>
-          <action android:name="org.smssecure.smssecure.notifications.ANDROID_AUTO_HEARD"/>
-        </intent-filter>
-    </receiver>
-
-    <receiver android:name=".notifications.AndroidAutoReplyReceiver"
-              android:exported="false">
-        <intent-filter>
-          <action android:name="org.smssecure.smssecure.notifications.ANDROID_AUTO_REPLY"/>
-        </intent-filter>
-    </receiver>
+        <service android:name=".notifications.MessagingNotificationActionService"
+                         android:exported="false" />
 
 
     <provider android:name=".providers.PartProvider"
@@ -425,7 +414,7 @@
               android:exported="false"
               android:grantUriPermissions="true">
 
-        <meta-data android:name="androidx.core.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider_paths" />
+        <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider_paths" />
 
     </provider>
 

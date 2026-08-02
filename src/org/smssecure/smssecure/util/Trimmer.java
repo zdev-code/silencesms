@@ -1,65 +1,71 @@
 package org.smssecure.smssecure.util;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
+import android.widget.ProgressBar;
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.ThreadDatabase;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+
+import java.lang.ref.WeakReference;
 
 public class Trimmer {
 
   public static void trimAllThreads(Context context, int threadLengthLimit) {
-    new TrimmingProgressTask(context).execute(threadLengthLimit);
+    TrimmingProgressController controller = new TrimmingProgressController(context);
+    controller.start(threadLengthLimit);
   }
 
-  private static class TrimmingProgressTask extends AsyncTask<Integer, Integer, Void> implements ThreadDatabase.ProgressListener {
-    private ProgressDialog progressDialog;
-    private Context context;
+  private static class TrimmingProgressController implements ThreadDatabase.ProgressListener {
+    private final WeakReference<Context> contextReference;
+    private final Context                appContext;
+    private final Handler                mainHandler = new Handler(Looper.getMainLooper());
+    private final ProgressBar            progressBar;
+    private final AlertDialog            progressDialog;
 
-    public TrimmingProgressTask(Context context) {
-      this.context = context;
+    private TrimmingProgressController(Context context) {
+      contextReference = new WeakReference<>(context);
+      appContext = context.getApplicationContext();
+      progressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
+      progressBar.setIndeterminate(false);
+      progressBar.setMax(100);
+      progressDialog = new AlertDialog.Builder(context)
+          .setTitle(R.string.trimmer__deleting)
+          .setMessage(R.string.trimmer__deleting_old_messages)
+          .setView(progressBar)
+          .setCancelable(false)
+          .create();
     }
 
-    @Override
-    protected void onPreExecute() {
-      progressDialog = new ProgressDialog(context);
-      progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-      progressDialog.setCancelable(false);
-      progressDialog.setIndeterminate(false);
-      progressDialog.setTitle(R.string.trimmer__deleting);
-      progressDialog.setMessage(context.getString(R.string.trimmer__deleting_old_messages));
-      progressDialog.setMax(100);
+    private void start(int threadLengthLimit) {
       progressDialog.show();
-    }
-
-    @Override
-    protected Void doInBackground(Integer... params) {
-      DatabaseFactory.getThreadDatabase(context).trimAllThreads(params[0], this);
-      return null;
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... progress) {
-      double count = progress[1];
-      double index = progress[0];
-
-      progressDialog.setProgress((int)Math.round((index / count) * 100.0));
-    }
-
-    @Override
-    protected void onPostExecute(Void result) {
-      progressDialog.dismiss();
-      Toast.makeText(context,
-                     R.string.trimmer__old_messages_successfully_deleted,
-                     Toast.LENGTH_LONG).show();
+      AppTaskExecutor.getInstance().submitSerial(
+          () -> {
+            DatabaseFactory.getThreadDatabase(appContext).trimAllThreads(threadLengthLimit, this);
+            return null;
+          },
+          ignored -> finish(true),
+          exception -> finish(false));
     }
 
     @Override
     public void onProgress(int complete, int total) {
-      this.publishProgress(complete, total);
+      int progress = total <= 0 ? 100 : (int) Math.round((complete / (double) total) * 100.0);
+      mainHandler.post(() -> progressBar.setProgress(Math.max(0, Math.min(100, progress))));
+    }
+
+    private void finish(boolean succeeded) {
+      progressDialog.dismiss();
+      Context context = contextReference.get();
+      if (succeeded && context != null) {
+        Toast.makeText(context, R.string.trimmer__old_messages_successfully_deleted, Toast.LENGTH_LONG).show();
+      }
     }
   }
 }

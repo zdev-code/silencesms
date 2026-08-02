@@ -23,12 +23,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
-import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -47,6 +47,9 @@ import org.smssecure.smssecure.util.ParcelUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.whispersystems.jobqueue.EncryptionKeys;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,6 +77,8 @@ public class KeyCachingService extends Service {
   private PendingIntent pending;
   private int activitiesRunning = 0;
   private final IBinder binder  = new KeySetBinder();
+  private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor(runnable ->
+      new Thread(runnable, "key-caching-service"));
 
   private static MasterSecret masterSecret;
 
@@ -115,18 +120,14 @@ public class KeyCachingService extends Service {
       broadcastNewSecret();
       startTimeoutIfAppropriate();
 
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... params) {
-          if (!DatabaseUpgradeActivity.isUpdate(KeyCachingService.this)) {
-            ApplicationContext.getInstance(KeyCachingService.this)
-                              .getJobManager()
-                              .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
-            MessageNotifier.updateNotification(KeyCachingService.this, masterSecret);
-          }
-          return null;
+      executeInBackground(() -> {
+        if (!DatabaseUpgradeActivity.isUpdate(KeyCachingService.this)) {
+          ApplicationContext.getInstance(KeyCachingService.this)
+                            .getJobManager()
+                            .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
+          MessageNotifier.updateNotification(KeyCachingService.this, masterSecret);
         }
-      }.execute();
+      });
     }
   }
 
@@ -168,9 +169,10 @@ public class KeyCachingService extends Service {
 
   @Override
   public void onDestroy() {
-    super.onDestroy();
     Log.w("KeyCachingService", "KCS Is Being Destroyed!");
     handleClearKey();
+    backgroundExecutor.shutdown();
+    super.onDestroy();
   }
 
   /**
@@ -202,25 +204,27 @@ public class KeyCachingService extends Service {
   private void handleClearKey() {
     Log.w("KeyCachingService", "handleClearKey()");
     KeyCachingService.masterSecret = null;
-    stopForeground(true);
+    ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
 
     Intent intent = new Intent(CLEAR_KEY_EVENT);
     intent.setPackage(getApplicationContext().getPackageName());
 
     sendBroadcast(intent, KEY_PERMISSION);
 
-    new AsyncTask<Void, Void, Void>() {
-      @Override
-      protected Void doInBackground(Void... params) {
-        MessageNotifier.updateNotification(KeyCachingService.this, null);
-        return null;
-      }
-    }.execute();
+    executeInBackground(() -> MessageNotifier.updateNotification(KeyCachingService.this, null));
+  }
+
+  private void executeInBackground(Runnable work) {
+    try {
+      backgroundExecutor.execute(work);
+    } catch (RejectedExecutionException exception) {
+      Log.w("KeyCachingService", "Ignoring work submitted after service shutdown", exception);
+    }
   }
 
   private void handleDisableService() {
     if (SilencePreferences.isPasswordDisabled(this))
-      stopForeground(true);
+      ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
   }
 
   private void handleLocaleChanged() {
@@ -251,12 +255,12 @@ public class KeyCachingService extends Service {
     builder.setContentText(getString(R.string.KeyCachingService_silence_passphrase_cached));
     builder.setSmallIcon(R.drawable.icon_cached);
     builder.setWhen(0);
-    builder.setPriority(Notification.PRIORITY_MIN);
+    builder.setPriority(NotificationCompat.PRIORITY_MIN);
 
     builder.addAction(R.drawable.ic_menu_lock_dark, getString(R.string.KeyCachingService_lock), buildLockIntent());
     builder.setContentIntent(buildLaunchIntent());
 
-    stopForeground(true);
+    ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
     startForegroundCompat(builder.build());
   }
 
@@ -270,7 +274,7 @@ public class KeyCachingService extends Service {
     builder.setContent(remoteViews);
     builder.setContentIntent(buildLaunchIntent());
 
-    stopForeground(true);
+    ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
     startForegroundCompat(builder.build());
   }
 
@@ -283,7 +287,7 @@ public class KeyCachingService extends Service {
     builder.setContentText(getString(R.string.KeyCachingService_silence_passphrase_cached));
     builder.setContentIntent(buildLaunchIntent());
 
-    stopForeground(true);
+    ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
     startForegroundCompat(builder.build());
   }
 
@@ -297,7 +301,7 @@ public class KeyCachingService extends Service {
 
   private void foregroundService() {
     if (SilencePreferences.isPasswordDisabled(this)) {
-      stopForeground(true);
+      ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
       return;
     }
 

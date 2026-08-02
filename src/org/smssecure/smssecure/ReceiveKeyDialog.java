@@ -19,13 +19,13 @@ package org.smssecure.smssecure;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,6 +44,7 @@ import org.smssecure.smssecure.sms.IncomingKeyExchangeMessage;
 import org.smssecure.smssecure.sms.IncomingPreKeyBundleMessage;
 import org.smssecure.smssecure.sms.IncomingTextMessage;
 import org.smssecure.smssecure.util.Base64;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 import org.whispersystems.libsignal.SignalProtocolAddress;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.InvalidKeyException;
@@ -201,30 +202,44 @@ public class ReceiveKeyDialog extends AlertDialog {
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-      new AsyncTask<Void, Void, Void>(){
-        @Override
-        protected Void doInBackground(Void... params) {
+      Context appContext = getContext().getApplicationContext();
+      MasterSecret currentMasterSecret = masterSecret;
+      long recipientId = messageRecord.getIndividualRecipient().getRecipientId();
+      long messageId = messageRecord.getId();
+      IdentityKey currentIdentityKey = identityKey;
+      boolean identityUpdate = message.isIdentityUpdate();
 
-          Context               context          = getContext();
-          IdentityDatabase      identityDatabase = DatabaseFactory.getIdentityDatabase(context);
-          EncryptingSmsDatabase smsDatabase      = DatabaseFactory.getEncryptingSmsDatabase(context);
-
-          identityDatabase.saveIdentity(masterSecret,
-                  messageRecord.getIndividualRecipient().getRecipientId(),
-                  toNew(identityKey));
-
-          if (message.isIdentityUpdate()) {
-            smsDatabase.markAsProcessedKeyExchange(messageRecord.getId());
-          } else {
-            ApplicationContext.getInstance(getContext())
-                    .getJobManager()
-                    .add(new SmsDecryptJob(context, messageRecord.getId(), true, false));
-          }
-          return null;
-        }
-      }.execute();
+      AppTaskExecutor.getInstance().submitSerial(
+          () -> {
+            acceptKey(appContext, currentMasterSecret, recipientId, messageId,
+                      currentIdentityKey, identityUpdate);
+            return null;
+          },
+          ignored -> {},
+          exception -> Log.w(TAG, "Unable to accept received key", exception));
 
       if (callback != null) callback.onClick(null, 0);
+    }
+  }
+
+  private static void acceptKey(Context context,
+                                MasterSecret masterSecret,
+                                long recipientId,
+                                long messageId,
+                                IdentityKey identityKey,
+                                boolean identityUpdate)
+  {
+    IdentityDatabase identityDatabase = DatabaseFactory.getIdentityDatabase(context);
+    EncryptingSmsDatabase smsDatabase = DatabaseFactory.getEncryptingSmsDatabase(context);
+
+    identityDatabase.saveIdentity(masterSecret, recipientId, toNew(identityKey));
+
+    if (identityUpdate) {
+      smsDatabase.markAsProcessedKeyExchange(messageId);
+    } else {
+      ApplicationContext.getInstance(context)
+                        .getJobManager()
+                        .add(new SmsDecryptJob(context, messageId, true, false));
     }
   }
 }

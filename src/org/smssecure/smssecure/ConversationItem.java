@@ -23,10 +23,10 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
@@ -182,8 +182,8 @@ public class ConversationItem extends LinearLayout
     this.mmsDownloadingLabel     = (TextView)           findViewById(R.id.mms_label_downloading);
     this.contactPhoto            = (AvatarImageView)    findViewById(R.id.contact_photo);
     this.bodyBubble              =                      findViewById(R.id.body_bubble);
-    this.mediaThumbnailStub      = new Stub<>((ViewStub) findViewById(R.id.image_view_stub));
-    this.audioViewStub           = new Stub<>((ViewStub) findViewById(R.id.audio_view_stub));
+    this.mediaThumbnailStub      = new Stub<>((ViewStub) findViewById(R.id.image_view_stub), ThumbnailView.class);
+    this.audioViewStub           = new Stub<>((ViewStub) findViewById(R.id.audio_view_stub), AudioView.class);
 
     setOnClickListener(new ClickListener(null));
 
@@ -247,11 +247,13 @@ public class ConversationItem extends LinearLayout
 
   private void setBubbleState(MessageRecord messageRecord, Recipient recipient) {
     if (messageRecord.isOutgoing()) {
-      bodyBubble.getBackground().setColorFilter(defaultBubbleColor, PorterDuff.Mode.MULTIPLY);
+      DrawableCompat.setTint(bodyBubble.getBackground(), defaultBubbleColor);
+      DrawableCompat.setTintMode(bodyBubble.getBackground(), PorterDuff.Mode.MULTIPLY);
       if (mediaThumbnailStub.resolved()) mediaThumbnailStub.get().setBackgroundColorHint(defaultBubbleColor);
     } else {
       int color = recipient.getColor().toConversationColor(context);
-      bodyBubble.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+      DrawableCompat.setTint(bodyBubble.getBackground(), color);
+      DrawableCompat.setTintMode(bodyBubble.getBackground(), PorterDuff.Mode.MULTIPLY);
       if (mediaThumbnailStub.resolved()) mediaThumbnailStub.get().setBackgroundColorHint(color);
     }
 

@@ -37,7 +37,7 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
 
-    masterSecret      = getArguments().getParcelable("master_secret");
+    masterSecret      = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
     disablePassphrase = (CheckBoxPreference) this.findPreference("pref_enable_passphrase_temporary");
 
     this.findPreference(SilencePreferences.CHANGE_PASSPHRASE_PREF)

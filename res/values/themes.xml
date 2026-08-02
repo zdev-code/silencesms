@@ -4,6 +4,7 @@
 
     <style name="Silence.LightNoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="theme_type">light</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="actionBarStyle">@style/Silence.LightActionBar</item>
         <item name="actionBarTabBarStyle">@style/Silence.LightActionBar.TabBar</item>
         <item name="colorPrimary">@color/silence_primary</item>
@@ -81,6 +82,7 @@
 
     <style name="Silence.LightTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="theme_type">light</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="actionBarStyle">@style/Silence.LightActionBar</item>
         <item name="actionBarTabBarStyle">@style/Silence.LightActionBar.TabBar</item>
         <item name="colorPrimary">@color/silence_primary</item>

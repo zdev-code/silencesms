@@ -172,7 +172,7 @@ public class EncryptingSmsDatabase extends SmsDatabase {
           plaintextCache.put(ciphertext, plaintext);
           return new DisplayRecord.Body(plaintext, true);
         } else {
-          return new DisplayRecord.Body(ciphertext, true);
+          return new DisplayRecord.Body(ciphertext, !SmsDatabase.Types.isDecryptInProgressType(type));
         }
       } catch (InvalidMessageException e) {
         Log.w("EncryptingSmsDatabase", e);

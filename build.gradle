@@ -56,9 +56,9 @@ dependencies {
     // Jetpack tiled-image view exists.
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
-    implementation project(':org.whispersystems.jobmanager')
-    implementation project(':org.whispersystems.libpastelog')
-    implementation project(':org.whispersystems.libsignal')
+    implementation(project(':org.whispersystems.jobmanager'))
+    implementation(project(':org.whispersystems.libpastelog'))
+    implementation(project(':org.whispersystems.libsignal'))
 
     // Maintained Rust-core Signal Protocol, pinned at 0.72.1 (last release able to CREATE and RECEIVE a
     // classic X3DH session v3). Different namespace (org.signal.libsignal.protocol.*) so it coexists
@@ -74,7 +74,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
     implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.32'
 
-    implementation project(':com.amulyakhare.textdrawable')
+    implementation(project(':com.amulyakhare.textdrawable'))
 
     // android-smsmms 5.2.1 (klinkerapps, 2020, effectively abandoned): SMS/MMS send-receive incl.
     // carrier MMSC transaction handling. No Jetpack replacement — the platform exposes no MMS-send API
@@ -116,7 +116,7 @@ android {
 
     defaultConfig {
         applicationId = 'org.smssecure.smssecure'
-        versionCode = 212
+        versionCode = 215
         versionName = "0.16.13-unstable"
 
         minSdkVersion = 23
@@ -222,6 +222,50 @@ android {
     }
 
 }
+
+def asyncTaskAllowlistFile = layout.projectDirectory.file('config/asynctask-source-allowlist.txt').asFile
+def checkNoNewAsyncTaskUsage = tasks.register('checkNoNewAsyncTaskUsage') {
+    group = 'verification'
+    description = 'Fails when android.os.AsyncTask usage grows or the shrinking allowlist is stale.'
+
+    inputs.files(fileTree('src') { include '**/*.java' })
+    inputs.file(asyncTaskAllowlistFile)
+
+    doLast {
+        Set<String> allowed = asyncTaskAllowlistFile.readLines('UTF-8')
+                .collect { it.trim() }
+                .findAll { !it.isEmpty() && !it.startsWith('#') } as Set
+        Set<String> actual = new TreeSet<>()
+
+        fileTree('src') { include '**/*.java' }.each { sourceFile ->
+            String source = sourceFile.getText('UTF-8')
+            boolean importsAsyncTask = source =~ /import\s+android\.os\.AsyncTask\s*;/
+            boolean extendsAsyncTask = source =~ /extends\s+(?:android\.os\.)?AsyncTask\s*</
+
+            if (importsAsyncTask || extendsAsyncTask) {
+                actual.add(rootDir.toPath()
+                                  .relativize(sourceFile.toPath())
+                                  .toString()
+                                  .replace('\\', '/'))
+            }
+        }
+
+        Set<String> additions = actual - allowed
+        Set<String> stale = allowed - actual
+
+        if (!additions.isEmpty() || !stale.isEmpty()) {
+            String message = 'AsyncTask source allowlist mismatch.'
+            if (!additions.isEmpty()) message += "\nNew usage is forbidden:\n  " + additions.join('\n  ')
+            if (!stale.isEmpty()) message += "\nRemove migrated entries from the allowlist:\n  " + stale.join('\n  ')
+            throw new GradleException(message)
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    dependsOn(checkNoNewAsyncTaskUsage)
+}
+
 def props = new Properties()
 def propFile = file('signing.properties')
 if (propFile.canRead()) {
@@ -279,20 +323,21 @@ allprojects {
 // Deliberately scoped to this ONE security-critical artifact — full Gradle dependency verification
 // (gradle/verification-metadata.xml) would require a trusted checksum for every dependency and break the
 // build on any unrelated version bump.
-ext.libsignalPinnedCoordinate = 'org.signal:libsignal-android:0.72.1'
-ext.libsignalPinnedSha256     = '9859acc14aab4f4744abbc9ad150829afce090aa143a58a95af7da1767a6761f'
+def libsignalPinnedCoordinate = 'org.signal:libsignal-android:0.72.1'
+def libsignalPinnedSha256     = '9859acc14aab4f4744abbc9ad150829afce090aa143a58a95af7da1767a6761f'
+def libsignalPinConfiguration = configurations.detachedConfiguration(
+    dependencies.create(libsignalPinnedCoordinate))
+libsignalPinConfiguration.transitive = false
+def buildLogger = logger
 
 def verifyLibsignalPin = tasks.register('verifyLibsignalPin') {
     description = 'Verifies the pinned libsignal-android AAR matches its known-good SHA-256.'
     group = 'verification'
     doLast {
-        def cfg = configurations.detachedConfiguration(
-                dependencies.create(project.ext.libsignalPinnedCoordinate))
-        cfg.transitive = false
-        def artifact = cfg.resolve().find { it.name.endsWith('.aar') }
+        def artifact = libsignalPinConfiguration.files.find { it.name.endsWith('.aar') }
         if (artifact == null) {
             throw new GradleException(
-                    "verifyLibsignalPin: could not resolve an AAR for ${project.ext.libsignalPinnedCoordinate}")
+                "verifyLibsignalPin: could not resolve an AAR for ${libsignalPinnedCoordinate}")
         }
         def md = java.security.MessageDigest.getInstance('SHA-256')
         artifact.withInputStream { input ->
@@ -303,15 +348,15 @@ def verifyLibsignalPin = tasks.register('verifyLibsignalPin') {
             }
         }
         def actual = md.digest().encodeHex().toString()
-        if (actual != project.ext.libsignalPinnedSha256) {
+        if (actual != libsignalPinnedSha256) {
             throw new GradleException(
                     "libsignal-android pin verification FAILED — refusing to build.\n" +
-                    "  coordinate:       ${project.ext.libsignalPinnedCoordinate}\n" +
-                    "  expected SHA-256: ${project.ext.libsignalPinnedSha256}\n" +
+                    "  coordinate:       ${libsignalPinnedCoordinate}\n" +
+                    "  expected SHA-256: ${libsignalPinnedSha256}\n" +
                     "  actual   SHA-256: ${actual}\n" +
                     "  artifact:         ${artifact}")
         }
-        logger.lifecycle("verifyLibsignalPin: ${project.ext.libsignalPinnedCoordinate} SHA-256 OK")
+        buildLogger.lifecycle("verifyLibsignalPin: ${libsignalPinnedCoordinate} SHA-256 OK")
     }
 }
 

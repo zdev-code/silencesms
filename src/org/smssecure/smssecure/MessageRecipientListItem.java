@@ -17,10 +17,11 @@
 package org.smssecure.smssecure;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -36,6 +37,7 @@ import org.smssecure.smssecure.database.documents.NetworkFailure;
 import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.sms.MessageSender;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 /**
  * A simple view to show the recipients of a message
@@ -54,7 +56,7 @@ public class MessageRecipientListItem extends RelativeLayout
   private Button          resendButton;
   private AvatarImageView contactPhotoImage;
 
-  private final Handler handler = new Handler();
+  private final Handler handler = new Handler(Looper.getMainLooper());
 
   public MessageRecipientListItem(Context context) {
     super(context);
@@ -115,7 +117,11 @@ public class MessageRecipientListItem extends RelativeLayout
       resendButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          new ResendAsyncTask(masterSecret, record, networkFailure).execute();
+          Context appContext = getContext().getApplicationContext();
+          AppTaskExecutor.getInstance().submitSerial(() -> {
+            MessageSender.resend(appContext, masterSecret, record);
+            return null;
+          }, ignored -> {}, exception -> Log.w(TAG, "Failed to resend message", exception));
         }
       });
     } else {
@@ -162,26 +168,6 @@ public class MessageRecipientListItem extends RelativeLayout
         contactPhotoImage.setAvatar(recipient, false);
       }
     });
-  }
-
-  private class ResendAsyncTask extends AsyncTask<Void,Void,Void> {
-    private final Context       appContext;
-    private final MasterSecret   masterSecret;
-    private final MessageRecord  record;
-    private final NetworkFailure failure;
-
-    public ResendAsyncTask(MasterSecret masterSecret, MessageRecord record, NetworkFailure failure) {
-      this.appContext = getContext().getApplicationContext();
-      this.masterSecret = masterSecret;
-      this.record       = record;
-      this.failure      = failure;
-    }
-
-    @Override
-    protected Void doInBackground(Void... params) {
-      MessageSender.resend(appContext, masterSecret, record);
-      return null;
-    }
   }
 
 }

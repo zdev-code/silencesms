@@ -1,9 +1,11 @@
 package org.smssecure.smssecure.sms;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
+import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 
 public class TelephonyServiceState {
@@ -29,16 +31,17 @@ public class TelephonyServiceState {
     @Override
     public void run() {
       Looper         looper   = initializeLooper();
-      ListenCallback callback = new ListenCallback(looper);
-
       TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-      telephonyManager.listen(callback, PhoneStateListener.LISTEN_SERVICE_STATE);
 
-      Looper.loop();
-
-      telephonyManager.listen(callback, PhoneStateListener.LISTEN_NONE);
-
-      set(callback.isConnected());
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        ModernListenCallback callback = new ModernListenCallback(looper);
+        telephonyManager.registerTelephonyCallback(Runnable::run, callback);
+        Looper.loop();
+        telephonyManager.unregisterTelephonyCallback(callback);
+        set(callback.isConnected());
+      } else {
+        listenLegacy(telephonyManager, looper);
+      }
     }
 
     private Looper initializeLooper() {
@@ -68,14 +71,44 @@ public class TelephonyServiceState {
       this.complete = true;
       notifyAll();
     }
+
+    @SuppressWarnings("deprecation")
+    private void listenLegacy(TelephonyManager telephonyManager, Looper looper) {
+      LegacyListenCallback callback = new LegacyListenCallback(looper);
+      telephonyManager.listen(callback, PhoneStateListener.LISTEN_SERVICE_STATE);
+      Looper.loop();
+      telephonyManager.listen(callback, PhoneStateListener.LISTEN_NONE);
+      set(callback.isConnected());
+    }
   }
 
-  private static class ListenCallback extends PhoneStateListener {
+  private static class ModernListenCallback extends TelephonyCallback implements TelephonyCallback.ServiceStateListener {
+
+    private final Looper looper;
+    private volatile boolean connected;
+
+    ModernListenCallback(Looper looper) {
+      this.looper = looper;
+    }
+
+    @Override
+    public void onServiceStateChanged(ServiceState serviceState) {
+      connected = serviceState.getState() == ServiceState.STATE_IN_SERVICE;
+      looper.quit();
+    }
+
+    boolean isConnected() {
+      return connected;
+    }
+  }
+
+  @SuppressWarnings("deprecation")
+  private static class LegacyListenCallback extends PhoneStateListener {
 
     private final    Looper  looper;
     private volatile boolean connected;
 
-    public ListenCallback(Looper looper) {
+    LegacyListenCallback(Looper looper) {
       this.looper = looper;
     }
 

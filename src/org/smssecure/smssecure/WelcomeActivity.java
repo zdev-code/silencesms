@@ -20,6 +20,7 @@ import org.smssecure.smssecure.BaseActionBarActivity;
 import org.smssecure.smssecure.notifications.NotificationChannels;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.permissions.Permissions;
+import org.smssecure.smssecure.util.ActivityTransitionCompat;
 import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
@@ -93,20 +94,20 @@ public class WelcomeActivity extends BaseActionBarActivity {
   }
 
   private void goToNextIntent() {
-    Intent nextIntent = getIntent().getParcelableExtra("next_intent");
+    Intent nextIntent = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class);
 
     if (nextIntent == null) {
       throw new IllegalStateException("Was not supplied a next_intent.");
     }
 
     startActivity(nextIntent);
-    overridePendingTransition(R.anim.slide_from_right, R.anim.fade_scale_out);
+    ActivityTransitionCompat.overrideOpen(this, R.anim.slide_from_right, R.anim.fade_scale_out);
     finish();
   }
 
   private void setStatusBarColor() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      getWindow().setStatusBarColor(backgroundColor);
+      setStatusBarColorCompat(backgroundColor);
     }
   }
 
@@ -130,10 +131,10 @@ public class WelcomeActivity extends BaseActionBarActivity {
   private static void displayPermissionsNotification(Context context) {
     Intent       targetIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
     Notification notification = new NotificationCompat.Builder(context, NotificationChannels.OTHER)
-                                    .setPriority(Notification.PRIORITY_MAX)
+                                    .setPriority(NotificationCompat.PRIORITY_MAX)
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                     .setSmallIcon(R.drawable.icon_notification)
-                                    .setColor(context.getResources().getColor(R.color.silence_primary))
+                                    .setColor(ContextCompat.getColor(context, R.color.silence_primary))
                                     .setContentTitle(context.getString(R.string.WelcomeActivity_action_required))
                                     .setContentText(context.getString(R.string.WelcomeActivity_you_need_to_grant_some_permissions_to_silence))
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it)))

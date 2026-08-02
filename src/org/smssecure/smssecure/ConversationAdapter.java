@@ -70,7 +70,7 @@ import org.smssecure.smssecure.util.VisibleForTesting;
  * @author Moxie Marlinspike
  *
  */
-public class ConversationAdapter <V extends View & BindableConversationItem>
+public class ConversationAdapter
     extends CursorRecyclerViewAdapter<ConversationAdapter.ViewHolder>
   implements StickyHeaderDecoration.StickyHeaderAdapter<HeaderViewHolder>
 {
@@ -188,7 +188,7 @@ public class ConversationAdapter <V extends View & BindableConversationItem>
 
   @Override
   public ViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-    final V itemView = ViewUtil.inflate(inflater, parent, getLayoutForViewType(viewType));
+    final ConversationItem itemView = ViewUtil.inflate(inflater, parent, getLayoutForViewType(viewType));
     if (viewType == MESSAGE_TYPE_INCOMING || viewType == MESSAGE_TYPE_OUTGOING) {
       itemView.setOnClickListener(new OnClickListener() {
         @Override

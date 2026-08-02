@@ -23,14 +23,11 @@ import java.util.Optional;
 
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 public class QuickResponseService extends MasterSecretIntentService {
 
   private static final String TAG = QuickResponseService.class.getSimpleName();
-
-  public QuickResponseService() {
-    super("QuickResponseService");
-  }
 
   @Override
   protected void onHandleIntent(Intent intent, @Nullable MasterSecret masterSecret) {
@@ -50,7 +47,7 @@ public class QuickResponseService extends MasterSecretIntentService {
       String     content    = intent.getStringExtra(Intent.EXTRA_TEXT);
       String     numbers    = uri.getPath();
       if(numbers.contains("%")){
-        numbers = URLDecoder.decode(numbers);
+        numbers = URLDecoder.decode(numbers, StandardCharsets.UTF_8);
       }
 
       Recipients                      recipients     = RecipientFactory.getRecipientsFromString(this, numbers, false);

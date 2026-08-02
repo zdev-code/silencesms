@@ -7,6 +7,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.exifinterface.media.ExifInterface;
 
 import org.smssecure.smssecure.crypto.AttachmentCipherInputStream;
 import org.smssecure.smssecure.mms.AttachmentStreamUriLoader;
@@ -59,12 +61,19 @@ public class BitmapUtil {
 
     try {
       Pair<Integer, Integer> originalDimensions = getDimensions(context, model);
-      Pair<Integer, Integer> targetDimensions   = clampDimensions(originalDimensions.first,
-                                                                  originalDimensions.second,
+      int rotation = getExifRotation(context, model);
+      boolean swapsDimensions = rotation == 90 || rotation == 270;
+      int orientedWidth  = swapsDimensions ? originalDimensions.second : originalDimensions.first;
+      int orientedHeight = swapsDimensions ? originalDimensions.first  : originalDimensions.second;
+      Pair<Integer, Integer> targetDimensions = clampDimensions(orientedWidth,
+                                                                  orientedHeight,
                                                                   constraints.getImageMaxWidth(context),
                                                                   constraints.getImageMaxHeight(context));
 
-      scaledBitmap = decodeScaledBitmap(context, model, targetDimensions.first, targetDimensions.second, originalDimensions);
+      int decodeWidth  = swapsDimensions ? targetDimensions.second : targetDimensions.first;
+      int decodeHeight = swapsDimensions ? targetDimensions.first  : targetDimensions.second;
+      scaledBitmap = decodeScaledBitmap(context, model, decodeWidth, decodeHeight, originalDimensions);
+      scaledBitmap = rotateBitmap(scaledBitmap, rotation);
 
       do {
         attempts++;
@@ -87,6 +96,43 @@ public class BitmapUtil {
     } finally {
       if (scaledBitmap != null) scaledBitmap.recycle();
     }
+  }
+
+  private static <T> int getExifRotation(Context context, T model) throws BitmapDecodingException {
+    try (InputStream inputStream = new BufferedInputStream(openInputStream(context, model))) {
+      return getExifRotation(inputStream);
+    } catch (IOException exception) {
+      throw new BitmapDecodingException(exception);
+    }
+  }
+
+  public static int getExifRotation(InputStream inputStream) throws IOException {
+    int orientation = new ExifInterface(inputStream)
+        .getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+    return exifOrientationToDegrees(orientation);
+  }
+
+  static int exifOrientationToDegrees(int orientation) {
+    switch (orientation) {
+      case ExifInterface.ORIENTATION_ROTATE_90:
+        return 90;
+      case ExifInterface.ORIENTATION_ROTATE_180:
+        return 180;
+      case ExifInterface.ORIENTATION_ROTATE_270:
+        return 270;
+      default:
+        return 0;
+    }
+  }
+
+  private static Bitmap rotateBitmap(Bitmap bitmap, int rotation) {
+    if (rotation == 0) return bitmap;
+
+    Matrix matrix = new Matrix();
+    matrix.setRotate(rotation);
+    Bitmap rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    if (rotated != bitmap) bitmap.recycle();
+    return rotated;
   }
 
   public static <T> Bitmap createScaledBitmap(Context context, T model, int maxWidth, int maxHeight)

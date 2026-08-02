@@ -132,8 +132,8 @@ public abstract class MessagingDatabase extends Database implements MmsSmsColumn
       }
 
       try {
-        return clazz.newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
+        return clazz.getDeclaredConstructor().newInstance();
+      } catch (ReflectiveOperationException e) {
         throw new AssertionError(e);
       }
 

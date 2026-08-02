@@ -25,6 +25,9 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.app.AlertDialog;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -35,6 +38,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
@@ -47,7 +51,8 @@ import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.util.AbstractCursorLoader;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.SaveAttachmentTask;
-import org.smssecure.smssecure.util.task.ProgressDialogAsyncTask;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +75,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity i
   private TextView          noImages;
   private Recipient         recipient;
   private long              threadId;
+  private TaskHandle        collectAttachmentsTask;
+  private TaskHandle        saveAttachmentsTask;
+  private AlertDialog       progressDialog;
 
   @Override
   protected void onPreCreate() {
@@ -87,7 +95,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity i
 
     initializeResources();
     initializeActionBar();
-    getSupportLoaderManager().initLoader(0, null, MediaOverviewActivity.this);
+    LoaderManager.getInstance(this).initLoader(0, null, this);
   }
 
   @Override
@@ -97,12 +105,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity i
   }
 
   private void setFullscreenIfPossible() {
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-    if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-      getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
+    WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+                .hide(WindowInsetsCompat.Type.statusBars());
   }
 
   @Override
@@ -151,39 +155,101 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity i
   }
 
   private void saveToDisk() {
-    final Context c = this;
-
     SaveAttachmentTask.showWarningDialog(this, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialogInterface, int i) {
-        new ProgressDialogAsyncTask<Void, Void, List<SaveAttachmentTask.Attachment>>(c,
-                                                                                     R.string.ConversationFragment_collecting_attahments,
-                                                                                     R.string.please_wait) {
-          @Override
-          protected List<SaveAttachmentTask.Attachment> doInBackground(Void... params) {
-            Cursor cursor                                   = DatabaseFactory.getImageDatabase(c).getImagesForThread(threadId);
-            List<SaveAttachmentTask.Attachment> attachments = new ArrayList<>(cursor.getCount());
+        final Context context = getApplicationContext();
+        showProgressDialog(getString(R.string.ConversationFragment_collecting_attahments),
+                           getString(R.string.please_wait));
+        collectAttachmentsTask = AppTaskExecutor.getInstance().submitSerial(
+            () -> collectAttachments(context),
+            attachments -> {
+              if (!isActivityActive()) return;
+              collectAttachmentsTask = null;
+              if (attachments.isEmpty()) {
+                Log.w(TAG, "No attachments found to save");
+                dismissProgressDialog();
+                SaveAttachmentTask.showResultToast(context, SaveAttachmentTask.FAILURE, 0);
+                return;
+              }
 
-            while (cursor != null && cursor.moveToNext()) {
-              ImageRecord record = ImageRecord.from(cursor);
-              attachments.add(new SaveAttachmentTask.Attachment(record.getAttachment().getDataUri(),
-                                                                record.getContentType(),
-                                                                record.getDate()));
-            }
-
-            return attachments;
-          }
-
-          @Override
-          protected void onPostExecute(List<SaveAttachmentTask.Attachment> attachments) {
-            super.onPostExecute(attachments);
-
-            SaveAttachmentTask saveTask = new SaveAttachmentTask(c, masterSecret, attachments.size());
-            saveTask.execute(attachments.toArray(new SaveAttachmentTask.Attachment[attachments.size()]));
-          }
-        }.execute();
+              int count = attachments.size();
+              showProgressDialog(
+                  getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments, count, count),
+                  getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments_to_sd_card, count, count));
+              SaveAttachmentTask.Attachment[] attachmentArray = attachments.toArray(new SaveAttachmentTask.Attachment[count]);
+              saveAttachmentsTask = AppTaskExecutor.getInstance().submitSerial(
+                  () -> SaveAttachmentTask.save(context, masterSecret, attachmentArray),
+                  result -> {
+                    if (!isActivityActive()) return;
+                    dismissProgressDialog();
+                    saveAttachmentsTask = null;
+                    if (result != SaveAttachmentTask.SUCCESS) Log.w(TAG, "Unable to save attachments, result: " + result);
+                    SaveAttachmentTask.showResultToast(context, result, count);
+                  },
+                  exception -> {
+                    Log.w(TAG, "Unable to save attachments", exception);
+                    if (!isActivityActive()) return;
+                    dismissProgressDialog();
+                    saveAttachmentsTask = null;
+                    SaveAttachmentTask.showResultToast(context, SaveAttachmentTask.FAILURE, count);
+                  });
+            },
+            exception -> {
+              Log.w(TAG, "Unable to collect attachments", exception);
+              if (!isActivityActive()) return;
+              dismissProgressDialog();
+              collectAttachmentsTask = null;
+              SaveAttachmentTask.showResultToast(context, SaveAttachmentTask.FAILURE, 1);
+            });
       }
     }, gridView.getAdapter().getItemCount());
+  }
+
+  private List<SaveAttachmentTask.Attachment> collectAttachments(Context context) {
+    Cursor cursor = DatabaseFactory.getImageDatabase(context).getImagesForThread(threadId);
+    try {
+      List<SaveAttachmentTask.Attachment> attachments = new ArrayList<>(cursor.getCount());
+      while (cursor.moveToNext()) {
+        ImageRecord record = ImageRecord.from(cursor);
+        attachments.add(new SaveAttachmentTask.Attachment(record.getAttachment().getDataUri(),
+                                                           record.getContentType(),
+                                                           record.getDate()));
+      }
+      return attachments;
+    } finally {
+      cursor.close();
+    }
+  }
+
+  private void showProgressDialog(CharSequence title, CharSequence message) {
+    dismissProgressDialog();
+    progressDialog = new AlertDialog.Builder(this)
+        .setTitle(title)
+        .setMessage(message)
+        .setView(new ProgressBar(this))
+        .setCancelable(false)
+        .create();
+    progressDialog.show();
+  }
+
+  private void dismissProgressDialog() {
+    if (progressDialog != null) progressDialog.dismiss();
+    progressDialog = null;
+  }
+
+  private boolean isActivityActive() {
+    return !isFinishing() && !isDestroyed();
+  }
+
+  @Override
+  protected void onDestroy() {
+    if (collectAttachmentsTask != null) collectAttachmentsTask.cancel();
+    if (saveAttachmentsTask != null) saveAttachmentsTask.cancel();
+    collectAttachmentsTask = null;
+    saveAttachmentsTask = null;
+    dismissProgressDialog();
+    super.onDestroy();
   }
 
   @Override

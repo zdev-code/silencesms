@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
@@ -38,9 +37,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 @SuppressWarnings("WeakerAccess,unused")
 public class RingtonePreference extends DialogPreference {
-  private static final int CUSTOM_RINGTONE_REQUEST_CODE = 0x9000;
-  private static final int WRITE_FILES_PERMISSION_REQUEST_CODE = 0x9001;
-
   private int ringtoneType;
   private boolean showDefault;
   private boolean showSilent;
@@ -50,9 +46,6 @@ public class RingtonePreference extends DialogPreference {
 
 //  private CharSequence summaryHasRingtone;
 //  private CharSequence summary;
-
-  private int miscCustomRingtoneRequestCode = CUSTOM_RINGTONE_REQUEST_CODE;
-  private int miscPermissionRequestCode = WRITE_FILES_PERMISSION_REQUEST_CODE;
 
   @IntDef({
       RingtoneManager.TYPE_ALL,
@@ -71,17 +64,15 @@ public class RingtonePreference extends DialogPreference {
   public RingtonePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
 
-    android.preference.RingtonePreference proxyPreference;
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      proxyPreference = new android.preference.RingtonePreference(context, attrs, defStyleAttr, defStyleRes);
-    } else {
-      proxyPreference = new android.preference.RingtonePreference(context, attrs, defStyleAttr);
-    }
-
-    ringtoneType = proxyPreference.getRingtoneType();
-    showDefault = proxyPreference.getShowDefault();
-    showSilent = proxyPreference.getShowSilent();
+    TypedArray ringtoneAttributes = context.obtainStyledAttributes(attrs, new int[] {
+        android.R.attr.ringtoneType,
+        android.R.attr.showDefault,
+        android.R.attr.showSilent
+    }, defStyleAttr, defStyleRes);
+    ringtoneType = ringtoneAttributes.getInt(0, RingtoneManager.TYPE_RINGTONE);
+    showDefault = ringtoneAttributes.getBoolean(1, true);
+    showSilent = ringtoneAttributes.getBoolean(2, true);
+    ringtoneAttributes.recycle();
 
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RingtonePreference, defStyleAttr, 0);
     showAdd = a.getBoolean(R.styleable.RingtonePreference_showAdd, true);
@@ -176,6 +167,12 @@ public class RingtonePreference extends DialogPreference {
   }
 
   boolean shouldShowAdd() {
+    if (!showAdd) return false;
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      return true;
+    }
+
     if (showAdd) {
       try {
         PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), PackageManager.GET_PERMISSIONS);
@@ -203,60 +200,6 @@ public class RingtonePreference extends DialogPreference {
    */
   public void setShowAdd(boolean showAdd) {
     this.showAdd = showAdd;
-  }
-
-  /**
-   * This request code will be used to start the file picker activity that the user can use
-   * to add new ringtones. The new ringtone will be delivered to
-   * {@link RingtonePreferenceDialogFragmentCompat#onActivityResult(int, int, Intent)}.
-   * <p>
-   * The default value equals to {@link #CUSTOM_RINGTONE_REQUEST_CODE}
-   * ({@value #CUSTOM_RINGTONE_REQUEST_CODE}).
-   */
-  public int getCustomRingtoneRequestCode() {
-    return miscCustomRingtoneRequestCode;
-  }
-
-  /**
-   * Sets the request code that will be used to start the file picker activity that the user can
-   * use to add new ringtones. The new ringtone will be delivered to
-   * {@link RingtonePreferenceDialogFragmentCompat#onActivityResult(int, int, Intent)}.
-   * <p>
-   * The default value equals to {@link #CUSTOM_RINGTONE_REQUEST_CODE}
-   * ({@value #CUSTOM_RINGTONE_REQUEST_CODE}).
-   *
-   * @param customRingtoneRequestCode the request code for the file picker
-   */
-  public void setCustomRingtoneRequestCode(int customRingtoneRequestCode) {
-    this.miscCustomRingtoneRequestCode = customRingtoneRequestCode;
-  }
-
-  /**
-   * This request code will be used to ask for user permission to save (write) new ringtone
-   * to one of the public external storage directories (only applies to API 23+). The result will
-   * be delivered to
-   * {@link RingtonePreferenceDialogFragmentCompat#onRequestPermissionsResult(int, String[], int[])}.
-   * <p>
-   * The default value equals to {@link #WRITE_FILES_PERMISSION_REQUEST_CODE}
-   * ({@value #WRITE_FILES_PERMISSION_REQUEST_CODE}).
-   */
-  public int getPermissionRequestCode() {
-    return miscPermissionRequestCode;
-  }
-
-  /**
-   * Sets the request code that will be used to ask for user permission to save (write) new
-   * ringtone to one of the public external storage directories (only applies to API 23+). The
-   * result will be delivered to
-   * {@link RingtonePreferenceDialogFragmentCompat#onRequestPermissionsResult(int, String[], int[])}.
-   * <p>
-   * The default value equals to {@link #WRITE_FILES_PERMISSION_REQUEST_CODE}
-   * ({@value #WRITE_FILES_PERMISSION_REQUEST_CODE}).
-   *
-   * @param permissionRequestCode the request code for the file picker
-   */
-  public void setPermissionRequestCode(int permissionRequestCode) {
-    this.miscPermissionRequestCode = permissionRequestCode;
   }
 
   public Uri getRingtone() {
@@ -320,9 +263,12 @@ public class RingtonePreference extends DialogPreference {
   }
 
   @Override
-  protected void onSetInitialValue(boolean restoreValue, Object defaultValueObj) {
-    final String defaultValue = (String) defaultValueObj;
-    setInternalRingtone(restoreValue ? onRestoreRingtone() : (!TextUtils.isEmpty(defaultValue) ? Uri.parse(defaultValue) : null), true);
+  protected void onSetInitialValue(Object defaultValueObj) {
+    String defaultValue = (String) defaultValueObj;
+    Uri initialValue = shouldPersist() && getSharedPreferences().contains(getKey())
+        ? onRestoreRingtone()
+        : (!TextUtils.isEmpty(defaultValue) ? Uri.parse(defaultValue) : null);
+    setInternalRingtone(initialValue, true);
   }
 
   @Override

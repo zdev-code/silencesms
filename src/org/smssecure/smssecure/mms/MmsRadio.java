@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.PowerManager;
 import android.util.Log;
 
@@ -41,6 +45,9 @@ public class MmsRadio {
 
   private ConnectivityManager   connectivityManager;
   private ConnectivityListener  connectivityListener;
+  private ConnectivityManager.NetworkCallback networkCallback;
+  private Network mmsNetwork;
+  private boolean networkUnavailable;
   private PowerManager.WakeLock wakeLock;
   private int connectedCounter = 0;
 
@@ -61,6 +68,23 @@ public class MmsRadio {
 
     if (connectedCounter == 0) {
       Log.w(TAG, "Turning off MMS radio...");
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        connectivityManager.bindProcessToNetwork(null);
+        if (networkCallback != null) {
+          connectivityManager.unregisterNetworkCallback(networkCallback);
+          networkCallback = null;
+        }
+        mmsNetwork = null;
+        networkUnavailable = false;
+        return;
+      }
+
+      stopLegacyMmsNetwork();
+    }
+  }
+
+  @SuppressWarnings("deprecation") // API 23-28 carrier MMS fallback.
+  private void stopLegacyMmsNetwork() {
       try {
         final Method stopUsingNetworkFeatureMethod = connectivityManager.getClass().getMethod("stopUsingNetworkFeature", Integer.TYPE, String.class);
         stopUsingNetworkFeatureMethod.invoke(connectivityManager, ConnectivityManager.TYPE_MOBILE, FEATURE_ENABLE_MMS);
@@ -77,10 +101,69 @@ public class MmsRadio {
         context.unregisterReceiver(connectivityListener);
         connectivityListener = null;
       }
-    }
   }
 
   public synchronized void connect() throws MmsRadioException {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      connectModern();
+    } else {
+      connectLegacy();
+    }
+  }
+
+  private void connectModern() throws MmsRadioException {
+    if (mmsNetwork != null) {
+      wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS);
+      connectedCounter++;
+      return;
+    }
+
+    networkUnavailable = false;
+    networkCallback = new ConnectivityManager.NetworkCallback() {
+      @Override
+      public void onAvailable(Network network) {
+        synchronized (MmsRadio.this) {
+          mmsNetwork = network;
+          connectivityManager.bindProcessToNetwork(network);
+          MmsRadio.this.notifyAll();
+        }
+      }
+
+      @Override
+      public void onUnavailable() {
+        synchronized (MmsRadio.this) {
+          networkUnavailable = true;
+          MmsRadio.this.notifyAll();
+        }
+      }
+
+      @Override
+      public void onLost(Network network) {
+        synchronized (MmsRadio.this) {
+          if (network.equals(mmsNetwork)) mmsNetwork = null;
+        }
+      }
+    };
+
+    NetworkRequest request = new NetworkRequest.Builder()
+        .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+        .addCapability(NetworkCapabilities.NET_CAPABILITY_MMS)
+        .build();
+    connectivityManager.requestNetwork(request, networkCallback, 30000);
+    Util.wait(this, 30000);
+
+    if (mmsNetwork == null || networkUnavailable) {
+      if (networkCallback != null) connectivityManager.unregisterNetworkCallback(networkCallback);
+      networkCallback = null;
+      throw new MmsRadioException("Unable to acquire a carrier MMS network.");
+    }
+
+    wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS);
+    connectedCounter++;
+  }
+
+  @SuppressWarnings("deprecation") // API 23-28 carrier MMS fallback.
+  private void connectLegacy() throws MmsRadioException {
     int status;
 
     try {
@@ -121,6 +204,12 @@ public class MmsRadio {
   }
 
   private boolean isConnected() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return mmsNetwork != null;
+    return isLegacyConnected();
+  }
+
+  @SuppressWarnings("deprecation") // API 23-28 carrier MMS fallback.
+  private boolean isLegacyConnected() {
     NetworkInfo info = connectivityManager.getNetworkInfo(TYPE_MOBILE_MMS);
 
     Log.w(TAG, "Connected: " + info);
@@ -131,12 +220,14 @@ public class MmsRadio {
     return true;
   }
 
+  @SuppressWarnings("deprecation") // API 23-28 carrier MMS fallback.
   private boolean isConnectivityPossible() {
     NetworkInfo networkInfo = connectivityManager.getNetworkInfo(TYPE_MOBILE_MMS);
 
     return networkInfo != null  && networkInfo.isAvailable();
   }
 
+  @SuppressWarnings("deprecation") // API 23-28 carrier MMS fallback.
   private boolean isConnectivityFailure() {
     NetworkInfo networkInfo = connectivityManager.getNetworkInfo(TYPE_MOBILE_MMS);
 

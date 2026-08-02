@@ -63,6 +63,7 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.InvalidNumberException;
 import org.smssecure.smssecure.util.JsonUtils;
 import org.smssecure.smssecure.util.ServiceUtil;
+import org.smssecure.smssecure.util.TelephonyUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobManager;
@@ -231,8 +232,7 @@ public class MmsDatabase extends MessagingDatabase {
     } else {
       if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
         try {
-          TelephonyManager telephonyManager = ServiceUtil.getTelephonyManager(context);
-          localNumber = telephonyManager != null ? telephonyManager.getLine1Number() : null;
+          localNumber = TelephonyUtil.getPhoneNumber(context);
         } catch (SecurityException securityException) {
           Log.w(TAG, "Unable to read local line1 number", securityException);
           localNumber = null;

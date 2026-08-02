@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
@@ -96,7 +97,15 @@ public class MasterCipher {
   public byte[] decryptBytes(@NonNull byte[] decodedBody) throws InvalidMessageException {
     try {
       Mac mac              = getMac(masterSecret.getMacKey());
-      byte[] encryptedBody = verifyMacBody(mac, decodedBody);
+      byte[] encryptedBody;
+
+      if (isLegacyShape(decodedBody) && hasValidMac(mac, decodedBody)) {
+        encryptedBody = withoutMac(mac, decodedBody);
+      } else if (MasterCipherEnvelope.hasMagic(decodedBody)) {
+        return decryptEnvelope(decodedBody);
+      } else {
+        encryptedBody = verifyMacBody(mac, decodedBody);
+      }
 
       Cipher cipher        = getDecryptingCipher(masterSecret.getEncryptionKey(), encryptedBody);
 
@@ -110,10 +119,11 @@ public class MasterCipher {
     try {
       Cipher cipher              = getEncryptingCipher(masterSecret.getEncryptionKey());
       Mac    mac                 = getMac(masterSecret.getMacKey());
+      byte[] ciphertext          = cipher.doFinal(body);
+      byte[] authenticatedBody   = MasterCipherEnvelope.serializeAuthenticatedContent(cipher.getIV(), ciphertext);
+      byte[] authenticationTag   = mac.doFinal(authenticatedBody);
 
-      byte[] encryptedBody       = getEncryptedBody(cipher, body);
-
-      return getMacBody(mac, encryptedBody);
+      return MasterCipherEnvelope.serialize(cipher.getIV(), ciphertext, authenticationTag);
     } catch (GeneralSecurityException ge) {
       Log.w("bodycipher", ge);
       return null;
@@ -165,10 +175,45 @@ public class MasterCipher {
 
     byte[] localMac  = hmac.doFinal(encrypted);
 
-    if (!Arrays.equals(remoteMac, localMac))
+    if (!MessageDigest.isEqual(remoteMac, localMac))
       throw new InvalidMessageException("MAC doesen't match.");
 
     return encrypted;
+  }
+
+  private byte[] decryptEnvelope(@NonNull byte[] serialized) throws GeneralSecurityException, InvalidMessageException {
+    Mac mac = getMac(masterSecret.getMacKey());
+    MasterCipherEnvelope envelope = MasterCipherEnvelope.parse(serialized, mac.getMacLength());
+    byte[] localMac = mac.doFinal(envelope.getAuthenticatedContent());
+
+    if (!MessageDigest.isEqual(envelope.getAuthenticationTag(), localMac)) {
+      throw new InvalidMessageException("MasterCipher envelope MAC doesn't match.");
+    }
+
+    decryptingCipher.init(Cipher.DECRYPT_MODE, masterSecret.getEncryptionKey(),
+                          new IvParameterSpec(envelope.getNonce()));
+    return decryptingCipher.doFinal(envelope.getCiphertext());
+  }
+
+  private boolean isLegacyShape(@NonNull byte[] serialized) {
+    int overhead = encryptingCipher.getBlockSize() + hmac.getMacLength();
+    int encryptedLength = serialized.length - hmac.getMacLength();
+    return serialized.length >= overhead + encryptingCipher.getBlockSize() &&
+           encryptedLength % encryptingCipher.getBlockSize() == 0;
+  }
+
+  private boolean hasValidMac(@NonNull Mac mac, @NonNull byte[] encryptedAndMac) {
+    if (encryptedAndMac.length < mac.getMacLength()) return false;
+
+    int encryptedLength = encryptedAndMac.length - mac.getMacLength();
+    mac.update(encryptedAndMac, 0, encryptedLength);
+    byte[] localMac = mac.doFinal();
+    byte[] remoteMac = Arrays.copyOfRange(encryptedAndMac, encryptedLength, encryptedAndMac.length);
+    return MessageDigest.isEqual(remoteMac, localMac);
+  }
+
+  private byte[] withoutMac(@NonNull Mac mac, @NonNull byte[] encryptedAndMac) {
+    return Arrays.copyOf(encryptedAndMac, encryptedAndMac.length - mac.getMacLength());
   }
 
   private byte[] getDecryptedBody(Cipher cipher, byte[] encryptedBody) throws IllegalBlockSizeException, BadPaddingException {

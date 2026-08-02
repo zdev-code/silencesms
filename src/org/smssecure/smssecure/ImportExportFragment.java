@@ -3,13 +3,13 @@ package org.smssecure.smssecure;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Build;
 import android.net.Uri;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
@@ -27,10 +28,12 @@ import org.smssecure.smssecure.database.PlaintextBackupExporter;
 import org.smssecure.smssecure.database.PlaintextBackupImporter;
 import org.smssecure.smssecure.permissions.Permissions;
 import org.smssecure.smssecure.service.ApplicationMigrationService;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 
 public class ImportExportFragment extends Fragment {
@@ -41,7 +44,6 @@ public class ImportExportFragment extends Fragment {
   private static final int SUCCESS                             = 0;
   private static final int NO_SD_CARD                          = 1;
   private static final int ERROR_IO                            = 2;
-  private static final int REQUEST_IMPORT_PLAINTEXT_DOCUMENT   = 31338;
   private static final String[] PLAINTEXT_BACKUP_MIME_TYPES    = new String[] {
       "application/xml",
       "text/xml",
@@ -49,13 +51,21 @@ public class ImportExportFragment extends Fragment {
       "application/octet-stream"
   };
 
-  private MasterSecret   masterSecret;
-  private ProgressDialog progressDialog;
+  private MasterSecret                masterSecret;
+  private final Permissions.FragmentPermissionLauncher permissionLauncher = Permissions.registerForResult(this);
+  private final ActivityResultLauncher<String[]> plaintextBackupPicker =
+      registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::handlePlaintextBackupDocument);
+  private final ActivityResultLauncher<String> plaintextBackupSaver =
+      registerForActivityResult(new ActivityResultContracts.CreateDocument("application/xml"),
+                                this::handlePlaintextBackupDestination);
+  private AlertDialog                 progressDialog;
+  private AppTaskExecutor.TaskHandle currentTask;
+  private int                         operationGeneration;
 
   @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
-    this.masterSecret = getArguments().getParcelable("master_secret");
+    this.masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
   }
 
   @Override
@@ -77,175 +87,186 @@ public class ImportExportFragment extends Fragment {
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
-
-    if (progressDialog != null && progressDialog.isShowing()) {
-      progressDialog.dismiss();
-      progressDialog = null;
-    }
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+  public void onDestroyView() {
+    cancelCurrentOperation();
+    super.onDestroyView();
   }
 
   @SuppressWarnings("CodeBlock2Expr")
   private void handleImportSms() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setIconAttribute(R.attr.dialog_info_icon);
-    builder.setTitle(getActivity().getString(R.string.ImportFragment_import_system_sms_database));
-    builder.setMessage(getActivity().getString(R.string.ImportFragment_this_will_import_messages_from_the_system));
-    builder.setPositiveButton(getActivity().getString(R.string.ImportFragment_import), (dialog, which) -> {
-      Permissions.with(this)
+    builder.setTitle(activity.getString(R.string.ImportFragment_import_system_sms_database));
+    builder.setMessage(activity.getString(R.string.ImportFragment_this_will_import_messages_from_the_system));
+    builder.setPositiveButton(activity.getString(R.string.ImportFragment_import), (dialog, which) -> {
+      Permissions.with(this, permissionLauncher)
                  .request(Manifest.permission.READ_SMS)
                  .ifNecessary()
                  .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages))
                  .onAllGranted(() -> {
-                   Intent intent = new Intent(getActivity(), ApplicationMigrationService.class);
+                   Activity currentActivity = getActivity();
+                   if (!isAdded() || currentActivity == null) return;
+
+                   Intent intent = new Intent(currentActivity, ApplicationMigrationService.class);
                    intent.setAction(ApplicationMigrationService.MIGRATE_DATABASE);
                    intent.putExtra("master_secret", masterSecret);
-                   getActivity().startService(intent);
+                   currentActivity.startService(intent);
 
-                   Intent nextIntent = new Intent(getActivity(), ConversationListActivity.class);
+                   Intent nextIntent = new Intent(currentActivity, ConversationListActivity.class);
 
-                   Intent activityIntent = new Intent(getActivity(), DatabaseMigrationActivity.class);
+                   Intent activityIntent = new Intent(currentActivity, DatabaseMigrationActivity.class);
                    activityIntent.putExtra("next_intent", nextIntent);
-                   getActivity().startActivity(activityIntent);
+                   currentActivity.startActivity(activityIntent);
                  })
-                 .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast, Toast.LENGTH_LONG).show())
+                 .onAnyDenied(() -> showToast(R.string.ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast))
                  .execute();
     });
-    builder.setNegativeButton(getActivity().getString(R.string.ImportFragment_cancel), null);
+    builder.setNegativeButton(activity.getString(R.string.ImportFragment_cancel), null);
     builder.show();
   }
 
   @SuppressWarnings("CodeBlock2Expr")
   @SuppressLint("InlinedApi")
   private void handleImportEncryptedBackup() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setIconAttribute(R.attr.dialog_alert_icon);
-    builder.setTitle(getActivity().getString(R.string.ImportFragment_restore_encrypted_backup));
-    builder.setMessage(getActivity().getString(R.string.ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys));
-    builder.setPositiveButton(getActivity().getString(R.string.ImportFragment_import), (dialog, which) -> {
+    builder.setTitle(activity.getString(R.string.ImportFragment_restore_encrypted_backup));
+    builder.setMessage(activity.getString(R.string.ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys));
+    builder.setPositiveButton(activity.getString(R.string.ImportFragment_import), (dialog, which) -> {
       String[] permissions = getReadStoragePermissions();
 
       if (permissions.length == 0) {
-        new ImportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        startImportEncryptedBackup();
       } else {
-        Permissions.with(this)
+        Permissions.with(this, permissionLauncher)
                    .request(permissions)
                    .ifNecessary()
                    .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied))
-                   .onAllGranted(() -> new ImportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage, Toast.LENGTH_LONG).show())
+                   .onAllGranted(this::startImportEncryptedBackup)
+                   .onAnyDenied(() -> showToast(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage))
                    .execute();
       }
     });
-    builder.setNegativeButton(getActivity().getString(R.string.ImportFragment_cancel), null);
+    builder.setNegativeButton(activity.getString(R.string.ImportFragment_cancel), null);
     builder.show();
   }
 
   @SuppressWarnings("CodeBlock2Expr")
   @SuppressLint("InlinedApi")
   private void handleImportPlaintextBackup() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setIconAttribute(R.attr.dialog_alert_icon);
-    builder.setTitle(getActivity().getString(R.string.ImportFragment_import_plaintext_backup));
-    builder.setMessage(getActivity().getString(R.string.ImportFragment_this_will_import_messages_from_a_plaintext_backup));
-    builder.setPositiveButton(getActivity().getString(R.string.ImportFragment_import), (dialog, which) -> {
+    builder.setTitle(activity.getString(R.string.ImportFragment_import_plaintext_backup));
+    builder.setMessage(activity.getString(R.string.ImportFragment_this_will_import_messages_from_a_plaintext_backup));
+    builder.setPositiveButton(activity.getString(R.string.ImportFragment_import), (dialog, which) -> {
       String[] permissions = getReadStoragePermissions();
 
       Runnable onGranted = () -> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
           launchPlaintextBackupPicker();
         } else {
-          new ImportPlaintextBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+          startImportPlaintextBackup(null);
         }
       };
 
       if (permissions.length == 0) {
         onGranted.run();
       } else {
-        Permissions.with(ImportExportFragment.this)
+        Permissions.with(ImportExportFragment.this, permissionLauncher)
                    .request(permissions)
                    .ifNecessary()
                    .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied))
                    .onAllGranted(onGranted)
-                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage, Toast.LENGTH_LONG).show())
+                   .onAnyDenied(() -> showToast(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage))
                    .execute();
       }
     });
-    builder.setNegativeButton(getActivity().getString(R.string.ImportFragment_cancel), null);
+    builder.setNegativeButton(activity.getString(R.string.ImportFragment_cancel), null);
     builder.show();
   }
 
   private void handleExportEncryptedBackup() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setIconAttribute(R.attr.dialog_info_icon);
-    builder.setTitle(getActivity().getString(R.string.ExportFragment_export_encrypted_backup));
-    builder.setMessage(getActivity().getString(R.string.ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages));
-    builder.setPositiveButton(getActivity().getString(R.string.ExportFragment_export), (dialog, which) -> {
+    builder.setTitle(activity.getString(R.string.ExportFragment_export_encrypted_backup));
+    builder.setMessage(activity.getString(R.string.ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages));
+    builder.setPositiveButton(activity.getString(R.string.ExportFragment_export), (dialog, which) -> {
       String[] permissions = getWriteStoragePermissions();
 
       if (permissions.length == 0) {
-        new ExportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        startExportEncryptedBackup();
       } else {
-        Permissions.with(ImportExportFragment.this)
+        Permissions.with(ImportExportFragment.this, permissionLauncher)
                    .request(permissions)
                    .ifNecessary()
                    .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-                   .onAllGranted(() -> new ExportEncryptedBackupTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage, Toast.LENGTH_LONG).show())
+                   .onAllGranted(this::startExportEncryptedBackup)
+                   .onAnyDenied(() -> showToast(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage))
                    .execute();
       }
     });
-    builder.setNegativeButton(getActivity().getString(R.string.ExportFragment_cancel), null);
+    builder.setNegativeButton(activity.getString(R.string.ExportFragment_cancel), null);
     builder.show();
   }
 
   private void launchPlaintextBackupPicker() {
-    if (getActivity() == null) {
-      return;
-    }
+    if (!isAdded() || getActivity() == null) return;
 
-    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-    intent.addCategory(Intent.CATEGORY_OPENABLE);
-  intent.setType("*/*");
-    intent.putExtra(Intent.EXTRA_MIME_TYPES, PLAINTEXT_BACKUP_MIME_TYPES);
-    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-    startActivityForResult(intent, REQUEST_IMPORT_PLAINTEXT_DOCUMENT);
+    plaintextBackupPicker.launch(PLAINTEXT_BACKUP_MIME_TYPES);
+  }
+
+  private void launchPlaintextBackupSaver() {
+    if (!isAdded() || getActivity() == null) return;
+
+    plaintextBackupSaver.launch("SilencePlaintextBackup.xml");
   }
 
   @SuppressWarnings("CodeBlock2Expr")
   @SuppressLint("InlinedApi")
   private void handleExportPlaintextBackup() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setIconAttribute(R.attr.dialog_alert_icon);
-    builder.setTitle(getActivity().getString(R.string.ExportFragment_export_plaintext_to_storage));
-    builder.setMessage(getActivity().getString(R.string.ExportFragment_warning_this_will_export_the_contents_of_your_messages_to_storage_in_plaintext));
-    builder.setPositiveButton(getActivity().getString(R.string.ExportFragment_export), (dialog, which) -> {
+    builder.setTitle(activity.getString(R.string.ExportFragment_export_plaintext_to_storage));
+    builder.setMessage(activity.getString(R.string.ExportFragment_warning_this_will_export_the_contents_of_your_messages_to_storage_in_plaintext));
+    builder.setPositiveButton(activity.getString(R.string.ExportFragment_export), (dialog, which) -> {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        launchPlaintextBackupSaver();
+        return;
+      }
+
       String[] permissions = getWriteStoragePermissions();
 
       if (permissions.length == 0) {
-        new ExportPlaintextTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        startExportPlaintextBackup(null);
       } else {
-        Permissions.with(ImportExportFragment.this)
+        Permissions.with(ImportExportFragment.this, permissionLauncher)
                    .request(permissions)
                    .ifNecessary()
                    .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-                   .onAllGranted(() -> new ExportPlaintextTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR))
-                   .onAnyDenied(() -> Toast.makeText(getContext(), R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage, Toast.LENGTH_LONG).show())
+                   .onAllGranted(() -> startExportPlaintextBackup(null))
+                   .onAnyDenied(() -> showToast(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage))
                    .execute();
       }
     });
-    builder.setNegativeButton(getActivity().getString(R.string.ExportFragment_cancel), null);
+    builder.setNegativeButton(activity.getString(R.string.ExportFragment_cancel), null);
     builder.show();
   }
 
-  @SuppressLint("StaticFieldLeak")
   private String[] getReadStoragePermissions() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       return new String[0];
@@ -268,257 +289,241 @@ public class ImportExportFragment extends Fragment {
     return permissions.toArray(new String[0]);
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
+  private void handlePlaintextBackupDocument(@Nullable Uri uri) {
+    if (uri == null) return;
 
-    if (requestCode == REQUEST_IMPORT_PLAINTEXT_DOCUMENT) {
-      if (resultCode == Activity.RESULT_OK && data != null) {
-        Uri uri = data.getData();
-        if (uri != null) {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
-              (data.getFlags() & Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0) {
-            int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            try {
-              requireContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
-            } catch (SecurityException e) {
-              Log.w(TAG, "Unable to persist uri permission", e);
-            }
-          }
+    Context context = getContext();
+    if (!isAdded() || context == null) return;
 
-          new ImportPlaintextBackupTask(uri).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-      }
+    try {
+      context.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    } catch (SecurityException e) {
+      Log.w(TAG, "Unable to persist uri permission", e);
     }
+
+    startImportPlaintextBackup(uri);
   }
 
-  private class ImportPlaintextBackupTask extends AsyncTask<Void, Void, Integer> {
+  private void handlePlaintextBackupDestination(@Nullable Uri uri) {
+    if (uri == null) return;
 
-    @Nullable
-    private final Uri importUri;
+    startExportPlaintextBackup(uri);
+  }
 
-    ImportPlaintextBackupTask() {
-      this(null);
-    }
+  private void startImportPlaintextBackup(@Nullable Uri importUri) {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
 
-    ImportPlaintextBackupTask(@Nullable Uri importUri) {
-      this.importUri = importUri;
-    }
+    final Context      context              = activity.getApplicationContext();
+    final MasterSecret masterSecretSnapshot = masterSecret;
+    final Uri          importUriSnapshot    = importUri;
 
-    @Override
-    protected void onPreExecute() {
-      progressDialog = ProgressDialog.show(getActivity(),
-                                           getActivity().getString(R.string.ImportFragment_importing),
-                                           getActivity().getString(R.string.ImportFragment_import_plaintext_backup_elipse),
-                                           true, false);
-    }
-
-    protected void onPostExecute(Integer result) {
-      Context context = getActivity();
-
-      if (progressDialog != null)
-        progressDialog.dismiss();
-
-      if (context == null)
-        return;
-
-      switch (result) {
-        case NO_SD_CARD:
-          Toast.makeText(context,
-                         context.getString(R.string.ImportFragment_no_plaintext_backup_found),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case ERROR_IO:
-          Toast.makeText(context,
-                         context.getString(R.string.ImportFragment_error_importing_backup),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case SUCCESS:
-          Toast.makeText(context,
-                         context.getString(R.string.ImportFragment_import_complete),
-                         Toast.LENGTH_LONG).show();
-          break;
-      }
-    }
-
-    @Override
-    protected Integer doInBackground(Void... params) {
+    startOperation(R.string.ImportFragment_importing,
+                   R.string.ImportFragment_import_plaintext_backup_elipse,
+                   () -> {
       try {
-        if (importUri != null) {
-          PlaintextBackupImporter.importPlaintextFromUri(getActivity(), masterSecret, importUri);
+        if (importUriSnapshot != null) {
+          PlaintextBackupImporter.importPlaintextFromUri(context, masterSecretSnapshot, importUriSnapshot);
         } else {
-          PlaintextBackupImporter.importPlaintextFromSd(getActivity(), masterSecret);
+          PlaintextBackupImporter.importPlaintextFromSd(context, masterSecretSnapshot);
         }
         return SUCCESS;
       } catch (NoExternalStorageException e) {
-        Log.w("ImportFragment", e);
+        Log.w(TAG, "No plaintext backup available", e);
         return NO_SD_CARD;
       } catch (IOException e) {
-        Log.w("ImportFragment", e);
+        Log.w(TAG, "Unable to import plaintext backup", e);
         return ERROR_IO;
       }
+                   },
+                   this::handleImportPlaintextResult,
+                   "Unexpected failure importing plaintext backup");
+  }
+
+  private void startExportPlaintextBackup(@Nullable Uri exportUri) {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    final Context      context              = activity.getApplicationContext();
+    final MasterSecret masterSecretSnapshot = masterSecret;
+    final Uri          exportUriSnapshot    = exportUri;
+
+    startOperation(R.string.ExportFragment_exporting,
+                   R.string.ExportFragment_exporting_plaintext_to_storage,
+                   () -> {
+      try {
+        if (exportUriSnapshot != null) {
+          PlaintextBackupExporter.exportPlaintextToUri(context, masterSecretSnapshot, exportUriSnapshot);
+        } else {
+          PlaintextBackupExporter.exportPlaintextToSd(context, masterSecretSnapshot);
+        }
+        return SUCCESS;
+      } catch (NoExternalStorageException e) {
+        Log.w(TAG, "Unable to access storage for plaintext export", e);
+        return NO_SD_CARD;
+      } catch (IOException e) {
+        Log.w(TAG, "Unable to export plaintext backup", e);
+        return ERROR_IO;
+      }
+                   },
+                   this::handleExportResult,
+                   "Unexpected failure exporting plaintext backup");
+  }
+
+  private void startImportEncryptedBackup() {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    final Context context = activity.getApplicationContext();
+
+    startOperation(R.string.ImportFragment_importing,
+                   R.string.ImportFragment_restoring_encrypted_backup,
+                   () -> {
+      try {
+        EncryptedBackupExporter.importFromStorage(context);
+        return SUCCESS;
+      } catch (NoExternalStorageException e) {
+        Log.w(TAG, "No encrypted backup available", e);
+        return NO_SD_CARD;
+      } catch (IOException e) {
+        Log.w(TAG, "Unable to import encrypted backup", e);
+        return ERROR_IO;
+      }
+                   },
+                   this::handleImportEncryptedResult,
+                   "Unexpected failure importing encrypted backup");
+  }
+
+  private void startExportEncryptedBackup() {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    final Context context = activity.getApplicationContext();
+
+    startOperation(R.string.ExportFragment_exporting,
+                   R.string.ExportFragment_exporting_keys_settings_and_messages,
+                   () -> {
+      try {
+        EncryptedBackupExporter.exportToStorage(context);
+        return SUCCESS;
+      } catch (NoExternalStorageException e) {
+        Log.w(TAG, "Unable to access storage for encrypted export", e);
+        return NO_SD_CARD;
+      } catch (IOException e) {
+        Log.w(TAG, "Unable to export encrypted backup", e);
+        return ERROR_IO;
+      }
+                   },
+                   this::handleExportResult,
+                   "Unexpected failure exporting encrypted backup");
+  }
+
+  private void startOperation(int titleResource,
+                              int messageResource,
+                              Callable<Integer> work,
+                              OperationResultHandler resultHandler,
+                              String failureMessage)
+  {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    cancelCurrentOperation();
+    final int generation = operationGeneration;
+    showProgressDialog(activity, titleResource, messageResource);
+
+    currentTask = AppTaskExecutor.getInstance().submitParallel(
+        work,
+        result -> completeOperation(generation, result, resultHandler),
+        exception -> {
+          Log.w(TAG, failureMessage, exception);
+          completeOperation(generation, ERROR_IO, resultHandler);
+        });
+  }
+
+  private void completeOperation(int generation, int result, OperationResultHandler resultHandler) {
+    if (generation != operationGeneration || !isAdded()) return;
+
+    Activity activity = getActivity();
+    if (activity == null) return;
+
+    currentTask = null;
+    operationGeneration++;
+    dismissProgressDialog();
+    resultHandler.onResult(activity, result);
+  }
+
+  private void cancelCurrentOperation() {
+    operationGeneration++;
+    if (currentTask != null) currentTask.cancel();
+    currentTask = null;
+    dismissProgressDialog();
+  }
+
+  private void showProgressDialog(Activity activity, int titleResource, int messageResource) {
+    progressDialog = new AlertDialog.Builder(activity)
+        .setTitle(titleResource)
+        .setMessage(messageResource)
+        .setView(new ProgressBar(activity))
+        .setCancelable(false)
+        .create();
+    progressDialog.show();
+  }
+
+  private void dismissProgressDialog() {
+    if (progressDialog != null) progressDialog.dismiss();
+    progressDialog = null;
+  }
+
+  private void handleImportPlaintextResult(Activity activity, int result) {
+    switch (result) {
+      case NO_SD_CARD:
+        Toast.makeText(activity, R.string.ImportFragment_no_plaintext_backup_found, Toast.LENGTH_LONG).show();
+        break;
+      case ERROR_IO:
+        Toast.makeText(activity, R.string.ImportFragment_error_importing_backup, Toast.LENGTH_LONG).show();
+        break;
+      case SUCCESS:
+        Toast.makeText(activity, R.string.ImportFragment_import_complete, Toast.LENGTH_LONG).show();
+        break;
     }
   }
 
-  @SuppressLint("StaticFieldLeak")
-  private class ExportPlaintextTask extends AsyncTask<Void, Void, Integer> {
-    private ProgressDialog dialog;
-
-    @Override
-    protected void onPreExecute() {
-      dialog = ProgressDialog.show(getActivity(),
-                                   getActivity().getString(R.string.ExportFragment_exporting),
-                                   getActivity().getString(R.string.ExportFragment_exporting_plaintext_to_storage),
-                                   true, false);
-    }
-
-    @Override
-    protected Integer doInBackground(Void... params) {
-      try {
-        PlaintextBackupExporter.exportPlaintextToSd(getActivity(), masterSecret);
-        return SUCCESS;
-      } catch (NoExternalStorageException e) {
-        Log.w("ExportFragment", e);
-        return NO_SD_CARD;
-      } catch (IOException e) {
-        Log.w("ExportFragment", e);
-        return ERROR_IO;
-      }
-    }
-
-    @Override
-    protected void onPostExecute(Integer result) {
-      Context context = getActivity();
-
-      if (dialog != null)
-        dialog.dismiss();
-
-      if (context == null)
-        return;
-
-      switch (result) {
-        case NO_SD_CARD:
-          Toast.makeText(context,
-                         context.getString(R.string.ExportFragment_error_unable_to_write_to_storage),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case ERROR_IO:
-          Toast.makeText(context,
-                         context.getString(R.string.ExportFragment_error_while_writing_to_storage),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case SUCCESS:
-          Toast.makeText(context,
-                         context.getString(R.string.ExportFragment_export_successful),
-                         Toast.LENGTH_LONG).show();
-          break;
-      }
+  private void handleImportEncryptedResult(Activity activity, int result) {
+    switch (result) {
+      case NO_SD_CARD:
+        Toast.makeText(activity, R.string.ImportFragment_no_encrypted_backup_found, Toast.LENGTH_LONG).show();
+        break;
+      case ERROR_IO:
+        Toast.makeText(activity, R.string.ImportFragment_error_importing_backup, Toast.LENGTH_LONG).show();
+        break;
+      case SUCCESS:
+        ExitActivity.exitAndRemoveFromRecentApps(activity);
+        break;
     }
   }
 
-  @SuppressLint("StaticFieldLeak")
-  private class ImportEncryptedBackupTask extends AsyncTask<Void, Void, Integer> {
-
-    @Override
-    protected void onPreExecute() {
-      progressDialog = ProgressDialog.show(getActivity(),
-                                           getActivity().getString(R.string.ImportFragment_importing),
-                                           getActivity().getString(R.string.ImportFragment_restoring_encrypted_backup),
-                                           true, false);
-    }
-
-    @Override
-    protected Integer doInBackground(Void... params) {
-      try {
-        EncryptedBackupExporter.importFromStorage(getActivity());
-        return SUCCESS;
-      } catch (NoExternalStorageException e) {
-        Log.w("ImportFragment", e);
-        return NO_SD_CARD;
-      } catch (IOException e) {
-        Log.w("ImportFragment", e);
-        return ERROR_IO;
-      }
-    }
-
-    protected void onPostExecute(Integer result) {
-      Context context = getActivity();
-
-      if (progressDialog != null)
-        progressDialog.dismiss();
-
-      if (context == null)
-        return;
-
-      switch (result) {
-        case NO_SD_CARD:
-          Toast.makeText(context,
-                         context.getString(R.string.ImportFragment_no_encrypted_backup_found),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case ERROR_IO:
-          Toast.makeText(context,
-                         context.getString(R.string.ImportFragment_error_importing_backup),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case SUCCESS:
-          ExitActivity.exitAndRemoveFromRecentApps(getActivity());
-      }
+  private void handleExportResult(Activity activity, int result) {
+    switch (result) {
+      case NO_SD_CARD:
+        Toast.makeText(activity, R.string.ExportFragment_error_unable_to_write_to_storage, Toast.LENGTH_LONG).show();
+        break;
+      case ERROR_IO:
+        Toast.makeText(activity, R.string.ExportFragment_error_while_writing_to_storage, Toast.LENGTH_LONG).show();
+        break;
+      case SUCCESS:
+        Toast.makeText(activity, R.string.ExportFragment_export_successful, Toast.LENGTH_LONG).show();
+        break;
     }
   }
 
-  @SuppressLint("StaticFieldLeak")
-  private class ExportEncryptedBackupTask extends AsyncTask<Void, Void, Integer> {
-    private ProgressDialog dialog;
+  private void showToast(int messageResource) {
+    if (!isAdded()) return;
+    Context context = getContext();
+    if (context != null) Toast.makeText(context, messageResource, Toast.LENGTH_LONG).show();
+  }
 
-    @Override
-    protected void onPreExecute() {
-      dialog = ProgressDialog.show(getActivity(),
-                                   getActivity().getString(R.string.ExportFragment_exporting),
-                                   getActivity().getString(R.string.ExportFragment_exporting_keys_settings_and_messages),
-                                   true, false);
-    }
-
-    @Override
-    protected Integer doInBackground(Void... params) {
-      try {
-        EncryptedBackupExporter.exportToStorage(getActivity());
-        return SUCCESS;
-      } catch (NoExternalStorageException e) {
-        Log.w("ExportFragment", e);
-        return NO_SD_CARD;
-      } catch (IOException e) {
-        Log.w("ExportFragment", e);
-        return ERROR_IO;
-      }
-    }
-
-    @Override
-    protected void onPostExecute(Integer result) {
-      Context context = getActivity();
-
-      if (dialog != null) dialog.dismiss();
-
-      if (context == null) return;
-
-      switch (result) {
-        case NO_SD_CARD:
-          Toast.makeText(context,
-                         context.getString(R.string.ExportFragment_error_unable_to_write_to_storage),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case ERROR_IO:
-          Toast.makeText(context,
-                         context.getString(R.string.ExportFragment_error_while_writing_to_storage),
-                         Toast.LENGTH_LONG).show();
-          break;
-        case SUCCESS:
-          Toast.makeText(context,
-                         context.getString(R.string.ExportFragment_export_successful),
-                         Toast.LENGTH_LONG).show();
-          break;
-      }
-    }
+  private interface OperationResultHandler {
+    void onResult(Activity activity, int result);
   }
 
 }

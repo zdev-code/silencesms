@@ -16,9 +16,10 @@
  */
 package org.smssecure.smssecure;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import androidx.appcompat.app.ActionBar;
 
 import org.smssecure.smssecure.crypto.IdentityKeyUtil;
@@ -29,6 +30,7 @@ import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.VersionTracker;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.util.List;
 
@@ -39,6 +41,9 @@ import java.util.List;
  */
 
 public class PassphraseCreateActivity extends PassphraseActivity {
+  private static final String TAG = PassphraseCreateActivity.class.getSimpleName();
+
+  private AppTaskExecutor.TaskHandle secretTask;
 
   public PassphraseCreateActivity() { }
 
@@ -55,43 +60,41 @@ public class PassphraseCreateActivity extends PassphraseActivity {
     getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
     getSupportActionBar().setCustomView(R.layout.centered_app_title);
 
-    new SecretGenerator().execute(MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
+    generateSecret();
   }
 
-  private class SecretGenerator extends AsyncTask<String, Void, Void> {
-    private MasterSecret masterSecret;
+  private void generateSecret() {
+    Context context = getApplicationContext();
+    secretTask = AppTaskExecutor.getInstance().submitSerial(
+        () -> {
+      MasterSecret masterSecret = MasterSecretUtil.generateMasterSecret(context,
+                                                                         MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
 
-    @Override
-    protected void onPreExecute() {
-    }
+      MasterSecretUtil.generateAsymmetricMasterSecret(context, masterSecret);
 
-    @Override
-    protected Void doInBackground(String... params) {
-      String passphrase = params[0];
-      masterSecret      = MasterSecretUtil.generateMasterSecret(PassphraseCreateActivity.this,
-                                                                passphrase);
-
-      MasterSecretUtil.generateAsymmetricMasterSecret(PassphraseCreateActivity.this, masterSecret);
-
-      SubscriptionManagerCompat subscriptionManagerCompat = SubscriptionManagerCompat.from(PassphraseCreateActivity.this);
+      SubscriptionManagerCompat subscriptionManagerCompat = SubscriptionManagerCompat.from(context);
 
       if (Build.VERSION.SDK_INT >= 22) {
         List<SubscriptionInfoCompat> activeSubscriptions = subscriptionManagerCompat.getActiveSubscriptionInfoList();
-        DualSimUtil.generateKeysIfDoNotExist(PassphraseCreateActivity.this, masterSecret, activeSubscriptions, false);
+        DualSimUtil.generateKeysIfDoNotExist(context, masterSecret, activeSubscriptions, false);
       } else {
-        IdentityKeyUtil.generateIdentityKeys(PassphraseCreateActivity.this, masterSecret, -1, false);
+        IdentityKeyUtil.generateIdentityKeys(context, masterSecret, -1, false);
         subscriptionManagerCompat.updateActiveSubscriptionInfoList();
       }
-      VersionTracker.updateLastSeenVersion(PassphraseCreateActivity.this);
-      SilencePreferences.setPasswordDisabled(PassphraseCreateActivity.this, true);
+      VersionTracker.updateLastSeenVersion(context);
+      SilencePreferences.setPasswordDisabled(context, true);
 
-      return null;
-    }
+      return masterSecret;
+        },
+        this::setMasterSecret,
+        exception -> Log.w(TAG, "Unable to generate master secret", exception));
+  }
 
-    @Override
-    protected void onPostExecute(Void param) {
-      setMasterSecret(masterSecret);
-    }
+  @Override
+  protected void onDestroy() {
+    if (secretTask != null) secretTask.cancel();
+    secretTask = null;
+    super.onDestroy();
   }
 
   @Override

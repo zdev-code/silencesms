@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
@@ -84,23 +85,32 @@ public class ZoomingImageView extends FrameLayout {
 
     DIMENSION_EXECUTOR.execute(() -> {
       Pair<Integer, Integer> dimensions = null;
+      int rotation = 0;
 
       if (!"image/gif".equals(contentType)) {
-        try {
-          InputStream inputStream = PartAuthority.getAttachmentStream(context, masterSecret, uri);
+        try (InputStream inputStream = PartAuthority.getAttachmentStream(context, masterSecret, uri)) {
           dimensions = BitmapUtil.getDimensions(inputStream);
         } catch (IOException | BitmapDecodingException e) {
+          Log.w(TAG, e);
+        }
+
+        try (InputStream inputStream = PartAuthority.getAttachmentStream(context, masterSecret, uri)) {
+          ExifInterface exif = new ExifInterface(inputStream);
+          int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+              rotation = getExifRotation(orientation);
+        } catch (IOException e) {
           Log.w(TAG, e);
         }
       }
 
       Pair<Integer, Integer> finalDimensions = dimensions;
+      int finalRotation = rotation;
       MAIN_HANDLER.post(() -> {
         Log.w(TAG, "Dimensions: " + (finalDimensions == null ? "(null)" : finalDimensions.first + ", " + finalDimensions.second));
 
         if (finalDimensions == null || (finalDimensions.first <= maxTextureSize && finalDimensions.second <= maxTextureSize)) {
           Log.w(TAG, "Loading in standard image view...");
-          setImageViewUri(masterSecret, uri);
+          setImageViewUri(masterSecret, uri, finalRotation);
         } else {
           Log.w(TAG, "Loading in subsampling image view...");
           setSubsamplingImageViewUri(uri);
@@ -109,14 +119,13 @@ public class ZoomingImageView extends FrameLayout {
     });
   }
 
-  private void setImageViewUri(MasterSecret masterSecret, Uri uri) {
+  private void setImageViewUri(MasterSecret masterSecret, Uri uri, int rotation) {
     subsamplingImageView.setVisibility(View.GONE);
     imageView.setVisibility(View.VISIBLE);
 
     Glide.with(getContext())
          .load(new DecryptableUri(masterSecret, uri))
          .diskCacheStrategy(DiskCacheStrategy.NONE)
-         .dontTransform()
          .dontAnimate()
          .listener(new RequestListener<Drawable>() {
            @Override
@@ -133,11 +142,26 @@ public class ZoomingImageView extends FrameLayout {
                                           Target<Drawable> target,
                                           DataSource dataSource,
                                           boolean isFirstResource) {
+             imageView.setImageDrawable(resource);
              imageViewAttacher.update();
-             return false;
+             imageViewAttacher.setRotationTo(rotation);
+             return true;
            }
          })
          .into(imageView);
+  }
+
+  private static int getExifRotation(int orientation) {
+    switch (orientation) {
+      case ExifInterface.ORIENTATION_ROTATE_90:
+        return 90;
+      case ExifInterface.ORIENTATION_ROTATE_180:
+        return 180;
+      case ExifInterface.ORIENTATION_ROTATE_270:
+        return 270;
+      default:
+        return 0;
+    }
   }
 
   private void setSubsamplingImageViewUri(Uri uri) {

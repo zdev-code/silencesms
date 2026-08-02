@@ -25,6 +25,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
@@ -75,8 +77,6 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
   private final DynamicTheme    dynamicTheme    = new DynamicTheme();
   private final DynamicLanguage dynamicLanguage = new DynamicLanguage();
 
-  private static final int PICK_CONTACT = 1;
-  private static final int PICK_AVATAR  = 2;
   public static final  int AVATAR_SIZE  = 210;
 
   private ListView            lv;
@@ -90,6 +90,23 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
   private Set<Recipient> selectedContacts;
   private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
   private final Handler mainHandler = new Handler(Looper.getMainLooper());
+  private final ActivityResultLauncher<Intent> contactPicker =
+      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        Intent data = result.getData();
+        if (data == null || result.getResultCode() != Activity.RESULT_OK) return;
+
+        List<String> selected = data.getStringArrayListExtra("contacts");
+        if (selected == null) return;
+
+        for (String contact : selected) {
+          Recipient recipient = RecipientFactory.getRecipientsFromString(this, contact, false).getPrimaryRecipient();
+
+          if (!selectedContacts.contains(recipient) && recipient != null) {
+            addSelectedContact(recipient);
+          }
+        }
+        syncAdapterWithSelectedContacts();
+      });
 
   @Override
   protected void onPreCreate() {
@@ -214,33 +231,11 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity {
     adapter.notifyDataSetChanged();
   }
 
-  @Override
-  public void onActivityResult(int reqCode, int resultCode, final Intent data) {
-    super.onActivityResult(reqCode, resultCode, data);
-
-    if (data == null || resultCode != Activity.RESULT_OK)
-      return;
-
-    switch (reqCode) {
-      case PICK_CONTACT:
-        List<String> selected = data.getStringArrayListExtra("contacts");
-        for (String contact : selected) {
-          Recipient recipient = RecipientFactory.getRecipientsFromString(this, contact, false).getPrimaryRecipient();
-
-          if (!selectedContacts.contains(recipient) && recipient != null){
-            addSelectedContact(recipient);
-          }
-        }
-        syncAdapterWithSelectedContacts();
-        break;
-    }
-  }
-
   private class AddRecipientButtonListener implements View.OnClickListener {
     @Override
     public void onClick(View v) {
       Intent intent = new Intent(GroupCreateActivity.this, PushContactSelectionActivity.class);
-      startActivityForResult(intent, PICK_CONTACT);
+      contactPicker.launch(intent);
     }
   }
 

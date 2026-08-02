@@ -1,15 +1,13 @@
 package org.smssecure.smssecure.notifications;
 
-import android.content.BroadcastReceiver;
+import android.content.BroadcastReceiver.PendingResult;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
-import android.util.Log;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.database.DatabaseFactory;
+import org.smssecure.smssecure.util.concurrent.AsyncBroadcastTask;
 
 public class MarkReadReceiver extends MasterSecretBroadcastReceiver {
 
@@ -27,22 +25,15 @@ public class MarkReadReceiver extends MasterSecretBroadcastReceiver {
 
     final long[] threadIds = intent.getLongArrayExtra(THREAD_IDS_EXTRA);
 
-    if (threadIds != null) {
-      NotificationManagerCompat.from(context).cancel(intent.getIntExtra(NOTIFICATION_ID_EXTRA, -1));
+    if (threadIds == null) return;
 
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... params) {
-          for (long threadId : threadIds) {
-            Log.w(TAG, "Marking as read: " + threadId);
-            DatabaseFactory.getThreadDatabase(context).setRead(threadId);
-            DatabaseFactory.getThreadDatabase(context).setLastSeen(threadId);
-          }
+    Context appContext = context.getApplicationContext();
+    NotificationManagerCompat.from(appContext).cancel(intent.getIntExtra(NOTIFICATION_ID_EXTRA, -1));
 
-          MessageNotifier.updateNotification(context, masterSecret);
-          return null;
-        }
-      }.execute();
-    }
+    PendingResult pendingResult = goAsync();
+    AsyncBroadcastTask.submit(pendingResult, TAG, () -> {
+      NotificationActionOperations.markThreadsRead(appContext, masterSecret, threadIds, true);
+      return null;
+    });
   }
 }
