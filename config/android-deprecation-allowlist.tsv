@@ -1,0 +1,24 @@
+# source path	deprecated API or compatibility surface	supported API range	removal condition
+src/org/smssecure/smssecure/BaseActionBarActivity.java	Window status/navigation bar colors and legacy visibility flags	API 23-35	Remove when minSdk and edge-to-edge behavior no longer require legacy bar painting.
+src/org/smssecure/smssecure/components/ComposeText.java	InputMethodManager legacy input-method picker	API 23+	Remove when Android provides a non-deprecated equivalent across the supported range.
+src/org/smssecure/smssecure/components/KeyboardAwareLinearLayout.java	ViewTreeObserver legacy global-layout compatibility	API 23+	Remove when the layout no longer supports the pre-insets IME fallback.
+src/org/smssecure/smssecure/components/emoji/EmojiProvider.java	Drawable.getOpacity()	API 23+	Remove when the Drawable base contract no longer requires this override.
+src/org/smssecure/smssecure/components/reminder/StoreRatingReminder.java	PackageManager.getInstallerPackageName()	API 23-29	Remove when minSdk is 30.
+src/org/smssecure/smssecure/components/subsampling/AttachmentRegionDecoder.java	BitmapRegionDecoder.newInstance(InputStream, boolean)	API 23-30	Remove when minSdk is 31.
+src/org/smssecure/smssecure/contacts/ContactAccessor.java	Contacts.TIMES_CONTACTED	API 23+	Remove when legacy contact-sort parity is intentionally dropped.
+src/org/smssecure/smssecure/ConversationActivity.java	Activity transitions, onBackPressed, and system-bar colors	API 23-35	Remove when minSdk and edge-to-edge behavior no longer require these fallbacks.
+src/org/smssecure/smssecure/database/MmsSmsDatabase.java	Cursor legacy movement/access compatibility	API 23+	Remove when the database cursor abstraction is replaced.
+src/org/smssecure/smssecure/jobs/requirements/ServiceRequirementProvider.java	PhoneStateListener	API 23-30	Remove when minSdk is 31.
+src/org/smssecure/smssecure/mms/IncomingLegacyMmsConnection.java	Legacy carrier MMS network APIs	API 23-28	Remove after the real-carrier matrix permits dropping the legacy MMS path.
+src/org/smssecure/smssecure/mms/LegacyMmsConnection.java	Legacy carrier MMS network APIs	API 23-28	Remove after the real-carrier matrix permits dropping the legacy MMS path.
+src/org/smssecure/smssecure/mms/MmsRadio.java	Legacy carrier MMS routing and network APIs	API 23-28	Remove after the real-carrier matrix permits dropping the legacy MMS path.
+src/org/smssecure/smssecure/mms/OutgoingLegacyMmsConnection.java	Legacy carrier MMS network APIs	API 23-28	Remove after the real-carrier matrix permits dropping the legacy MMS path.
+src/org/smssecure/smssecure/preferences/CorrectedPreferenceFragment.java	Fragment target lookup	API 23+	Remove when AndroidX Preference no longer requires target-fragment lookup.
+src/org/smssecure/smssecure/sms/TelephonyServiceState.java	PhoneStateListener and legacy ServiceState access	API 23-30	Remove when minSdk is 31.
+src/org/smssecure/smssecure/util/ActivityTransitionCompat.java	Activity transition overrides	API 23-33	Remove when minSdk is 34.
+src/org/smssecure/smssecure/util/dualsim/SubscriptionManagerCompat.java	Legacy subscription metadata access	API 23-34	Remove when minSdk reaches each modern replacement API.
+src/org/smssecure/smssecure/util/DynamicLanguage.java	Legacy locale/configuration mutation	API 23+	Remove when per-app language support replaces runtime configuration mutation.
+src/org/smssecure/smssecure/util/DynamicTheme.java	Resources.getColor(int)	API 23+	Remove when the theme color compatibility path is replaced.
+src/org/smssecure/smssecure/util/SmsManagerUtil.java	SmsManager.getDefault() and subscription compatibility	API 23-30	Remove when minSdk and default-SMS behavior permit subscription-only access.
+src/org/smssecure/smssecure/util/TelephonyUtil.java	Legacy carrier and telephony access	API 23-28	Remove after the real-carrier matrix permits dropping the legacy MMS path.
+src/org/smssecure/smssecure/util/WindowSizeCompat.java	Display.getSize(Point)	API 23-29	Remove when minSdk is 30.

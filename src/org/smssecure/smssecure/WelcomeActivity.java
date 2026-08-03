@@ -61,13 +61,14 @@ public class WelcomeActivity extends BaseActionBarActivity {
 
   private void onContinueClicked() {
     Permissions.with(this)
-        .request(withNotificationPermissionIfRequired(Manifest.permission.WRITE_CONTACTS,
-                                                      Manifest.permission.READ_CONTACTS,
-                                                      Manifest.permission.READ_PHONE_STATE,
-                                                      Manifest.permission.RECEIVE_SMS,
-                                                      Manifest.permission.RECEIVE_MMS,
-                                                      Manifest.permission.READ_SMS,
-                                                      Manifest.permission.SEND_SMS))
+        .request(withNotificationPermissionIfRequired(
+            withPhoneNumberPermissionIfRequired(Manifest.permission.WRITE_CONTACTS,
+                                                Manifest.permission.READ_CONTACTS,
+                                                Manifest.permission.READ_PHONE_STATE,
+                                                Manifest.permission.RECEIVE_SMS,
+                                                Manifest.permission.RECEIVE_MMS,
+                                                Manifest.permission.READ_SMS,
+                                                Manifest.permission.SEND_SMS)))
         .ifNecessary()
         .withRationaleDialog(getString(R.string.WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms),
           R.drawable.ic_contacts_white_48dp, R.drawable.ic_phone_white_48dp)
@@ -124,6 +125,16 @@ public class WelcomeActivity extends BaseActionBarActivity {
 
     String[] extended = Arrays.copyOf(basePermissions, basePermissions.length + 1);
     extended[basePermissions.length] = Manifest.permission.POST_NOTIFICATIONS;
+    return extended;
+  }
+
+  private static String[] withPhoneNumberPermissionIfRequired(String... basePermissions) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+      return basePermissions;
+    }
+
+    String[] extended = Arrays.copyOf(basePermissions, basePermissions.length + 1);
+    extended[basePermissions.length] = Manifest.permission.READ_PHONE_NUMBERS;
     return extended;
   }
 

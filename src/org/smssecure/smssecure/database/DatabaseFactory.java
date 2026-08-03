@@ -103,6 +103,10 @@ public class DatabaseFactory {
   private final RecipientPreferenceDatabase recipientPreferenceDatabase;
   private final ContactsDatabase contactsDatabase;
 
+  public interface BackupOperation {
+    void run() throws IOException;
+  }
+
   public static DatabaseFactory getInstance(Context context) {
     synchronized (lock) {
       if (instance == null)
@@ -198,6 +202,17 @@ public class DatabaseFactory {
     old.close();
 
     this.address.reset(context);
+  }
+
+  public void runWithClosedDatabase(Context context, BackupOperation operation) throws IOException {
+    synchronized (lock) {
+      databaseHelper.close();
+      try {
+        operation.run();
+      } finally {
+        reset(context.getApplicationContext());
+      }
+    }
   }
 
   public void onApplicationLevelUpgrade(Context context, MasterSecret masterSecret, int fromVersion,

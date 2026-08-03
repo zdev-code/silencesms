@@ -21,9 +21,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 
 import org.smssecure.smssecure.crypto.IdentityKeyUtil;
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.crypto.MasterSecretStorageException;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.util.dualsim.DualSimUtil;
 import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
@@ -87,7 +89,17 @@ public class PassphraseCreateActivity extends PassphraseActivity {
       return masterSecret;
         },
         this::setMasterSecret,
-        exception -> Log.w(TAG, "Unable to generate master secret", exception));
+        exception -> {
+          Log.w(TAG, "Unable to generate master secret", exception);
+          if (exception instanceof MasterSecretStorageException && !isFinishing()) {
+            new AlertDialog.Builder(this)
+                .setMessage(R.string.master_secret_storage_error)
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> finish())
+                .setPositiveButton(R.string.retry, (dialog, which) -> generateSecret())
+                .setCancelable(false)
+                .show();
+          }
+        });
   }
 
   @Override

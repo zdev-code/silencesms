@@ -101,7 +101,7 @@ public class AsymmetricMasterCipher {
     SecretKeySpec macKey      = deriveMacKey(secretBytes);
     MasterSecret masterSecret = new MasterSecret(cipherKey, macKey);
 
-    return new MasterCipher(masterSecret);
+    return new MasterCipher(masterSecret, false);
   }
 
   private SecretKeySpec deriveMacKey(byte[] secretBytes) {

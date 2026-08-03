@@ -12,21 +12,25 @@ final class MasterCipherEnvelope {
 
   static final int VERSION_1 = 1;
   static final int ALGORITHM_LEGACY_CBC_HMAC_SHA1 = 1;
+  static final int ALGORITHM_AES_256_GCM = 2;
 
   private static final int FIXED_HEADER_LENGTH = MAGIC.length + 1 + 1 + 1 + Integer.BYTES;
 
   private final byte[] nonce;
   private final byte[] ciphertext;
+  private final byte[] header;
   private final byte[] authenticatedContent;
   private final byte[] authenticationTag;
 
   private MasterCipherEnvelope(@NonNull byte[] nonce,
                                @NonNull byte[] ciphertext,
+                               @NonNull byte[] header,
                                @NonNull byte[] authenticatedContent,
                                @NonNull byte[] authenticationTag)
   {
     this.nonce                = nonce;
     this.ciphertext           = ciphertext;
+    this.header               = header;
     this.authenticatedContent = authenticatedContent;
     this.authenticationTag    = authenticationTag;
   }
@@ -41,7 +45,23 @@ final class MasterCipherEnvelope {
     return true;
   }
 
+  static int getAlgorithm(@NonNull byte[] serialized) throws InvalidMessageException {
+    if (!hasMagic(serialized) || serialized.length <= MAGIC.length + 1) {
+      throw new InvalidMessageException("Invalid MasterCipher envelope header.");
+    }
+
+    return Byte.toUnsignedInt(serialized[MAGIC.length + 1]);
+  }
+
   static @NonNull byte[] serialize(@NonNull byte[] nonce,
+                                   @NonNull byte[] ciphertext,
+                                   @NonNull byte[] authenticationTag)
+  {
+    return serialize(ALGORITHM_LEGACY_CBC_HMAC_SHA1, nonce, ciphertext, authenticationTag);
+  }
+
+  static @NonNull byte[] serialize(int algorithm,
+                                   @NonNull byte[] nonce,
                                    @NonNull byte[] ciphertext,
                                    @NonNull byte[] authenticationTag)
   {
@@ -49,7 +69,7 @@ final class MasterCipherEnvelope {
                                             ciphertext.length + authenticationTag.length);
     buffer.put(MAGIC);
     buffer.put((byte) VERSION_1);
-    buffer.put((byte) ALGORITHM_LEGACY_CBC_HMAC_SHA1);
+    buffer.put((byte) algorithm);
     buffer.put((byte) nonce.length);
     buffer.put(nonce);
     buffer.putInt(ciphertext.length);
@@ -62,6 +82,17 @@ final class MasterCipherEnvelope {
                                                         @NonNull byte[] ciphertext)
   {
     return serialize(nonce, ciphertext, new byte[0]);
+  }
+
+  static @NonNull byte[] serializeHeader(int algorithm, @NonNull byte[] nonce, int ciphertextLength) {
+    ByteBuffer buffer = ByteBuffer.allocate(FIXED_HEADER_LENGTH + nonce.length);
+    buffer.put(MAGIC);
+    buffer.put((byte) VERSION_1);
+    buffer.put((byte) algorithm);
+    buffer.put((byte) nonce.length);
+    buffer.put(nonce);
+    buffer.putInt(ciphertextLength);
+    return buffer.array();
   }
 
   static @NonNull MasterCipherEnvelope parse(@NonNull byte[] serialized,
@@ -80,7 +111,11 @@ final class MasterCipherEnvelope {
     int algorithm = Byte.toUnsignedInt(buffer.get());
     int nonceLength = Byte.toUnsignedInt(buffer.get());
 
-    if (version != VERSION_1 || algorithm != ALGORITHM_LEGACY_CBC_HMAC_SHA1 || nonceLength != 16) {
+    boolean legacyAlgorithm = algorithm == ALGORITHM_LEGACY_CBC_HMAC_SHA1;
+    boolean gcmAlgorithm = algorithm == ALGORITHM_AES_256_GCM;
+
+    if (version != VERSION_1 || (!legacyAlgorithm && !gcmAlgorithm) ||
+      (legacyAlgorithm && nonceLength != 16) || (gcmAlgorithm && nonceLength != 12)) {
       throw new InvalidMessageException("Unsupported MasterCipher envelope parameters.");
     }
 
@@ -93,7 +128,8 @@ final class MasterCipherEnvelope {
     int ciphertextLength = buffer.getInt();
     long expectedRemaining = (long) ciphertextLength + authenticationTagLength;
 
-    if (ciphertextLength <= 0 || ciphertextLength % 16 != 0 || expectedRemaining != buffer.remaining()) {
+    if (ciphertextLength <= 0 || (legacyAlgorithm && ciphertextLength % 16 != 0) ||
+      (gcmAlgorithm && ciphertextLength < 16) || expectedRemaining != buffer.remaining()) {
       throw new InvalidMessageException("Invalid MasterCipher envelope length.");
     }
 
@@ -101,9 +137,11 @@ final class MasterCipherEnvelope {
     buffer.get(ciphertext);
     byte[] authenticationTag = new byte[authenticationTagLength];
     buffer.get(authenticationTag);
+    byte[] header = Arrays.copyOf(serialized, FIXED_HEADER_LENGTH + nonceLength);
     byte[] authenticatedContent = Arrays.copyOf(serialized, serialized.length - authenticationTagLength);
 
-    return new MasterCipherEnvelope(nonce, ciphertext, authenticatedContent, authenticationTag);
+    return new MasterCipherEnvelope(nonce, ciphertext, header,
+                                    authenticatedContent, authenticationTag);
   }
 
   @NonNull byte[] getNonce() {
@@ -112,6 +150,10 @@ final class MasterCipherEnvelope {
 
   @NonNull byte[] getCiphertext() {
     return ciphertext;
+  }
+
+  @NonNull byte[] getHeader() {
+    return header;
   }
 
   @NonNull byte[] getAuthenticatedContent() {

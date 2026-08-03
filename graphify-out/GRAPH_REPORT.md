@@ -1,419 +1,432 @@
-# Graph Report - .  (2026-08-03)
+# Graph Report - silencesms  (2026-08-04)
 
 ## Corpus Check
-- 720 files · ~341,988 words
+- 787 files · ~356,590 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 10522 nodes · 28895 edges · 417 communities (346 shown, 71 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 2919 edges (avg confidence: 0.8)
+- 11201 nodes · 31841 edges · 430 communities (363 shown, 67 thin omitted)
+- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 3019 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
+## Graph Freshness
+- Built from commit: `1c340699`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
+
 ## Community Hubs (Navigation)
-- Activity Fragment Sms
-- Key Clear Sender
-- Sender Key Builder
-- Test Dummy Event
-- Key Has Local
-- Key Chain Message
-- List Item View
-- Identity Key Byte
-- Test Sticky Event
-- Event Test Subscriber
-- Enabled Mmsc Use
-- Test Job Requirement
-- Recipient Group Selected
-- Key Pre Session
-- Recipients Panel Listener
-- Event Test Subscriber
-- Key Sender Message
-- Key Identity Generate
-- Key Session Pre
-- Event Post Poster
-- Handle Initialize Conversation
-- Uri Loader Factory
-- Key Pre Identity
-- Key Identity Our
-- Attachment Uri Stream
-- Parse From Key
-- Override Activity Sms
-- Subscriber Info Event
-- Key Clear Has
-- Event Test Bus
-- Loader Cursor Country
-- Has Key Local
-- Key Has Private
-- Media Message Slide
-- View Action Conversation
-- Builder Has Key
-- Job Wake Lock
-- Key Has Accessor
-- View Cursor Header
-- Event Subscriber Test
-- Test Number Format
-- Mark Messages Message
-- Key Has Builder
-- Pre Key Session
-- Pre Key Store
-- Keyboard Input Layout
-- Audio Slide Progress
-- Identity Key Sms
-- Key Has Message
-- View Scroll Header
-- Upgrade Version Progress
-- Key Exchange Message
-- Message Sms Incoming
-- Send Message Mms
-- Address Canonical Test
-- Custom Validator Text
-- Legacy Mms Connection
-- Body Display Spannable
-- Listener View Touch
-- Session Menu Title
-- Uri Slide Has
-- Task Callback Executor
-- Mark Mms Delete
-- Backup Handle Plaintext
-- Event Test Bus
-- Key Pre Identity
-- Click Listener Item
-- View Text Span
-- Action View Handle
-- View Log Dialog
-- Key Message Invalid
-- Check Present Index
-- Thread Conversation Delete
-- Message Media Pdu
-- Xml Statement Plaintext
-- Service Foreground Handle
-- File Encode Decode
-- Instance Key Structure
-- Reminder Listener Sms
-- Select Attachment Slide
-- View Holder Header
-- Import State Receiver
-- Color Preference Picker
-- Click Listener Key
-- Preference Change Listener
-- Emoji Draw Info
-- Message Outgoing Body
-- Color Selected Size
-- Key Pre Has
-- Emoji View Pager
-- Notification Notifications Message
-- Loader Media Activity
-- Context Requirement Network
-- Action Intent Service
-- Initialize Dialog Menu
-- Database Cursor Image
-- Permission Permissions Fragment
-- Prefix Wire Calculate
-- Notification Message Recipient
-- Service Handle Import
-- Requirement Provider Listener
-- Message Exchange Handle
-- Contact Photo Item
-- Create Bundle Conversation
-- Key Has Signature
-- Key Has Chain
-- View Loader Message
-- Last First Remove
-- Round Rect Config
-- Color Material Blue
-- Element Write Processor
-- Event Test Thread
-- Conversation Notification Null
-- Scan Options Verified
-- Recipient Cache Details
-- Message Multipart Sms
-- Recipients Editor Numbers
-- Handle Conversation Create
-- Dependency Injector Job
-- Passphrase Action Listener
-- Subscription Generate Keys
-- Permissions Request Execute
-- Subscription App Icc
-- Kyber Pre Session
-- Message Instance Generation
-- View Blocked Create
-- Click Listener View
-- Transport Options Adapter
-- Pre Key Signed
-- Preference Summary List
-- Ringtone Show Preference
-- First Last Remove
-- Content Listener Commit
-- Create View List
-- Bar Color Action
-- View Contacts Contact
-- Type Mime Thumbnail
-- Type Exchange Key
-- Intent Master Secret
-- Create Media Intent
-- Header View Decoration
-- State Listen Service
-- Bytes Context Thread
-- Emoji Drawable Provider
-- Item View Holder
-- Document Content Values
-- Locale Activity Create
-- Ringtone Dialog Type
-- Uri Provider Blob
-- Key Message Incoming
-- First Last Add
-- Status View Frame
-- Instance For Type
-- Previous Sessions Session
-- Connectivity Mms Network
-- Secret Passphrase Master
-- View Holder Header
-- Contact Selected View
-- Mac Body Cipher
-- Addresses For Mms
-- Lollipop Mms Connection
-- Bitmap Create Scaled
-- Character Calculator Calculate
-- Conversation View Stub
-- Log Activity Item
-- View Recycler Fast
-- Vibrate Recipient Preference
-- Listener Future Success
-- Notification Builder Display
-- Fingerprint Builder Local
-- Parser Has Iteration
-- Preference Click Listener
-- Transport Send Button
-- Transport Default Options
-- View Image Media
-- Statement Add Sqlite
-- Contact Data Parcel
-- Identity Verified View
-- Mmsc Notification Led
-- Progress View Event
-- Key Listener Event
-- Emoji Bitmap Page
-- Activity Override Menu
-- Identity Verified Display
-- Random Linux Prngsecure
-- Future Task Listener
-- Font Builder Bold
-- Fingerprint Builder Local
-- Accessor Table Clear
-- Test Legacy Envelope
-- List Database Reader
-- Content Database Providers
-- Conversation List Loader
-- Service State Listener
-- Mms Connection Send
-- Slide Image Gif
-- Identity Notification Action
-- Notification Item Pending
-- Preference Click Listener
-- Number Preferences Apn
-- Subscription Info Active
-- Dialog Click Create
-- Private Public Has
-- Builder For Type
-- Scanner Media Ringtone
-- Receiver Receive Context
-- Mms Connection Retrieve
-- Image Divet View
-- Provider Part File
-- View Emoji Grid
-- Network Failure List
-- Job Database Consumer
-- Content Parse From
-- Decode Stream Media
-- Untrusted Identity Message
-- Video Server Attachment
-- Draft Drafts Database
-- Region Decoder Bitmap
-- Sms Preference Outgoing
-- Key Activity Country
-- Dialog Error Mapping
-- Manager Attach Error
-- Max Output Size
-- Parse From Delimited
-- Linear Layout View
-- Cursor Contacts Database
-- Emoji Mapper Recent
-- Mms Reader For
-- Max Size Constraints
-- Uri Local Fetcher
-- Emoji Toggle Drawer
-- Bitmap Rounded Corners
-- Error Fragment Create
-- Job Serializer Override
-- Reader Mms Sms
-- Construct Intent Send
-- Item Attachment Type
-- Video Slide Has
-- Click Button Listener
-- Preference Preferences Click
-- File Mms Body
-- Builder Async Executor
-- Fingerprint Displayable Scannable
-- View Image Uri
-- Mms Notification Message
-- Read Initialize Cipher
-- Byte Array Little
-- Permissions Intent Notification
-- Adapter Recipients Cursor
-- Widget Provider Badge
-- Adapter Message Details
-- Adapter View Share
-- Color Drawable State
-- Drawable Generated Contact
-- Execution Scope Event
-- Save Attachment Task
-- Read Cipher Attachment
-- Preference Ledcolor List
-- Recipients Preferences Nullable
-- Preference Trim Listener
-- Destination Body For
-- Snackbar Async Task
-- Data Fetcher Source
-- Protocol Logger Provider
-- Mms Config Worker
-- Preference Fragment Corrected
-- Sms Manager Legacy
-- Emoji View Drawable
-- Node Next Itr
-- Progress Trimmer Trimming
-- Activity Exit Dummy
-- Adapter Intent Share
-- Popup Transport Options
-- Date Relative Time
-- View Removable Media
-- Conversation Update Item
-- Envelope Master Cipher
-- Message Sms Body
-- Max Size Mms
-- Preference List View
-- Preference Ringtone View
-- Max Test Size
-- Edit Text Emoji
-- Loader Cursor Identity
-- Passphrase Invalid Theme
-- Mms Receive Job
-- Manager Input Connectivity
-- Subscriber Jar Event
-- Builder For Type
-- Color Bar Unknown
-- Animating Toggle View
-- Drawable Bubble Builder
-- Emoji Static Page
-- Drawable Resource Contact
-- Recipient From Number
-- Sms Message Intent
-- Node Itr First
-- Device Subscriptions Sim
-- Column Cursor Projection
-- Key Djb Ecpublic
-- Type Public Key
-- Encrypting Part Output
-- Export Storage Directory
-- Plaintext Export Backup
-- Master Secret Job
-- Ringtone Advanced Preference
-- Application Job Manager
-- Builder For Type
-- Descriptor For Type
-- Uri Attachment Non
-- Type Fitzpatrick From
-- View Reminder Attribute
-- Mute Dialog Handle
-- Trim Thread Job
-- Incoming Lollipop Mms
-- Outgoing Lollipop Mms
-- Locale Changed Receiver
-- Preference Create Advanced
-- Listener Click Dialog
-- Res Drawable Context
-- Window Size Compat
-- Decoder Bitmap Attachment
-- Filter Emoji Input
-- Key Override Sender
-- Callback Simple Archive
-- Bitmap Contact Photo
-- Identity Key Parcelable
-- Hex Append Dump
-- Preference Switch Compat
-- Progress Dialog Async
-- Entry Lrucache Event
-- Key Djb Ecprivate
-- Identifier Fingerprint Mismatch
-- Transparent Contact Photo
-- Apn Database Default
-- Database Helper Execute
-- Status Context Sqlite
-- Part Uri Parser
-- Email Valid Number
-- Lifo Linked Blocking
-- Color Generator Create
-- Hex Condensed Libsignal
-- Context Master Secret
-- Context Media Network
-- Item Bundle Menu
-- Boot Receiver Receive
-- Message Incoming Encrypted
-- End Session Message
-- Map Test Hash
-- Log Submitted Listener
-- Scrubber Pattern Scrub
-- Descriptor For Type
-- Version Fingerprint Mismatch
-- Function Apply Equals
-- Rename Unicode Extracted
-- Array List Cursor
-- Rationale Dialog Builder
-- Recipients Number Parse
-- Span Bold Color
-- Gradlew Script Die
-- Context Intent Override
-- Witness Plugin Groovy
-- Fingerprint Parsing
-- Invalid Mac Libsignal
-- Supplier Components
-- Name And Number
-- Invalid Mac Crypto
-- External Storage
-- Context Sqlite Open
-- Apn Unavailable
-- Media Not Found
-- Media Too Large
-- Mms Radio
-- Duplicate Message
-- Session Components
-- Apply Patch Script
-- Witness Script
-- Copy Icons Script
-- Find Missing Strings
-- Fix Patch Script
-- Import Patch Script
-- Travis Upload Script
-- Such Message
-- Injectable Type
-- Mms Components
-- Recipient Formatting
-- Undeliverable Message
-- Red Phone Call
+- Log
+- Builder
+- Override
+- IdentityKeyPair
+- Slide
+- TestParams
+- ECPublicKey
+- ByteUtil
+- Test
+- RecipientsPreferences
+- SilencePreferences
+- Subscribe
+- AttachmentId
+- ConversationActivity
+- EventBus
+- .register
+- SenderKeyState
+- SenderKeyStateStructure
+- ByteString
+- DecryptableUri
+- SubscriberMethod
+- Job
+- SilenceSignalProtocolStore
+- OutgoingMediaMessage
+- SignalProtocolAddress
+- SessionRecord
+- Builder
+- .builder
+- AbstractEventBusTest
+- Silence Changelog
+- SignedPreKeyRecordStructure
+- OutgoingTextMessage
+- SessionStructureOrBuilder
+- ConversationFragment
+- MessageKey
+- MasterSecretUtil
+- ConversationAdapter
+- CursorRecyclerViewAdapter
+- Recipients
+- SmsDatabase
+- ImportExportFragment
+- Override
+- KeyboardAwareLinearLayout
+- ConversationListItem
+- Chain
+- JobManagerTest.java
+- SilenceStyleSignalProtocolStore
+- SecureBackupArchive
+- Recipient
+- MasterSecret
+- AttachmentManager
+- .updateNotification
+- BaseUnitTest
+- SubmitLogFragment
+- DatabaseUpgradeActivity
+- LinkedBlockingDeque
+- CanonicalAddressDatabase
+- RingtonePreferenceDialogFragmentCompat
+- .sendSingleThreadNotification
+- SenderKeyRecordStructure
+- CustomDefaultPreference
+- MessageRecord
+- AudioView
+- .importPlaintext
+- MmsDatabase
+- ConversationListFragment
+- .w
+- .newBuilder
+- RequirementListener
+- Preconditions
+- NotificationsPreferenceFragment
+- .insertMessageInbox
+- OnClickListener
+- EmojiDrawer
+- TaskHandle
+- MediaOverviewActivity
+- Message
+- MessageDetailsActivity
+- Reminder
+- IncomingTextMessage
+- .build
+- .onCreate
+- EmojiDrawInfo
+- RecipientPreferenceFragment
+- ThumbnailView
+- ThreadDatabase
+- Context
+- PassphrasePromptActivity
+- DisplayRecord
+- PendingPreKey
+- InputAwareLayout
+- MaterialColor
+- WirePrefix
+- VideoSlide
+- Argon2MasterSecretEnvelopeTest
+- IncomingKeyExchangeMessage
+- Base64
+- EmojiPageModel
+- SignalProtos
+- TelephonyServiceState.java
+- DatabaseMigrationActivity
+- .migrate
+- .getEncryptingSmsDatabase
+- .send
+- .onResume
+- MultipartSmsTransportMessage
+- BaseActionBarActivity
+- TextDrawable
+- TransferControlView.java
+- KeyScanningActivity
+- MediaPreviewActivity
+- RecipientProvider
+- CharacterCalculator
+- EventBusAnnotationProcessor
+- BlockedContactsFragment
+- .decrypt
+- VendoredPreKeyStore
+- ImageMediaAdapter.java
+- ApplicationMigrationService
+- RecipientsEditor
+- ErrorDialogFragmentFactory
+- KeyExchangeMessage
+- SenderKeyDistributionMessage
+- SendButton
+- ViewUtil
+- SenderSigningKey
+- NoKyberStore
+- AudioSlidePlayer
+- .decryptBytes
+- MasterCipher Versioned Envelope
+- JobManager
+- SenderKeyMessage
+- ContactPhoto
+- .addCustomExternalRingtone
+- Types
+- NotificationItem
+- RingtonePreference
+- ShareActivity
+- Deque
+- .startActivity
+- .retrieve
+- NetworkRequirement
+- DeleteNotificationReceiver.java
+- .generate
+- RestoredPreferencesTest
+- ContactSelectionListFragment.java
+- MediaUtil
+- SettableFuture
+- ConversationListAdapter
+- .send
+- ConversationAdapter.java
+- PassphraseRequiredActionBarActivity
+- MmsRadio
+- PermissionsBuilder
+- ResUtil
+- StickyHeaderDecoration
+- View
+- CountrySelectionFragment.java
+- Util
+- EmojiProvider.java
+- ContactSelectionListAdapter.java
+- ConversationListArchiveActivity
+- MessagingDatabase
+- MmsSmsDatabase
+- ShareFragment
+- BlockingDeque
+- SubscriptionInfoCompat
+- ComposeText
+- LogicalFingerprint
+- LegacyMmsConnection
+- ContactSelectionActivity
+- .getRemoteReplyIntent
+- IdentityKey
+- argon2.c
+- core.c
+- .finish
+- RecipientPreferenceDatabase
+- DeliveryStatusView
+- .getStringPreference
+- .getThreadDatabase
+- Node
+- Builder
+- VerifyIdentityActivity.java
+- MasterCipherEnvelope
+- MasterCipher
+- VendoredSessionStore
+- .migrateConversation
+- ColorPickerPreference
+- Graph Outputs
+- ThrowableFailureEvent
+- .getString
+- .sendMultipleThreadNotification
+- NoopContentProvider
+- AppProtectionPreferenceFragment
+- AbstractCursorLoader
+- OnPreferenceClickListener
+- .getOutgoingMessage
+- Permissions
+- BitmapUtil
+- PassphraseChangeActivity
+- PRNGFixes
+- ListenableFutureTask
+- .onLoadFinished
+- Builder
+- ECKeyPair
+- LogicalFingerprintOrBuilder
+- Override
+- .getMasterSecret
+- PersistentBlobProvider
+- ErrorDialogFragments.java
+- .d
+- .Builder
+- Parser
+- MmsCipher
+- .getMmsConfig
+- ColorPickerDialog
+- .restore
+- .from
+- .from
+- ConversationActivity.java
+- ImageDivet
+- PreKeySignalMessageOrBuilder
+- ContactsDatabase
+- Modern Android Auto Messaging Contract
+- OutgoingLegacyMmsConnection
+- ZoomingImageView
+- .getIntegerPreference
+- RepeatableImageKey
+- ContactAccessor
+- AttachmentRegionDecoder.java
+- blake2b.c
+- OutgoingSmsPreference.java
+- Overview
+- ErrorDialogConfig
+- Fragment
+- Override
+- ExtensionRegistryLite
+- RecentEmojiPageModel
+- .hashCode
+- Activity
+- .getTheme
+- Override
+- Reader
+- DecryptableStreamLocalUriFetcher.java
+- README.md
+- PartProvider.java
+- RecordingOperations
+- EmojiToggle
+- RoundedCorners.java
+- PersistentResult
+- RecipientsAdapter.java
+- Document
+- SingleUseBlobProvider.java
+- AttachmentTypeSelectorAdapter
+- SmsMmsPreferenceFragment
+- MmsBodyProvider
+- .buildPartial
+- BadgeWidgetProvider
+- AsymmetricMasterSecret
+- Java_org_smssecure_smssecure_crypto_Argon2id_deriveNative
+- encoding.c
+- EmojiSpan.java
+- Writer
+- DisplayableFingerprint
+- NotificationMmsMessageRecord
+- ApnDatabase
+- MediaConstraints
+- WelcomeActivity
+- BFS and DFS Graph Traversal
+- TransportOption
+- EmojiTextView.java
+- BaseActivity
+- ColorStateDrawable
+- .asDrawable
+- SmsReceiveJob
+- ConversationPopupActivity
+- Attachment
+- .getBaseHeaders
+- CompatMmsConnection
+- OutgoingLollipopMmsConnection.java
+- ChatsPreferenceFragment
+- .getNextIntent
+- SnackbarAsyncTask
+- ShareListAdapter.java
+- AttachmentStreamLocalUriFetcher
+- NetworkRequirementProvider
+- .Builder
+- ConversationScrollListener
+- CorrectedPreferenceFragment.java
+- IncomingLollipopMmsConnection.java
+- .onActionItemClicked
+- LEDColorListPreference
+- JobManager
+- Trimmer.java
+- BackupRecoveryKey
+- ShareIntentListAdapter.java
+- FileOutputStream
+- TransparentContactPhoto
+- LayoutParams
+- SignalProtocolLogger
+- TransportOptionsPopup
+- Service
+- CursorRecyclerViewAdapterTest.java
+- RemovableMediaView
+- .getPrimaryRecipient
+- ImageSlide.java
+- SilenceListPreference.java
+- SilenceRingtonePreference.java
+- TelephonyUtil
+- TestMediaConstraints
+- EmojiEditText.java
+- Bug.md
+- fill_segment
+- IdentityLoader.java
+- libpastelog
+- HkdfSha256.java
+- Gradle Witness
+- MaterialColor.java
+- FrameLayout
+- BubbleDrawableBuilder
+- StaticEmojiPageModel
+- ResourceContactPhoto.java
+- ConversationListItemAction.java
+- MediaType
+- IncomingMmsConnection
+- PlaintextBackupExporter.java
+- .isRelevant
+- DateUtils
+- CountryListLoader.java
+- blake2-impl.h
+- CONTRIBUTING.md
+- MultipartSmsIdentifier
+- CombinedFingerprints
+- TransportOptions
+- MasterSecretJob
+- AdvancedRingtonePreference
+- DynamicLanguage
+- .doWork
+- .onRun
+- .getCursor
+- EncryptionKeys
+- Merge Request.md
+- DeviceConsistencyCodeMessage
+- SignalMessageOrBuilder
+- com.amulyakhare.textdrawable/README.md
+- Fitzpatrick
+- ReminderView
+- ProjectionMappingCursor
+- MuteDialog
+- TrimThreadJob
+- WindowSizeCompat.java
+- argon2_thread_create
+- emoji-extractor/README.md
+- .getSummary
+- EmojiFilter.java
+- SquareLinearLayout.java
+- BitmapContactPhoto
+- IncomingXmppExchangeMessage
+- Hex
+- SwitchPreferenceCompat.java
+- ProgressDialogAsyncTask
+- DjbECPrivateKey
+- FingerprintIdentifierMismatchException
+- DatabaseHelper
+- LinkedBlockingLifoQueue
+- ColorGenerator
+- MediaNetworkRequirement
+- IncomingEncryptedMessage
+- IncomingEndSessionMessage
+- WorkerThread
+- ClassMapPerfTest
+- FingerprintProtos
+- FingerprintVersionMismatchException
+- Function
+- rename_to
+- ArrayListCursor
+- Status
+- FileProviderUtil.java
+- gradlew
+- WitnessPlugin.groovy
+- FingerprintParsingException
+- InvalidMacException
+- Supplier
+- NameAndNumber
+- ConversationSelectedListener
+- InvalidMacException
+- MediaNotFoundException
+- MediaTooLargeException
+- Localized Compatibility Fallback Policy
+- apply-patch.sh
+- build-witness.sh
+- copy-icons.sh
+- find-missing-strings.sh
+- fix-patch.sh
+- import-patch.sh
+- travis-upload.sh
+- InjectableType.java
+- RedPhoneCallTypes.java
 
 ## God Nodes (most connected - your core abstractions)
-1. `Builder` - 391 edges
-2. `MasterSecret` - 366 edges
-3. `Test` - 268 edges
-4. `Recipients` - 226 edges
-5. `Log` - 176 edges
-6. `IdentityKey` - 152 edges
-7. `SilencePreferences` - 129 edges
-8. `Builder` - 126 edges
-9. `ConversationActivity` - 124 edges
-10. `Recipient` - 120 edges
+1. `MasterSecret` - 404 edges
+2. `Builder` - 392 edges
+3. `Test` - 354 edges
+4. `Recipients` - 243 edges
+5. `SilencePreferences` - 187 edges
+6. `Log` - 175 edges
+7. `IdentityKey` - 155 edges
+8. `Recipient` - 138 edges
+9. `Builder` - 127 edges
+10. `ConversationActivity` - 124 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `ContextJob` --inherits--> `Job`  [EXTRACTED]
-  src/org/smssecure/smssecure/jobs/ContextJob.java → libs/org.whispersystems.jobmanager/src/main/java/org/whispersystems/jobqueue/Job.java
 - `TrimThreadJob` --inherits--> `Job`  [EXTRACTED]
   src/org/smssecure/smssecure/jobs/TrimThreadJob.java → libs/org.whispersystems.jobmanager/src/main/java/org/whispersystems/jobqueue/Job.java
 - `ApplicationContext` --references--> `JobManager`  [EXTRACTED]
@@ -422,1299 +435,1362 @@
   src/org/smssecure/smssecure/database/MmsDatabase.java → libs/org.whispersystems.jobmanager/src/main/java/org/whispersystems/jobqueue/JobManager.java
 - `SmsDatabase` --references--> `JobManager`  [EXTRACTED]
   src/org/smssecure/smssecure/database/SmsDatabase.java → libs/org.whispersystems.jobmanager/src/main/java/org/whispersystems/jobqueue/JobManager.java
+- `ContextJob` --implements--> `ContextDependent`  [EXTRACTED]
+  src/org/smssecure/smssecure/jobs/ContextJob.java → libs/org.whispersystems.jobmanager/src/main/java/org/whispersystems/jobqueue/dependencies/ContextDependent.java
 
 ## Import Cycles
 - None detected.
 
-## Communities (417 total, 71 thin omitted)
+## Hyperedges (group relationships)
+- **Graphify Extraction and Build Flow** — _agents_skills_graphify_skill_corpus_detection, _agents_skills_graphify_skill_structural_extraction, _agents_skills_graphify_skill_semantic_extraction, _agents_skills_graphify_skill_graph_build_and_clustering, _agents_skills_graphify_skill_graph_health_gate [EXTRACTED 1.00]
+- **Android API Modernization Program** — docs_android_api_deprecation_removal_plan_activity_result_modernization, docs_android_api_deprecation_removal_plan_edge_to_edge_modernization, docs_android_api_deprecation_removal_plan_connectivity_mms_split, docs_android_api_deprecation_removal_plan_telephony_modernization, docs_android_api_deprecation_removal_plan_notification_modernization [EXTRACTED 1.00]
+- **Local Crypto Staged Migration** — docs_local_crypto_modernization_plan_master_cipher_envelope, docs_local_crypto_modernization_plan_aes_256_gcm_field_crypto, docs_local_crypto_modernization_plan_native_argon2id, docs_local_crypto_modernization_plan_atomic_master_secret_migration, docs_local_crypto_modernization_plan_keystore_layered_protection [EXTRACTED 1.00]
 
-### Community 0 - "Activity Fragment Sms"
+## Communities (430 total, 67 thin omitted)
+
+### Community 0 - "Log"
 Cohesion: 0.05
-Nodes (27): AlertDialog, AppCompatActivity, Attachment, AudioManager, BroadcastReceiver, FileInputStream, FileOutputStream, Fragment (+19 more)
+Nodes (36): EditorInfo, JobParameters, Requirement, DuplicateMessageException, Log, NoSessionException, StaleKeyExchangeException, UntrustedIdentityException (+28 more)
 
-### Community 1 - "Key Clear Sender"
+### Community 1 - "Builder"
 Cohesion: 0.03
 Nodes (4): Builder, SingleFieldBuilderV3, UnknownFieldSet, RepeatedFieldBuilderV3
 
-### Community 2 - "Sender Key Builder"
-Cohesion: 0.02
-Nodes (13): DeviceConsistencyCodeMessageOrBuilder, Descriptor, Parser, SenderChainKey, SenderChainKeyOrBuilder, SenderKeyRecordStructure, SenderKeyRecordStructureOrBuilder, SenderKeyStateStructure (+5 more)
-
-### Community 3 - "Test Dummy Event"
-Cohesion: 0.02
-Nodes (40): Bus, Constructor, Field, Activity, TestEvent, TestParams, Context, TestRunner (+32 more)
-
-### Community 4 - "Key Has Local"
+### Community 2 - "Override"
 Cohesion: 0.03
-Nodes (8): ChainKey, CodedOutputStream, FieldAccessorTable, FieldDescriptor, OneofDescriptor, Override, MessageKey, PendingKeyExchange
+Nodes (7): CodedOutputStream, FieldAccessorTable, FieldDescriptor, OneofDescriptor, Override, RecordStructure, SessionStructure
 
-### Community 5 - "Key Chain Message"
+### Community 3 - "IdentityKeyPair"
+Cohesion: 0.06
+Nodes (8): IdentityKeyPair, AliceSignalProtocolParameters, Builder, BobSignalProtocolParameters, Builder, RatchetingSession, Builder, SymmetricSignalProtocolParameters
+
+### Community 4 - "Slide"
+Cohesion: 0.10
+Nodes (13): RequestBuilder, Bitmap, Drawable, Uri, ThumbnailClickListener, Context, DrawableRes, NonNull (+5 more)
+
+### Community 5 - "TestParams"
+Cohesion: 0.03
+Nodes (36): Bus, Field, ThreadMode, ASYNC, BACKGROUND, MAIN, POSTING, TestEvent (+28 more)
+
+### Community 6 - "ECPublicKey"
 Cohesion: 0.04
 Nodes (21): ECPublicKey, DerivedMessageSecrets, IvParameterSpec, SecretKeySpec, DerivedRootSecrets, HKDF, HKDFv2, Override (+13 more)
 
-### Community 6 - "List Item View"
+### Community 7 - "ByteUtil"
+Cohesion: 0.06
+Nodes (6): DjbECPublicKey, Override, Override, SenderKeyMessage, SecretKeySpec, ByteUtil
+
+### Community 8 - "Test"
 Cohesion: 0.03
-Nodes (45): IconCompat, RelativeLayout, Spannable, BindableConversationListItem, AvatarImageView, AttributeSet, Context, Handler (+37 more)
+Nodes (27): Context, Test, TestFinishedEvent, EventBusOrderedSubscriptionsTest, EventBusStickyEventTest, NonStickySubscriber, RemoveStickySubscriber, StickyIntTestSubscriber (+19 more)
 
-### Community 7 - "Identity Key Byte"
+### Community 9 - "RecipientsPreferences"
+Cohesion: 0.18
+Nodes (9): fromId(), NonNull, Nullable, Uri, RecipientsPreferences, VibrateState, DEFAULT, DISABLED (+1 more)
+
+### Community 11 - "Subscribe"
 Cohesion: 0.03
-Nodes (24): FingerprintGenerator, Override, NumericFingerprintGenerator, IdentityKey, SignalMessage, Override, SecretKeySpec, SignalMessage (+16 more)
+Nodes (32): Documented, NoSubscriberEvent, Retention, Subscribe, Subscriber, EventBusFallbackToReflectionTest, PrivateClass, PrivateEvent (+24 more)
 
-### Community 8 - "Test Sticky Event"
+### Community 12 - "AttachmentId"
+Cohesion: 0.07
+Nodes (21): AttachmentId, Override, DatabaseAttachment, NonNull, Override, Uri, AttachmentDatabase, Context (+13 more)
+
+### Community 13 - "ConversationActivity"
+Cohesion: 0.07
+Nodes (12): OnBackPressedCallback, ConversationActivity, ActivityResult, ActivityResultLauncher, BroadcastReceiver, Bundle, Button, Configuration (+4 more)
+
+### Community 14 - "EventBus"
 Cohesion: 0.03
-Nodes (26): Context, Test, TestFinishedEvent, WithIndex, EventBusOrderedSubscriptionsTest, EventBusStickyEventTest, NonStickySubscriber, RemoveStickySubscriber (+18 more)
+Nodes (38): Constructor, Entry, Handler, AsyncPoster, Override, BackgroundPoster, Override, EventBus (+30 more)
 
-### Community 9 - "Event Test Subscriber"
-Cohesion: 0.04
-Nodes (28): Documented, NoSubscriberEvent, Retention, Subscribe, Subscriber, EventBusFallbackToReflectionTest, PrivateClass, PrivateEvent (+20 more)
-
-### Community 11 - "Test Job Requirement"
-Cohesion: 0.04
-Nodes (22): Before, Context, RunWith, JobManagerTest, Override, PersistentTestJob, Override, RequirementDeferringTestJob (+14 more)
-
-### Community 12 - "Recipient Group Selected"
-Cohesion: 0.04
-Nodes (35): ContextMenuInfo, RecipientContextMenuInfo, Context, NotInDirectoryException, AddRecipientButtonListener, GroupCreateActivity, ActivityResultLauncher, Bitmap (+27 more)
-
-### Community 13 - "Key Pre Session"
+### Community 15 - ".register"
 Cohesion: 0.06
-Nodes (22): CurveTest, InvalidKeyIdException, CiphertextMessage, SessionBuilder, Cipher, IvParameterSpec, SecretKeySpec, SessionCipher (+14 more)
+Nodes (32): CharSequenceSubscriber, EventBusBasicTest, Before, RunWith, UiThreadTest, MyEvent, MyEventExtended, ObjectSubscriber (+24 more)
 
-### Community 14 - "Recipients Panel Listener"
+### Community 16 - "SenderKeyState"
 Cohesion: 0.04
-Nodes (29): OnFocusChangeListener, BindableConversationItem, FocusChangedListener, AttributeSet, Context, Override, View, PushRecipientsPanel (+21 more)
+Nodes (21): DecryptionCallback, GroupCipher, Override, NullDecryptionCallback, GroupSessionBuilder, SenderMessageKey, SenderChainKey, SenderMessageKey (+13 more)
 
-### Community 15 - "Event Test Subscriber"
-Cohesion: 0.06
-Nodes (31): CharSequenceSubscriber, EventBusBasicTest, Before, RunWith, UiThreadTest, MyEvent, MyEventExtended, ObjectSubscriber (+23 more)
-
-### Community 16 - "Key Sender Message"
+### Community 17 - "SenderKeyStateStructure"
 Cohesion: 0.04
-Nodes (22): DecryptionCallback, GroupCipher, Override, NullDecryptionCallback, GroupSessionBuilder, SenderMessageKey, SenderChainKey, SenderMessageKey (+14 more)
+Nodes (6): SenderChainKeyOrBuilder, SenderKeyRecordStructureOrBuilder, SenderKeyStateStructure, SenderKeyStateStructureOrBuilder, SenderMessageKeyOrBuilder, SenderSigningKeyOrBuilder
 
-### Community 17 - "Key Identity Generate"
-Cohesion: 0.06
-Nodes (10): Curve, ECPrivateKey, KeyHelper, EcKeyCrossLibraryTest, OldToNewKeyRecordsTest, AsymmetricMasterCipher, SecretKeySpec, AsymmetricMasterSecret (+2 more)
-
-### Community 18 - "Key Session Pre"
-Cohesion: 0.06
-Nodes (18): SenderKeyRecord, SignalProtocolAddress, Direction, RECEIVING, SENDING, Context, Override, SilenceIdentityKeyStore (+10 more)
-
-### Community 19 - "Event Post Poster"
+### Community 18 - "ByteString"
 Cohesion: 0.05
-Nodes (19): Handler, AsyncPoster, Override, BackgroundPoster, Override, EventBus, BackgroundPoster, Override (+11 more)
+Nodes (7): ByteBuffer, ByteString, CodedInputStream, ExtensionRegistryLite, PendingKeyExchange, PendingKeyExchangeOrBuilder, SignedPreKeyRecordStructureOrBuilder
 
-### Community 20 - "Handle Initialize Conversation"
-Cohesion: 0.06
-Nodes (14): OnBackPressedCallback, ConversationActivity, ActivityResult, ActivityResultLauncher, BroadcastReceiver, Bundle, Button, Configuration (+6 more)
-
-### Community 21 - "Uri Loader Factory"
+### Community 19 - "DecryptableUri"
 Cohesion: 0.06
 Nodes (41): AppGlideModule, DiskCache, Factory, GlideBuilder, GlideModule, ModelLoader, ModelLoaderFactory, Registry (+33 more)
 
-### Community 22 - "Key Pre Identity"
+### Community 20 - "SubscriberMethod"
 Cohesion: 0.05
-Nodes (10): KeyExchangeMessage, Override, PreKeySignalMessage, StaleKeyExchangeException, PreKeyBundle, SessionRecord, Override, SuppressWarnings (+2 more)
+Nodes (16): EventBusBuilder, EventBusException, AbstractSubscriberInfo, Override, Override, SimpleSubscriberInfo, SubscriberInfo, SubscriberInfoIndex (+8 more)
 
-### Community 23 - "Key Identity Our"
+### Community 21 - "Job"
 Cohesion: 0.06
-Nodes (12): ECKeyPair, Override, IdentityKeyPair, AliceSignalProtocolParameters, Builder, BobSignalProtocolParameters, Builder, RatchetingSession (+4 more)
+Nodes (11): WakeLock, Job, Override, JobConsumer, JobResult, DEFERRED, FAILURE, SUCCESS (+3 more)
 
-### Community 24 - "Attachment Uri Stream"
-Cohesion: 0.06
-Nodes (22): AttachmentId, Override, DatabaseAttachment, NonNull, Override, Uri, AttachmentDatabase, Context (+14 more)
-
-### Community 25 - "Parse From Key"
+### Community 22 - "SilenceSignalProtocolStore"
 Cohesion: 0.05
-Nodes (7): IdentityKeyPairStructureOrBuilder, ByteBuffer, ByteString, CodedInputStream, ExtensionRegistryLite, PendingKeyExchangeOrBuilder, SignedPreKeyRecordStructureOrBuilder
+Nodes (15): Context, FileChannel, FileInputStream, Override, SilencePreKeyStore, Context, FileChannel, FileInputStream (+7 more)
 
-### Community 26 - "Override Activity Sms"
-Cohesion: 0.05
-Nodes (32): Pair, Creator, Override, Parcel, MasterSecret, Context, Override, KeyExchangeSessionStore (+24 more)
+### Community 23 - "OutgoingMediaMessage"
+Cohesion: 0.11
+Nodes (9): Context, EncodedStringValue, Override, PduPart, SendConf, SendReq, MmsSendJob, MmsSendResult (+1 more)
 
-### Community 27 - "Subscriber Info Event"
+### Community 24 - "SignalProtocolAddress"
+Cohesion: 0.04
+Nodes (29): InvalidKeyIdException, SessionBuilder, SessionCipher, SignalProtocolAddress, Direction, RECEIVING, SENDING, IdentityKeyStore (+21 more)
+
+### Community 25 - "SessionRecord"
 Cohesion: 0.06
-Nodes (20): EventBusException, AbstractSubscriberInfo, Override, Override, SimpleSubscriberInfo, SubscriberInfo, SubscriberInfoIndex, SubscriberMethodInfo (+12 more)
+Nodes (11): KeyExchangeMessage, SignalMessage, PreKeyBundle, SessionRecord, SuppressWarnings, KeyHelper, EcKeyCrossLibraryTest, NewLibraryV3RoundTripTest (+3 more)
 
-### Community 28 - "Key Clear Has"
+### Community 26 - "Builder"
 Cohesion: 0.05
 Nodes (5): Builder, ByteString, FieldDescriptor, OneofDescriptor, UnknownFieldSet
 
-### Community 29 - "Event Test Bus"
-Cohesion: 0.05
-Nodes (23): AbstractEventBusTest, EventPostHandler, Before, Looper, Override, RunWith, SuppressLint, EventBusBackgroundThreadTest (+15 more)
-
-### Community 30 - "Loader Cursor Country"
-Cohesion: 0.06
-Nodes (31): AsyncTaskLoader, ForceLoadContentObserver, CountrySelectedListener, CountrySelectionFragment, FilterWatcher, Bundle, Context, Editable (+23 more)
-
-### Community 32 - "Key Has Private"
-Cohesion: 0.06
-Nodes (6): ExtensionRegistry, FileDescriptor, PreKeyRecordStructure, PreKeyRecordStructureOrBuilder, SignedPreKeyRecordStructure, StorageProtos
-
-### Community 33 - "Media Message Slide"
-Cohesion: 0.05
-Nodes (18): Attachment, Bitmap, NonNull, Nullable, Uri, Context, NonNull, Override (+10 more)
-
-### Community 34 - "View Action Conversation"
-Cohesion: 0.07
-Nodes (21): Callback, ActionModeCallback, ConversationFragment, ConversationFragmentListener, ActionMode, AlertDialog, Bundle, Context (+13 more)
-
-### Community 35 - "Builder Has Key"
-Cohesion: 0.04
-Nodes (3): ChainOrBuilder, RecordStructureOrBuilder, SessionStructureOrBuilder
-
-### Community 36 - "Job Wake Lock"
-Cohesion: 0.07
-Nodes (6): EncryptionKeys, WakeLock, Job, Override, JobParameters, JobQueue
-
-### Community 37 - "Key Has Accessor"
-Cohesion: 0.07
-Nodes (5): CodedOutputStream, FieldAccessorTable, Override, PreKeySignalMessage, SignalMessage
-
-### Community 38 - "View Cursor Header"
-Cohesion: 0.10
-Nodes (18): Adapter, DataSetObserver, AdapterDataSetObserver, CursorRecyclerViewAdapter, HeaderFooterViewHolder, Context, Cursor, NonNull (+10 more)
-
-### Community 39 - "Event Subscriber Test"
+### Community 27 - ".builder"
 Cohesion: 0.06
 Nodes (21): EventBusBuilderTest, NoSubscriberEventTracker, SubscriberExceptionEventTracker, ThrowingSubscriber, EventBusGenericsTest, FullGenericEventSubscriber, GenericEvent, GenericEventSubscriber (+13 more)
 
-### Community 40 - "Test Number Format"
-Cohesion: 0.05
-Nodes (18): MockedConstruction, MockedStatic, PhoneNumberFormatter, Rfc5724Uri, BaseUnitTest, After, Context, Handler (+10 more)
-
-### Community 41 - "Mark Messages Message"
-Cohesion: 0.06
-Nodes (4): Cursor, Reader, SmsDatabase, Status
-
-### Community 42 - "Key Has Builder"
-Cohesion: 0.05
-Nodes (3): Chain, ChainKeyOrBuilder, MessageKeyOrBuilder
-
-### Community 43 - "Pre Key Session"
-Cohesion: 0.10
-Nodes (11): StorageFileLock, Context, FileChannel, FileInputStream, Override, VendoredPreKeyStore, Context, FileChannel (+3 more)
-
-### Community 44 - "Pre Key Store"
-Cohesion: 0.08
-Nodes (9): InMemoryPreKeyStore, Override, InMemorySessionStore, Override, InMemorySignalProtocolStore, Override, InMemorySignedPreKeyStore, Override (+1 more)
-
-### Community 45 - "Keyboard Input Layout"
-Cohesion: 0.08
-Nodes (14): LinearLayoutCompat, InputAwareLayout, InputView, AttributeSet, Context, EditText, Override, AttributeSet (+6 more)
-
-### Community 46 - "Audio Slide Progress"
-Cohesion: 0.08
-Nodes (17): MediaPlayer, AudioSlidePlayer, Context, Handler, NonNull, Override, WeakReference, Listener (+9 more)
-
-### Community 47 - "Identity Key Sms"
-Cohesion: 0.06
-Nodes (22): DeserializationContext, JsonDeserializer, JsonGenerator, JsonParser, JsonSerializer, SerializerProvider, IdentityKeyDeserializer, IdentityKeyMismatch (+14 more)
-
-### Community 48 - "Key Has Message"
+### Community 28 - "AbstractEventBusTest"
 Cohesion: 0.04
-Nodes (6): FileDescriptor, KeyExchangeMessageOrBuilder, PreKeySignalMessageOrBuilder, SenderKeyDistributionMessageOrBuilder, SignalMessageOrBuilder, SignalProtos
+Nodes (28): AbstractEventBusTest, EventPostHandler, Before, Looper, RunWith, SuppressLint, EventBusBackgroundThreadTest, EventBusCancelEventDeliveryTest (+20 more)
 
-### Community 49 - "View Scroll Header"
-Cohesion: 0.08
-Nodes (19): OnScrollListener, AttributeSet, Context, ConversationDateHeader, ConversationScrollListener, Animation, RecyclerView, Override (+11 more)
+### Community 29 - "Silence Changelog"
+Cohesion: 0.04
+Nodes (52): [0.10.1] - 2015-07-16, [0.11.0] - 2015-09-15, [0.11.3] - 2015-09-23, [0.12.1] - 2015-10-07, [0.12.3] - 2015-10-08, [0.13.0] - 2015-12-23, [0.13.1] - 2016-01-20, [0.13.2] - 2016-02-07 (+44 more)
 
-### Community 50 - "Upgrade Version Progress"
-Cohesion: 0.08
-Nodes (16): Context, DatabaseUpgradeActivity, DatabaseUpgradeListener, Bundle, Context, Handler, Override, ProgressBar (+8 more)
+### Community 30 - "SignedPreKeyRecordStructure"
+Cohesion: 0.04
+Nodes (9): IdentityKeyPairStructure, IdentityKeyPairStructureOrBuilder, Descriptor, ExtensionRegistry, FileDescriptor, PreKeyRecordStructure, PreKeyRecordStructureOrBuilder, SignedPreKeyRecordStructure (+1 more)
 
-### Community 51 - "Key Exchange Message"
+### Community 31 - "OutgoingTextMessage"
+Cohesion: 0.07
+Nodes (12): Override, SmsMessageRecord, Context, Intent, Override, PendingIntent, SmsSendJob, Override (+4 more)
+
+### Community 32 - "SessionStructureOrBuilder"
+Cohesion: 0.02
+Nodes (7): DeviceConsistencyCodeMessageOrBuilder, ChainOrBuilder, MessageKeyOrBuilder, PendingPreKeyOrBuilder, RecordStructureOrBuilder, SessionStructureOrBuilder, MessageOrBuilder
+
+### Community 33 - "ConversationFragment"
+Cohesion: 0.13
+Nodes (8): ConversationFragment, ConversationFragmentListener, AlertDialog, Bundle, ItemDecoration, LayoutInflater, View, ViewGroup
+
+### Community 35 - "MasterSecretUtil"
+Cohesion: 0.06
+Nodes (22): GeneralSecurityException, KeyStore, AutomaticBackupManager, Context, SharedPreferences, Uri, AndroidKeystoreKeyManager, Context (+14 more)
+
+### Community 36 - "ConversationAdapter"
 Cohesion: 0.09
-Nodes (3): MessageRecord, SpannableString, Context
+Nodes (18): ConversationAdapter, HeaderViewHolder, Cursor, LayoutInflater, MessageDigest, Override, RecyclerView, SoftReference (+10 more)
 
-### Community 52 - "Message Sms Incoming"
-Cohesion: 0.12
-Nodes (8): Override, SmsMessage, SmsReceiveJob, IncomingTextMessage, Creator, Override, Parcel, SmsMessage
+### Community 37 - "CursorRecyclerViewAdapter"
+Cohesion: 0.11
+Nodes (14): Adapter, DataSetObserver, AdapterDataSetObserver, CursorRecyclerViewAdapter, HeaderFooterViewHolder, Context, Cursor, NonNull (+6 more)
 
-### Community 53 - "Send Message Mms"
+### Community 38 - "Recipients"
+Cohesion: 0.02
+Nodes (63): BaseAdapter, OnFocusChangeListener, RelativeLayout, AvatarImageView, AttributeSet, Context, Handler, FromTextView (+55 more)
+
+### Community 39 - "SmsDatabase"
+Cohesion: 0.06
+Nodes (5): Context, Cursor, SQLiteOpenHelper, Reader, SmsDatabase
+
+### Community 40 - "ImportExportFragment"
 Cohesion: 0.10
-Nodes (11): Context, EncodedStringValue, Override, PduPart, SendConf, SendReq, MmsSendJob, MmsSendResult (+3 more)
+Nodes (14): NoExternalStorageException, ImportExportFragment, Activity, ActivityResultLauncher, AlertDialog, Bundle, LayoutInflater, Override (+6 more)
 
-### Community 54 - "Address Canonical Test"
+### Community 41 - "Override"
+Cohesion: 0.06
+Nodes (6): CodedOutputStream, FieldAccessorTable, Override, Parser, PreKeySignalMessage, SignalMessage
+
+### Community 42 - "KeyboardAwareLinearLayout"
+Cohesion: 0.14
+Nodes (7): LinearLayoutCompat, AttributeSet, Context, Override, Rect, KeyboardAwareLinearLayout, OnKeyboardHiddenListener
+
+### Community 43 - "ConversationListItem"
+Cohesion: 0.05
+Nodes (19): BindableConversationListItem, ItemClickListener, ConversationListItem, AttributeSet, Context, Handler, Override, TextView (+11 more)
+
+### Community 44 - "Chain"
+Cohesion: 0.05
+Nodes (3): Chain, ChainKey, ChainKeyOrBuilder
+
+### Community 45 - "JobManagerTest.java"
+Cohesion: 0.10
+Nodes (13): Before, Context, RunWith, JobManagerTest, Override, RequirementDeferringTestJob, Override, MockRequirement (+5 more)
+
+### Community 46 - "SilenceStyleSignalProtocolStore"
+Cohesion: 0.11
+Nodes (6): Override, SilenceIdentityChangeTest, IdentityChange, KyberPreKeyRecord, Override, SilenceStyleSignalProtocolStore
+
+### Community 47 - "SecureBackupArchive"
+Cohesion: 0.15
+Nodes (5): Pattern, SecureBackupArchive, ZipEntry, ZipInputStream, ZipOutputStream
+
+### Community 48 - "Recipient"
+Cohesion: 0.03
+Nodes (41): ContextMenuInfo, ImageButton, RecipientContextMenuInfo, ConversationTitleView, AttributeSet, Context, TextView, NotInDirectoryException (+33 more)
+
+### Community 49 - "MasterSecret"
+Cohesion: 0.05
+Nodes (27): ServerSocket, AttachmentServer, Context, Uri, RestoredPreferences, Creator, Override, Parcel (+19 more)
+
+### Community 50 - "AttachmentManager"
+Cohesion: 0.13
+Nodes (11): AttachmentListener, AttachmentManager, createSlide(), Context, NonNull, Nullable, Override, Uri (+3 more)
+
+### Community 51 - ".updateNotification"
+Cohesion: 0.20
+Nodes (7): Context, Cursor, Intent, Notification, Override, MessageNotifier, ReminderReceiver
+
+### Community 52 - "BaseUnitTest"
+Cohesion: 0.06
+Nodes (14): MockedConstruction, MockedStatic, RecipientsFormatter, PhoneNumberFormatter, Rfc5724Uri, BaseUnitTest, After, Context (+6 more)
+
+### Community 53 - "SubmitLogFragment"
+Cohesion: 0.08
+Nodes (20): AlertDialog, Bundle, Button, Context, EditText, Handler, Intent, LayoutInflater (+12 more)
+
+### Community 54 - "DatabaseUpgradeActivity"
+Cohesion: 0.14
+Nodes (10): DatabaseUpgradeActivity, DatabaseUpgradeListener, Bundle, Context, Handler, Override, ProgressBar, WeakReference (+2 more)
+
+### Community 55 - "LinkedBlockingDeque"
+Cohesion: 0.14
+Nodes (4): AbstractQueue, Condition, ReentrantLock, LinkedBlockingDeque
+
+### Community 56 - "CanonicalAddressDatabase"
 Cohesion: 0.09
 Nodes (15): Instrumentation, CanonicalAddressDatabase, DatabaseHelper, Context, CursorFactory, NonNull, Override, SQLiteDatabase (+7 more)
 
-### Community 55 - "Custom Validator Text"
+### Community 57 - "RingtonePreferenceDialogFragmentCompat"
+Cohesion: 0.14
+Nodes (9): ActivityResult, ActivityResultLauncher, Builder, Bundle, Cursor, Dialog, Intent, NonNull (+1 more)
+
+### Community 58 - ".sendSingleThreadNotification"
+Cohesion: 0.23
+Nodes (7): Action, Builder, Drawable, Notification, Override, PendingIntent, SingleRecipientNotificationBuilder
+
+### Community 59 - "SenderKeyRecordStructure"
+Cohesion: 0.08
+Nodes (3): SuppressWarnings, UnusedPrivateParameter, SenderKeyRecordStructure
+
+### Community 60 - "CustomDefaultPreference"
 Cohesion: 0.08
 Nodes (20): OnItemSelectedListener, CustomDefaultPreference, CustomDefaultPreferenceDialogFragmentCompat, CustomPreferenceValidator, HostnameValidator, AdapterView, AttributeSet, Bundle (+12 more)
 
-### Community 56 - "Legacy Mms Connection"
-Cohesion: 0.09
-Nodes (19): Headers, Proxy, IncomingLegacyMmsConnection, Context, Nullable, Override, Request, RetrieveConf (+11 more)
+### Community 61 - "MessageRecord"
+Cohesion: 0.04
+Nodes (29): GridLayoutManager, LinearLayout, BindableConversationItem, ItemClickListener, ConversationItem, AttributeSet, Button, Context (+21 more)
 
-### Community 57 - "Body Display Spannable"
-Cohesion: 0.06
-Nodes (9): Body, DisplayRecord, Context, SpannableString, SpannableString, Override, SpannableString, Override (+1 more)
-
-### Community 58 - "Listener View Touch"
+### Community 62 - "AudioView"
 Cohesion: 0.10
-Nodes (19): Listener, OnSeekBarChangeListener, OnTouchListener, SeekBar, AudioView, DownloadClickedListener, AttributeSet, CircularProgressIndicator (+11 more)
+Nodes (18): Listener, OnSeekBarChangeListener, OnTouchListener, SeekBar, AudioView, AttributeSet, CircularProgressIndicator, Context (+10 more)
 
-### Community 59 - "Session Menu Title"
-Cohesion: 0.09
-Nodes (7): Menu, ConversationTitleView, TextView, Context, SessionUtil, AutoInitiate, Context
+### Community 63 - ".importPlaintext"
+Cohesion: 0.12
+Nodes (9): Context, SQLiteStatement, Uri, PlaintextBackupImporter, SQLiteDatabase, SQLiteStatement, XmlBackup, XmlBackupItem (+1 more)
 
-### Community 60 - "Uri Slide Has"
-Cohesion: 0.11
-Nodes (13): RequestBuilder, Bitmap, Drawable, Uri, ThumbnailClickListener, Context, DrawableRes, NonNull (+5 more)
+### Community 64 - "MmsDatabase"
+Cohesion: 0.10
+Nodes (7): SuppressWarnings, ContentValues, Override, MmsDatabase, MmsNotificationInfo, Override, MmsDownloadJob
 
-### Community 61 - "Task Callback Executor"
-Cohesion: 0.09
-Nodes (13): PendingFutureTask, AppTaskExecutor, FailureCallback, Holder, Override, NamedThreadFactory, SuccessCallback, TaskHandle (+5 more)
-
-### Community 62 - "Mark Mms Delete"
-Cohesion: 0.11
-Nodes (6): ContentValues, Override, MmsDatabase, MmsNotificationInfo, Override, MmsDownloadJob
-
-### Community 63 - "Backup Handle Plaintext"
-Cohesion: 0.11
-Nodes (13): ImportExportFragment, Activity, ActivityResultLauncher, AlertDialog, Bundle, LayoutInflater, Override, SuppressLint (+5 more)
-
-### Community 64 - "Event Test Bus"
-Cohesion: 0.06
-Nodes (16): EventBusCancelEventDeliveryTest, UiThreadTest, SubscriberCancelOtherEvent, SubscriberMainThread, EventBusRegistrationRacingTest, Override, SubscriberThread, EventBusBasicTestWithIndex (+8 more)
-
-### Community 65 - "Key Pre Identity"
-Cohesion: 0.11
-Nodes (5): SilenceIdentityChangeTest, IdentityChange, KyberPreKeyRecord, Override, SilenceStyleSignalProtocolStore
-
-### Community 66 - "Click Listener Item"
+### Community 65 - "ConversationListFragment"
 Cohesion: 0.08
-Nodes (18): OnLongClickListener, ItemClickListener, ConversationFragmentItemClickListener, ClickListener, ConversationItem, AttributeSet, Button, Context (+10 more)
+Nodes (20): FloatingActionButton, SimpleCallback, ArchiveListenerCallback, ConversationListFragment, ActionMode, ActivityResultLauncher, AlertDialog, Bundle (+12 more)
 
-### Community 67 - "View Text Span"
-Cohesion: 0.08
-Nodes (22): AppCompatTextView, BufferType, FontMetricsInt, ImageSpan, AnimatedDotsView, AttributeSet, Context, Handler (+14 more)
+### Community 66 - ".w"
+Cohesion: 0.11
+Nodes (11): Binder, DialogInterface, Override, Context, IBinder, Intent, Notification, Override (+3 more)
 
-### Community 68 - "Action View Handle"
-Cohesion: 0.10
-Nodes (16): FloatingActionButton, ConversationListFragment, ActionMode, ActivityResultLauncher, AlertDialog, Bundle, Cursor, Intent (+8 more)
+### Community 67 - ".newBuilder"
+Cohesion: 0.11
+Nodes (7): RequirementTestJob, Override, TestJob, Context, Context, Context, Context
 
-### Community 69 - "View Log Dialog"
-Cohesion: 0.10
-Nodes (17): AlertDialog, Bundle, Button, Context, EditText, Handler, Intent, LayoutInflater (+9 more)
-
-### Community 70 - "Key Message Invalid"
+### Community 68 - "RequirementListener"
 Cohesion: 0.09
-Nodes (7): InvalidKeyException, InvalidMessageException, InvalidVersionException, LegacyMessageException, Parcelable, Context, SQLiteOpenHelper
+Nodes (17): Override, RequirementListener, RequirementProvider, BroadcastReceiver, Context, Override, MasterSecretRequirementProvider, Override (+9 more)
 
-### Community 71 - "Check Present Index"
+### Community 69 - "Preconditions"
 Cohesion: 0.09
 Nodes (6): Absent, Override, SuppressWarnings, Preconditions, Override, Present
 
-### Community 72 - "Thread Conversation Delete"
-Cohesion: 0.11
-Nodes (5): DistributionTypes, Nullable, Uri, ProgressListener, ThreadDatabase
-
-### Community 73 - "Message Media Pdu"
-Cohesion: 0.10
-Nodes (11): SuppressLint, EncodedStringValue, PduBody, IncomingMediaMessage, PduBody, PduPart, PartParser, NonNull (+3 more)
-
-### Community 74 - "Xml Statement Plaintext"
-Cohesion: 0.11
-Nodes (10): Context, SQLiteStatement, Uri, PlaintextBackupImporter, Override, Pattern, Writer, XmlBackup (+2 more)
-
-### Community 75 - "Service Foreground Handle"
+### Community 70 - "NotificationsPreferenceFragment"
 Cohesion: 0.13
-Nodes (9): Binder, Context, IBinder, Intent, Notification, Override, PendingIntent, KeyCachingService (+1 more)
+Nodes (15): OnPreferenceChangeListener, AppearancePreferenceFragment, Bundle, Override, ListPreference, Override, Preference, ListSummaryListener (+7 more)
 
-### Community 76 - "File Encode Decode"
-Cohesion: 0.09
-Nodes (9): CharBuffer, ClassLoader, FilterInputStream, FilterOutputStream, Base64, InputStream, ByteBuffer, Override (+1 more)
-
-### Community 77 - "Instance Key Structure"
-Cohesion: 0.09
-Nodes (3): IdentityKeyPairStructure, SuppressWarnings, UnusedPrivateParameter
-
-### Community 78 - "Reminder Listener Sms"
-Cohesion: 0.09
-Nodes (13): DefaultSmsReminder, ActivityResultLauncher, Context, Intent, DeliveryReportsReminder, Context, OnClickListener, Reminder (+5 more)
-
-### Community 79 - "Select Attachment Slide"
+### Community 71 - ".insertMessageInbox"
 Cohesion: 0.13
-Nodes (14): AttachmentListener, AttachmentManager, createSlide(), Activity, ActivityResultLauncher, Context, Intent, NonNull (+6 more)
+Nodes (8): SuppressLint, EncodedStringValue, PduBody, IncomingMediaMessage, PduBody, PduPart, PartParser, NonNull
 
-### Community 80 - "View Holder Header"
-Cohesion: 0.11
-Nodes (14): ConversationAdapter, HeaderViewHolder, Cursor, LayoutInflater, MessageDigest, Override, RecyclerView, SoftReference (+6 more)
-
-### Community 81 - "Import State Receiver"
-Cohesion: 0.12
-Nodes (16): ProgressDescription, ApplicationMigrationBinder, ApplicationMigrationService, CompletedReceiver, ImportRunnable, ImportState, Binder, BroadcastReceiver (+8 more)
-
-### Community 82 - "Color Preference Picker"
-Cohesion: 0.09
-Nodes (14): ColorPickerPreference, AttributeSet, Context, ImageView, OnPreferenceChangeListener, Override, PreferenceViewHolder, SuppressLint (+6 more)
-
-### Community 83 - "Click Listener Key"
-Cohesion: 0.09
+### Community 72 - "OnClickListener"
+Cohesion: 0.08
 Nodes (14): OnClickListener, OnKeyListener, AttachButtonListener, AttachButtonLongClickListener, AttachmentTypeListener, ComposeKeyPressedListener, EmojiToggleListener, DialogInterface (+6 more)
 
-### Community 84 - "Preference Change Listener"
+### Community 73 - "EmojiDrawer"
 Cohesion: 0.12
-Nodes (15): OnPreferenceChangeListener, BlockClickedListener, ColorChangeListener, Bundle, Handler, MenuItem, Override, Preference (+7 more)
-
-### Community 85 - "Emoji Draw Info"
-Cohesion: 0.10
-Nodes (13): EmojiDrawInfo, NonNull, Override, Candidate, EmojiParser, NonNull, EmojiTree, EmojiTreeNode (+5 more)
-
-### Community 86 - "Message Outgoing Body"
-Cohesion: 0.10
-Nodes (8): MultipartSmsIdentifier, Override, OutgoingEncryptedMessage, Override, OutgoingEndSessionMessage, Override, OutgoingPrekeyBundleMessage, OutgoingTextMessage
-
-### Community 87 - "Color Selected Size"
-Cohesion: 0.10
-Nodes (11): LayoutParams, Builder, ColorPickerDialog, Activity, Context, IntDef, Retention, View (+3 more)
-
-### Community 89 - "Emoji View Pager"
-Cohesion: 0.11
 Nodes (13): PagerAdapter, EmojiDrawer, EmojiEventListener, EmojiPagerAdapter, AttributeSet, Context, KeyEvent, Override (+5 more)
 
-### Community 90 - "Notification Notifications Message"
+### Community 74 - "TaskHandle"
+Cohesion: 0.10
+Nodes (9): Bundle, Override, MmsPreferencesFragment, FailureCallback, SuccessCallback, TaskHandle, AppTaskExecutorTest, After (+1 more)
+
+### Community 75 - "MediaOverviewActivity"
+Cohesion: 0.09
+Nodes (15): AlertDialog, Bundle, Configuration, Context, Cursor, Loader, Menu, MenuItem (+7 more)
+
+### Community 76 - "Message"
 Cohesion: 0.15
-Nodes (9): Context, Cursor, Intent, Notification, Override, SuppressLint, MessageNotifier, ReminderReceiver (+1 more)
+Nodes (8): Override, Person, NonNull, Nullable, Uri, Message, NotificationConversation, NotificationConversationTest
 
-### Community 91 - "Loader Media Activity"
-Cohesion: 0.12
-Nodes (15): GridLayoutManager, AlertDialog, Bundle, Configuration, Context, Cursor, Loader, Menu (+7 more)
+### Community 77 - "MessageDetailsActivity"
+Cohesion: 0.11
+Nodes (12): Bundle, Context, Cursor, LayoutInflater, ListView, Loader, MenuItem, Override (+4 more)
 
-### Community 92 - "Context Requirement Network"
+### Community 78 - "Reminder"
 Cohesion: 0.10
-Nodes (16): ContextDependent, Context, Context, Override, SuppressLint, NetworkRequirement, NetworkCapabilities, ContextJob (+8 more)
+Nodes (13): DefaultSmsReminder, ActivityResultLauncher, Context, Intent, DeliveryReportsReminder, Context, OnClickListener, Reminder (+5 more)
 
-### Community 93 - "Action Intent Service"
-Cohesion: 0.10
-Nodes (16): Service, IBinder, Intent, Nullable, Override, MessagingNotificationActionService, NotificationActionTokenRegistry, IBinder (+8 more)
-
-### Community 94 - "Initialize Dialog Menu"
-Cohesion: 0.11
-Nodes (10): AlertDialog, Bundle, Intent, Menu, MenuItem, Override, SuppressLint, Uri (+2 more)
-
-### Community 95 - "Database Cursor Image"
-Cohesion: 0.11
-Nodes (13): DatabaseFactory, Context, CursorFactory, IdentityDatabase, Cursor, Uri, Reader, ImageDatabase (+5 more)
-
-### Community 96 - "Permission Permissions Fragment"
-Cohesion: 0.12
-Nodes (12): ActivityPermissionObject, FragmentPermissionLauncher, FragmentPermissionObject, Activity, ActivityResultLauncher, Context, Fragment, Intent (+4 more)
-
-### Community 97 - "Prefix Wire Calculate"
-Cohesion: 0.09
-Nodes (9): EndSessionWirePrefix, Override, Override, KeyExchangeWirePrefix, Override, PrekeyBundleWirePrefix, WirePrefix, Override (+1 more)
-
-### Community 98 - "Notification Message Recipient"
-Cohesion: 0.10
-Nodes (11): Action, Context, Notification, Override, PendingIntent, MultipleRecipientNotificationBuilder, Builder, Notification (+3 more)
-
-### Community 99 - "Service Handle Import"
-Cohesion: 0.11
-Nodes (16): ComponentName, ServiceConnection, DatabaseMigrationActivity, ImportServiceConnection, ImportStateHandler, BroadcastReceiver, Bundle, Button (+8 more)
-
-### Community 100 - "Requirement Provider Listener"
-Cohesion: 0.11
-Nodes (16): Override, ConnectivityChangeReceiver, ConnectivityManager, Context, Intent, NetworkCallback, Override, NetworkRequirementProvider (+8 more)
-
-### Community 101 - "Message Exchange Handle"
-Cohesion: 0.09
-Nodes (9): Context, SecurityEvent, Context, Override, SmsDecryptJob, Override, SmsSentJob, IncomingXmppExchangeMessage (+1 more)
-
-### Community 102 - "Contact Photo Item"
-Cohesion: 0.09
-Nodes (12): ContactPhoto, Context, Drawable, ContactPhotoFactory, Context, Uri, ContactSelectionListItem, AttributeSet (+4 more)
-
-### Community 103 - "Create Bundle Conversation"
-Cohesion: 0.09
-Nodes (14): Bundle, ConversationListArchiveActivity, Bundle, MenuItem, Override, ConversationSelectedListener, ImportExportActivity, Bundle (+6 more)
-
-### Community 106 - "View Loader Message"
-Cohesion: 0.13
-Nodes (13): LoaderCallbacks, Bundle, Context, Cursor, LayoutInflater, ListView, Loader, MenuItem (+5 more)
-
-### Community 107 - "Last First Remove"
-Cohesion: 0.11
-Nodes (4): AbstractQueue, Condition, ReentrantLock, LinkedBlockingDeque
-
-### Community 108 - "Round Rect Config"
-Cohesion: 0.12
-Nodes (7): IBuilder, IShapeBuilder, Canvas, ColorFilter, Override, Paint, TextDrawable
-
-### Community 109 - "Color Material Blue"
-Cohesion: 0.07
-Nodes (26): MaterialColor, AMBER, BLUE, BLUE_GREY, BROWN, CYAN, DEEP_ORANGE, DEEP_PURPLE (+18 more)
-
-### Community 110 - "Element Write Processor"
-Cohesion: 0.16
-Nodes (14): AbstractProcessor, ExecutableElement, EventBusAnnotationProcessor, Override, ListMap, Messager, PackageElement, RoundEnvironment (+6 more)
-
-### Community 111 - "Event Test Thread"
-Cohesion: 0.11
-Nodes (6): EventBusMultithreadedTest, Override, PosterThread, SubscribeUnsubscribeThread, EventBusMultithreadedTestWithIndex, Before
-
-### Community 112 - "Conversation Notification Null"
+### Community 79 - "IncomingTextMessage"
 Cohesion: 0.17
-Nodes (8): Person, Context, NonNull, Nullable, Uri, Message, NotificationConversation, NotificationConversationTest
+Nodes (5): IncomingTextMessage, Creator, Override, Parcel, SmsMessage
 
-### Community 113 - "Scan Options Verified"
-Cohesion: 0.12
-Nodes (10): ScanIntentResult, ScanOptions, ActivityResultLauncher, Menu, MenuItem, Override, SuppressLint, KeyScanningActivity (+2 more)
+### Community 80 - ".build"
+Cohesion: 0.08
+Nodes (14): EventBusRegistrationRacingTest, Override, SubscriberThread, EventBusBasicTestWithIndex, Before, EventBusFallbackToReflectionTestWithIndex, Before, EventBusOrderedSubscriptionsTestWithIndex (+6 more)
 
-### Community 114 - "Recipient Cache Details"
+### Community 81 - ".onCreate"
 Cohesion: 0.11
-Nodes (9): Context, NonNull, Nullable, Uri, RecipientCache, RecipientDetails, RecipientIds, RecipientProvider (+1 more)
+Nodes (10): Activity, Configuration, Context, Service, SuppressLint, SuppressWarnings, OverridePendingTransition, Activity (+2 more)
 
-### Community 115 - "Message Multipart Sms"
-Cohesion: 0.15
-Nodes (4): MultipartSmsMessageHandler, MultipartSmsTransportMessage, Override, MultipartSmsTransportMessageFragments
+### Community 82 - "EmojiDrawInfo"
+Cohesion: 0.09
+Nodes (13): EmojiDrawInfo, NonNull, Override, Candidate, EmojiParser, NonNull, EmojiTree, EmojiTreeNode (+5 more)
 
-### Community 116 - "Recipients Editor Numbers"
-Cohesion: 0.12
-Nodes (10): AppCompatMultiAutoCompleteTextView, MultiAutoCompleteTextView, AttributeSet, Context, MotionEvent, Override, Spanned, RecipientsEditor (+2 more)
-
-### Community 117 - "Handle Conversation Create"
-Cohesion: 0.13
-Nodes (7): ContentObserver, Intent, ConversationListActivity, Menu, MenuItem, Override, SuppressLint
-
-### Community 118 - "Dependency Injector Job"
-Cohesion: 0.12
-Nodes (10): AggregateDependencyInjector, Context, DependencyInjector, Builder, Context, Override, WakeLock, JobManager (+2 more)
-
-### Community 119 - "Passphrase Action Listener"
-Cohesion: 0.10
-Nodes (16): OnEditorActionListener, ServiceConnection, PassphraseActivity, Bundle, EditText, Intent, KeyEvent, Menu (+8 more)
-
-### Community 120 - "Subscription Generate Keys"
+### Community 83 - "RecipientPreferenceFragment"
 Cohesion: 0.11
-Nodes (10): GenerateKeysJob, Context, Override, Context, Bundle, Override, PassphraseCreateActivity, DualSimUtil (+2 more)
+Nodes (10): BlockClickedListener, ColorChangeListener, Bundle, Handler, Override, Preference, MuteClickedListener, RecipientPreferenceFragment (+2 more)
 
-### Community 121 - "Permissions Request Execute"
-Cohesion: 0.12
-Nodes (4): SuppressWarnings, PermissionObject, PermissionsBuilder, PermissionsRequest
-
-### Community 122 - "Subscription App Icc"
-Cohesion: 0.11
-Nodes (3): Context, NonNull, SubscriptionInfoCompat
-
-### Community 123 - "Kyber Pre Session"
-Cohesion: 0.13
-Nodes (6): KyberPreKeyRecord, Override, NewLibraryV3RoundTripTest, NoKyberStore, OldToNewSessionRecordTest, SilenceStyleStoreV3Test
-
-### Community 124 - "Message Instance Generation"
-Cohesion: 0.12
-Nodes (3): DeviceConsistencyCodeMessage, SuppressWarnings, UnusedPrivateParameter
-
-### Community 125 - "View Blocked Create"
-Cohesion: 0.18
-Nodes (13): BlockedContactAdapter, BlockedContactsActivity, BlockedContactsFragment, AdapterView, Bundle, Context, Cursor, LayoutInflater (+5 more)
-
-### Community 126 - "Click Listener View"
+### Community 85 - "ThumbnailView"
 Cohesion: 0.11
 Nodes (12): DownloadClickDispatcher, AttributeSet, Context, ImageView, OnClickListener, Override, View, ThumbnailClickDispatcher (+4 more)
 
-### Community 127 - "Transport Options Adapter"
-Cohesion: 0.13
-Nodes (9): DrawableRes, NonNull, TransportOption, Context, LayoutInflater, Override, View, ViewGroup (+1 more)
+### Community 86 - "ThreadDatabase"
+Cohesion: 0.08
+Nodes (9): DistributionTypes, Context, Cursor, Nullable, SQLiteOpenHelper, Uri, ProgressListener, Reader (+1 more)
 
-### Community 128 - "Pre Key Signed"
-Cohesion: 0.20
-Nodes (5): Context, FileChannel, FileInputStream, Override, SilencePreKeyStore
+### Community 87 - "Context"
+Cohesion: 0.10
+Nodes (12): Database, Context, Cursor, SQLiteOpenHelper, BackupOperation, Context, CursorFactory, DraftDatabase (+4 more)
 
-### Community 129 - "Preference Summary List"
-Cohesion: 0.13
-Nodes (14): AppearancePreferenceFragment, Bundle, Override, ListPreference, Override, Preference, ListSummaryListener, ListSummaryPreferenceFragment (+6 more)
+### Community 88 - "PassphrasePromptActivity"
+Cohesion: 0.10
+Nodes (16): OnEditorActionListener, ServiceConnection, PassphraseActivity, Bundle, EditText, Intent, KeyEvent, Menu (+8 more)
 
-### Community 130 - "Ringtone Show Preference"
-Cohesion: 0.13
-Nodes (11): AttributeSet, Context, IntDef, Override, Retention, SuppressLint, SuppressWarnings, TypedArray (+3 more)
+### Community 89 - "DisplayRecord"
+Cohesion: 0.10
+Nodes (4): Body, DisplayRecord, Context, SpannableString
 
-### Community 132 - "Content Listener Commit"
-Cohesion: 0.11
-Nodes (15): InputConnection, InputContentInfoCompat, OnCommitContentListener, CommitContentListener, ComposeText, AttributeSet, Bundle, Context (+7 more)
-
-### Community 133 - "Create View List"
+### Community 91 - "InputAwareLayout"
 Cohesion: 0.15
-Nodes (12): ListFragment, ConversationSelectedListener, Bundle, Context, Cursor, LayoutInflater, ListView, Loader (+4 more)
+Nodes (7): InputAwareLayout, InputView, AttributeSet, Context, EditText, Override, OnKeyboardShownListener
 
-### Community 134 - "Bar Color Action"
+### Community 92 - "MaterialColor"
+Cohesion: 0.08
+Nodes (24): MaterialColor, AMBER, BLUE, BLUE_GREY, BROWN, CYAN, DEEP_ORANGE, DEEP_PURPLE (+16 more)
+
+### Community 94 - "VideoSlide"
+Cohesion: 0.19
+Nodes (8): Context, DrawableRes, NonNull, Nullable, Override, Theme, Uri, VideoSlide
+
+### Community 95 - "Argon2MasterSecretEnvelopeTest"
+Cohesion: 0.14
+Nodes (4): Argon2MasterSecretEnvelope, KeyDeriver, Parsed, Argon2MasterSecretEnvelopeTest
+
+### Community 97 - "Base64"
+Cohesion: 0.04
+Nodes (21): CharBuffer, ClassLoader, Base64, Coder, Decoder, Encoder, ObjectInputStream, ObjectOutputStream (+13 more)
+
+### Community 98 - "EmojiPageModel"
+Cohesion: 0.09
+Nodes (17): GridView, OnItemClickListener, EmojiPageModel, EmojiPages, EmojiGridAdapter, EmojiPageView, AttributeSet, Context (+9 more)
+
+### Community 99 - "SignalProtos"
+Cohesion: 0.06
+Nodes (5): FileDescriptor, KeyExchangeMessageOrBuilder, SenderKeyDistributionMessageOrBuilder, SenderKeyMessageOrBuilder, SignalProtos
+
+### Community 100 - "TelephonyServiceState.java"
+Cohesion: 0.14
+Nodes (14): PhoneStateListener, ServiceStateListener, ServiceStateCallback, Context, Looper, Override, ServiceState, SuppressWarnings (+6 more)
+
+### Community 101 - "DatabaseMigrationActivity"
+Cohesion: 0.11
+Nodes (16): ComponentName, ServiceConnection, DatabaseMigrationActivity, ImportServiceConnection, ImportStateHandler, BroadcastReceiver, Bundle, Button (+8 more)
+
+### Community 102 - ".migrate"
+Cohesion: 0.14
+Nodes (8): LegacyWrapper, MasterSecretMigration, Storage, WrapperDecryptor, WrapperEncryptor, Override, MasterSecretMigrationTest, RecordingStorage
+
+### Community 103 - ".getEncryptingSmsDatabase"
+Cohesion: 0.13
+Nodes (7): Context, Cursor, Override, Override, SmsDecryptJob, IncomingPreKeyBundleMessage, Override
+
+### Community 104 - ".send"
+Cohesion: 0.17
+Nodes (9): IncomingLollipopMmsConnection, Context, Intent, Override, PendingIntent, LollipopMmsConnection, OutgoingLollipopMmsConnection, Context (+1 more)
+
+### Community 105 - ".onResume"
+Cohesion: 0.12
+Nodes (9): SharedPreferences, Bundle, MenuItem, Override, MmsPreferencesActivity, Bundle, Button, Override (+1 more)
+
+### Community 106 - "MultipartSmsTransportMessage"
+Cohesion: 0.16
+Nodes (4): MultipartSmsMessageHandler, MultipartSmsTransportMessage, Override, MultipartSmsTransportMessageFragments
+
+### Community 107 - "BaseActionBarActivity"
 Cohesion: 0.15
 Nodes (6): BaseActionBarActivity, Bundle, Intent, Override, SuppressWarnings, View
 
-### Community 135 - "View Contacts Contact"
-Cohesion: 0.16
-Nodes (13): ContactSelectionListFragment, Bundle, Button, Cursor, LayoutInflater, Loader, Override, RecyclerView (+5 more)
-
-### Community 136 - "Type Mime Thumbnail"
-Cohesion: 0.17
-Nodes (7): from(), Bitmap, Context, Nullable, Uri, MediaUtil, ThumbnailData
-
-### Community 138 - "Intent Master Secret"
-Cohesion: 0.15
-Nodes (6): MasterSecretListener, BroadcastReceiver, Context, Intent, Override, PassphraseRequiredActionBarActivity
-
-### Community 139 - "Create Media Intent"
-Cohesion: 0.14
-Nodes (11): Bundle, Context, Intent, Menu, MenuItem, Override, SuppressLint, Uri (+3 more)
-
-### Community 140 - "Header View Decoration"
-Cohesion: 0.21
-Nodes (11): ItemDecoration, Canvas, Override, Rect, RecyclerView, View, ViewGroup, ViewHolder (+3 more)
-
-### Community 141 - "State Listen Service"
-Cohesion: 0.15
-Nodes (12): PhoneStateListener, ServiceStateListener, Context, Looper, Override, ServiceState, SuppressWarnings, TelephonyManager (+4 more)
-
-### Community 142 - "Bytes Context Thread"
-Cohesion: 0.11
-Nodes (9): RequiresPermission, Context, Intent, Override, MmsListener, Context, Handler, SuppressLint (+1 more)
-
-### Community 143 - "Emoji Drawable Provider"
-Cohesion: 0.14
-Nodes (12): EmojiDrawable, EmojiProvider, Bitmap, Canvas, ColorFilter, Context, Drawable, Nullable (+4 more)
-
-### Community 144 - "Item View Holder"
-Cohesion: 0.15
-Nodes (10): ConversationListAdapter, ItemClickListener, Context, Cursor, LayoutInflater, MessageDigest, Nullable, Override (+2 more)
-
-### Community 145 - "Document Content Values"
-Cohesion: 0.14
-Nodes (7): ContentValuesBuilder, ContentValues, EncodedStringValue, Document, SQLiteDatabase, MessagingDatabase, SystemBarThemeContractTest
-
-### Community 146 - "Locale Activity Create"
-Cohesion: 0.15
-Nodes (12): Bundle, MenuItem, Override, MmsPreferencesActivity, DynamicLanguage, Activity, Configuration, Context (+4 more)
-
-### Community 147 - "Ringtone Dialog Type"
-Cohesion: 0.15
-Nodes (9): ActivityResult, ActivityResultLauncher, Builder, Bundle, Cursor, Dialog, Intent, NonNull (+1 more)
-
-### Community 148 - "Uri Provider Blob"
-Cohesion: 0.17
-Nodes (9): Context, NonNull, Nullable, Uri, UriMatcher, PersistentBlobProvider, FileProviderUtil, Context (+1 more)
-
-### Community 149 - "Key Message Incoming"
-Cohesion: 0.09
-Nodes (4): IncomingKeyExchangeMessage, Override, IncomingPreKeyBundleMessage, Override
-
-### Community 151 - "Status View Frame"
-Cohesion: 0.14
-Nodes (11): FrameLayout, DeliveryStatusView, AttributeSet, Context, ImageView, ViewGroup, AttributeSet, Context (+3 more)
-
-### Community 152 - "Instance For Type"
-Cohesion: 0.14
-Nodes (5): CombinedFingerprints, Parser, SuppressWarnings, UnusedPrivateParameter, LogicalFingerprint
-
-### Community 154 - "Connectivity Mms Network"
-Cohesion: 0.16
-Nodes (10): Network, ConnectivityListener, ConnectivityManager, Context, Intent, NetworkCallback, Override, SuppressWarnings (+2 more)
-
-### Community 155 - "Secret Passphrase Master"
-Cohesion: 0.18
-Nodes (5): SecretKey, Cipher, Context, Mac, MasterSecretUtil
-
-### Community 156 - "View Holder Header"
-Cohesion: 0.19
-Nodes (12): FastScrollAdapter, ContactSelectionListAdapter, HeaderViewHolder, ItemClickListener, Context, Cursor, LayoutInflater, NonNull (+4 more)
-
-### Community 157 - "Contact Selected View"
-Cohesion: 0.14
-Nodes (10): ContactSelectionActivity, Bundle, EditText, ImageView, LinearLayout, Override, Toolbar, View (+2 more)
-
-### Community 158 - "Mac Body Cipher"
-Cohesion: 0.14
-Nodes (6): Cipher, Mac, SecretKeySpec, MasterCipher, Before, Override
-
-### Community 159 - "Addresses For Mms"
-Cohesion: 0.16
-Nodes (5): MmsAddressDatabase, NonNull, Nullable, MmsAddresses, Nullable
-
-### Community 160 - "Lollipop Mms Connection"
-Cohesion: 0.19
-Nodes (7): Context, Intent, Override, PendingIntent, LollipopMmsConnection, Context, Pointer
-
-### Community 161 - "Bitmap Create Scaled"
-Cohesion: 0.17
-Nodes (7): Drawable, BitmapUtil, Bitmap, Context, Drawable, Options, Rect
-
-### Community 162 - "Character Calculator Calculate"
-Cohesion: 0.11
-Nodes (10): CharacterCalculator, CharacterState, DummyCharacterCalculator, Override, EncryptedSmsCharacterCalculator, Override, Override, MmsCharacterCalculator (+2 more)
-
-### Community 163 - "Conversation View Stub"
+### Community 108 - "TextDrawable"
 Cohesion: 0.12
-Nodes (11): LayoutRes, Context, ConversationListItemAction, AttributeSet, Context, Override, TextView, AttributeSet (+3 more)
+Nodes (7): IBuilder, IShapeBuilder, Canvas, ColorFilter, Override, Paint, TextDrawable
 
-### Community 164 - "Log Activity Item"
+### Community 109 - "TransferControlView.java"
 Cohesion: 0.16
-Nodes (8): Bundle, MenuItem, Override, SendLogActivity, Bundle, MenuItem, Override, LogSubmitActivity
+Nodes (9): Animator, AttributeSet, CircularProgressIndicator, Context, OnClickListener, Override, TextView, View (+1 more)
 
-### Community 165 - "View Recycler Fast"
-Cohesion: 0.14
-Nodes (10): ObjectAnimator, AttributeSet, Context, MotionEvent, OnScrollListener, Override, RecyclerView, TextView (+2 more)
-
-### Community 166 - "Vibrate Recipient Preference"
-Cohesion: 0.16
-Nodes (11): fromId(), ContentValues, Context, Cursor, NonNull, SQLiteOpenHelper, RecipientPreferenceDatabase, VibrateState (+3 more)
-
-### Community 167 - "Listener Future Success"
-Cohesion: 0.14
-Nodes (8): AssertedSuccessListener, ExecutionException, Override, ExecutionException, ListenableFuture, Listener, Override, SettableFuture
-
-### Community 168 - "Notification Builder Display"
-Cohesion: 0.14
-Nodes (10): Builder, AbstractNotificationBuilder, Context, NonNull, Uri, FailedNotificationBuilder, Context, Intent (+2 more)
-
-### Community 170 - "Parser Has Iteration"
-Cohesion: 0.09
-Nodes (3): Parser, SenderKeyMessage, SenderKeyMessageOrBuilder
-
-### Community 171 - "Preference Click Listener"
-Cohesion: 0.14
-Nodes (10): OnPreferenceClickListener, OnSharedPreferenceChangeListener, ApplicationPreferenceFragment, ApplicationPreferencesActivity, CategoryClickListener, Bundle, Override, Preference (+2 more)
-
-### Community 172 - "Transport Send Button"
+### Community 110 - "KeyScanningActivity"
 Cohesion: 0.13
-Nodes (7): AttributeSet, Context, Override, SuppressWarnings, View, SendButton, OnTransportChangedListener
+Nodes (9): ScanIntentResult, ScanOptions, ActivityResultLauncher, Menu, MenuItem, Override, SuppressLint, KeyScanningActivity (+1 more)
 
-### Community 173 - "Transport Default Options"
+### Community 111 - "MediaPreviewActivity"
+Cohesion: 0.12
+Nodes (9): AlertDialog, Bundle, Intent, Menu, MenuItem, Override, SuppressLint, Uri (+1 more)
+
+### Community 112 - "RecipientProvider"
+Cohesion: 0.11
+Nodes (9): Context, NonNull, Nullable, Uri, RecipientCache, RecipientDetails, RecipientIds, RecipientProvider (+1 more)
+
+### Community 113 - "CharacterCalculator"
+Cohesion: 0.11
+Nodes (11): DrawableRes, CharacterCalculator, CharacterState, DummyCharacterCalculator, Override, EncryptedSmsCharacterCalculator, Override, Override (+3 more)
+
+### Community 114 - "EventBusAnnotationProcessor"
+Cohesion: 0.16
+Nodes (14): AbstractProcessor, ExecutableElement, EventBusAnnotationProcessor, Override, ListMap, Messager, PackageElement, RoundEnvironment (+6 more)
+
+### Community 115 - "BlockedContactsFragment"
+Cohesion: 0.22
+Nodes (11): BlockedContactAdapter, BlockedContactsFragment, AdapterView, Bundle, Context, Cursor, LayoutInflater, Loader (+3 more)
+
+### Community 116 - ".decrypt"
+Cohesion: 0.20
+Nodes (5): AuthenticatedInputStream, Cipher, Override, SecureBackupContainer, SecureBackupContainerTest
+
+### Community 117 - "VendoredPreKeyStore"
+Cohesion: 0.19
+Nodes (5): Context, FileChannel, FileInputStream, Override, VendoredPreKeyStore
+
+### Community 118 - "ImageMediaAdapter.java"
 Cohesion: 0.18
-Nodes (7): Type, DISABLED, INSECURE_SMS, SECURE_SMS, Context, NonNull, TransportOptions
-
-### Community 174 - "View Image Media"
-Cohesion: 0.17
 Nodes (10): ImageRecord, ImageMediaAdapter, Context, Cursor, Override, View, ViewGroup, OnMediaClickListener (+2 more)
 
-### Community 175 - "Statement Add Sqlite"
-Cohesion: 0.21
-Nodes (7): SQLiteDatabase, SQLiteStatement, Context, Cursor, SQLiteStatement, SmsMigrationProgressListener, SmsMigrator
-
-### Community 176 - "Contact Data Parcel"
-Cohesion: 0.16
-Nodes (10): ContactAccessor, ContactData, ContentResolver, Context, Creator, Cursor, Parcel, SuppressWarnings (+2 more)
-
-### Community 177 - "Identity Verified View"
-Cohesion: 0.19
-Nodes (6): Bundle, Menu, MenuItem, Override, TextView, ViewIdentityActivity
-
-### Community 179 - "Progress View Event"
-Cohesion: 0.15
-Nodes (8): Animator, CircularProgressIndicator, OnClickListener, Override, TextView, View, TransferControlView, PartProgressEvent
-
-### Community 180 - "Key Listener Event"
-Cohesion: 0.18
-Nodes (10): AttributeSet, Context, MotionEvent, Override, View, KeyEventListener, RepeatableImageKey, Repeater (+2 more)
-
-### Community 181 - "Emoji Bitmap Page"
-Cohesion: 0.15
-Nodes (9): EmojiPageModel, EmojiPages, EmojiPageBitmap, Bitmap, Context, Handler, Override, SoftReference (+1 more)
-
-### Community 182 - "Activity Override Menu"
-Cohesion: 0.15
-Nodes (9): ConversationPopupActivity, Bundle, Menu, MenuItem, Override, SuppressLint, ActivityTransitionCompat, Activity (+1 more)
-
-### Community 183 - "Identity Verified Display"
-Cohesion: 0.19
-Nodes (6): Bundle, Nullable, Override, SuppressLint, TextView, VerifyIdentityActivity
-
-### Community 184 - "Random Linux Prngsecure"
-Cohesion: 0.17
-Nodes (7): DataInputStream, Provider, SecureRandomSpi, Override, LinuxPRNGSecureRandom, LinuxPRNGSecureRandomProvider, PRNGFixes
-
-### Community 185 - "Future Task Listener"
-Cohesion: 0.17
-Nodes (5): FutureTask, FutureTaskListener, Override, ListenableFutureTask, TaggedFutureTask
-
-### Community 186 - "Font Builder Bold"
-Cohesion: 0.16
-Nodes (3): Builder, IConfigBuilder, Typeface
-
-### Community 187 - "Fingerprint Builder Local"
+### Community 119 - "ApplicationMigrationService"
 Cohesion: 0.12
-Nodes (4): CombinedFingerprintsOrBuilder, FingerprintProtos, FileDescriptor, LogicalFingerprintOrBuilder
+Nodes (15): ApplicationMigrationBinder, ApplicationMigrationService, CompletedReceiver, ImportRunnable, ImportState, Binder, BroadcastReceiver, Builder (+7 more)
 
-### Community 188 - "Accessor Table Clear"
-Cohesion: 0.13
-Nodes (6): CodedOutputStream, FieldAccessorTable, FieldDescriptor, OneofDescriptor, Override, UnknownFieldSet
+### Community 120 - "RecipientsEditor"
+Cohesion: 0.12
+Nodes (10): AppCompatMultiAutoCompleteTextView, MultiAutoCompleteTextView, AttributeSet, Context, MotionEvent, Override, Spanned, RecipientsEditor (+2 more)
 
-### Community 190 - "List Database Reader"
-Cohesion: 0.18
-Nodes (6): Database, Context, Cursor, SQLiteOpenHelper, Cursor, Reader
+### Community 121 - "ErrorDialogFragmentFactory"
+Cohesion: 0.29
+Nodes (6): ErrorDialogFragmentFactory, Honeycomb, Bundle, Fragment, TargetApi, Support
 
-### Community 191 - "Content Database Providers"
-Cohesion: 0.24
-Nodes (12): Attachment, Conversation, ConversationList, DatabaseContentProviders, Identities, ContentValues, Cursor, Nullable (+4 more)
-
-### Community 192 - "Conversation List Loader"
-Cohesion: 0.18
-Nodes (6): ConversationListLoader, Context, Cursor, Override, Context, NotificationActionOperations
-
-### Community 193 - "Service State Listener"
-Cohesion: 0.20
-Nodes (10): Context, Override, PhoneStateListener, ServiceState, SuppressWarnings, TelephonyManager, LegacyServiceStateListener, ServiceRequirementProvider (+2 more)
-
-### Community 194 - "Mms Connection Send"
+### Community 124 - "SendButton"
 Cohesion: 0.15
-Nodes (12): MediaType, AUDIO, GIF, IMAGE, VIDEO, Context, Nullable, Override (+4 more)
+Nodes (8): AppCompatImageButton, AttributeSet, Context, Override, SuppressWarnings, View, SendButton, OnTransportChangedListener
 
-### Community 195 - "Slide Image Gif"
-Cohesion: 0.16
-Nodes (12): GifSlide, Context, Nullable, Override, Uri, ImageSlide, Context, DrawableRes (+4 more)
+### Community 125 - "ViewUtil"
+Cohesion: 0.07
+Nodes (22): ObjectAnimator, AttributeSet, Context, MotionEvent, OnScrollListener, Override, RecyclerView, TextView (+14 more)
 
-### Community 196 - "Identity Notification Action"
+### Community 127 - "NoKyberStore"
+Cohesion: 0.46
+Nodes (3): KyberPreKeyRecord, Override, NoKyberStore
+
+### Community 128 - "AudioSlidePlayer"
+Cohesion: 0.07
+Nodes (18): MediaPlayer, AudioSlidePlayer, Context, Handler, NonNull, Override, WeakReference, Listener (+10 more)
+
+### Community 129 - ".decryptBytes"
 Cohesion: 0.18
-Nodes (6): NotificationActionIdentity, Context, Nullable, PendingIntent, Uri, NotificationActionIdentityTest
+Nodes (3): Before, Override, MasterCipherTest
 
-### Community 197 - "Notification Item Pending"
-Cohesion: 0.14
-Nodes (5): Context, NonNull, Nullable, PendingIntent, NotificationItem
+### Community 130 - "MasterCipher Versioned Envelope"
+Cohesion: 0.07
+Nodes (28): Android Studio Development Environment, Crypto Release Stages, Gradle Build, Argon2 Upstream Provenance, Minimized Argon2 Vendor Surface, Argon2 Benchmark, Argon2 Known-Answer Test, Argon2 Native Library (+20 more)
 
-### Community 198 - "Preference Click Listener"
-Cohesion: 0.19
-Nodes (10): AppProtectionPreferenceFragment, BlockedContactsClickListener, ChangePassphraseClickListener, DisablePassphraseClickListener, Bundle, CheckBoxPreference, Context, Override (+2 more)
+### Community 131 - "JobManager"
+Cohesion: 0.12
+Nodes (9): AggregateDependencyInjector, Context, DependencyInjector, Builder, Context, Override, WakeLock, JobManager (+1 more)
 
-### Community 199 - "Number Preferences Apn"
-Cohesion: 0.19
-Nodes (8): Bundle, Override, MmsPreferencesFragment, Context, SuppressLint, SuppressWarnings, TelephonyManager, TelephonyUtil
+### Community 132 - "SenderKeyMessage"
+Cohesion: 0.12
+Nodes (3): SuppressWarnings, UnusedPrivateParameter, SenderKeyMessage
 
-### Community 200 - "Subscription Info Active"
-Cohesion: 0.19
-Nodes (8): Context, NonNull, RequiresApi, SubscriptionManager, SuppressLint, SuppressWarnings, SubscriptionManagerCompat, SubscriptionInfo
+### Community 133 - "ContactPhoto"
+Cohesion: 0.23
+Nodes (6): ContactPhoto, Context, Drawable, ContactPhotoFactory, Context, Uri
 
-### Community 201 - "Dialog Click Create"
-Cohesion: 0.25
-Nodes (12): DialogFragment, ErrorDialogFragments, Honeycomb, Activity, Bundle, Context, Dialog, DialogInterface (+4 more)
-
-### Community 204 - "Scanner Media Ringtone"
+### Community 134 - ".addCustomExternalRingtone"
 Cohesion: 0.20
 Nodes (8): LinkedBlockingQueue, MediaScannerConnection, MediaScannerConnectionClient, Context, Nullable, Override, Uri, NewRingtoneScanner
 
-### Community 205 - "Receiver Receive Context"
-Cohesion: 0.14
-Nodes (13): PendingResult, DeleteNotificationReceiver, Context, Intent, Override, Context, Intent, Override (+5 more)
-
-### Community 206 - "Mms Connection Retrieve"
-Cohesion: 0.15
-Nodes (12): CompatMmsConnection, Context, Nullable, Override, RetrieveConf, SendConf, IncomingMmsConnection, Nullable (+4 more)
-
-### Community 207 - "Image Divet View"
-Cohesion: 0.20
-Nodes (7): AppCompatImageView, ImageDivet, AttributeSet, Canvas, Context, Drawable, Override
-
-### Community 208 - "Provider Part File"
-Cohesion: 0.24
-Nodes (9): ContentProvider, ContentValues, Cursor, Override, ParcelFileDescriptor, SuppressWarnings, Uri, UriMatcher (+1 more)
-
-### Community 209 - "View Emoji Grid"
-Cohesion: 0.19
-Nodes (8): GridView, EmojiGridAdapter, EmojiPageView, AttributeSet, Context, Override, View, ViewGroup
-
-### Community 210 - "Network Failure List"
-Cohesion: 0.15
-Nodes (5): JsonIgnore, Override, NetworkFailure, Override, NetworkFailureList
-
-### Community 211 - "Job Database Consumer"
-Cohesion: 0.17
-Nodes (10): JobConsumer, JobResult, DEFERRED, FAILURE, SUCCESS, DatabaseHelper, Context, Override (+2 more)
-
-### Community 212 - "Content Parse From"
-Cohesion: 0.14
-Nodes (5): ByteBuffer, ByteString, CodedInputStream, ExtensionRegistry, ExtensionRegistryLite
-
-### Community 213 - "Decode Stream Media"
-Cohesion: 0.22
-Nodes (4): Socket, Override, StreamToMediaPlayerTask, Before
-
-### Community 214 - "Untrusted Identity Message"
-Cohesion: 0.19
-Nodes (6): UntrustedIdentityException, MultimediaMessagePdu, Context, SendReq, MmsCipher, TextTransport
-
-### Community 215 - "Video Server Attachment"
-Cohesion: 0.22
-Nodes (8): ServerSocket, AttachmentServer, Context, Uri, AttributeSet, Context, VideoPlayer, VideoView
-
-### Community 216 - "Draft Drafts Database"
-Cohesion: 0.20
-Nodes (7): Draft, DraftDatabase, Drafts, Context, Nullable, SQLiteOpenHelper, Uri
-
-### Community 217 - "Region Decoder Bitmap"
-Cohesion: 0.22
-Nodes (12): BitmapRegionDecoder, ImageRegionDecoder, SkiaImageRegionDecoder, AttachmentRegionDecoder, Bitmap, Context, Override, Point (+4 more)
-
-### Community 218 - "Sms Preference Outgoing"
+### Community 136 - "NotificationItem"
 Cohesion: 0.16
-Nodes (8): DialogPreference, AttributeSet, CheckBox, Context, Override, View, OutgoingSmsPreference, OutgoingSmsPreferenceDialogFragmentCompat
+Nodes (5): Context, NonNull, Nullable, PendingIntent, NotificationItem
 
-### Community 219 - "Key Activity Country"
-Cohesion: 0.19
-Nodes (8): FragmentActivity, KeyEvent, BaseActivity, KeyEvent, Override, CountrySelectionActivity, Bundle, Override
+### Community 137 - "RingtonePreference"
+Cohesion: 0.13
+Nodes (11): AttributeSet, Context, IntDef, Override, Retention, SuppressLint, SuppressWarnings, TypedArray (+3 more)
 
-### Community 220 - "Dialog Error Mapping"
+### Community 138 - "ShareActivity"
+Cohesion: 0.14
+Nodes (11): Bundle, Context, Intent, Menu, MenuItem, Override, SuppressLint, Uri (+3 more)
+
+### Community 140 - ".startActivity"
+Cohesion: 0.12
+Nodes (11): ContentObserver, ConversationListActivity, Bundle, Menu, MenuItem, Override, SuppressLint, Bundle (+3 more)
+
+### Community 141 - ".retrieve"
 Cohesion: 0.16
-Nodes (3): ErrorDialogConfig, ExceptionToResourceMapping, Resources
+Nodes (9): IncomingLegacyMmsConnection, Context, Nullable, Override, Request, RetrieveConf, SuppressWarnings, Apn (+1 more)
 
-### Community 221 - "Manager Attach Error"
-Cohesion: 0.25
-Nodes (7): ErrorDialogManager, HoneycombManagerFragment, Activity, Bundle, Override, TargetApi, SupportManagerFragment
+### Community 142 - "NetworkRequirement"
+Cohesion: 0.12
+Nodes (14): ContextDependent, Context, Context, Override, SuppressLint, NetworkRequirement, NetworkCapabilities, Context (+6 more)
 
-### Community 222 - "Max Output Size"
+### Community 143 - "DeleteNotificationReceiver.java"
+Cohesion: 0.13
+Nodes (14): PendingResult, DeleteNotificationReceiver, Context, Intent, Override, Context, Intent, Override (+6 more)
+
+### Community 145 - "RestoredPreferencesTest"
+Cohesion: 0.18
+Nodes (8): Context, Editor, SuppressWarnings, Before, Context, Editor, SharedPreferences, RestoredPreferencesTest
+
+### Community 146 - "ContactSelectionListFragment.java"
+Cohesion: 0.16
+Nodes (13): ContactSelectionListFragment, Bundle, Button, Cursor, LayoutInflater, Loader, Override, RecyclerView (+5 more)
+
+### Community 147 - "MediaUtil"
 Cohesion: 0.17
-Nodes (4): Base64, Coder, Decoder, Encoder
+Nodes (7): from(), Bitmap, Context, Nullable, Uri, MediaUtil, ThumbnailData
 
-### Community 223 - "Parse From Delimited"
+### Community 148 - "SettableFuture"
+Cohesion: 0.13
+Nodes (9): PendingFutureTask, AssertedSuccessListener, ExecutionException, Override, ExecutionException, ListenableFuture, Listener, Override (+1 more)
+
+### Community 149 - "ConversationListAdapter"
 Cohesion: 0.19
-Nodes (4): ByteBuffer, CodedInputStream, ExtensionRegistry, ExtensionRegistryLite
+Nodes (9): ConversationListAdapter, Context, Cursor, LayoutInflater, MessageDigest, Nullable, Override, ViewGroup (+1 more)
 
-### Community 224 - "Linear Layout View"
-Cohesion: 0.18
-Nodes (10): LinearLayout, AlertView, AttributeSet, Context, ImageView, AttributeSet, Context, Override (+2 more)
+### Community 150 - ".send"
+Cohesion: 0.08
+Nodes (18): Context, Context, Draft, Drafts, Context, Nullable, SQLiteOpenHelper, Uri (+10 more)
 
-### Community 225 - "Cursor Contacts Database"
+### Community 151 - "ConversationAdapter.java"
+Cohesion: 0.04
+Nodes (28): JsonIgnore, LayoutRes, ObjectMapper, Context, IdentityKeyMismatch, IdentityKeyMismatchList, Override, Override (+20 more)
+
+### Community 152 - "PassphraseRequiredActionBarActivity"
+Cohesion: 0.14
+Nodes (7): MasterSecretListener, BroadcastReceiver, Bundle, Context, Intent, Override, PassphraseRequiredActionBarActivity
+
+### Community 153 - "MmsRadio"
+Cohesion: 0.17
+Nodes (9): ConnectivityListener, ConnectivityManager, Context, Intent, NetworkCallback, Override, SuppressWarnings, WakeLock (+1 more)
+
+### Community 154 - "PermissionsBuilder"
+Cohesion: 0.09
+Nodes (8): Context, Intent, SuppressWarnings, WeakReference, PermissionObject, PermissionsBuilder, SettingsDialogListener, PermissionsRequest
+
+### Community 155 - "ResUtil"
+Cohesion: 0.15
+Nodes (12): Callback, EmojiView, AttributeSet, Canvas, Context, Drawable, Override, Paint (+4 more)
+
+### Community 156 - "StickyHeaderDecoration"
 Cohesion: 0.21
-Nodes (9): MatrixCursor, Cursor, Override, ContactsDatabase, Context, Cursor, NonNull, Nullable (+1 more)
+Nodes (11): ItemDecoration, Canvas, Override, Rect, RecyclerView, View, ViewGroup, ViewHolder (+3 more)
 
-### Community 226 - "Emoji Mapper Recent"
+### Community 157 - "View"
 Cohesion: 0.18
-Nodes (6): ObjectMapper, Context, Override, SharedPreferences, RecentEmojiPageModel, JsonUtils
+Nodes (8): OnLongClickListener, ClickListener, OnClickListener, Override, View, MmsDownloadClickListener, MmsPreferencesClickListener, PassthroughClickListener
 
-### Community 228 - "Max Size Constraints"
-Cohesion: 0.29
-Nodes (3): Context, Uri, MediaConstraints
+### Community 158 - "CountrySelectionFragment.java"
+Cohesion: 0.15
+Nodes (15): ListFragment, LoaderCallbacks, CountrySelectedListener, CountrySelectionFragment, FilterWatcher, Bundle, Context, Editable (+7 more)
 
-### Community 229 - "Uri Local Fetcher"
+### Community 159 - "Util"
+Cohesion: 0.04
+Nodes (39): Activity, Application, AudioManager, BroadcastReceiver, InputMethodManager, Insets, Network, NotificationInd (+31 more)
+
+### Community 160 - "EmojiProvider.java"
+Cohesion: 0.13
+Nodes (12): EmojiDrawable, EmojiProvider, Bitmap, Canvas, ColorFilter, Context, Drawable, Nullable (+4 more)
+
+### Community 161 - "ContactSelectionListAdapter.java"
+Cohesion: 0.19
+Nodes (12): FastScrollAdapter, ContactSelectionListAdapter, HeaderViewHolder, ItemClickListener, Context, Cursor, LayoutInflater, NonNull (+4 more)
+
+### Community 162 - "ConversationListArchiveActivity"
+Cohesion: 0.15
+Nodes (8): ConversationListArchiveActivity, Bundle, MenuItem, Override, ImportExportActivity, Bundle, MenuItem, Override
+
+### Community 163 - "MessagingDatabase"
+Cohesion: 0.16
+Nodes (7): ContentValuesBuilder, ContentValues, EncodedStringValue, Context, SQLiteDatabase, SQLiteOpenHelper, MessagingDatabase
+
+### Community 164 - "MmsSmsDatabase"
 Cohesion: 0.20
-Nodes (11): ContactPhotoLocalUriFetcher, ContentResolver, Context, Override, Uri, DecryptableStreamLocalUriFetcher, ContentResolver, Context (+3 more)
+Nodes (5): Context, Cursor, SQLiteOpenHelper, MmsSmsDatabase, Reader
 
-### Community 230 - "Emoji Toggle Drawer"
-Cohesion: 0.22
-Nodes (7): AppCompatImageButton, EmojiDrawerListener, EmojiToggle, AttributeSet, Context, Drawable, Override
+### Community 165 - "ShareFragment"
+Cohesion: 0.16
+Nodes (11): ConversationSelectedListener, Bundle, Context, Cursor, LayoutInflater, ListView, Loader, Override (+3 more)
 
-### Community 231 - "Bitmap Rounded Corners"
-Cohesion: 0.23
-Nodes (8): BitmapPool, BitmapTransformation, Config, Bitmap, Context, MessageDigest, Override, RoundedCorners
+### Community 167 - "SubscriptionInfoCompat"
+Cohesion: 0.14
+Nodes (3): Context, NonNull, SubscriptionInfoCompat
 
-### Community 232 - "Error Fragment Create"
+### Community 168 - "ComposeText"
+Cohesion: 0.11
+Nodes (15): InputConnection, InputContentInfoCompat, OnCommitContentListener, CommitContentListener, ComposeText, AttributeSet, Bundle, Context (+7 more)
+
+### Community 169 - "LogicalFingerprint"
+Cohesion: 0.13
+Nodes (3): ByteString, Parser, LogicalFingerprint
+
+### Community 170 - "LegacyMmsConnection"
 Cohesion: 0.26
-Nodes (6): ErrorDialogFragmentFactory, Honeycomb, Bundle, Fragment, TargetApi, Support
+Nodes (7): Proxy, Context, Nullable, OkHttpClient, Request, SuppressWarnings, LegacyMmsConnection
 
-### Community 233 - "Job Serializer Override"
-Cohesion: 0.18
-Nodes (6): Override, JavaJobSerializer, ObjectInputStream, ObjectOutputStream, EncryptingJobSerializer, Override
+### Community 171 - "ContactSelectionActivity"
+Cohesion: 0.14
+Nodes (10): ContactSelectionActivity, Bundle, EditText, ImageView, LinearLayout, Override, Toolbar, View (+2 more)
 
-### Community 234 - "Reader Mms Sms"
-Cohesion: 0.26
-Nodes (3): Cursor, MmsSmsDatabase, Reader
-
-### Community 235 - "Construct Intent Send"
-Cohesion: 0.24
-Nodes (5): Context, Intent, Override, PendingIntent, SmsSendJob
-
-### Community 236 - "Item Attachment Type"
+### Community 172 - ".getRemoteReplyIntent"
 Cohesion: 0.21
-Nodes (6): AttachmentTypeSelectorAdapter, IconListItem, Context, Override, View, ViewGroup
+Nodes (4): NotificationActionIdentity, Context, PendingIntent, NotificationActionIdentityTest
 
-### Community 237 - "Video Slide Has"
-Cohesion: 0.23
-Nodes (8): Context, DrawableRes, NonNull, Nullable, Override, Theme, Uri, VideoSlide
+### Community 173 - "IdentityKey"
+Cohesion: 0.04
+Nodes (36): DeserializationContext, JsonDeserializer, JsonGenerator, JsonParser, JsonSerializer, FingerprintGenerator, Override, NumericFingerprintGenerator (+28 more)
 
-### Community 238 - "Click Button Listener"
+### Community 174 - "argon2.c"
 Cohesion: 0.19
-Nodes (8): CancelButtonClickListener, Bundle, Button, EditText, Override, View, OkButtonClickListener, PassphraseChangeActivity
+Nodes (23): argon2_compare(), argon2_ctx(), argon2_hash(), argon2_type2string(), argon2_verify(), argon2_verify_ctx(), argon2d_ctx(), argon2d_hash_encoded() (+15 more)
 
-### Community 239 - "Preference Preferences Click"
+### Community 175 - "core.c"
+Cohesion: 0.20
+Nodes (23): allocate_memory(), argon2_context, argon2_instance_t, argon2_position_t, argon2_type, block, clear_internal_memory(), copy_block() (+15 more)
+
+### Community 176 - ".finish"
+Cohesion: 0.11
+Nodes (12): Bundle, MenuItem, Override, SendLogActivity, Bundle, Override, Bundle, Override (+4 more)
+
+### Community 177 - "RecipientPreferenceDatabase"
 Cohesion: 0.23
-Nodes (8): ApnPreferencesClickListener, ActivityResultLauncher, Bundle, Context, Intent, Override, Preference, SmsMmsPreferenceFragment
+Nodes (5): ContentValues, Context, Cursor, SQLiteOpenHelper, RecipientPreferenceDatabase
 
-### Community 240 - "File Mms Body"
-Cohesion: 0.30
-Nodes (7): ContentValues, Cursor, Override, ParcelFileDescriptor, Uri, UriMatcher, MmsBodyProvider
+### Community 178 - "DeliveryStatusView"
+Cohesion: 0.14
+Nodes (9): AlertView, AttributeSet, Context, ImageView, DeliveryStatusView, AttributeSet, Context, ImageView (+1 more)
 
-### Community 241 - "Builder Async Executor"
-Cohesion: 0.23
-Nodes (3): AsyncExecutor, Builder, RunnableEx
+### Community 179 - ".getStringPreference"
+Cohesion: 0.09
+Nodes (7): Builder, AbstractNotificationBuilder, Context, Uri, FailedNotificationBuilder, Context, Intent
 
-### Community 242 - "Fingerprint Displayable Scannable"
-Cohesion: 0.19
-Nodes (3): DisplayableFingerprint, Fingerprint, ScannableFingerprint
+### Community 180 - ".getThreadDatabase"
+Cohesion: 0.12
+Nodes (7): Intent, MenuItem, SuppressLint, ConversationListLoader, Context, Cursor, Override
 
-### Community 243 - "View Image Uri"
-Cohesion: 0.26
-Nodes (8): PhotoViewAttacher, AttributeSet, Context, Handler, ImageView, Uri, ZoomingImageView, SubsamplingScaleImageView
-
-### Community 244 - "Mms Notification Message"
-Cohesion: 0.23
-Nodes (3): Override, SpannableString, NotificationMmsMessageRecord
-
-### Community 245 - "Read Initialize Cipher"
-Cohesion: 0.24
-Nodes (6): DecryptingPartInputStream, Cipher, IvParameterSpec, Mac, Override, SecretKeySpec
-
-### Community 247 - "Permissions Intent Notification"
-Cohesion: 0.24
-Nodes (6): Bundle, Context, Intent, Override, SuppressLint, WelcomeActivity
-
-### Community 248 - "Adapter Recipients Cursor"
-Cohesion: 0.29
-Nodes (8): Annotation, ResourceCursorAdapter, ContentResolver, Context, Cursor, Override, View, RecipientsAdapter
-
-### Community 249 - "Widget Provider Badge"
-Cohesion: 0.27
-Nodes (6): AppWidgetManager, AppWidgetProvider, BadgeWidgetProvider, Context, Override, PendingIntent
-
-### Community 250 - "Adapter Message Details"
-Cohesion: 0.29
-Nodes (6): BaseAdapter, Context, Override, View, ViewGroup, MessageDetailsRecipientAdapter
-
-### Community 251 - "Adapter View Share"
-Cohesion: 0.31
-Nodes (9): CursorAdapter, RecyclerListener, Context, Cursor, LayoutInflater, Override, View, ViewGroup (+1 more)
-
-### Community 252 - "Color Drawable State"
-Cohesion: 0.23
-Nodes (6): LayerDrawable, ColorStateDrawable, Canvas, ColorFilter, Drawable, Override
-
-### Community 253 - "Drawable Generated Contact"
-Cohesion: 0.19
-Nodes (6): RectShape, ShapeDrawable, GeneratedContactPhoto, Context, Drawable, Override
-
-### Community 255 - "Save Attachment Task"
-Cohesion: 0.22
-Nodes (5): Attachment, Context, OnClickListener, Uri, SaveAttachmentTask
-
-### Community 256 - "Read Cipher Attachment"
-Cohesion: 0.22
-Nodes (4): AttachmentCipherInputStream, Cipher, Mac, Override
-
-### Community 257 - "Preference Ledcolor List"
-Cohesion: 0.26
-Nodes (6): AttributeSet, Context, ImageView, Override, PreferenceViewHolder, LEDColorListPreference
-
-### Community 258 - "Recipients Preferences Nullable"
-Cohesion: 0.24
-Nodes (3): Nullable, Uri, RecipientsPreferences
-
-### Community 259 - "Preference Trim Listener"
-Cohesion: 0.24
-Nodes (7): ChatsPreferenceFragment, Bundle, Context, Override, Preference, TrimLengthValidationListener, TrimNowClickListener
-
-### Community 260 - "Destination Body For"
-Cohesion: 0.33
-Nodes (6): DestinationAndBody, Bundle, Intent, NonNull, Override, SmsSendtoActivity
-
-### Community 261 - "Snackbar Async Task"
-Cohesion: 0.26
-Nodes (5): AlertDialog, Override, SafeVarargs, View, SnackbarAsyncTask
-
-### Community 262 - "Data Fetcher Source"
-Cohesion: 0.22
-Nodes (7): DataCallback, DataFetcher, DataSource, Priority, AttachmentStreamLocalUriFetcher, NonNull, Override
-
-### Community 263 - "Protocol Logger Provider"
-Cohesion: 0.22
-Nodes (5): AndroidSignalProtocolLogger, Override, SignalProtocolLogger, SignalProtocolLoggerProvider, SparseIntArray
-
-### Community 264 - "Mms Config Worker"
-Cohesion: 0.27
-Nodes (6): MmsConfig, Context, Nullable, MmsConfigManager, Override, WorkerThread
-
-### Community 265 - "Preference Fragment Corrected"
-Cohesion: 0.24
-Nodes (7): PreferenceFragmentCompat, CorrectedPreferenceFragment, Bundle, Override, Preference, SuppressWarnings, View
-
-### Community 266 - "Sms Manager Legacy"
-Cohesion: 0.33
-Nodes (7): SmsManager, Context, NonNull, Nullable, RequiresApi, SuppressWarnings, SmsManagerUtil
-
-### Community 267 - "Emoji View Drawable"
-Cohesion: 0.26
-Nodes (7): EmojiView, AttributeSet, Canvas, Context, Drawable, Override, Paint
-
-### Community 268 - "Node Next Itr"
+### Community 181 - "Node"
 Cohesion: 0.28
 Nodes (3): AbstractItr, DescendingItr, Node
 
-### Community 269 - "Progress Trimmer Trimming"
-Cohesion: 0.29
-Nodes (8): AlertDialog, Context, Handler, Override, ProgressBar, WeakReference, Trimmer, TrimmingProgressController
+### Community 182 - "Builder"
+Cohesion: 0.14
+Nodes (3): Builder, BuilderParent, SingleFieldBuilderV3
 
-### Community 270 - "Activity Exit Dummy"
-Cohesion: 0.24
-Nodes (7): Activity, DummyActivity, Bundle, Override, ExitActivity, Bundle, Override
+### Community 183 - "VerifyIdentityActivity.java"
+Cohesion: 0.09
+Nodes (13): OldToNewKeyRecordsTest, IdentityKeyParcelable, Creator, Override, Parcel, IdentityKeyUtil, Context, Bundle (+5 more)
 
-### Community 271 - "Adapter Intent Share"
-Cohesion: 0.30
-Nodes (8): ArrayAdapter, Context, Intent, Override, View, ViewGroup, ShareIntentListAdapter, ResolveInfo
+### Community 185 - "MasterCipher"
+Cohesion: 0.16
+Nodes (4): Cipher, Mac, SecretKeySpec, MasterCipher
 
-### Community 272 - "Popup Transport Options"
+### Community 186 - "VendoredSessionStore"
+Cohesion: 0.08
+Nodes (9): Context, SmsCipher, Context, FileChannel, FileInputStream, Override, VendoredSessionStore, KeyExchangeMessage (+1 more)
+
+### Community 187 - ".migrateConversation"
 Cohesion: 0.27
-Nodes (8): ListPopupWindow, OnItemClickListener, AdapterView, Context, Override, View, SelectedListener, TransportOptionsPopup
+Nodes (6): Context, Cursor, SQLiteStatement, ProgressDescription, SmsMigrationProgressListener, SmsMigrator
 
-### Community 273 - "Date Relative Time"
-Cohesion: 0.39
-Nodes (3): SimpleDateFormat, DateUtils, Context
+### Community 188 - "ColorPickerPreference"
+Cohesion: 0.09
+Nodes (14): ColorPickerPreference, AttributeSet, Context, ImageView, OnPreferenceChangeListener, Override, PreferenceViewHolder, SuppressLint (+6 more)
 
-### Community 274 - "View Removable Media"
-Cohesion: 0.24
-Nodes (7): AttributeSet, Context, ImageView, OnClickListener, Override, View, RemovableMediaView
+### Community 189 - "Graph Outputs"
+Cohesion: 0.10
+Nodes (22): Graph Database Export, Token Reduction Benchmark, SVG and GraphML Export, Wiki Export, Deterministic Path-Derived Node IDs, Evidence Confidence Model, Semantic Hyperedges, Semantic Similarity Edges (+14 more)
 
-### Community 275 - "Conversation Update Item"
-Cohesion: 0.27
-Nodes (7): ConversationUpdateItem, AttributeSet, Context, ImageView, Override, TextView, View
+### Community 191 - ".getString"
+Cohesion: 0.19
+Nodes (6): Bundle, Menu, MenuItem, Override, TextView, ViewIdentityActivity
 
-### Community 277 - "Message Sms Body"
-Cohesion: 0.26
-Nodes (3): Context, SmsCipher, SmsTransportDetails
+### Community 192 - ".sendMultipleThreadNotification"
+Cohesion: 0.15
+Nodes (6): SuppressLint, Context, Notification, Override, PendingIntent, MultipleRecipientNotificationBuilder
 
-### Community 278 - "Max Size Mms"
-Cohesion: 0.41
-Nodes (3): Context, Override, MmsMediaConstraints
-
-### Community 279 - "Preference List View"
-Cohesion: 0.29
-Nodes (7): AttributeSet, Context, Override, PreferenceViewHolder, RequiresApi, TextView, SilenceListPreference
-
-### Community 280 - "Preference Ringtone View"
-Cohesion: 0.29
-Nodes (7): AttributeSet, Context, Override, PreferenceViewHolder, RequiresApi, TextView, SilenceRingtonePreference
-
-### Community 282 - "Max Test Size"
-Cohesion: 0.35
-Nodes (5): BitmapUtilTest, Context, Override, RunWith, TestMediaConstraints
-
-### Community 283 - "Edit Text Emoji"
-Cohesion: 0.27
-Nodes (7): AppCompatEditText, EmojiEditText, AttributeSet, Context, Drawable, InputFilter, Override
-
-### Community 284 - "Loader Cursor Identity"
+### Community 193 - "NoopContentProvider"
 Cohesion: 0.25
-Nodes (7): CursorLoader, ContactsCursorLoader, Context, IdentityLoader, Context, Cursor, Override
+Nodes (11): Conversation, ConversationList, DatabaseContentProviders, Identities, ContentValues, Cursor, Nullable, Override (+3 more)
 
-### Community 285 - "Passphrase Invalid Theme"
+### Community 194 - "AppProtectionPreferenceFragment"
+Cohesion: 0.22
+Nodes (9): AppProtectionPreferenceFragment, BlockedContactsClickListener, ChangePassphraseClickListener, DisablePassphraseClickListener, Bundle, CheckBoxPreference, Override, Preference (+1 more)
+
+### Community 195 - "AbstractCursorLoader"
+Cohesion: 0.32
+Nodes (5): ForceLoadContentObserver, AbstractCursorLoader, Context, Cursor, Override
+
+### Community 196 - "OnPreferenceClickListener"
+Cohesion: 0.13
+Nodes (11): OnPreferenceClickListener, ApplicationPreferenceFragment, CategoryClickListener, Override, Preference, AdvancedPreferenceFragment, Bundle, Override (+3 more)
+
+### Community 197 - ".getOutgoingMessage"
+Cohesion: 0.13
+Nodes (7): Context, SQLiteOpenHelper, MmsAddressDatabase, NonNull, Nullable, MmsAddresses, Nullable
+
+### Community 198 - "Permissions"
+Cohesion: 0.18
+Nodes (8): ActivityPermissionObject, FragmentPermissionLauncher, FragmentPermissionObject, Activity, ActivityResultLauncher, Fragment, Override, Permissions
+
+### Community 199 - "BitmapUtil"
 Cohesion: 0.20
-Nodes (6): EditorInfo, ImageButton, InvalidPassphraseException, DynamicIntroTheme, Activity, Override
+Nodes (6): BitmapUtil, Bitmap, Context, Drawable, Options, Rect
 
-### Community 286 - "Mms Receive Job"
-Cohesion: 0.29
-Nodes (4): GenericPdu, Context, Override, MmsReceiveJob
+### Community 200 - "PassphraseChangeActivity"
+Cohesion: 0.20
+Nodes (8): CancelButtonClickListener, Bundle, Button, EditText, Override, View, OkButtonClickListener, PassphraseChangeActivity
 
-### Community 287 - "Manager Input Connectivity"
-Cohesion: 0.27
-Nodes (5): InputMethodManager, ConnectivityManager, Context, TelephonyManager, ServiceUtil
-
-### Community 288 - "Subscriber Jar Event"
-Cohesion: 0.25
-Nodes (4): EventBusSubscriberInJarTest, EventBusSubscriberInJarTestWithIndex, Before, SubscriberInJar
-
-### Community 290 - "Color Bar Unknown"
-Cohesion: 0.35
-Nodes (8): fromSerialized(), getAttribute(), Context, represents(), toActionBarColor(), toConversationColor(), toStatusBarColor(), UnknownColorException
-
-### Community 291 - "Animating Toggle View"
-Cohesion: 0.31
-Nodes (6): AnimatingToggle, Animation, AttributeSet, Context, Override, View
-
-### Community 292 - "Drawable Bubble Builder"
+### Community 201 - "PRNGFixes"
 Cohesion: 0.24
-Nodes (3): BubbleDrawableBuilder, Context, Drawable
+Nodes (3): Provider, LinuxPRNGSecureRandomProvider, PRNGFixes
 
-### Community 293 - "Emoji Static Page"
+### Community 202 - "ListenableFutureTask"
+Cohesion: 0.17
+Nodes (5): FutureTask, FutureTaskListener, Override, ListenableFutureTask, TaggedFutureTask
+
+### Community 203 - ".onLoadFinished"
+Cohesion: 0.18
+Nodes (6): Cursor, Loader, ConversationLoader, Context, Cursor, Override
+
+### Community 204 - "Builder"
+Cohesion: 0.16
+Nodes (3): Builder, IConfigBuilder, Typeface
+
+### Community 205 - "ECKeyPair"
+Cohesion: 0.06
+Nodes (21): CurveTest, Curve, ECKeyPair, ECPrivateKey, InvalidKeyException, InvalidMessageException, InvalidVersionException, HKDFv3 (+13 more)
+
+### Community 207 - "Override"
+Cohesion: 0.15
+Nodes (5): FieldAccessorTable, FieldDescriptor, OneofDescriptor, Override, UnknownFieldSet
+
+### Community 208 - ".getMasterSecret"
+Cohesion: 0.19
+Nodes (7): IBinder, Intent, Nullable, Override, MessagingNotificationActionService, NotificationActionTokenRegistry, NotificationActionTokenRegistryTest
+
+### Community 209 - "PersistentBlobProvider"
+Cohesion: 0.24
+Nodes (6): Context, NonNull, Nullable, Uri, UriMatcher, PersistentBlobProvider
+
+### Community 210 - "ErrorDialogFragments.java"
 Cohesion: 0.25
-Nodes (4): NonNull, Nullable, Override, StaticEmojiPageModel
+Nodes (12): DialogFragment, ErrorDialogFragments, Honeycomb, Activity, Bundle, Context, Dialog, DialogInterface (+4 more)
 
-### Community 294 - "Drawable Resource Contact"
-Cohesion: 0.29
-Nodes (5): ExpandingLayerDrawable, Context, Drawable, Override, ResourceContactPhoto
+### Community 211 - ".d"
+Cohesion: 0.21
+Nodes (4): Socket, Override, StreamToMediaPlayerTask, Before
 
-### Community 295 - "Recipient From Number"
-Cohesion: 0.40
-Nodes (3): Context, NonNull, RecipientFactory
+### Community 213 - "Parser"
+Cohesion: 0.06
+Nodes (3): Parser, SenderChainKey, SenderMessageKey
 
-### Community 296 - "Sms Message Intent"
-Cohesion: 0.40
-Nodes (5): Context, Intent, Override, SmsMessage, SmsListener
+### Community 214 - "MmsCipher"
+Cohesion: 0.18
+Nodes (5): MultimediaMessagePdu, Context, SendReq, MmsCipher, TextTransport
 
-### Community 297 - "Node Itr First"
+### Community 215 - ".getMmsConfig"
+Cohesion: 0.26
+Nodes (7): MmsConfig, Context, Nullable, MmsConfigManager, Context, Override, MmsMediaConstraints
+
+### Community 216 - "ColorPickerDialog"
+Cohesion: 0.11
+Nodes (10): Builder, ColorPickerDialog, Activity, Context, IntDef, Retention, View, Params (+2 more)
+
+### Community 217 - ".restore"
+Cohesion: 0.18
+Nodes (5): RestoreResult, Operations, SecureBackupRestoreCoordinator, EncryptedBackupExporter, Context
+
+### Community 218 - ".from"
+Cohesion: 0.22
+Nodes (4): Context, Nullable, Uri, NotificationState
+
+### Community 219 - ".from"
+Cohesion: 0.12
+Nodes (9): GenerateKeysJob, Override, Context, Bundle, Override, PassphraseCreateActivity, DualSimUtil, Context (+1 more)
+
+### Community 220 - "ConversationActivity.java"
+Cohesion: 0.09
+Nodes (15): AppCompatActivity, Context, SessionUtil, Override, OutgoingSecureMediaMessage, Override, OutgoingEncryptedMessage, Context (+7 more)
+
+### Community 221 - "ImageDivet"
+Cohesion: 0.20
+Nodes (7): AppCompatImageView, ImageDivet, AttributeSet, Canvas, Context, Drawable, Override
+
+### Community 223 - "ContactsDatabase"
+Cohesion: 0.19
+Nodes (10): CursorWrapper, MatrixCursor, Cursor, Override, ContactsDatabase, Context, Cursor, NonNull (+2 more)
+
+### Community 224 - "Modern Android Auto Messaging Contract"
+Cohesion: 0.11
+Nodes (18): Activity Result Modernization, Connectivity and MMS Ownership Split, Dependency-Aware Modernization Order, Edge-to-Edge System Bar Modernization, Notification and Android Auto Modernization, Telephony and Subscription Modernization, Android Auto Notification Consent Dependency, Legacy Android Auto Payload Removal (+10 more)
+
+### Community 225 - "OutgoingLegacyMmsConnection"
+Cohesion: 0.21
+Nodes (7): Context, Nullable, Override, Request, SendConf, SuppressWarnings, OutgoingLegacyMmsConnection
+
+### Community 227 - "ZoomingImageView"
+Cohesion: 0.21
+Nodes (8): PhotoViewAttacher, AttributeSet, Context, Handler, ImageView, Uri, ZoomingImageView, SubsamplingScaleImageView
+
+### Community 229 - "RepeatableImageKey"
+Cohesion: 0.18
+Nodes (10): AttributeSet, Context, MotionEvent, Override, View, KeyEventListener, RepeatableImageKey, Repeater (+2 more)
+
+### Community 230 - "ContactAccessor"
+Cohesion: 0.16
+Nodes (11): Parcelable, ContactAccessor, ContactData, ContentResolver, Context, Creator, Cursor, Parcel (+3 more)
+
+### Community 231 - "AttachmentRegionDecoder.java"
+Cohesion: 0.22
+Nodes (12): BitmapRegionDecoder, ImageRegionDecoder, SkiaImageRegionDecoder, AttachmentRegionDecoder, Bitmap, Context, Override, Point (+4 more)
+
+### Community 232 - "blake2b.c"
+Cohesion: 0.38
+Nodes (16): blake2b_param, blake2b_state, blake2b(), blake2b_compress(), blake2b_final(), blake2b_increment_counter(), blake2b_init(), blake2b_init0() (+8 more)
+
+### Community 233 - "OutgoingSmsPreference.java"
+Cohesion: 0.17
+Nodes (9): DialogPreference, PreferenceDialogFragmentCompat, AttributeSet, CheckBox, Context, Override, View, OutgoingSmsPreference (+1 more)
+
+### Community 234 - "Overview"
+Cohesion: 0.17
+Nodes (11): Building a session, Configuration, Cryptography Notice, Install time, Legal things, License, Overview, PreKeys (+3 more)
+
+### Community 235 - "ErrorDialogConfig"
+Cohesion: 0.16
+Nodes (3): ErrorDialogConfig, ExceptionToResourceMapping, Resources
+
+### Community 236 - "Fragment"
+Cohesion: 0.24
+Nodes (8): Fragment, ErrorDialogManager, HoneycombManagerFragment, Activity, Bundle, Override, TargetApi, SupportManagerFragment
+
+### Community 237 - "Override"
+Cohesion: 0.30
+Nodes (5): ActionModeCallback, ConversationFragmentItemClickListener, ActionMode, Menu, Override
+
+### Community 238 - "ExtensionRegistryLite"
+Cohesion: 0.19
+Nodes (4): ByteBuffer, CodedInputStream, ExtensionRegistry, ExtensionRegistryLite
+
+### Community 239 - "RecentEmojiPageModel"
+Cohesion: 0.21
+Nodes (4): Context, Override, SharedPreferences, RecentEmojiPageModel
+
+### Community 241 - "Activity"
+Cohesion: 0.55
+Nodes (3): Activity, ActivityResultLauncher, Intent
+
+### Community 242 - ".getTheme"
+Cohesion: 0.18
+Nodes (5): Context, Activity, Override, Activity, Override
+
+### Community 243 - "Override"
 Cohesion: 0.22
 Nodes (3): Itr, Override, SuppressWarnings
 
-### Community 298 - "Device Subscriptions Sim"
-Cohesion: 0.38
-Nodes (4): Context, Intent, Override, SimChangedReceiver
+### Community 245 - "DecryptableStreamLocalUriFetcher.java"
+Cohesion: 0.20
+Nodes (11): ContactPhotoLocalUriFetcher, ContentResolver, Context, Override, Uri, DecryptableStreamLocalUriFetcher, ContentResolver, Context (+3 more)
 
-### Community 299 - "Column Cursor Projection"
-Cohesion: 0.38
-Nodes (3): CursorWrapper, Override, ProjectionMappingCursor
+### Community 246 - "README.md"
+Cohesion: 0.20
+Nodes (9): Chat, Contributing, Cryptography Notice, Documentation, Help, Legal, License, Project goals (+1 more)
 
-### Community 303 - "Encrypting Part Output"
-Cohesion: 0.36
-Nodes (5): EncryptingPartOutputStream, Cipher, Mac, Override, SecretKeySpec
+### Community 247 - "PartProvider.java"
+Cohesion: 0.17
+Nodes (10): Uri, PartUriParser, ContentValues, Cursor, Override, ParcelFileDescriptor, SuppressWarnings, Uri (+2 more)
 
-### Community 305 - "Plaintext Export Backup"
-Cohesion: 0.44
-Nodes (3): Context, Uri, PlaintextBackupExporter
-
-### Community 306 - "Master Secret Job"
-Cohesion: 0.31
-Nodes (4): Context, Override, MasterSecretJob, RequirementNotMetException
-
-### Community 307 - "Ringtone Advanced Preference"
-Cohesion: 0.33
-Nodes (6): AdvancedRingtonePreference, AttributeSet, Context, Override, RequiresApi, Uri
-
-### Community 308 - "Application Job Manager"
-Cohesion: 0.33
-Nodes (3): Application, ApplicationContext, Override
-
-### Community 311 - "Uri Attachment Non"
-Cohesion: 0.42
-Nodes (4): NonNull, Override, Uri, UriAttachment
-
-### Community 312 - "Type Fitzpatrick From"
+### Community 248 - "RecordingOperations"
 Cohesion: 0.28
-Nodes (8): Fitzpatrick, TYPE_1_2, TYPE_3, TYPE_4, TYPE_5, TYPE_6, fitzpatrickFromType(), fitzpatrickFromUnicode()
+Nodes (4): Override, TemporaryFolder, RecordingOperations, SecureBackupRestoreCoordinatorTest
 
-### Community 313 - "View Reminder Attribute"
-Cohesion: 0.36
-Nodes (5): AttributeSet, Context, TextView, ViewGroup, ReminderView
+### Community 249 - "EmojiToggle"
+Cohesion: 0.21
+Nodes (6): EmojiDrawerListener, EmojiToggle, AttributeSet, Context, Drawable, Override
 
-### Community 314 - "Mute Dialog Handle"
-Cohesion: 0.36
-Nodes (3): Context, MuteDialog, MuteSelectionListener
+### Community 250 - "RoundedCorners.java"
+Cohesion: 0.23
+Nodes (8): BitmapPool, BitmapTransformation, Config, Bitmap, Context, MessageDigest, Override, RoundedCorners
 
-### Community 316 - "Trim Thread Job"
-Cohesion: 0.33
-Nodes (3): Context, Override, TrimThreadJob
+### Community 251 - "PersistentResult"
+Cohesion: 0.17
+Nodes (3): Override, PersistentTestJob, PersistentResult
 
-### Community 317 - "Incoming Lollipop Mms"
+### Community 252 - "RecipientsAdapter.java"
 Cohesion: 0.31
-Nodes (6): IncomingLollipopMmsConnection, Context, Intent, Nullable, Override, RetrieveConf
+Nodes (8): Annotation, ResourceCursorAdapter, ContentResolver, Context, Cursor, Override, View, RecipientsAdapter
 
-### Community 318 - "Outgoing Lollipop Mms"
-Cohesion: 0.31
-Nodes (6): Context, Intent, Nullable, Override, SendConf, OutgoingLollipopMmsConnection
+### Community 254 - "SingleUseBlobProvider.java"
+Cohesion: 0.11
+Nodes (14): DecryptingPartInputStream, Cipher, IvParameterSpec, Mac, Override, SecretKeySpec, EncryptingPartOutputStream, Cipher (+6 more)
 
-### Community 319 - "Locale Changed Receiver"
+### Community 255 - "AttachmentTypeSelectorAdapter"
+Cohesion: 0.20
+Nodes (7): ArrayAdapter, AttachmentTypeSelectorAdapter, IconListItem, Context, Override, View, ViewGroup
+
+### Community 256 - "SmsMmsPreferenceFragment"
+Cohesion: 0.16
+Nodes (12): ApnPreferencesClickListener, ActivityResultLauncher, Bundle, Context, Intent, Override, Preference, SmsMmsPreferenceFragment (+4 more)
+
+### Community 257 - "MmsBodyProvider"
 Cohesion: 0.28
-Nodes (6): Context, Intent, Override, LocaleChangedReceiver, Context, NotificationChannels
+Nodes (8): ContentProvider, ContentValues, Cursor, Override, ParcelFileDescriptor, Uri, UriMatcher, MmsBodyProvider
 
-### Community 320 - "Preference Create Advanced"
-Cohesion: 0.36
-Nodes (5): AdvancedPreferenceFragment, Bundle, Override, Preference, SubmitDebugLogListener
+### Community 259 - "BadgeWidgetProvider"
+Cohesion: 0.27
+Nodes (6): AppWidgetManager, AppWidgetProvider, BadgeWidgetProvider, Context, Override, PendingIntent
 
-### Community 321 - "Listener Click Dialog"
-Cohesion: 0.33
-Nodes (6): AcceptListener, CancelListener, DialogInterface, OnClickListener, Override, ReceiveKeyDialog
+### Community 260 - "AsymmetricMasterSecret"
+Cohesion: 0.15
+Nodes (4): AsymmetricMasterCipher, SecretKeySpec, AsymmetricMasterSecret, PublicKey
 
-### Community 322 - "Res Drawable Context"
-Cohesion: 0.42
-Nodes (4): Context, Drawable, Theme, ResUtil
+### Community 261 - "Java_org_smssecure_smssecure_crypto_Argon2id_deriveNative"
+Cohesion: 0.17
+Nodes (12): elapsed_milliseconds(), main(), Java_org_smssecure_smssecure_crypto_Argon2id_deriveNative(), secure_zero(), throw_argon2_exception(), main(), argon2_error_message(), jbyteArray (+4 more)
 
-### Community 323 - "Window Size Compat"
-Cohesion: 0.33
-Nodes (5): Activity, Context, Point, SuppressWarnings, WindowSizeCompat
+### Community 262 - "encoding.c"
+Cohesion: 0.18
+Nodes (11): argon2_encodedlen(), b64_byte_to_char(), b64_char_to_byte(), b64len(), argon2_context, argon2_type, decode_string(), encode_string() (+3 more)
 
-### Community 324 - "Decoder Bitmap Attachment"
-Cohesion: 0.39
-Nodes (6): ImageDecoder, AttachmentBitmapDecoder, Bitmap, Context, Override, Uri
+### Community 263 - "EmojiSpan.java"
+Cohesion: 0.21
+Nodes (10): FontMetricsInt, ImageSpan, AnimatingImageSpan, Callback, Drawable, EmojiSpan, Drawable, Override (+2 more)
 
-### Community 325 - "Filter Emoji Input"
-Cohesion: 0.39
-Nodes (5): InputFilter, EmojiFilter, Override, Spanned, TextView
+### Community 264 - "Writer"
+Cohesion: 0.25
+Nodes (3): Override, Pattern, Writer
 
-### Community 327 - "Callback Simple Archive"
-Cohesion: 0.32
-Nodes (4): SimpleCallback, ArchiveListenerCallback, Canvas, RecyclerView
+### Community 265 - "DisplayableFingerprint"
+Cohesion: 0.19
+Nodes (3): DisplayableFingerprint, Fingerprint, ScannableFingerprint
 
-### Community 328 - "Bitmap Contact Photo"
-Cohesion: 0.39
-Nodes (5): BitmapContactPhoto, Bitmap, Context, Drawable, Override
+### Community 266 - "NotificationMmsMessageRecord"
+Cohesion: 0.23
+Nodes (3): Override, SpannableString, NotificationMmsMessageRecord
 
-### Community 329 - "Identity Key Parcelable"
-Cohesion: 0.32
-Nodes (4): IdentityKeyParcelable, Creator, Override, Parcel
+### Community 267 - "ApnDatabase"
+Cohesion: 0.24
+Nodes (3): ApnDatabase, Context, SQLiteDatabase
 
-### Community 331 - "Preference Switch Compat"
-Cohesion: 0.48
-Nodes (4): CheckBoxPreference, AttributeSet, Context, SwitchPreferenceCompat
-
-### Community 332 - "Progress Dialog Async"
-Cohesion: 0.33
-Nodes (4): Deprecated, Context, SafeVarargs, ProgressDialogAsyncTask
-
-### Community 333 - "Entry Lrucache Event"
+### Community 268 - "MediaConstraints"
 Cohesion: 0.29
-Nodes (3): Entry, Override, LRUCache
+Nodes (3): Context, Uri, MediaConstraints
 
-### Community 336 - "Transparent Contact Photo"
+### Community 269 - "WelcomeActivity"
+Cohesion: 0.15
+Nodes (10): BootReceiver, Context, Intent, Override, Bundle, Context, Intent, Override (+2 more)
+
+### Community 270 - "BFS and DFS Graph Traversal"
+Cohesion: 0.14
+Nodes (14): Folder Watch, URL Ingestion, Graphify MCP Server, Native AGENTS Integration, Post-Commit Rebuild Hook, Constrained Query Expansion, BFS and DFS Graph Traversal, Graph Work Memory (+6 more)
+
+### Community 271 - "TransportOption"
+Cohesion: 0.15
+Nodes (8): NonNull, TransportOption, Context, LayoutInflater, Override, View, ViewGroup, TransportOptionsAdapter
+
+### Community 272 - "EmojiTextView.java"
+Cohesion: 0.14
+Nodes (12): AppCompatTextView, BufferType, AnimatedDotsView, AttributeSet, Context, Handler, Override, EmojiTextView (+4 more)
+
+### Community 273 - "BaseActivity"
+Cohesion: 0.19
+Nodes (8): FragmentActivity, KeyEvent, BaseActivity, KeyEvent, Override, CountrySelectionActivity, Bundle, Override
+
+### Community 274 - "ColorStateDrawable"
+Cohesion: 0.23
+Nodes (6): LayerDrawable, ColorStateDrawable, Canvas, ColorFilter, Drawable, Override
+
+### Community 275 - ".asDrawable"
+Cohesion: 0.19
+Nodes (6): RectShape, ShapeDrawable, GeneratedContactPhoto, Context, Drawable, Override
+
+### Community 276 - "SmsReceiveJob"
+Cohesion: 0.36
+Nodes (3): Override, SmsMessage, SmsReceiveJob
+
+### Community 277 - "ConversationPopupActivity"
+Cohesion: 0.16
+Nodes (8): ConversationPopupActivity, Bundle, Menu, MenuItem, Override, SuppressLint, Activity, SuppressWarnings
+
+### Community 278 - "Attachment"
+Cohesion: 0.03
+Nodes (47): Attachment, DataSource, FileInputStream, FilterInputStream, FilterOutputStream, Glide, ImageDecoder, Override (+39 more)
+
+### Community 279 - ".getBaseHeaders"
+Cohesion: 0.33
+Nodes (3): Headers, Builder, SuppressLint
+
+### Community 280 - "CompatMmsConnection"
+Cohesion: 0.20
+Nodes (9): CompatMmsConnection, Context, Nullable, Override, RetrieveConf, SendConf, Nullable, SendConf (+1 more)
+
+### Community 281 - "OutgoingLollipopMmsConnection.java"
+Cohesion: 0.29
+Nodes (5): Context, Intent, Nullable, Override, SendConf
+
+### Community 282 - "ChatsPreferenceFragment"
+Cohesion: 0.24
+Nodes (7): ChatsPreferenceFragment, Bundle, Context, Override, Preference, TrimLengthValidationListener, TrimNowClickListener
+
+### Community 283 - ".getNextIntent"
+Cohesion: 0.33
+Nodes (6): DestinationAndBody, Bundle, Intent, NonNull, Override, SmsSendtoActivity
+
+### Community 284 - "SnackbarAsyncTask"
+Cohesion: 0.27
+Nodes (5): AlertDialog, Override, SafeVarargs, View, SnackbarAsyncTask
+
+### Community 285 - "ShareListAdapter.java"
+Cohesion: 0.31
+Nodes (9): CursorAdapter, RecyclerListener, Context, Cursor, LayoutInflater, Override, View, ViewGroup (+1 more)
+
+### Community 286 - "AttachmentStreamLocalUriFetcher"
+Cohesion: 0.24
+Nodes (6): DataCallback, DataFetcher, Priority, AttachmentStreamLocalUriFetcher, NonNull, Override
+
+### Community 287 - "NetworkRequirementProvider"
+Cohesion: 0.29
+Nodes (7): ConnectivityChangeReceiver, ConnectivityManager, Context, Intent, NetworkCallback, Override, NetworkRequirementProvider
+
+### Community 289 - "ConversationScrollListener"
+Cohesion: 0.18
+Nodes (7): OnScrollListener, ConversationDateHeader, ConversationScrollListener, Animation, Context, RecyclerView, TextView
+
+### Community 290 - "CorrectedPreferenceFragment.java"
+Cohesion: 0.22
+Nodes (7): PreferenceFragmentCompat, CorrectedPreferenceFragment, Bundle, Override, Preference, SuppressWarnings, View
+
+### Community 291 - "IncomingLollipopMmsConnection.java"
+Cohesion: 0.18
+Nodes (12): SmsManager, Context, Intent, Nullable, Override, RetrieveConf, Context, NonNull (+4 more)
+
+### Community 293 - "LEDColorListPreference"
+Cohesion: 0.28
+Nodes (6): AttributeSet, Context, ImageView, Override, PreferenceViewHolder, LEDColorListPreference
+
+### Community 294 - "JobManager"
+Cohesion: 0.29
+Nodes (6): Dependency Injection, JobManager, License, Persistence, Requirements, The JobManager Way
+
+### Community 295 - "Trimmer.java"
+Cohesion: 0.29
+Nodes (8): AlertDialog, Context, Handler, Override, ProgressBar, WeakReference, Trimmer, TrimmingProgressController
+
+### Community 297 - "ShareIntentListAdapter.java"
+Cohesion: 0.29
+Nodes (7): Context, Intent, Override, View, ViewGroup, ShareIntentListAdapter, ResolveInfo
+
+### Community 298 - "FileOutputStream"
+Cohesion: 0.22
+Nodes (6): DataInputStream, FileOutputStream, SecureRandomSpi, Override, LinuxPRNGSecureRandom, TemporaryFolder
+
+### Community 299 - "TransparentContactPhoto"
 Cohesion: 0.38
 Nodes (4): Context, Drawable, Override, TransparentContactPhoto
 
-### Community 337 - "Apn Database Default"
-Cohesion: 0.48
-Nodes (3): ApnDatabase, Context, SQLiteDatabase
+### Community 300 - "LayoutParams"
+Cohesion: 0.47
+Nodes (4): LayoutParams, Builder, Context, RationaleDialog
 
-### Community 338 - "Database Helper Execute"
+### Community 301 - "SignalProtocolLogger"
+Cohesion: 0.22
+Nodes (5): AndroidSignalProtocolLogger, Override, SignalProtocolLogger, SignalProtocolLoggerProvider, SparseIntArray
+
+### Community 302 - "TransportOptionsPopup"
+Cohesion: 0.31
+Nodes (7): ListPopupWindow, AdapterView, Context, Override, View, SelectedListener, TransportOptionsPopup
+
+### Community 303 - "Service"
+Cohesion: 0.30
+Nodes (7): Service, IBinder, Intent, Nullable, Override, MasterSecretIntentService, QuickResponseService
+
+### Community 304 - "CursorRecyclerViewAdapterTest.java"
+Cohesion: 0.43
+Nodes (4): CursorRecyclerViewAdapterTest, Before, Context, Cursor
+
+### Community 305 - "RemovableMediaView"
+Cohesion: 0.24
+Nodes (7): AttributeSet, Context, ImageView, OnClickListener, Override, View, RemovableMediaView
+
+### Community 306 - ".getPrimaryRecipient"
+Cohesion: 0.08
+Nodes (11): IconCompat, Menu, Context, NotificationActionOperations, AutoInitiate, Context, Intent, Override (+3 more)
+
+### Community 307 - "ImageSlide.java"
+Cohesion: 0.27
+Nodes (7): ImageSlide, Context, DrawableRes, NonNull, Override, Theme, Uri
+
+### Community 308 - "SilenceListPreference.java"
+Cohesion: 0.29
+Nodes (7): AttributeSet, Context, Override, PreferenceViewHolder, RequiresApi, TextView, SilenceListPreference
+
+### Community 309 - "SilenceRingtonePreference.java"
+Cohesion: 0.29
+Nodes (7): AttributeSet, Context, Override, PreferenceViewHolder, RequiresApi, TextView, SilenceRingtonePreference
+
+### Community 310 - "TelephonyUtil"
+Cohesion: 0.33
+Nodes (5): Context, SuppressLint, SuppressWarnings, TelephonyManager, TelephonyUtil
+
+### Community 311 - "TestMediaConstraints"
+Cohesion: 0.35
+Nodes (5): BitmapUtilTest, Context, Override, RunWith, TestMediaConstraints
+
+### Community 312 - "EmojiEditText.java"
+Cohesion: 0.27
+Nodes (7): AppCompatEditText, EmojiEditText, AttributeSet, Context, Drawable, InputFilter, Override
+
+### Community 313 - "Bug.md"
+Cohesion: 0.33
+Nodes (5): Bug description, Device info, How to reproduce, Link to debug log, Screenshots
+
+### Community 314 - "fill_segment"
+Cohesion: 0.27
+Nodes (8): fBlaMka(), BLAKE2_INLINE, argon2_instance_t, argon2_position_t, block, fill_block(), fill_segment(), next_addresses()
+
+### Community 315 - "IdentityLoader.java"
+Cohesion: 0.25
+Nodes (7): CursorLoader, ContactsCursorLoader, Context, IdentityLoader, Context, Cursor, Override
+
+### Community 316 - "libpastelog"
+Cohesion: 0.33
+Nodes (5): Building, Download, libpastelog, License, Usage
+
+### Community 318 - "Gradle Witness"
+Cohesion: 0.40
+Nodes (4): Dependency Problems, Gradle Witness, The Witness Solution, Using Witness
+
+### Community 319 - "MaterialColor.java"
+Cohesion: 0.35
+Nodes (8): fromSerialized(), getAttribute(), Context, represents(), toActionBarColor(), toConversationColor(), toStatusBarColor(), UnknownColorException
+
+### Community 320 - "FrameLayout"
+Cohesion: 0.11
+Nodes (16): FrameLayout, AnimatingToggle, Animation, AttributeSet, Context, Override, View, AttributeSet (+8 more)
+
+### Community 321 - "BubbleDrawableBuilder"
+Cohesion: 0.24
+Nodes (3): BubbleDrawableBuilder, Context, Drawable
+
+### Community 322 - "StaticEmojiPageModel"
+Cohesion: 0.25
+Nodes (4): NonNull, Nullable, Override, StaticEmojiPageModel
+
+### Community 323 - "ResourceContactPhoto.java"
+Cohesion: 0.29
+Nodes (5): ExpandingLayerDrawable, Context, Drawable, Override, ResourceContactPhoto
+
+### Community 324 - "ConversationListItemAction.java"
+Cohesion: 0.27
+Nodes (5): ConversationListItemAction, AttributeSet, Context, Override, TextView
+
+### Community 325 - "MediaType"
+Cohesion: 0.40
+Nodes (5): MediaType, AUDIO, GIF, IMAGE, VIDEO
+
+### Community 326 - "IncomingMmsConnection"
+Cohesion: 0.60
+Nodes (3): IncomingMmsConnection, Nullable, RetrieveConf
+
+### Community 327 - "PlaintextBackupExporter.java"
+Cohesion: 0.38
+Nodes (3): Context, Uri, PlaintextBackupExporter
+
+### Community 328 - ".isRelevant"
+Cohesion: 0.40
+Nodes (5): Context, Intent, Override, SmsMessage, SmsListener
+
+### Community 329 - "DateUtils"
+Cohesion: 0.39
+Nodes (3): SimpleDateFormat, DateUtils, Context
+
+### Community 330 - "CountryListLoader.java"
+Cohesion: 0.29
+Nodes (5): AsyncTaskLoader, CountryListLoader, Context, Override, RegionComparator
+
+### Community 331 - "blake2-impl.h"
+Cohesion: 0.36
+Nodes (9): BLAKE2_INLINE, load32(), load48(), load64(), rotr32(), rotr64(), store32(), store48() (+1 more)
+
+### Community 332 - "CONTRIBUTING.md"
+Cohesion: 0.50
+Nodes (3): Submitting bug reports, Submitting merge requests, Translations
+
+### Community 334 - "CombinedFingerprints"
+Cohesion: 0.24
+Nodes (4): CombinedFingerprints, ByteBuffer, CodedInputStream, ExtensionRegistryLite
+
+### Community 336 - "TransportOptions"
+Cohesion: 0.14
+Nodes (7): Type, DISABLED, INSECURE_SMS, SECURE_SMS, Context, NonNull, TransportOptions
+
+### Community 337 - "MasterSecretJob"
+Cohesion: 0.22
+Nodes (5): Override, MasterSecretJob, RequirementNotMetException, Override, SmsSentJob
+
+### Community 338 - "AdvancedRingtonePreference"
+Cohesion: 0.33
+Nodes (6): AdvancedRingtonePreference, AttributeSet, Context, Override, RequiresApi, Uri
+
+### Community 339 - "DynamicLanguage"
+Cohesion: 0.07
+Nodes (26): AlertDialog, ListPreference, OnSharedPreferenceChangeListener, Ringtone, RingtoneManager, ApplicationPreferencesActivity, Bundle, BlockedContactsActivity (+18 more)
+
+### Community 340 - ".doWork"
+Cohesion: 0.21
+Nodes (8): DocumentFile, Result, AutomaticBackupWorker, Context, NonNull, Override, Worker, WorkerParameters
+
+### Community 341 - ".onRun"
+Cohesion: 0.39
+Nodes (3): GenericPdu, Override, MmsReceiveJob
+
+### Community 343 - "EncryptionKeys"
+Cohesion: 0.08
+Nodes (14): EncryptionKeys, Builder, Override, JavaJobSerializer, JobSerializer, DatabaseHelper, Context, Override (+6 more)
+
+### Community 348 - "Fitzpatrick"
+Cohesion: 0.28
+Nodes (8): Fitzpatrick, TYPE_1_2, TYPE_3, TYPE_4, TYPE_5, TYPE_6, fitzpatrickFromType(), fitzpatrickFromUnicode()
+
+### Community 349 - "ReminderView"
+Cohesion: 0.36
+Nodes (5): AttributeSet, Context, TextView, ViewGroup, ReminderView
+
+### Community 351 - "MuteDialog"
+Cohesion: 0.36
+Nodes (3): Context, MuteDialog, MuteSelectionListener
+
+### Community 352 - "TrimThreadJob"
+Cohesion: 0.39
+Nodes (3): Context, Override, TrimThreadJob
+
+### Community 354 - "WindowSizeCompat.java"
+Cohesion: 0.36
+Nodes (5): Activity, Context, Point, SuppressWarnings, WindowSizeCompat
+
+### Community 355 - "argon2_thread_create"
+Cohesion: 0.29
+Nodes (6): argon2_thread_func_t, argon2_thread_handle_t, fill_segment_thr(), argon2_thread_create(), argon2_thread_exit(), argon2_thread_join()
+
+### Community 358 - "EmojiFilter.java"
+Cohesion: 0.39
+Nodes (5): InputFilter, EmojiFilter, Override, Spanned, TextView
+
+### Community 359 - "SquareLinearLayout.java"
+Cohesion: 0.32
+Nodes (5): AttributeSet, Context, Override, SuppressWarnings, SquareLinearLayout
+
+### Community 360 - "BitmapContactPhoto"
+Cohesion: 0.39
+Nodes (5): BitmapContactPhoto, Bitmap, Context, Drawable, Override
+
+### Community 363 - "SwitchPreferenceCompat.java"
+Cohesion: 0.48
+Nodes (4): CheckBoxPreference, AttributeSet, Context, SwitchPreferenceCompat
+
+### Community 364 - "ProgressDialogAsyncTask"
+Cohesion: 0.33
+Nodes (4): Deprecated, Context, SafeVarargs, ProgressDialogAsyncTask
+
+### Community 368 - "DatabaseHelper"
 Cohesion: 0.62
 Nodes (3): DatabaseHelper, Override, SQLiteDatabase
 
-### Community 339 - "Status Context Sqlite"
-Cohesion: 0.33
-Nodes (3): Context, SQLiteOpenHelper, Status
-
-### Community 345 - "Context Master Secret"
-Cohesion: 0.53
-Nodes (3): Context, Override, MasterSecretRequirement
-
-### Community 346 - "Context Media Network"
+### Community 380 - "MediaNetworkRequirement"
 Cohesion: 0.53
 Nodes (3): Context, Override, MediaNetworkRequirement
 
-### Community 347 - "Item Bundle Menu"
-Cohesion: 0.40
-Nodes (4): Bundle, MenuItem, Override, NewConversationActivity
+### Community 386 - "FingerprintProtos"
+Cohesion: 0.18
+Nodes (4): FingerprintProtos, Descriptor, ExtensionRegistry, FileDescriptor
 
-### Community 348 - "Boot Receiver Receive"
-Cohesion: 0.47
-Nodes (4): BootReceiver, Context, Intent, Override
-
-### Community 357 - "Rename Unicode Extracted"
+### Community 389 - "rename_to"
 Cohesion: 0.50
 Nodes (4): Use TTF cmap (name <-> Unicode code point) mapping to rename an extracted glyph, Rename an extracted glyph, rename_to(), rename_to_resolved_unicode()
 
-### Community 359 - "Rationale Dialog Builder"
-Cohesion: 0.50
-Nodes (3): Builder, Context, RationaleDialog
+### Community 392 - "Status"
+Cohesion: 0.33
+Nodes (3): Context, SQLiteOpenHelper, Status
 
-### Community 362 - "Gradlew Script Die"
+### Community 393 - "FileProviderUtil.java"
+Cohesion: 0.60
+Nodes (3): FileProviderUtil, Context, Uri
+
+### Community 394 - "gradlew"
 Cohesion: 0.83
 Nodes (3): gradlew script, die(), warn()
 
-### Community 363 - "Context Intent Override"
-Cohesion: 0.50
-Nodes (3): Context, Intent, Override
-
 ## Knowledge Gaps
-- **65 isolated node(s):** `WitnessPluginExtension`, `POSTING`, `MAIN`, `BACKGROUND`, `ASYNC` (+60 more)
+- **185 isolated node(s):** `WitnessPluginExtension`, `POSTING`, `MAIN`, `BACKGROUND`, `ASYNC` (+180 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **71 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **67 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `MasterSecret` connect `Override Activity Sms` to `Activity Fragment Sms`, `List Item View`, `Identity Key Byte`, `Recipient Group Selected`, `Key Pre Session`, `Recipients Panel Listener`, `Key Identity Generate`, `Key Session Pre`, `Handle Initialize Conversation`, `Uri Loader Factory`, `Attachment Uri Stream`, `Media Message Slide`, `View Action Conversation`, `Test Number Format`, `Pre Key Session`, `Audio Slide Progress`, `Upgrade Version Progress`, `Key Exchange Message`, `Message Sms Incoming`, `Send Message Mms`, `Listener View Touch`, `Session Menu Title`, `Uri Slide Has`, `Mark Mms Delete`, `Backup Handle Plaintext`, `Click Listener Item`, `Action View Handle`, `Key Message Invalid`, `Message Media Pdu`, `Xml Statement Plaintext`, `Service Foreground Handle`, `Reminder Listener Sms`, `Select Attachment Slide`, `View Holder Header`, `Import State Receiver`, `Preference Change Listener`, `Message Outgoing Body`, `Notification Notifications Message`, `Loader Media Activity`, `Action Intent Service`, `Initialize Dialog Menu`, `Database Cursor Image`, `Notification Message Recipient`, `Service Handle Import`, `Message Exchange Handle`, `Create Bundle Conversation`, `View Loader Message`, `Handle Conversation Create`, `Passphrase Action Listener`, `Subscription Generate Keys`, `View Blocked Create`, `Pre Key Signed`, `Preference Summary List`, `Create View List`, `Type Mime Thumbnail`, `Intent Master Secret`, `Create Media Intent`, `Item View Holder`, `Locale Activity Create`, `Uri Provider Blob`, `Secret Passphrase Master`, `Contact Selected View`, `Mac Body Cipher`, `Addresses For Mms`, `Conversation View Stub`, `Preference Click Listener`, `View Image Media`, `Statement Add Sqlite`, `Identity Verified View`, `Activity Override Menu`, `Identity Verified Display`, `Test Legacy Envelope`, `Conversation List Loader`, `Preference Click Listener`, `Receiver Receive Context`, `Provider Part File`, `Decode Stream Media`, `Untrusted Identity Message`, `Video Server Attachment`, `Mms Reader For`, `Max Size Constraints`, `Uri Local Fetcher`, `Reader Mms Sms`, `Construct Intent Send`, `View Image Uri`, `Adapter Message Details`, `Adapter View Share`, `Save Attachment Task`, `Conversation Update Item`, `Message Sms Body`, `Encrypting Part Output`, `Plaintext Export Backup`, `Master Secret Job`, `Listener Click Dialog`, `Item Bundle Menu`?**
-  _High betweenness centrality (0.197) - this node is a cross-community bridge._
-- **Why does `Log` connect `Activity Fragment Sms` to `Test Dummy Event`, `Key Chain Message`, `List Item View`, `Protocol Logger Provider`, `Test Sticky Event`, `View Contacts Contact`, `Sms Manager Legacy`, `Snackbar Async Task`, `Recipient Group Selected`, `Key Pre Session`, `Recipients Panel Listener`, `Event Test Subscriber`, `Emoji Drawable Provider`, `Header View Decoration`, `Event Post Poster`, `Message Sms Body`, `Attachment Uri Stream`, `Override Activity Sms`, `Connectivity Mms Network`, `Contact Selected View`, `Lollipop Mms Connection`, `Conversation View Stub`, `Log Activity Item`, `Vibrate Recipient Preference`, `Test Number Format`, `Audio Slide Progress`, `Identity Key Sms`, `Emoji Bitmap Page`, `Address Canonical Test`, `Legacy Mms Connection`, `Listener View Touch`, `Incoming Lollipop Mms`, `Outgoing Lollipop Mms`, `Mms Connection Send`, `Identity Notification Action`, `View Log Dialog`, `Key Message Invalid`, `Message Media Pdu`, `Service Foreground Handle`, `Entry Lrucache Event`, `Receiver Receive Context`, `Provider Part File`, `Import State Receiver`, `Job Database Consumer`, `Decode Stream Media`, `Video Server Attachment`, `Draft Drafts Database`, `Emoji View Pager`, `Region Decoder Bitmap`, `Loader Media Activity`, `Dialog Error Mapping`, `Manager Attach Error`, `Action Intent Service`, `Boot Receiver Receive`, `Scrubber Pattern Scrub`, `Uri Local Fetcher`, `View Loader Message`, `Event Test Thread`, `File Mms Body`, `View Image Uri`, `Message Multipart Sms`, `Dependency Injector Job`, `Widget Provider Badge`?**
-  _High betweenness centrality (0.164) - this node is a cross-community bridge._
-- **Why does `Test` connect `Test Sticky Event` to `Activity Fragment Sms`, `Test Dummy Event`, `Bar Color Action`, `Event Test Subscriber`, `Test Job Requirement`, `Key Pre Session`, `Event Test Subscriber`, `Key Identity Generate`, `Document Content Values`, `Max Test Size`, `Subscriber Info Event`, `Event Test Bus`, `Mac Body Cipher`, `Subscriber Jar Event`, `Bitmap Create Scaled`, `View Cursor Header`, `Event Subscriber Test`, `Test Number Format`, `Pre Key Store`, `Address Canonical Test`, `Test Legacy Envelope`, `Task Callback Executor`, `Event Test Bus`, `Key Pre Identity`, `Conversation List Loader`, `Identity Notification Action`, `Thread Conversation Delete`, `Action Intent Service`, `Event Test Thread`, `Conversation Notification Null`, `Kyber Pre Session`?**
-  _High betweenness centrality (0.090) - this node is a cross-community bridge._
+- **Why does `MasterSecret` connect `MasterSecret` to `Log`, `Slide`, `Test`, `AttachmentId`, `ConversationActivity`, `DecryptableUri`, `SilenceSignalProtocolStore`, `OutgoingMediaMessage`, `SignalProtocolAddress`, `SessionRecord`, `OutgoingTextMessage`, `ConversationFragment`, `MasterSecretUtil`, `ConversationAdapter`, `Recipients`, `ImportExportFragment`, `ConversationListItem`, `SecureBackupArchive`, `Recipient`, `AttachmentManager`, `.updateNotification`, `BaseUnitTest`, `DatabaseUpgradeActivity`, `.sendSingleThreadNotification`, `MessageRecord`, `AudioView`, `.importPlaintext`, `MmsDatabase`, `ConversationListFragment`, `.w`, `NotificationsPreferenceFragment`, `.insertMessageInbox`, `MediaOverviewActivity`, `MessageDetailsActivity`, `Reminder`, `PassphrasePromptActivity`, `DatabaseMigrationActivity`, `.getEncryptingSmsDatabase`, `.onResume`, `MediaPreviewActivity`, `BlockedContactsFragment`, `VendoredPreKeyStore`, `ImageMediaAdapter.java`, `ApplicationMigrationService`, `AudioSlidePlayer`, `ShareActivity`, `.startActivity`, `DeleteNotificationReceiver.java`, `.generate`, `MediaUtil`, `ConversationListAdapter`, `.send`, `ConversationAdapter.java`, `PassphraseRequiredActionBarActivity`, `Util`, `ConversationListArchiveActivity`, `MmsSmsDatabase`, `ShareFragment`, `ContactSelectionActivity`, `IdentityKey`, `VerifyIdentityActivity.java`, `MasterCipher`, `VendoredSessionStore`, `.migrateConversation`, `.getString`, `AppProtectionPreferenceFragment`, `OnPreferenceClickListener`, `.getOutgoingMessage`, `ECKeyPair`, `.getMasterSecret`, `PersistentBlobProvider`, `.d`, `MmsCipher`, `.restore`, `.from`, `ConversationActivity.java`, `ZoomingImageView`, `ContactAccessor`, `AttachmentRegionDecoder.java`, `Reader`, `DecryptableStreamLocalUriFetcher.java`, `PartProvider.java`, `RecordingOperations`, `SingleUseBlobProvider.java`, `MediaConstraints`, `SmsReceiveJob`, `ConversationPopupActivity`, `Attachment`, `ShareListAdapter.java`, `FileOutputStream`, `Service`, `.getPrimaryRecipient`, `FrameLayout`, `ConversationListItemAction.java`, `PlaintextBackupExporter.java`, `MasterSecretJob`, `DynamicLanguage`?**
+  _High betweenness centrality (0.163) - this node is a cross-community bridge._
+- **Why does `Log` connect `Log` to `MmsBodyProvider`, `JobManager`, `BadgeWidgetProvider`, `Test`, `Subscribe`, `AttachmentId`, `.retrieve`, `EventBus`, `.register`, `NetworkRequirement`, `DeleteNotificationReceiver.java`, `ContactSelectionListFragment.java`, `WelcomeActivity`, `Job`, `Attachment`, `ConversationAdapter.java`, `SignalProtocolAddress`, `.send`, `OutgoingLollipopMmsConnection.java`, `StickyHeaderDecoration`, `Util`, `EmojiProvider.java`, `IncomingLollipopMmsConnection.java`, `Recipients`, `ImportExportFragment`, `SignalProtocolLogger`, `IdentityKey`, `.finish`, `MasterSecret`, `Recipient`, `BaseUnitTest`, `SubmitLogFragment`, `CanonicalAddressDatabase`, `VendoredSessionStore`, `MessageRecord`, `AudioView`, `.w`, `EmojiDrawer`, `ECKeyPair`, `.getMasterSecret`, `.d`, `DynamicLanguage`, `EncryptionKeys`, `ApplicationMigrationService`, `.from`, `ConversationActivity.java`, `Base64`, `EmojiPageModel`, `AttachmentRegionDecoder.java`, `ErrorDialogConfig`, `Fragment`, `DecryptableStreamLocalUriFetcher.java`, `PartProvider.java`, `SingleUseBlobProvider.java`?**
+  _High betweenness centrality (0.127) - this node is a cross-community bridge._
+- **Why does `Test` connect `Test` to `Log`, `.decryptBytes`, `TestParams`, `Subscribe`, `EventBus`, `.register`, `.generate`, `RestoredPreferencesTest`, `SubscriberMethod`, `Attachment`, `SignalProtocolAddress`, `SessionRecord`, `.builder`, `AbstractEventBusTest`, `MasterSecretUtil`, `ConversationAdapter`, `CursorRecyclerViewAdapter`, `BackupRecoveryKey`, `FileOutputStream`, `.getRemoteReplyIntent`, `JobManagerTest.java`, `SilenceStyleSignalProtocolStore`, `CursorRecyclerViewAdapterTest.java`, `Recipient`, `.getPrimaryRecipient`, `BaseUnitTest`, `VerifyIdentityActivity.java`, `CanonicalAddressDatabase`, `TestMediaConstraints`, `MasterCipher`, `HkdfSha256.java`, `BitmapUtil`, `TaskHandle`, `Message`, `ECKeyPair`, `.build`, `.getMasterSecret`, `ThreadDatabase`, `Argon2MasterSecretEnvelopeTest`, `.migrate`, `BaseActionBarActivity`, `.decrypt`, `RecordingOperations`, `Document`?**
+  _High betweenness centrality (0.088) - this node is a cross-community bridge._
 - **What connects `WitnessPluginExtension`, `POSTING`, `MAIN` to the rest of the system?**
-  _65 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Activity Fragment Sms` be split into smaller, more focused modules?**
-  _Cohesion score 0.048728813559322036 - nodes in this community are weakly interconnected._
-- **Should `Key Clear Sender` be split into smaller, more focused modules?**
+  _185 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Log` be split into smaller, more focused modules?**
+  _Cohesion score 0.04929651962339998 - nodes in this community are weakly interconnected._
+- **Should `Builder` be split into smaller, more focused modules?**
   _Cohesion score 0.03232090036793882 - nodes in this community are weakly interconnected._
-- **Should `Sender Key Builder` be split into smaller, more focused modules?**
-  _Cohesion score 0.02093959731543624 - nodes in this community are weakly interconnected._
+- **Should `Override` be split into smaller, more focused modules?**
+  _Cohesion score 0.030231459612659425 - nodes in this community are weakly interconnected._

@@ -20,6 +20,7 @@ import org.smssecure.smssecure.BlockedContactsActivity;
 import org.smssecure.smssecure.PassphraseChangeActivity;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.crypto.MasterSecretStorageException;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.service.KeyCachingService;
 import org.smssecure.smssecure.util.SilencePreferences;
@@ -154,9 +155,15 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
         builder.setPositiveButton(R.string.ApplicationPreferencesActivity_disable, new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            MasterSecretUtil.changeMasterSecretPassphrase(getActivity(),
-                                                          masterSecret,
-                                                          MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
+            try {
+              MasterSecretUtil.changeMasterSecretPassphrase(getActivity(),
+                                                            masterSecret,
+                                                            MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
+            } catch (MasterSecretStorageException error) {
+              Toast.makeText(getActivity(), R.string.master_secret_storage_error,
+                             Toast.LENGTH_LONG).show();
+              return;
+            }
 
             SilencePreferences.setPasswordDisabled(getActivity(), true);
             ((CheckBoxPreference)preference).setChecked(false);

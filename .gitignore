@@ -17,6 +17,7 @@ build.log
 build-log.xml
 .gradle
 build/
+.cxx/
 debug/
 release/
 signing.properties

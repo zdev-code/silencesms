@@ -20,8 +20,8 @@ package org.smssecure.smssecure.crypto;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
+import org.smssecure.smssecure.BuildConfig;
 import org.smssecure.smssecure.util.Base64;
-import org.smssecure.smssecure.util.Hex;
 import org.signal.libsignal.protocol.InvalidMessageException;
 import org.signal.libsignal.protocol.ecc.Curve;
 import org.signal.libsignal.protocol.ecc.ECPrivateKey;
@@ -32,6 +32,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
@@ -39,6 +40,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -56,14 +58,24 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class MasterCipher {
 
+  private static final String V2_KEY_INFO = "silence/mastercipher/v2/aead";
+  private static final int GCM_NONCE_LENGTH = 12;
+  private static final int GCM_TAG_LENGTH_BITS = 128;
+
   private final MasterSecret masterSecret;
+  private final boolean writeVersionTwo;
   private final Cipher encryptingCipher;
   private final Cipher decryptingCipher;
   private final Mac hmac;
 
   public MasterCipher(MasterSecret masterSecret) {
+    this(masterSecret, BuildConfig.MODERN_CRYPTO_WRITES);
+  }
+
+  MasterCipher(MasterSecret masterSecret, boolean writeVersionTwo) {
     try {
       this.masterSecret = masterSecret;
+      this.writeVersionTwo = writeVersionTwo;
       this.encryptingCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
       this.decryptingCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
       this.hmac             = Mac.getInstance("HmacSHA1");
@@ -116,6 +128,10 @@ public class MasterCipher {
   }
 
   public byte[] encryptBytes(byte[] body) {
+    return writeVersionTwo ? encryptVersionTwo(body) : encryptVersionOne(body);
+  }
+
+  private byte[] encryptVersionOne(byte[] body) {
     try {
       Cipher cipher              = getEncryptingCipher(masterSecret.getEncryptionKey());
       Mac    mac                 = getMac(masterSecret.getMacKey());
@@ -131,15 +147,35 @@ public class MasterCipher {
 
   }
 
+  private byte[] encryptVersionTwo(byte[] body) {
+    byte[] keyBytes = deriveVersionTwoKey();
+
+    try {
+      byte[] nonce = new byte[GCM_NONCE_LENGTH];
+      new SecureRandom().nextBytes(nonce);
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+      cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(keyBytes, "AES"),
+                  new GCMParameterSpec(GCM_TAG_LENGTH_BITS, nonce));
+      byte[] header = MasterCipherEnvelope.serializeHeader(MasterCipherEnvelope.ALGORITHM_AES_256_GCM,
+                                                           nonce, body.length + GCM_TAG_LENGTH_BITS / 8);
+      cipher.updateAAD(header);
+      byte[] ciphertext = cipher.doFinal(body);
+      return MasterCipherEnvelope.serialize(MasterCipherEnvelope.ALGORITHM_AES_256_GCM,
+                                            nonce, ciphertext, new byte[0]);
+    } catch (GeneralSecurityException ge) {
+      Log.w("bodycipher", ge);
+      return null;
+    } finally {
+      Arrays.fill(keyBytes, (byte) 0);
+    }
+  }
+
   public boolean verifyMacFor(String content, byte[] theirMac) {
     byte[] ourMac = getMacFor(content);
-    Log.w("MasterCipher", "Our Mac: " + Hex.toString(ourMac));
-    Log.w("MasterCipher", "Thr Mac: " + Hex.toString(theirMac));
-    return Arrays.equals(ourMac, theirMac);
+    return MessageDigest.isEqual(ourMac, theirMac);
   }
 
   public byte[] getMacFor(String content) {
-    Log.w("MasterCipher", "Macing: " + content);
     try {
       Mac mac = getMac(masterSecret.getMacKey());
       return mac.doFinal(content.getBytes());
@@ -182,6 +218,10 @@ public class MasterCipher {
   }
 
   private byte[] decryptEnvelope(@NonNull byte[] serialized) throws GeneralSecurityException, InvalidMessageException {
+    if (MasterCipherEnvelope.getAlgorithm(serialized) == MasterCipherEnvelope.ALGORITHM_AES_256_GCM) {
+      return decryptVersionTwoEnvelope(serialized);
+    }
+
     Mac mac = getMac(masterSecret.getMacKey());
     MasterCipherEnvelope envelope = MasterCipherEnvelope.parse(serialized, mac.getMacLength());
     byte[] localMac = mac.doFinal(envelope.getAuthenticatedContent());
@@ -193,6 +233,39 @@ public class MasterCipher {
     decryptingCipher.init(Cipher.DECRYPT_MODE, masterSecret.getEncryptionKey(),
                           new IvParameterSpec(envelope.getNonce()));
     return decryptingCipher.doFinal(envelope.getCiphertext());
+  }
+
+  private byte[] decryptVersionTwoEnvelope(@NonNull byte[] serialized)
+      throws GeneralSecurityException, InvalidMessageException
+  {
+    MasterCipherEnvelope envelope = MasterCipherEnvelope.parse(serialized, 0);
+    byte[] keyBytes = deriveVersionTwoKey();
+
+    try {
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+      cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(keyBytes, "AES"),
+                  new GCMParameterSpec(GCM_TAG_LENGTH_BITS, envelope.getNonce()));
+      cipher.updateAAD(envelope.getHeader());
+      return cipher.doFinal(envelope.getCiphertext());
+    } finally {
+      Arrays.fill(keyBytes, (byte) 0);
+    }
+  }
+
+  private byte[] deriveVersionTwoKey() {
+    byte[] encryptionKey = masterSecret.getEncryptionKey().getEncoded();
+    byte[] macKey = masterSecret.getMacKey().getEncoded();
+    byte[] rootSecret = new byte[encryptionKey.length + macKey.length];
+
+    try {
+      System.arraycopy(encryptionKey, 0, rootSecret, 0, encryptionKey.length);
+      System.arraycopy(macKey, 0, rootSecret, encryptionKey.length, macKey.length);
+      return HkdfSha256.derive(rootSecret, V2_KEY_INFO, 32);
+    } finally {
+      Arrays.fill(encryptionKey, (byte) 0);
+      Arrays.fill(macKey, (byte) 0);
+      Arrays.fill(rootSecret, (byte) 0);
+    }
   }
 
   private boolean isLegacyShape(@NonNull byte[] serialized) {

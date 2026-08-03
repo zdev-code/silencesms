@@ -71,6 +71,12 @@ public class TelephonyUtil {
       return null;
     }
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
+      Log.w(TAG, "READ_PHONE_NUMBERS permission not granted; returning null phone number");
+      return null;
+    }
+
     try {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         SubscriptionManager subscriptionManager = context.getSystemService(SubscriptionManager.class);

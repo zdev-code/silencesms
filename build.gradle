@@ -33,6 +33,8 @@ dependencies {
     implementation 'androidx.interpolator:interpolator:1.0.0'
     implementation 'androidx.loader:loader:1.1.0'
     implementation 'androidx.cursoradapter:cursoradapter:1.0.0'
+    implementation 'androidx.work:work-runtime:2.10.5'
+    implementation 'androidx.documentfile:documentfile:1.1.0'
 
     // okhttp: kept at 4.12.0 (the last 4.x; 5.x is still alpha). Used for carrier-MMSC HTTP over the
     // mobile-data proxy. NOT replaceable by Jetpack: AndroidX has no HTTP client, and android.telephony
@@ -118,6 +120,7 @@ android {
         applicationId = 'org.smssecure.smssecure'
         versionCode = 215
         versionName = "0.16.13-unstable"
+        buildConfigField 'boolean', 'MODERN_CRYPTO_WRITES', 'true'
 
         minSdkVersion = 23
         // Edge-to-edge (enforced on Android 15+/targetSdk 35+) is handled centrally in
@@ -130,7 +133,20 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         ndk {
-            abiFilters += ['armeabi-v7a', 'arm64-v8a']
+            abiFilters += ['arm64-v8a']
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments += ['-DANDROID_STL=none']
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file('cpp/CMakeLists.txt')
+            version = '3.22.1'
         }
     }
 
@@ -201,6 +217,12 @@ android {
             proguardFiles = buildTypes.debug.proguardFiles
             testProguardFiles = buildTypes.debug.testProguardFiles
         }
+        phaseARelease {
+            initWith release
+            buildConfigField 'boolean', 'MODERN_CRYPTO_WRITES', 'false'
+            versionNameSuffix = '-phase-a'
+            matchingFallbacks = ['release']
+        }
     }
 
     sourceSets {
@@ -223,18 +245,36 @@ android {
 
 }
 
-def asyncTaskAllowlistFile = layout.projectDirectory.file('config/asynctask-source-allowlist.txt').asFile
-def checkNoNewAsyncTaskUsage = tasks.register('checkNoNewAsyncTaskUsage') {
+def verifyCryptoReleaseStages = tasks.register('verifyCryptoReleaseStages') {
     group = 'verification'
-    description = 'Fails when android.os.AsyncTask usage grows or the shrinking allowlist is stale.'
+    description = 'Verifies normal builds enable modern crypto writes and Phase A builds disable them.'
 
-    inputs.files(fileTree('src') { include '**/*.java' })
-    inputs.file(asyncTaskAllowlistFile)
+    dependsOn 'generateDebugBuildConfig', 'generatePhaseAReleaseBuildConfig'
 
     doLast {
-        Set<String> allowed = asyncTaskAllowlistFile.readLines('UTF-8')
-                .collect { it.trim() }
-                .findAll { !it.isEmpty() && !it.startsWith('#') } as Set
+        def debugBuildConfig = fileTree(layout.buildDirectory.dir('generated/source/buildConfig/debug')) {
+            include '**/BuildConfig.java'
+        }.singleFile.text
+        def phaseABuildConfig = fileTree(layout.buildDirectory.dir('generated/source/buildConfig/phaseARelease')) {
+            include '**/BuildConfig.java'
+        }.singleFile.text
+
+        if (!debugBuildConfig.contains('MODERN_CRYPTO_WRITES = true')) {
+            throw new GradleException('Debug must enable modern crypto writes')
+        }
+        if (!phaseABuildConfig.contains('MODERN_CRYPTO_WRITES = false')) {
+            throw new GradleException('Phase A release must disable modern crypto writes')
+        }
+    }
+}
+
+def checkNoNewAsyncTaskUsage = tasks.register('checkNoNewAsyncTaskUsage') {
+    group = 'verification'
+    description = 'Fails when app source uses the removed android.os.AsyncTask API.'
+
+    inputs.files(fileTree('src') { include '**/*.java' })
+
+    doLast {
         Set<String> actual = new TreeSet<>()
 
         fileTree('src') { include '**/*.java' }.each { sourceFile ->
@@ -250,20 +290,61 @@ def checkNoNewAsyncTaskUsage = tasks.register('checkNoNewAsyncTaskUsage') {
             }
         }
 
-        Set<String> additions = actual - allowed
-        Set<String> stale = allowed - actual
+        if (!actual.isEmpty()) {
+            throw new GradleException('android.os.AsyncTask usage is forbidden:\n  ' + actual.join('\n  '))
+        }
+    }
+}
 
-        if (!additions.isEmpty() || !stale.isEmpty()) {
-            String message = 'AsyncTask source allowlist mismatch.'
-            if (!additions.isEmpty()) message += "\nNew usage is forbidden:\n  " + additions.join('\n  ')
-            if (!stale.isEmpty()) message += "\nRemove migrated entries from the allowlist:\n  " + stale.join('\n  ')
-            throw new GradleException(message)
+def checkAndroidDeprecationAllowlist = tasks.register('checkAndroidDeprecationAllowlist') {
+    group = 'verification'
+    description = 'Verifies localized Android deprecation suppressions match the documented allowlist.'
+
+    def allowlistFile = file('config/android-deprecation-allowlist.tsv')
+    inputs.file(allowlistFile)
+    inputs.files(fileTree('src') { include '**/*.java' })
+
+    doLast {
+        Set<String> expected = new TreeSet<>()
+
+        allowlistFile.readLines('UTF-8').eachWithIndex { line, index ->
+            if (line.isBlank() || line.startsWith('#')) return
+
+            String[] fields = line.split('\t', -1)
+            if (fields.length != 4 || fields.any { it.isBlank() }) {
+                throw new GradleException("Malformed deprecation allowlist row ${index + 1}; expected four non-empty tab-separated fields")
+            }
+            if (!expected.add(fields[0])) {
+                throw new GradleException("Duplicate deprecation allowlist path: ${fields[0]}")
+            }
+        }
+
+        Set<String> actual = new TreeSet<>()
+        fileTree('src') { include '**/*.java' }.each { sourceFile ->
+            if (sourceFile.getText('UTF-8').contains('@SuppressWarnings("deprecation")')) {
+                actual.add(rootDir.toPath()
+                                  .relativize(sourceFile.toPath())
+                                  .toString()
+                                  .replace('\\', '/'))
+            }
+        }
+
+        Set<String> undocumented = new TreeSet<>(actual)
+        undocumented.removeAll(expected)
+        Set<String> stale = new TreeSet<>(expected)
+        stale.removeAll(actual)
+
+        if (!undocumented.isEmpty() || !stale.isEmpty()) {
+            throw new GradleException('Android deprecation allowlist mismatch' +
+                                      (undocumented.isEmpty() ? '' : '\nUndocumented suppressions:\n  ' + undocumented.join('\n  ')) +
+                                      (stale.isEmpty() ? '' : '\nStale allowlist entries:\n  ' + stale.join('\n  ')))
         }
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
     dependsOn(checkNoNewAsyncTaskUsage)
+    dependsOn(checkAndroidDeprecationAllowlist)
 }
 
 def props = new Properties()

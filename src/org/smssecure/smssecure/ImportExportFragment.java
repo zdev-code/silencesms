@@ -19,9 +19,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.backup.BackupRecoveryKey;
+import org.smssecure.smssecure.backup.AutomaticBackupManager;
 import org.smssecure.smssecure.database.EncryptedBackupExporter;
 import org.smssecure.smssecure.database.NoExternalStorageException;
 import org.smssecure.smssecure.database.PlaintextBackupExporter;
@@ -31,6 +35,9 @@ import org.smssecure.smssecure.service.ApplicationMigrationService;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -58,6 +65,15 @@ public class ImportExportFragment extends Fragment {
   private final ActivityResultLauncher<String> plaintextBackupSaver =
       registerForActivityResult(new ActivityResultContracts.CreateDocument("application/xml"),
                                 this::handlePlaintextBackupDestination);
+                  private final ActivityResultLauncher<String[]> encryptedBackupPicker =
+                    registerForActivityResult(new ActivityResultContracts.OpenDocument(), this::handleEncryptedBackupDocument);
+                  private final ActivityResultLauncher<String> encryptedBackupSaver =
+                    registerForActivityResult(new ActivityResultContracts.CreateDocument("application/octet-stream"),
+                                this::handleEncryptedBackupDestination);
+  private final ActivityResultLauncher<Uri> automaticBackupDirectoryPicker =
+      registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(),
+                                this::handleAutomaticBackupDirectory);
+                  private byte[] pendingRecoveryKey;
   private AlertDialog                 progressDialog;
   private AppTaskExecutor.TaskHandle currentTask;
   private int                         operationGeneration;
@@ -76,12 +92,17 @@ public class ImportExportFragment extends Fragment {
     View importPlaintextView = layout.findViewById(R.id.import_plaintext_backup);
     View exportEncryptedView = layout.findViewById(R.id.export_encrypted_backup);
     View exportPlaintextView = layout.findViewById(R.id.export_plaintext_backup);
+    View automaticBackupView = layout.findViewById(R.id.automatic_encrypted_backup);
+    TextView automaticBackupTitle = layout.findViewById(R.id.automatic_encrypted_backup_title);
 
     importSmsView.setOnClickListener(v -> handleImportSms());
     importEncryptedView.setOnClickListener(v -> handleImportEncryptedBackup());
     importPlaintextView.setOnClickListener(v -> handleImportPlaintextBackup());
     exportEncryptedView.setOnClickListener(v -> handleExportEncryptedBackup());
     exportPlaintextView.setOnClickListener(v -> handleExportPlaintextBackup());
+    automaticBackupTitle.setText(AutomaticBackupManager.isEnabled(requireContext())
+      ? R.string.AutomaticBackup_disable : R.string.AutomaticBackup_enable);
+    automaticBackupView.setOnClickListener(v -> handleAutomaticBackup());
 
     return layout;
   }
@@ -89,6 +110,7 @@ public class ImportExportFragment extends Fragment {
   @Override
   public void onDestroyView() {
     cancelCurrentOperation();
+    clearPendingRecoveryKey();
     super.onDestroyView();
   }
 
@@ -139,19 +161,7 @@ public class ImportExportFragment extends Fragment {
     builder.setTitle(activity.getString(R.string.ImportFragment_restore_encrypted_backup));
     builder.setMessage(activity.getString(R.string.ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys));
     builder.setPositiveButton(activity.getString(R.string.ImportFragment_import), (dialog, which) -> {
-      String[] permissions = getReadStoragePermissions();
-
-      if (permissions.length == 0) {
-        startImportEncryptedBackup();
-      } else {
-        Permissions.with(this, permissionLauncher)
-                   .request(permissions)
-                   .ifNecessary()
-                   .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied))
-                   .onAllGranted(this::startImportEncryptedBackup)
-                   .onAnyDenied(() -> showToast(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage))
-                   .execute();
-      }
+      promptForRecoveryKey();
     });
     builder.setNegativeButton(activity.getString(R.string.ImportFragment_cancel), null);
     builder.show();
@@ -198,27 +208,81 @@ public class ImportExportFragment extends Fragment {
     Activity activity = getActivity();
     if (!isAdded() || activity == null) return;
 
+    byte[] recoveryKey = BackupRecoveryKey.generate();
+    TextView keyView = new TextView(activity);
+    keyView.setTextIsSelectable(true);
+    keyView.setPadding(48, 24, 48, 24);
+    keyView.setText(BackupRecoveryKey.encode(recoveryKey));
     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setIconAttribute(R.attr.dialog_info_icon);
     builder.setTitle(activity.getString(R.string.ExportFragment_export_encrypted_backup));
-    builder.setMessage(activity.getString(R.string.ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages));
+    builder.setMessage(activity.getString(R.string.ExportFragment_store_recovery_key));
+    builder.setView(keyView);
     builder.setPositiveButton(activity.getString(R.string.ExportFragment_export), (dialog, which) -> {
-      String[] permissions = getWriteStoragePermissions();
-
-      if (permissions.length == 0) {
-        startExportEncryptedBackup();
-      } else {
-        Permissions.with(ImportExportFragment.this, permissionLauncher)
-                   .request(permissions)
-                   .ifNecessary()
-                   .withPermanentDenialDialog(getString(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-                   .onAllGranted(this::startExportEncryptedBackup)
-                   .onAnyDenied(() -> showToast(R.string.ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage))
-                   .execute();
-      }
+      clearPendingRecoveryKey();
+      pendingRecoveryKey = recoveryKey;
+      encryptedBackupSaver.launch("Silence-" + System.currentTimeMillis() + ".silencebackup");
     });
-    builder.setNegativeButton(activity.getString(R.string.ExportFragment_cancel), null);
+    builder.setNegativeButton(activity.getString(R.string.ExportFragment_cancel),
+                              (dialog, which) -> Arrays.fill(recoveryKey, (byte) 0));
     builder.show();
+  }
+
+  private void handleAutomaticBackup() {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+    if (AutomaticBackupManager.isEnabled(activity)) {
+      new AlertDialog.Builder(activity)
+          .setTitle(R.string.AutomaticBackup_disable)
+          .setMessage(R.string.AutomaticBackup_disable_message)
+          .setPositiveButton(R.string.AutomaticBackup_disable, (dialog, which) -> {
+            AutomaticBackupManager.disable(activity);
+            View view = getView();
+            if (view != null) ((TextView) view.findViewById(R.id.automatic_encrypted_backup_title))
+                .setText(R.string.AutomaticBackup_enable);
+          })
+          .setNegativeButton(R.string.ImportFragment_cancel, null)
+          .show();
+      return;
+    }
+
+    byte[] recoveryKey = BackupRecoveryKey.generate();
+    TextView keyView = new TextView(activity);
+    keyView.setTextIsSelectable(true);
+    keyView.setPadding(48, 24, 48, 24);
+    keyView.setText(BackupRecoveryKey.encode(recoveryKey));
+    new AlertDialog.Builder(activity)
+        .setTitle(R.string.AutomaticBackup_enable)
+        .setMessage(R.string.AutomaticBackup_store_recovery_key)
+        .setView(keyView)
+        .setPositiveButton(R.string.AutomaticBackup_select_directory, (dialog, which) -> {
+          clearPendingRecoveryKey();
+          pendingRecoveryKey = recoveryKey;
+          automaticBackupDirectoryPicker.launch(null);
+        })
+        .setNegativeButton(R.string.ExportFragment_cancel,
+                           (dialog, which) -> Arrays.fill(recoveryKey, (byte) 0))
+        .show();
+  }
+
+  private void handleAutomaticBackupDirectory(@Nullable Uri uri) {
+    if (uri == null) { clearPendingRecoveryKey(); return; }
+    Context context = getContext();
+    byte[] recoveryKey = takePendingRecoveryKey();
+    if (context == null || recoveryKey == null) return;
+    try {
+      context.getContentResolver().takePersistableUriPermission(
+          uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+      AutomaticBackupManager.enable(context, uri, recoveryKey);
+      View view = getView();
+      if (view != null) ((TextView) view.findViewById(R.id.automatic_encrypted_backup_title))
+          .setText(R.string.AutomaticBackup_disable);
+    } catch (SecurityException | java.security.GeneralSecurityException error) {
+      Log.w(TAG, "Unable to enable automatic backups", error);
+      showToast(R.string.AutomaticBackup_enable_failed);
+    } finally {
+      Arrays.fill(recoveryKey, (byte) 0);
+    }
   }
 
   private void launchPlaintextBackupPicker() {
@@ -370,21 +434,57 @@ public class ImportExportFragment extends Fragment {
                    "Unexpected failure exporting plaintext backup");
   }
 
-  private void startImportEncryptedBackup() {
+  private void promptForRecoveryKey() {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+    EditText input = new EditText(activity);
+    input.setSingleLine(false);
+    input.setHint(R.string.ImportFragment_recovery_key);
+    new AlertDialog.Builder(activity)
+        .setTitle(R.string.ImportFragment_recovery_key)
+        .setView(input)
+        .setPositiveButton(R.string.ImportFragment_import, (dialog, which) -> {
+          try {
+            clearPendingRecoveryKey();
+            pendingRecoveryKey = BackupRecoveryKey.decode(input.getText().toString());
+            encryptedBackupPicker.launch(new String[] {"application/octet-stream", "*/*"});
+          } catch (IOException error) {
+            showToast(R.string.ImportFragment_invalid_recovery_key);
+          }
+        })
+        .setNegativeButton(R.string.ImportFragment_cancel, null)
+        .show();
+  }
+
+  private void handleEncryptedBackupDocument(@Nullable Uri uri) {
+    if (uri == null) { clearPendingRecoveryKey(); return; }
+    startImportEncryptedBackup(uri);
+  }
+
+  private void handleEncryptedBackupDestination(@Nullable Uri uri) {
+    if (uri == null) { clearPendingRecoveryKey(); return; }
+    startExportEncryptedBackup(uri);
+  }
+
+  private void startImportEncryptedBackup(Uri uri) {
     Activity activity = getActivity();
     if (!isAdded() || activity == null) return;
 
     final Context context = activity.getApplicationContext();
+    final byte[] recoveryKey = takePendingRecoveryKey();
+    if (recoveryKey == null) return;
 
     startOperation(R.string.ImportFragment_importing,
                    R.string.ImportFragment_restoring_encrypted_backup,
                    () -> {
       try {
-        EncryptedBackupExporter.importFromStorage(context);
+        try (InputStream input = context.getContentResolver().openInputStream(uri)) {
+          if (input == null) throw new IOException("Unable to open backup");
+          EncryptedBackupExporter.importFromStream(context, recoveryKey, input);
+        } finally {
+          Arrays.fill(recoveryKey, (byte) 0);
+        }
         return SUCCESS;
-      } catch (NoExternalStorageException e) {
-        Log.w(TAG, "No encrypted backup available", e);
-        return NO_SD_CARD;
       } catch (IOException e) {
         Log.w(TAG, "Unable to import encrypted backup", e);
         return ERROR_IO;
@@ -394,21 +494,33 @@ public class ImportExportFragment extends Fragment {
                    "Unexpected failure importing encrypted backup");
   }
 
-  private void startExportEncryptedBackup() {
+  private void startExportEncryptedBackup(Uri uri) {
     Activity activity = getActivity();
     if (!isAdded() || activity == null) return;
 
     final Context context = activity.getApplicationContext();
+    final MasterSecret masterSecretSnapshot = masterSecret;
+    final byte[] recoveryKey = takePendingRecoveryKey();
+    if (recoveryKey == null) return;
 
     startOperation(R.string.ExportFragment_exporting,
                    R.string.ExportFragment_exporting_keys_settings_and_messages,
                    () -> {
       try {
-        EncryptedBackupExporter.exportToStorage(context);
+        try (OutputStream output = context.getContentResolver().openOutputStream(uri, "w")) {
+          if (output == null) throw new IOException("Unable to open backup destination");
+          EncryptedBackupExporter.exportToStream(context, masterSecretSnapshot, recoveryKey, output);
+        } finally {
+          Arrays.fill(recoveryKey, (byte) 0);
+        }
+        if (!org.smssecure.smssecure.crypto.MasterSecretUtil.isDeviceProtectionEnabled(context)) {
+          try {
+            org.smssecure.smssecure.crypto.MasterSecretUtil.enableDeviceProtection(context);
+          } catch (java.security.GeneralSecurityException error) {
+            throw new IOException("Backup was written but device protection could not be enabled", error);
+          }
+        }
         return SUCCESS;
-      } catch (NoExternalStorageException e) {
-        Log.w(TAG, "Unable to access storage for encrypted export", e);
-        return NO_SD_CARD;
       } catch (IOException e) {
         Log.w(TAG, "Unable to export encrypted backup", e);
         return ERROR_IO;
@@ -416,6 +528,17 @@ public class ImportExportFragment extends Fragment {
                    },
                    this::handleExportResult,
                    "Unexpected failure exporting encrypted backup");
+  }
+
+  private byte[] takePendingRecoveryKey() {
+    byte[] key = pendingRecoveryKey;
+    pendingRecoveryKey = null;
+    return key;
+  }
+
+  private void clearPendingRecoveryKey() {
+    if (pendingRecoveryKey != null) Arrays.fill(pendingRecoveryKey, (byte) 0);
+    pendingRecoveryKey = null;
   }
 
   private void startOperation(int titleResource,

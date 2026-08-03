@@ -159,6 +159,9 @@ public class SubscriptionManagerCompat {
   private String getPhoneNumber(SubscriptionManager subscriptionManager, SubscriptionInfo subscriptionInfo) {
     try {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
+          return null;
+        }
         return subscriptionManager.getPhoneNumber(subscriptionInfo.getSubscriptionId());
       }
       return subscriptionInfo.getNumber();

@@ -2,7 +2,9 @@ package org.smssecure.smssecure.crypto;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.smssecure.smssecure.BuildConfig;
 import org.smssecure.smssecure.BaseUnitTest;
+import org.smssecure.smssecure.util.Hex;
 import org.signal.libsignal.protocol.InvalidMessageException;
 import org.signal.libsignal.protocol.ecc.Curve;
 import org.signal.libsignal.protocol.ecc.ECKeyPair;
@@ -27,7 +29,17 @@ public class MasterCipherTest extends BaseUnitTest {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    masterCipher = new MasterCipher(masterSecret);
+    masterCipher = new MasterCipher(masterSecret, true);
+  }
+
+  @Test
+  public void testDefaultWriteAlgorithmMatchesReleaseStage() throws Exception {
+    byte[] encrypted = new MasterCipher(masterSecret).encryptBytes(new byte[] {1});
+    int expectedAlgorithm = BuildConfig.MODERN_CRYPTO_WRITES
+        ? MasterCipherEnvelope.ALGORITHM_AES_256_GCM
+        : MasterCipherEnvelope.ALGORITHM_LEGACY_CBC_HMAC_SHA1;
+
+    assertEquals(expectedAlgorithm, MasterCipherEnvelope.getAlgorithm(encrypted));
   }
 
   @Test(expected = InvalidMessageException.class)
@@ -36,32 +48,56 @@ public class MasterCipherTest extends BaseUnitTest {
   }
 
   @Test
-  public void testVersionOneEnvelopeRoundTrip() throws Exception {
+  public void testVersionTwoEnvelopeRoundTrip() throws Exception {
     byte[] plaintext = "versioned local ciphertext".getBytes(StandardCharsets.UTF_8);
 
     byte[] encrypted = masterCipher.encryptBytes(plaintext);
 
     assertTrue(MasterCipherEnvelope.hasMagic(encrypted));
     assertFalse(isLegacyShape(encrypted));
+    assertEquals(MasterCipherEnvelope.ALGORITHM_AES_256_GCM,
+                 MasterCipherEnvelope.getAlgorithm(encrypted));
     assertArrayEquals(plaintext, masterCipher.decryptBytes(encrypted));
   }
 
   @Test
-  public void testVersionOneBodyRoundTripAfterCipherRecreation() throws Exception {
+  public void testVersionTwoBodyRoundTripAfterCipherRecreation() throws Exception {
     String encrypted = masterCipher.encryptBody("persisted body");
 
-    MasterCipher restartedCipher = new MasterCipher(masterSecret);
+    MasterCipher restartedCipher = new MasterCipher(masterSecret, true);
 
     assertEquals("persisted body", restartedCipher.decryptBody(encrypted));
   }
 
   @Test
-  public void testVersionOnePrivateKeyRoundTrip() throws Exception {
+  public void testVersionTwoPrivateKeyRoundTrip() throws Exception {
     ECKeyPair keyPair = Curve.generateKeyPair();
 
     byte[] encrypted = masterCipher.encryptKey(keyPair.getPrivateKey());
 
     assertArrayEquals(keyPair.getPrivateKey().serialize(), masterCipher.decryptKey(encrypted).serialize());
+  }
+
+  @Test
+  public void testVersionOneEnvelopeRemainsReadable() throws Exception {
+    byte[] plaintext = "phase A envelope".getBytes(StandardCharsets.UTF_8);
+    byte[] encrypted = new MasterCipher(masterSecret, false).encryptBytes(plaintext);
+
+    assertEquals(MasterCipherEnvelope.ALGORITHM_LEGACY_CBC_HMAC_SHA1,
+                 MasterCipherEnvelope.getAlgorithm(encrypted));
+    assertArrayEquals(plaintext, masterCipher.decryptBytes(encrypted));
+  }
+
+  @Test
+  public void testVersionTwoHkdfKnownAnswer() throws Exception {
+    byte[] inputKeyMaterial = new byte[36];
+    for (int i = 0; i < inputKeyMaterial.length; i++) inputKeyMaterial[i] = (byte) i;
+
+    byte[] derived = HkdfSha256.derive(inputKeyMaterial, "silence/mastercipher/v2/aead", 32);
+
+    assertEquals("61 bb 3f 12 4e 81 e8 43 34 16 ea be 8b 40 d8 6d " +
+           "cd 0a 02 e6 a3 0a 98 d3 9d c7 d2 6e af 7c 3f 0e ",
+                 Hex.toString(derived));
   }
 
   @Test
@@ -94,14 +130,21 @@ public class MasterCipherTest extends BaseUnitTest {
   @Test(expected = InvalidMessageException.class)
   public void testTamperedEnvelopeHeaderIsRejected() throws Exception {
     byte[] encrypted = masterCipher.encryptBytes("tampered".getBytes(StandardCharsets.UTF_8));
-    encrypted[5] = 2;
+    encrypted[5] = 3;
     masterCipher.decryptBytes(encrypted);
   }
 
   @Test(expected = InvalidMessageException.class)
   public void testTamperedEnvelopeCiphertextIsRejected() throws Exception {
     byte[] encrypted = masterCipher.encryptBytes("tampered payload".getBytes(StandardCharsets.UTF_8));
-    encrypted[encrypted.length - 21] ^= 0x01;
+    encrypted[encrypted.length - 1] ^= 0x01;
+    masterCipher.decryptBytes(encrypted);
+  }
+
+  @Test(expected = InvalidMessageException.class)
+  public void testTamperedVersionTwoHeaderIsRejected() throws Exception {
+    byte[] encrypted = masterCipher.encryptBytes("tampered AAD".getBytes(StandardCharsets.UTF_8));
+    encrypted[7] ^= 0x01;
     masterCipher.decryptBytes(encrypted);
   }
 

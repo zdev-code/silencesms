@@ -24,9 +24,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.smssecure.smssecure.crypto.InvalidPassphraseException;
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.crypto.MasterSecretStorageException;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
@@ -172,6 +174,10 @@ public class PassphraseChangeActivity extends PassphraseActivity {
             if (exception instanceof InvalidPassphraseException) {
               originalPassphrase.setError(getString(R.string.PassphraseChangeActivity_incorrect_old_passphrase_exclamation));
               originalPassphrase.requestFocus();
+            } else if (exception instanceof MasterSecretStorageException) {
+              Toast.makeText(PassphraseChangeActivity.this,
+                             R.string.master_secret_storage_error,
+                             Toast.LENGTH_LONG).show();
             }
           });
     }
