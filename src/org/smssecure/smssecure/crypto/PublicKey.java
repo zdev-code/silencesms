@@ -21,9 +21,9 @@ import android.util.Log;
 
 import org.smssecure.smssecure.util.Hex;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.InvalidKeyException;
-import org.whispersystems.libsignal.ecc.Curve;
-import org.whispersystems.libsignal.ecc.ECPublicKey;
+import org.signal.libsignal.protocol.InvalidKeyException;
+import org.signal.libsignal.protocol.ecc.Curve;
+import org.signal.libsignal.protocol.ecc.ECPublicKey;
 import org.smssecure.smssecure.util.Conversions;
 
 import java.security.MessageDigest;
@@ -31,7 +31,10 @@ import java.security.NoSuchAlgorithmException;
 
 public class PublicKey {
 
-  public static final int KEY_SIZE = 3 + ECPublicKey.KEY_SIZE;
+  // 3-byte key id + a 33-byte Curve25519 public point (0x05 type byte + 32 key bytes). Sourced
+  // locally (was org.whispersystems.libsignal.ecc.ECPublicKey.KEY_SIZE) so this class no longer
+  // depends on the vendored library; the wire size is fixed by the Curve25519 encoding.
+  public static final int KEY_SIZE = 3 + 33;
 
   private final ECPublicKey publicKey;
   private int id;

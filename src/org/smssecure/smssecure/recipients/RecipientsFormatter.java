@@ -19,6 +19,8 @@ package org.smssecure.smssecure.recipients;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 
+import org.smssecure.smssecure.util.PhoneNumberFormatter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -64,7 +66,7 @@ public class RecipientsFormatter {
     //                   Erick Tseng <(650) 555-1212>
     //                   Tutankhamun <tutank1341@gmail.com>
     //                   (408) 555-1289
-    String formattedNumber = PhoneNumberUtils.formatNumber(number);
+    String formattedNumber = PhoneNumberFormatter.formatNumberForDisplay(number);
     if (!TextUtils.isEmpty(name) && !name.equals(number)) {
       return name + " <" + formattedNumber + ">";
     } else {

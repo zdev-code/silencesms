@@ -2,8 +2,8 @@ package org.smssecure.smssecure.preferences.widgets;
 
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,11 +16,14 @@ import android.media.MediaScannerConnection;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -38,6 +41,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.smssecure.smssecure.R;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.io.Closeable;
 import java.io.File;
@@ -63,6 +67,13 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
 
   private RingtoneManager ringtoneManager;
   private Ringtone defaultRingtone;
+  private AppTaskExecutor.TaskHandle installTask;
+  private final ActivityResultLauncher<Intent> ringtonePicker = registerForActivityResult(
+      new ActivityResultContracts.StartActivityForResult(), this::handleRingtonePicked);
+  private final ActivityResultLauncher<String> storagePermission = registerForActivityResult(
+      new ActivityResultContracts.RequestPermission(), granted -> {
+        if (granted) launchRingtonePicker();
+      });
 
   public static RingtonePreferenceDialogFragmentCompat newInstance(String key) {
     RingtonePreferenceDialogFragmentCompat fragment = new RingtonePreferenceDialogFragmentCompat();
@@ -86,6 +97,13 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
     super.onPause();
 
     stopPlaying();
+  }
+
+  @Override
+  public void onDestroy() {
+    if (installTask != null) installTask.cancel();
+    installTask = null;
+    super.onDestroy();
   }
 
 
@@ -266,76 +284,61 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
     return this.cursor = new MergeCursor(cursors);
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == getRingtonePreference().getCustomRingtoneRequestCode()) {
-      if (resultCode == RESULT_OK) {
+  private void handleRingtonePicked(ActivityResult result) {
+      Intent data = result.getData();
+      if (result.getResultCode() == RESULT_OK && data != null && data.getData() != null) {
         final Uri fileUri = data.getData();
-        final Context context = getContext();
+        final Context context = requireContext().getApplicationContext();
 
         final RingtonePreference ringtonePreference = getRingtonePreference();
         final int ringtoneType = ringtonePreference.getRingtoneType();
 
-        // FIXME static field leak
-        @SuppressLint("StaticFieldLeak") final AsyncTask<Uri, Void, Cursor> installTask = new AsyncTask<Uri, Void, Cursor>() {
-          @Override
-          protected Cursor doInBackground(Uri... params) {
-            try {
-              Uri newUri = addCustomExternalRingtone(context, params[0], ringtoneType);
-
-              return createCursor(newUri);
-            } catch (IOException | IllegalArgumentException e) {
-              Log.e(TAG, "Unable to add new ringtone: ", e);
-            }
-            return null;
-          }
-
-          @Override
-          protected void onPostExecute(final Cursor newCursor) {
-            if (newCursor != null) {
-              final ListView listView = ((AlertDialog) getDialog()).getListView();
-              final CursorAdapter adapter = ((CursorAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter());
-              adapter.changeCursor(newCursor);
-
-              listView.setItemChecked(selectedIndex, true);
-              listView.setSelection(selectedIndex);
-              listView.clearFocus();
-            } else {
-              Toast.makeText(context, getString(R.string.RingtonePreference_unable_to_add_ringtone), Toast.LENGTH_SHORT).show();
-            }
-          }
-        };
-        installTask.execute(fileUri);
-      } else {
+        if (installTask != null) installTask.cancel();
+        installTask = AppTaskExecutor.getInstance().submitSerial(
+            () -> addCustomExternalRingtone(context, fileUri, ringtoneType),
+            this::handleRingtoneInstalled,
+            exception -> {
+              Log.e(TAG, "Unable to add new ringtone: ", exception);
+              if (isAdded()) {
+                Toast.makeText(requireContext(), R.string.RingtonePreference_unable_to_add_ringtone,
+                               Toast.LENGTH_SHORT).show();
+              }
+            });
+      } else if (getDialog() instanceof AlertDialog) {
         ListView listView = ((AlertDialog) getDialog()).getListView();
         listView.setItemChecked(selectedIndex, true);
       }
-    } else {
-      super.onActivityResult(requestCode, resultCode, data);
-    }
   }
 
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    if (requestCode == getRingtonePreference().getPermissionRequestCode() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      newRingtone();
-    } else {
-      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+  private void handleRingtoneInstalled(Uri newUri) {
+    Dialog dialog = getDialog();
+    if (!isAdded() || !(dialog instanceof AlertDialog)) return;
+
+    Cursor newCursor = createCursor(newUri);
+    ListView listView = ((AlertDialog) dialog).getListView();
+    CursorAdapter adapter = (CursorAdapter) ((HeaderViewListAdapter) listView.getAdapter()).getWrappedAdapter();
+    adapter.changeCursor(newCursor);
+
+    listView.setItemChecked(selectedIndex, true);
+    listView.setSelection(selectedIndex);
+    listView.clearFocus();
   }
 
   private void newRingtone() {
-    boolean hasPerm = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    boolean hasPerm = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ||
+                      ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     if (hasPerm) {
-      final Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-      chooseFile.setType("audio/*");
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"audio/*", "application/ogg"});
-      }
-      startActivityForResult(chooseFile, getRingtonePreference().getCustomRingtoneRequestCode());
+      launchRingtonePicker();
     } else {
-      requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, getRingtonePreference().getPermissionRequestCode());
+      storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
+  }
+
+  private void launchRingtonePicker() {
+    Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+    chooseFile.setType("audio/*");
+    chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"audio/*", "application/ogg"});
+    ringtonePicker.launch(chooseFile);
   }
 
   @WorkerThread
@@ -366,6 +369,10 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
     }
 
     final String subdirectory = getDirForType(type);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      return addCustomRingtoneToMediaStore(context, fileUri, type, subdirectory, mimeType);
+    }
 
     final File outFile = getUniqueExternalFile(context, subdirectory, getFileDisplayNameFromUri(context, fileUri), mimeType);
 
@@ -398,6 +405,50 @@ public class RingtonePreferenceDialogFragmentCompat extends PreferenceDialogFrag
       }
     } else {
       return null;
+    }
+  }
+
+  @WorkerThread
+  private static Uri addCustomRingtoneToMediaStore(Context context, Uri fileUri, int type,
+                                                   String subdirectory, String mimeType)
+      throws IOException
+  {
+    ContentResolver resolver = context.getContentResolver();
+    ContentValues values = new ContentValues();
+    values.put(MediaStore.Audio.Media.DISPLAY_NAME, getFileDisplayNameFromUri(context, fileUri));
+    values.put(MediaStore.Audio.Media.MIME_TYPE, mimeType);
+    values.put(MediaStore.Audio.Media.RELATIVE_PATH, subdirectory);
+    values.put(MediaStore.Audio.Media.IS_RINGTONE,
+               type == RingtoneManager.TYPE_RINGTONE || type == RingtoneManager.TYPE_ALL);
+    values.put(MediaStore.Audio.Media.IS_NOTIFICATION,
+               type == RingtoneManager.TYPE_NOTIFICATION || type == RingtoneManager.TYPE_ALL);
+    values.put(MediaStore.Audio.Media.IS_ALARM,
+               type == RingtoneManager.TYPE_ALARM || type == RingtoneManager.TYPE_ALL);
+    values.put(MediaStore.Audio.Media.IS_MUSIC, false);
+    values.put(MediaStore.Audio.Media.IS_PENDING, true);
+
+    Uri outputUri = resolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+    if (outputUri == null) throw new IOException("Unable to create ringtone MediaStore entry");
+
+    try (InputStream input = resolver.openInputStream(fileUri);
+         OutputStream output = resolver.openOutputStream(outputUri, "w")) {
+      if (input == null || output == null) throw new IOException("Unable to open ringtone stream");
+
+      byte[] buffer = new byte[10240];
+      for (int length; (length = input.read(buffer)) != -1; ) {
+        output.write(buffer, 0, length);
+      }
+
+      values.clear();
+      values.put(MediaStore.Audio.Media.IS_PENDING, false);
+      if (resolver.update(outputUri, values, null, null) != 1) {
+        throw new IOException("Unable to publish ringtone MediaStore entry");
+      }
+
+      return outputUri;
+    } catch (IOException | RuntimeException e) {
+      resolver.delete(outputUri, null, null);
+      throw e;
     }
   }
 

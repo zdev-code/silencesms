@@ -27,7 +27,7 @@ import android.util.Log;
 import org.smssecure.smssecure.mms.LegacyMmsConnection.Apn;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -182,7 +182,7 @@ public class ApnDatabase {
                              SilencePreferences.getUseCustomMmscUsername(context),
                              SilencePreferences.getUseCustomMmscPassword(context));
 
-    if (TextUtils.isEmpty(result.getMmsc())) return Optional.absent();
+    if (TextUtils.isEmpty(result.getMmsc())) return Optional.empty();
     else                                     return Optional.of(result);
   }
 }

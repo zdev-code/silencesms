@@ -48,6 +48,10 @@
     <item quantity="one">%d minute</item>
     <item quantity="other">%d minutes</item>
     </plurals>
+    <string name="AppProtectionPreferenceFragment_hours">h</string>
+    <string name="AppProtectionPreferenceFragment_minutes_short">m</string>
+    <string name="AppProtectionPreferenceFragment_seconds">s</string>
+    <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Inactivity timeout interval</string>
 
     <!-- DraftDatabase -->
     <string name="DraftDatabase_Draft_image_snippet">(image)</string>
@@ -246,6 +250,7 @@
     <string name="ExportFragment_export_successful">Export successful.</string>
     <string name="ExportFragment_export_encrypted_backup">Export encrypted backup?</string>
     <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">This will export your encrypted keys, settings, and messages to storage.</string>
+    <string name="ExportFragment_store_recovery_key">Store this recovery key in your password manager or another secure location. It is required to restore this backup and is not stored inside it.</string>
     <string name="ExportFragment_exporting_keys_settings_and_messages">Exporting encrypted keys, settings, and messages…</string>
 
     <!-- GroupCreateActivity -->
@@ -285,6 +290,17 @@
     <string name="ImportFragment_import_complete">Import complete!</string>
     <string name="ImportFragment_restoring_encrypted_backup">Restoring encrypted backup…</string>
     <string name="ImportFragment_no_encrypted_backup_found">No encrypted backup found!</string>
+    <string name="ImportFragment_recovery_key">Recovery key</string>
+    <string name="ImportFragment_invalid_recovery_key">Invalid recovery key.</string>
+    <string name="AutomaticBackup_failure_title">Automatic backup failed</string>
+    <string name="AutomaticBackup_failure_message">Open Silence backup settings to select an available destination.</string>
+    <string name="AutomaticBackup_enable">Enable automatic encrypted backups</string>
+    <string name="AutomaticBackup_disable">Disable automatic encrypted backups</string>
+    <string name="AutomaticBackup_description">Create a daily backup while charging and keep the five newest copies.</string>
+    <string name="AutomaticBackup_store_recovery_key">Store this recovery key in your password manager or another secure location. Automatic backups cannot be restored without it.</string>
+    <string name="AutomaticBackup_select_directory">Select backup folder</string>
+    <string name="AutomaticBackup_disable_message">Future automatic backups will stop. Existing backup files will not be deleted.</string>
+    <string name="AutomaticBackup_enable_failed">Unable to enable automatic backups.</string>
     <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">Silence needs the SMS permission in order to import SMS messages, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"SMS\".</string>
     <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">Silence needs the SMS permission in order to import SMS messages</string>
     <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied">Silence needs the Storage permission in order to read from external storage, but it has been permanently denied. Please continue to app settings, select \"Permissions\", then enable \"Storage\".</string>
@@ -322,6 +338,8 @@
     <string name="PassphraseChangeActivity_passphrases_dont_match_exclamation">Passphrases don\'t match!</string>
     <string name="PassphraseChangeActivity_incorrect_old_passphrase_exclamation">Incorrect old passphrase!</string>
     <string name="PassphraseChangeActivity_enter_new_passphrase_exclamation">No passphrase entered!</string>
+    <string name="master_secret_storage_error">Unable to save the encryption key. Your previous settings are unchanged.</string>
+    <string name="retry">Retry</string>
 
     <!-- PassphrasePromptActivity -->
     <string name="PassphrasePromptActivity_enter_passphrase">Enter passphrase</string>

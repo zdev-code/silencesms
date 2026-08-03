@@ -17,7 +17,6 @@
 package org.smssecure.smssecure.preferences;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.util.Log;
@@ -29,13 +28,13 @@ import org.smssecure.smssecure.database.ApnDatabase;
 import org.smssecure.smssecure.mms.LegacyMmsConnection;
 import org.smssecure.smssecure.util.TelephonyUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
-
-import java.io.IOException;
-
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 public class MmsPreferencesFragment extends CorrectedPreferenceFragment {
 
   private static final String TAG = MmsPreferencesFragment.class.getSimpleName();
+
+  private AppTaskExecutor.TaskHandle loadApnDefaultsTask;
 
   @Override
   public void onCreate(Bundle paramBundle) {
@@ -55,51 +54,54 @@ public class MmsPreferencesFragment extends CorrectedPreferenceFragment {
   @Override
   public void onResume() {
     super.onResume();
-    new LoadApnDefaultsTask().execute();
+    loadApnDefaults();
   }
 
-  private class LoadApnDefaultsTask extends AsyncTask<Void, Void, LegacyMmsConnection.Apn> {
+  @Override
+  public void onDestroyView() {
+    if (loadApnDefaultsTask != null) loadApnDefaultsTask.cancel();
+    loadApnDefaultsTask = null;
+    super.onDestroyView();
+  }
 
-    @Override
-    protected LegacyMmsConnection.Apn doInBackground(Void... params) {
-      try {
-        Context context = getActivity();
+  private void loadApnDefaults() {
+    Context context = getContext();
+    if (context == null) return;
 
-        if (context != null) {
-          return ApnDatabase.getInstance(context)
-                            .getDefaultApnParameters(TelephonyUtil.getMccMnc(context),
-                                                     TelephonyUtil.getApn(context));
-        }
-      } catch (IOException e) {
-        Log.w(TAG, e);
-      }
+    if (loadApnDefaultsTask != null) loadApnDefaultsTask.cancel();
+    Context appContext = context.getApplicationContext();
 
-      return null;
-    }
+    loadApnDefaultsTask = AppTaskExecutor.getInstance().submitSerial(
+        () -> ApnDatabase.getInstance(appContext)
+                        .getDefaultApnParameters(TelephonyUtil.getMccMnc(appContext),
+                                                 TelephonyUtil.getApn(appContext)),
+        this::applyApnDefaults,
+        exception -> Log.w(TAG, "Unable to load default APN settings", exception));
+  }
 
-    @Override
-    protected void onPostExecute(LegacyMmsConnection.Apn apnDefaults) {
-      ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_HOST_PREF))
-          .setValidator(new CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.UriValidator())
-          .setDefaultValue(apnDefaults.getMmsc());
+  private void applyApnDefaults(LegacyMmsConnection.Apn apnDefaults) {
+    if (apnDefaults == null || !isAdded() || getPreferenceScreen() == null) return;
 
-      ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_PROXY_HOST_PREF))
-          .setValidator(new CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.HostnameValidator())
-          .setDefaultValue(apnDefaults.getProxy());
+    ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_HOST_PREF))
+        .setValidator(new CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.UriValidator())
+        .setDefaultValue(apnDefaults.getMmsc());
 
-      ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_PROXY_PORT_PREF))
-          .setValidator(new CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.PortValidator())
-          .setDefaultValue(apnDefaults.getPort());
+    ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_PROXY_HOST_PREF))
+        .setValidator(new CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.HostnameValidator())
+        .setDefaultValue(apnDefaults.getProxy());
 
-      ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_USERNAME_PREF))
-          .setDefaultValue(apnDefaults.getPort());
+    ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_PROXY_PORT_PREF))
+        .setValidator(new CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.PortValidator())
+        .setDefaultValue(apnDefaults.getPort());
 
-      ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_PASSWORD_PREF))
-          .setDefaultValue(apnDefaults.getPassword());
+    ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_USERNAME_PREF))
+        .setDefaultValue(apnDefaults.getPort());
 
-      ((CustomDefaultPreference)findPreference(SilencePreferences.MMS_USER_AGENT))
-          .setDefaultValue(LegacyMmsConnection.USER_AGENT);
-    }
+    ((CustomDefaultPreference)findPreference(SilencePreferences.MMSC_PASSWORD_PREF))
+        .setDefaultValue(apnDefaults.getPassword());
+
+    ((CustomDefaultPreference)findPreference(SilencePreferences.MMS_USER_AGENT))
+        .setDefaultValue(LegacyMmsConnection.USER_AGENT);
   }
 
 }

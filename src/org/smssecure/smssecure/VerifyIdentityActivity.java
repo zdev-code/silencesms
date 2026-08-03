@@ -28,13 +28,14 @@ import android.widget.Toast;
 import org.smssecure.smssecure.crypto.IdentityKeyParcelable;
 import org.smssecure.smssecure.crypto.IdentityKeyUtil;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.crypto.storage.SilenceSessionStore;
+import org.smssecure.smssecure.crypto.storage.VendoredSessionStore;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.Hex;
 import org.whispersystems.libsignal.SignalProtocolAddress;
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.InvalidKeyException;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SessionStore;
 
@@ -74,7 +75,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
   }
 
   private void initializeFingerprints() {
-    int subscriptionId = getIntent().getIntExtra("subscription_id", SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1));
+    int subscriptionId = getSubscriptionId();
 
     if (!IdentityKeyUtil.hasIdentityKey(this, subscriptionId)) {
       localIdentityFingerprint.setText(R.string.VerifyIdentityActivity_you_do_not_have_an_identity_key);
@@ -94,7 +95,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
 
   @Override
   protected void initiateDisplay() {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
+    int subscriptionId = getSubscriptionId();
 
     if (!IdentityKeyUtil.hasIdentityKey(this, subscriptionId)) {
       Toast.makeText(this,
@@ -135,7 +136,7 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
 
   @Override
   protected IdentityKey getIdentityKeyToDisplay() {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
+    int subscriptionId = getSubscriptionId();
 
     return IdentityKeyUtil.getIdentityKey(this, subscriptionId);
   }
@@ -161,14 +162,14 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
   }
 
   private @Nullable IdentityKey getRemoteIdentityKey(MasterSecret masterSecret, Recipient recipient) {
-    int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
-  IdentityKeyParcelable identityKeyParcelable = IntentCompat.getParcelableExtra(getIntent(), "remote_identity", IdentityKeyParcelable.class);
+    int subscriptionId = getSubscriptionId();
+    IdentityKeyParcelable identityKeyParcelable = IntentCompat.getParcelableExtra(getIntent(), "remote_identity", IdentityKeyParcelable.class);
 
     if (identityKeyParcelable != null) {
       return identityKeyParcelable.get();
     }
 
-    SessionStore   sessionStore   = new SilenceSessionStore(this, masterSecret, subscriptionId);
+    SessionStore   sessionStore   = new VendoredSessionStore(this, masterSecret, subscriptionId);
     SignalProtocolAddress axolotlAddress = new SignalProtocolAddress(recipient.getNumber(), 1);
     SessionRecord  record         = sessionStore.loadSession(axolotlAddress);
 
@@ -176,6 +177,21 @@ public class VerifyIdentityActivity extends KeyScanningActivity {
       return null;
     }
 
-    return record.getSessionState().getRemoteIdentityKey();
+    org.whispersystems.libsignal.IdentityKey remote = record.getSessionState().getRemoteIdentityKey();
+    if (remote == null) {
+      return null;
+    }
+    // The remote identity comes from a vendored Key-Exchange SessionRecord; the UI/type layer is now
+    // maintained-library typed, so convert (serialization is byte-identical across the two libraries).
+    try {
+      return new IdentityKey(remote.serialize(), 0);
+    } catch (InvalidKeyException e) {
+      throw new AssertionError(e);
+    }
+  }
+
+  private int getSubscriptionId() {
+    return getIntent().getIntExtra("subscription_id",
+                                   SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1));
   }
 }

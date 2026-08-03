@@ -35,8 +35,8 @@ import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.util.Base64;
 import org.smssecure.smssecure.util.MediaUtil;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.InvalidMessageException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -102,6 +102,10 @@ public class DatabaseFactory {
   private final DraftDatabase draftDatabase;
   private final RecipientPreferenceDatabase recipientPreferenceDatabase;
   private final ContactsDatabase contactsDatabase;
+
+  public interface BackupOperation {
+    void run() throws IOException;
+  }
 
   public static DatabaseFactory getInstance(Context context) {
     synchronized (lock) {
@@ -198,6 +202,17 @@ public class DatabaseFactory {
     old.close();
 
     this.address.reset(context);
+  }
+
+  public void runWithClosedDatabase(Context context, BackupOperation operation) throws IOException {
+    synchronized (lock) {
+      databaseHelper.close();
+      try {
+        operation.run();
+      } finally {
+        reset(context.getApplicationContext());
+      }
+    }
   }
 
   public void onApplicationLevelUpgrade(Context context, MasterSecret masterSecret, int fromVersion,

@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import org.smssecure.smssecure.permissions.Permissions;
 import org.smssecure.smssecure.util.CharacterCalculator;
@@ -14,7 +15,7 @@ import org.smssecure.smssecure.util.SmsCharacterCalculator;
 import org.smssecure.smssecure.util.EncryptedSmsCharacterCalculator;
 import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class TransportOptions {
 
   private Type                      defaultTransportType  = Type.INSECURE_SMS;
   private Optional<Integer>         defaultSubscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId();
-  private Optional<TransportOption> selectedOption        = Optional.absent();
+  private Optional<TransportOption> selectedOption        = Optional.empty();
 
   public TransportOptions(Context context, boolean media) {
     this.context           = context;
@@ -73,7 +74,7 @@ public class TransportOptions {
   }
 
   public void setSelectedTransport(@Nullable  TransportOption transportOption) {
-    this.selectedOption = Optional.fromNullable(transportOption);
+    this.selectedOption = Optional.ofNullable(transportOption);
     notifyTransportChangeListeners();
   }
 
@@ -87,7 +88,7 @@ public class TransportOptions {
     if (defaultSubscriptionId.isPresent()) {
       for (TransportOption transportOption : enabledTransports) {
         if (transportOption.getType() == defaultTransportType &&
-            (int)defaultSubscriptionId.get() == transportOption.getSimSubscriptionId().or(-1))
+            (int)defaultSubscriptionId.get() == transportOption.getSimSubscriptionId().orElse(-1))
         {
           return transportOption;
         }
@@ -118,8 +119,8 @@ public class TransportOptions {
     List<TransportOption> options = find(type);
 
     for (TransportOption option : options) {
-      if (option.getSimSubscriptionId().or(-1) == subscriptionId) enabledTransports.remove(option);
-      if (selectedOption.isPresent() && selectedOption.get().getType() == type && selectedOption.get().getSimSubscriptionId().or(-1) == subscriptionId) {
+      if (option.getSimSubscriptionId().orElse(-1) == subscriptionId) enabledTransports.remove(option);
+      if (selectedOption.isPresent() && selectedOption.get().getType() == type && selectedOption.get().getSimSubscriptionId().orElse(-1) == subscriptionId) {
         setSelectedTransport(null);
       }
     }
@@ -138,23 +139,23 @@ public class TransportOptions {
 
     if (isMediaMessage) {
       results.addAll(getTransportOptionsForSimCards(Type.INSECURE_SMS, R.drawable.ic_send_insecure_white_24dp,
-                                                    context.getResources().getColor(R.color.grey_600),
+                                                    ContextCompat.getColor(context, R.color.grey_600),
                                                     context.getString(R.string.ConversationActivity_transport_insecure_mms),
                                                     context.getString(R.string.conversation_activity__type_message_mms_insecure),
                                                     new MmsCharacterCalculator()));
       results.addAll(getTransportOptionsForSimCards(Type.SECURE_SMS, R.drawable.ic_send_secure_white_24dp,
-                                                    context.getResources().getColor(R.color.silence_primary),
+                                                    ContextCompat.getColor(context, R.color.silence_primary),
                                                     context.getString(R.string.ConversationActivity_transport_secure_mms),
                                                     context.getString(R.string.conversation_activity__type_message_mms_secure),
                                                     new MmsCharacterCalculator()));
     } else {
       results.addAll(getTransportOptionsForSimCards(Type.INSECURE_SMS, R.drawable.ic_send_insecure_white_24dp,
-                                                    context.getResources().getColor(R.color.grey_600),
+                                                    ContextCompat.getColor(context, R.color.grey_600),
                                                     context.getString(R.string.ConversationActivity_transport_insecure_sms),
                                                     context.getString(R.string.conversation_activity__type_message_sms_insecure),
                                                     new SmsCharacterCalculator()));
       results.addAll(getTransportOptionsForSimCards(Type.SECURE_SMS, R.drawable.ic_send_secure_white_24dp,
-                                                    context.getResources().getColor(R.color.silence_primary),
+                                                    ContextCompat.getColor(context, R.color.silence_primary),
                                                     context.getString(R.string.ConversationActivity_transport_secure_sms),
                                                     context.getString(R.string.conversation_activity__type_message_sms_secure),
                                                     new EncryptedSmsCharacterCalculator()));
@@ -225,7 +226,7 @@ public class TransportOptions {
   private TransportOption getDefaultTransportOption() {
     return new TransportOption(Type.DISABLED,
                                R.drawable.ic_send_insecure_white_24dp,
-                               context.getResources().getColor(R.color.grey_600),
+                               ContextCompat.getColor(context, R.color.grey_600),
                                context.getString(R.string.TransportOptions_sms_disabled),
                                context.getString(R.string.TransportOptions_no_sim_card_found),
                                new DummyCharacterCalculator(),

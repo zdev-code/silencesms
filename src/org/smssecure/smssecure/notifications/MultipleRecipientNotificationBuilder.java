@@ -7,6 +7,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.Person;
 
 import org.smssecure.smssecure.ConversationListActivity;
 import org.smssecure.smssecure.R;
@@ -24,7 +25,7 @@ public class MultipleRecipientNotificationBuilder extends AbstractNotificationBu
   public MultipleRecipientNotificationBuilder(Context context, NotificationPrivacyPreference privacy) {
     super(context, privacy);
 
-    setColor(context.getResources().getColor(R.color.silence_primary));
+    setColor(androidx.core.content.ContextCompat.getColor(context, R.color.silence_primary));
     setSmallIcon(R.drawable.icon_notification);
     setContentTitle(context.getString(R.string.app_name));
   setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, ConversationListActivity.class), PendingIntent.FLAG_IMMUTABLE));
@@ -63,7 +64,11 @@ public class MultipleRecipientNotificationBuilder extends AbstractNotificationBu
     }
 
     if (privacy.isDisplayContact() && sender.getContactUri() != null) {
-      addPerson(sender.getContactUri().toString());
+      addPerson(new Person.Builder()
+                    .setName(sender.toShortString())
+                    .setKey("recipient:" + sender.getRecipientId())
+                    .setUri(sender.getContactUri().toString())
+                    .build());
     }
   }
 

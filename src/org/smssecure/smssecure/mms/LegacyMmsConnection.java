@@ -30,7 +30,7 @@ import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.TelephonyUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -126,6 +126,10 @@ public abstract class LegacyMmsConnection {
     }
 
     Log.w(TAG, "Checking route to address: " + host + ", " + inetAddress.getHostAddress());
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+      return true;
+    }
+
     ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
     try {
       final Method  requestRouteMethod  = manager.getClass().getMethod("requestRouteToHostAddress", Integer.TYPE, InetAddress.class);
@@ -196,11 +200,7 @@ public abstract class LegacyMmsConnection {
 
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
       try {
-        TelephonyManager telephonyManager = TelephonyUtil.getManager(context);
-
-        if (telephonyManager != null) {
-          number = telephonyManager.getLine1Number();
-        }
+        number = TelephonyUtil.getPhoneNumber(context);
       } catch (SecurityException securityException) {
         Log.w(TAG, "Unable to read line1 number due to missing permission", securityException);
       }

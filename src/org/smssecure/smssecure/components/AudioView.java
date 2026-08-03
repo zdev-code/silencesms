@@ -21,8 +21,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 
-import com.pnikosis.materialishprogress.ProgressWheel;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,7 +52,7 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
   private final @NonNull ImageView       playButton;
   private final @NonNull ImageView       pauseButton;
   private final @NonNull ImageView       downloadButton;
-  private final @NonNull ProgressWheel   downloadProgress;
+  private final @NonNull CircularProgressIndicator downloadProgress;
   private final @NonNull SeekBar         seekBar;
   private final @NonNull TextView        timestamp;
 
@@ -75,7 +77,7 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     this.playButton       = (ImageView) findViewById(R.id.play);
     this.pauseButton      = (ImageView) findViewById(R.id.pause);
     this.downloadButton   = (ImageView) findViewById(R.id.download);
-    this.downloadProgress = (ProgressWheel) findViewById(R.id.download_progress);
+    this.downloadProgress = (CircularProgressIndicator) findViewById(R.id.download_progress);
     this.seekBar          = (SeekBar) findViewById(R.id.seek);
     this.timestamp        = (TextView) findViewById(R.id.timestamp);
 
@@ -136,15 +138,15 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
       controlToggle.displayQuick(downloadButton);
       seekBar.setEnabled(false);
       downloadButton.setOnClickListener(new DownloadClickedListener(audio));
-      if (downloadProgress.isSpinning()) downloadProgress.stopSpinning();
     } else if (showControls && audio.getTransferState() == AttachmentDatabase.TRANSFER_PROGRESS_STARTED) {
+      // Only switch to indeterminate while the view is hidden; CircularProgressIndicator throws if
+      // switched from determinate to indeterminate while visible.
+      if (downloadProgress.getVisibility() != View.VISIBLE) downloadProgress.setIndeterminate(true);
       controlToggle.displayQuick(downloadProgress);
       seekBar.setEnabled(false);
-      downloadProgress.spin();
     } else {
       controlToggle.displayQuick(playButton);
       seekBar.setEnabled(true);
-      if (downloadProgress.isSpinning()) downloadProgress.stopSpinning();
     }
 
     this.audioSlidePlayer = AudioSlidePlayer.createFor(getContext(), masterSecret, audio, this);
@@ -235,13 +237,13 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     }
 
     this.downloadButton.setColorFilter(foregroundTint, PorterDuff.Mode.SRC_IN);
-    this.downloadProgress.setBarColor(foregroundTint);
+    this.downloadProgress.setIndicatorColor(foregroundTint);
 
     this.timestamp.setTextColor(foregroundTint);
-    this.seekBar.getProgressDrawable().setColorFilter(foregroundTint, PorterDuff.Mode.SRC_IN);
+    this.seekBar.getProgressDrawable().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(foregroundTint, BlendModeCompat.SRC_IN));
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      this.seekBar.getThumb().setColorFilter(foregroundTint, PorterDuff.Mode.SRC_IN);
+      this.seekBar.getThumb().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(foregroundTint, BlendModeCompat.SRC_IN));
     }
   }
 
@@ -360,7 +362,7 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
       Util.runOnMain(new Runnable() {
         @Override
         public void run() {
-          downloadProgress.setInstantProgress(((float) event.progress) / event.total);
+          downloadProgress.setProgressCompat((int) (((float) event.progress / event.total) * 100), true);
         }
       });
     }

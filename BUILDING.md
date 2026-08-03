@@ -34,6 +34,25 @@ The following steps should help you (re)build Silence from the command line.
 
         ./gradlew assembleDebug
 
+Crypto release stages
+---------------------
+
+The local-crypto rollout has two release artifacts:
+
+* `assemblePhaseARelease` builds the staged Phase A APK. It retains all modern readers but writes
+        only the versioned AES-CBC/HMAC field envelope and keeps the legacy PBKDF1 master-secret wrapper
+        authoritative.
+* `assembleRelease` builds the modernized Phase B-D APK. New fields use AES-256-GCM and successful
+        legacy unlocks may migrate the master-secret wrapper to Argon2id.
+
+Verify the generated write-policy flags and build both stages with:
+
+                                ./gradlew verifyCryptoReleaseStages assemblePhaseARelease assembleRelease
+
+Do not substitute `assembleRelease` for the Phase A artifact during the staged rollout. Both builds
+retain legacy and modern readers so upgrade and rollback data remain readable; their new-write policy
+is intentionally different.
+
 If you get a `Configuration with name 'default' not found.`, please update submodules:
 
         git submodule init && git submodule update

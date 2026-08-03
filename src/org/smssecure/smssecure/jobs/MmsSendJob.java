@@ -22,7 +22,6 @@ import com.klinker.android.send_message.Utils;
 import org.smssecure.smssecure.attachments.Attachment;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MmsCipher;
-import org.smssecure.smssecure.crypto.storage.SilenceSignalProtocolStore;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.MmsDatabase;
 import org.smssecure.smssecure.database.NoSuchMessageException;
@@ -43,7 +42,7 @@ import org.smssecure.smssecure.util.NumberUtil;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
-import org.whispersystems.libsignal.NoSessionException;
+import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
 
 import java.io.ByteArrayOutputStream;
@@ -150,7 +149,7 @@ public class MmsSendJob extends SendJob {
       throws UndeliverableMessageException
   {
     try {
-      MmsCipher cipher = new MmsCipher(new SilenceSignalProtocolStore(context, masterSecret, subscriptionId));
+      MmsCipher cipher = new MmsCipher(context, masterSecret, subscriptionId);
       return cipher.encrypt(context, pdu);
     } catch (UntrustedIdentityException | NoSessionException e) {
       throw new UndeliverableMessageException(e);

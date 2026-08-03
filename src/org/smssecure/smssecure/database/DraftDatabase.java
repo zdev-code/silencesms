@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import android.util.Log;
 
 import org.smssecure.smssecure.R;
-import org.whispersystems.libsignal.InvalidMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
 import org.smssecure.smssecure.crypto.MasterCipher;
 
 import java.util.LinkedList;

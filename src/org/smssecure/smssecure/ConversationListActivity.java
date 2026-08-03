@@ -17,9 +17,9 @@
 package org.smssecure.smssecure;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -43,7 +43,9 @@ import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
+import org.smssecure.smssecure.util.ActivityTransitionCompat;
 import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.util.List;
 
@@ -133,7 +135,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   }
 
   private void initializeSearch(MenuItem searchViewItem) {
-    SearchView searchView = (SearchView)MenuItemCompat.getActionView(searchViewItem);
+    SearchView searchView = (SearchView)searchViewItem.getActionView();
     searchView.setQueryHint(getString(R.string.ConversationListActivity_search));
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
@@ -152,7 +154,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       }
     });
 
-    MenuItemCompat.setOnActionExpandListener(searchViewItem, new MenuItemCompat.OnActionExpandListener() {
+    searchViewItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
       @Override
       public boolean onMenuItemActionExpand(MenuItem menuItem) {
         return true;
@@ -174,15 +176,14 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 
-    switch (item.getItemId()) {
-    case R.id.menu_archived_conversations: handleSwitchToArchive();        return true;
-    case R.id.menu_new_group:              createGroup();                  return true;
-    case R.id.menu_settings:               handleDisplaySettings();        return true;
-    case R.id.menu_clear_passphrase:       handleClearPassphrase();        return true;
-    case R.id.menu_mark_all_read:          handleMarkAllRead();            return true;
-    case R.id.menu_import_export:          handleImportExport();           return true;
-    case R.id.menu_my_identity:            handleMyIdentity();             return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_archived_conversations) { handleSwitchToArchive();        return true; }
+    else if (itemId == R.id.menu_new_group)              { createGroup();                  return true; }
+    else if (itemId == R.id.menu_settings)               { handleDisplaySettings();        return true; }
+    else if (itemId == R.id.menu_clear_passphrase)       { handleClearPassphrase();        return true; }
+    else if (itemId == R.id.menu_mark_all_read)          { handleMarkAllRead();            return true; }
+    else if (itemId == R.id.menu_import_export)          { handleImportExport();           return true; }
+    else if (itemId == R.id.menu_my_identity)            { handleMyIdentity();             return true; }
 
     return false;
   }
@@ -197,7 +198,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     intent.putExtra(ConversationActivity.LAST_SEEN_EXTRA, lastSeen);
 
     startActivity(intent);
-    overridePendingTransition(R.anim.slide_from_right, R.anim.fade_scale_out);
+    ActivityTransitionCompat.overrideOpen(this, R.anim.slide_from_right, R.anim.fade_scale_out);
   }
 
   @Override
@@ -244,14 +245,16 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   }
 
   private void handleMarkAllRead() {
-    new AsyncTask<Void, Void, Void>() {
-      @Override
-      protected Void doInBackground(Void... params) {
-        DatabaseFactory.getThreadDatabase(ConversationListActivity.this).setAllThreadsRead();
-        MessageNotifier.updateNotification(ConversationListActivity.this, masterSecret);
+    Context context = getApplicationContext();
+    MasterSecret currentMasterSecret = masterSecret;
+    AppTaskExecutor.getInstance().submitSerial(
+        () -> {
+        DatabaseFactory.getThreadDatabase(context).setAllThreadsRead();
+        MessageNotifier.updateNotification(context, currentMasterSecret);
         return null;
-      }
-    }.execute();
+        },
+        ignored -> {},
+        exception -> Log.w(TAG, "Unable to mark all conversations read", exception));
   }
 
   private void initializeContactUpdatesReceiver() {

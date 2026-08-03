@@ -3,16 +3,16 @@ package org.smssecure.smssecure.contacts.avatars;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.widget.ImageView;
+import android.view.Gravity;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.makeramen.roundedimageview.RoundedDrawable;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.core.graphics.ColorUtils;
 
 public class ResourceContactPhoto implements ContactPhoto {
@@ -37,15 +37,18 @@ public class ResourceContactPhoto implements ContactPhoto {
       return background;
     }
 
-    RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(source);
-
-    foreground.setScaleType(ImageView.ScaleType.CENTER);
+    source = source.mutate();
 
     if (inverted) {
-      foreground.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+      source.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP));
     }
 
-    return new ExpandingLayerDrawable(new Drawable[] {background, foreground});
+    // Draw the icon centred at its intrinsic size over the round background (replaces the former
+    // RoundedDrawable ScaleType.CENTER behaviour with a native LayerDrawable, API 23+).
+    ExpandingLayerDrawable layers = new ExpandingLayerDrawable(new Drawable[] {background, source});
+    layers.setLayerGravity(1, Gravity.CENTER);
+    layers.setLayerSize(1, source.getIntrinsicWidth(), source.getIntrinsicHeight());
+    return layers;
   }
 
   private static class ExpandingLayerDrawable extends LayerDrawable {

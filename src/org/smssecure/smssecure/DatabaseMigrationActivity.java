@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
 import androidx.activity.OnBackPressedCallback;
@@ -97,7 +98,7 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
       public void onClick(View v) {
         Intent intent = new Intent(DatabaseMigrationActivity.this, ApplicationMigrationService.class);
         intent.setAction(ApplicationMigrationService.MIGRATE_DATABASE);
-        intent.putExtra("master_secret", (Parcelable)getIntent().getParcelableExtra("master_secret"));
+        intent.putExtra("master_secret", androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "master_secret", MasterSecret.class));
         startService(intent);
 
         promptLayout.setVisibility(View.GONE);
@@ -153,7 +154,7 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
   private void handleImportComplete() {
     if (isVisible) {
       if (getIntent().hasExtra("next_intent")) {
-        startActivity((Intent)getIntent().getParcelableExtra("next_intent"));
+        startActivity(androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class));
       } else {
         startActivity(new Intent(this, ConversationListActivity.class));
       }
@@ -163,6 +164,10 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
   }
 
   private class ImportStateHandler extends Handler {
+    ImportStateHandler() {
+      super(Looper.getMainLooper());
+    }
+
     @Override
     public void handleMessage(Message message) {
       switch (message.what) {

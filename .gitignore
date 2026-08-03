@@ -17,9 +17,17 @@ build.log
 build-log.xml
 .gradle
 build/
+.cxx/
 debug/
 release/
 signing.properties
 library/lib/
 library/obj/
 *.patch
+
+# Graphify local caches and machine-specific runtime metadata
+graphify-out/cache/
+graphify-out/cost.json
+graphify-out/.graphify_*
+graphify-out/.needs_update
+graphify-out/needs_update

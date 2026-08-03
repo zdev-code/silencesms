@@ -221,6 +221,47 @@
                 </LinearLayout>
             </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray10"/>
+
+                <LinearLayout android:id="@+id/automatic_encrypted_backup"
+                      android:clickable="true"
+                      android:orientation="horizontal"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:gravity="center_vertical"
+                      android:paddingTop="8dip"
+                      android:paddingBottom="8dip"
+                      android:layout_marginLeft="16dip"
+                      android:layout_marginRight="16dip">
+
+                <ImageView android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginRight="10dip"
+                       android:layout_marginEnd="10dip"
+                       android:src="?encrypted_backup"/>
+
+                <LinearLayout android:orientation="vertical"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content">
+
+                    <TextView android:id="@+id/automatic_encrypted_backup_title"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="start"
+                          style="@style/Registration.Description"
+                          android:text="@string/AutomaticBackup_enable"/>
+
+                    <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="start"
+                          android:textAppearance="?android:attr/textAppearanceSmall"
+                          android:text="@string/AutomaticBackup_description"/>
+                </LinearLayout>
+                </LinearLayout>
+
             <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"

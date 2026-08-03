@@ -17,7 +17,6 @@
 package org.smssecure.smssecure;
 
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;

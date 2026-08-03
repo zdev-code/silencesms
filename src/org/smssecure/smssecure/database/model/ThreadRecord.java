@@ -111,6 +111,8 @@ public class ThreadRecord extends DisplayRecord {
 
   private SpannableString emphasisAdded(String sequence, int start, int end) {
     SpannableString spannable = new SpannableString(sequence);
+    if (start == end) return spannable;
+
     spannable.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC),
                       start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannable;

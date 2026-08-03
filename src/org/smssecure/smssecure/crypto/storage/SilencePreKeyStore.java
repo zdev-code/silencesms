@@ -5,13 +5,13 @@ import android.util.Log;
 
 import org.smssecure.smssecure.crypto.MasterCipher;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.whispersystems.libsignal.InvalidKeyIdException;
-import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-import org.whispersystems.libsignal.state.SignedPreKeyStore;
-import org.whispersystems.libsignal.state.PreKeyRecord;
-import org.whispersystems.libsignal.state.PreKeyStore;
 import org.smssecure.smssecure.util.Conversions;
+import org.signal.libsignal.protocol.InvalidKeyIdException;
+import org.signal.libsignal.protocol.InvalidMessageException;
+import org.signal.libsignal.protocol.state.PreKeyRecord;
+import org.signal.libsignal.protocol.state.PreKeyStore;
+import org.signal.libsignal.protocol.state.SignedPreKeyRecord;
+import org.signal.libsignal.protocol.state.SignedPreKeyStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,14 +22,20 @@ import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * New-API ({@code org.signal.libsignal.protocol}) prekey / signed-prekey store for the hybrid
+ * crypto setup (maintained libsignal for message encrypt/decrypt, vendored library for Key Exchange).
+ * Backs the SAME on-disk files as
+ * the vendored {@link VendoredPreKeyStore} ({@code prekeys} / {@code signed_prekeys} directories,
+ * MasterCipher-encrypted, version marker {@code 1} = serialized record). Record byte-compatibility
+ * across the two libraries is proven by the migration test ({@code OldToNewKeyRecordsTest}).
+ */
 public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   public  static final String PREKEY_DIRECTORY        = "prekeys";
   public  static final String SIGNED_PREKEY_DIRECTORY = "signed_prekeys";
 
-
   private static final int    CURRENT_VERSION_MARKER = 1;
-  private static final Object FILE_LOCK              = new Object();
   private static final String TAG                    = SilencePreKeyStore.class.getSimpleName();
 
   private final Context      context;
@@ -42,9 +48,18 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
     this.subscriptionId = subscriptionId;
   }
 
+  // Shared with VendoredPreKeyStore so both libraries serialize over the same on-disk records.
+  private Object preKeyLock() {
+    return StorageFileLock.forDirectory(getPreKeyDirectory());
+  }
+
+  private Object signedPreKeyLock() {
+    return StorageFileLock.forDirectory(getSignedPreKeyDirectory());
+  }
+
   @Override
   public PreKeyRecord loadPreKey(int preKeyId) throws InvalidKeyIdException {
-    synchronized (FILE_LOCK) {
+    synchronized (preKeyLock()) {
       try {
         return new PreKeyRecord(loadSerializedRecord(getPreKeyFile(preKeyId)));
       } catch (IOException | InvalidMessageException e) {
@@ -56,7 +71,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   @Override
   public SignedPreKeyRecord loadSignedPreKey(int signedPreKeyId) throws InvalidKeyIdException {
-    synchronized (FILE_LOCK) {
+    synchronized (signedPreKeyLock()) {
       try {
         return new SignedPreKeyRecord(loadSerializedRecord(getSignedPreKeyFile(signedPreKeyId)));
       } catch (IOException | InvalidMessageException e) {
@@ -68,7 +83,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   @Override
   public List<SignedPreKeyRecord> loadSignedPreKeys() {
-    synchronized (FILE_LOCK) {
+    synchronized (signedPreKeyLock()) {
       File                     directory = getSignedPreKeyDirectory();
       List<SignedPreKeyRecord> results   = new LinkedList<>();
 
@@ -86,7 +101,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   @Override
   public void storePreKey(int preKeyId, PreKeyRecord record) {
-    synchronized (FILE_LOCK) {
+    synchronized (preKeyLock()) {
       try {
         storeSerializedRecord(getPreKeyFile(preKeyId), record.serialize());
       } catch (IOException e) {
@@ -97,7 +112,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   @Override
   public void storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record) {
-    synchronized (FILE_LOCK) {
+    synchronized (signedPreKeyLock()) {
       try {
         storeSerializedRecord(getSignedPreKeyFile(signedPreKeyId), record.serialize());
       } catch (IOException e) {
@@ -108,33 +123,36 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
 
   @Override
   public boolean containsPreKey(int preKeyId) {
-    File record = getPreKeyFile(preKeyId);
-    return record.exists();
+    synchronized (preKeyLock()) {
+      return getPreKeyFile(preKeyId).exists();
+    }
   }
 
   @Override
   public boolean containsSignedPreKey(int signedPreKeyId) {
-    File record = getSignedPreKeyFile(signedPreKeyId);
-    return record.exists();
+    synchronized (signedPreKeyLock()) {
+      return getSignedPreKeyFile(signedPreKeyId).exists();
+    }
   }
-
 
   @Override
   public void removePreKey(int preKeyId) {
-    File record = getPreKeyFile(preKeyId);
-    record.delete();
+    synchronized (preKeyLock()) {
+      getPreKeyFile(preKeyId).delete();
+    }
   }
 
   @Override
   public void removeSignedPreKey(int signedPreKeyId) {
-    File record = getSignedPreKeyFile(signedPreKeyId);
-    record.delete();
+    synchronized (signedPreKeyLock()) {
+      getSignedPreKeyFile(signedPreKeyId).delete();
+    }
   }
 
   private byte[] loadSerializedRecord(File recordFile)
       throws IOException, InvalidMessageException
   {
-    MasterCipher masterCipher  = new MasterCipher(masterSecret);
+    MasterCipher    masterCipher  = new MasterCipher(masterSecret);
     FileInputStream fin           = new FileInputStream(recordFile);
     int             recordVersion = readInteger(fin);
 
@@ -146,15 +164,29 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
   }
 
   private void storeSerializedRecord(File file, byte[] serialized) throws IOException {
-    MasterCipher     masterCipher = new MasterCipher(masterSecret);
-    RandomAccessFile recordFile   = new RandomAccessFile(file, "rw");
-    FileChannel      out          = recordFile.getChannel();
+    MasterCipher masterCipher = new MasterCipher(masterSecret);
+    File         temp         = File.createTempFile("record", ".tmp", file.getParentFile());
 
-    out.position(0);
-    writeInteger(CURRENT_VERSION_MARKER, out);
-    writeBlob(masterCipher.encryptBytes(serialized), out);
-    out.truncate(out.position());
-    recordFile.close();
+    try {
+      try (RandomAccessFile recordFile = new RandomAccessFile(temp, "rw")) {
+        FileChannel out = recordFile.getChannel();
+        out.position(0);
+        writeInteger(CURRENT_VERSION_MARKER, out);
+        writeBlob(masterCipher.encryptBytes(serialized), out);
+        out.truncate(out.position());
+        out.force(true);
+      }
+
+      // Atomic replace: readers on the shared lock never observe a half-written record.
+      if (!temp.renameTo(file)) {
+        throw new IOException("Atomic rename failed: " + temp + " -> " + file);
+      }
+      temp = null;
+    } finally {
+      if (temp != null && temp.exists() && !temp.delete()) {
+        Log.w(TAG, "Could not remove temporary prekey file " + temp);
+      }
+    }
   }
 
   private File getPreKeyFile(int preKeyId) {
@@ -188,7 +220,7 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
   }
 
   private byte[] readBlob(FileInputStream in) throws IOException {
-    int length       = readInteger(in);
+    int    length    = readInteger(in);
     byte[] blobBytes = new byte[length];
 
     in.read(blobBytes, 0, blobBytes.length);
@@ -210,7 +242,4 @@ public class SilencePreKeyStore implements PreKeyStore, SignedPreKeyStore {
     byte[] valueBytes = Conversions.intToByteArray(value);
     out.write(ByteBuffer.wrap(valueBytes));
   }
-
-
-
 }

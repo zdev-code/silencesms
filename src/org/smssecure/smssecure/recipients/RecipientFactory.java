@@ -23,7 +23,7 @@ import android.text.TextUtils;
 import org.smssecure.smssecure.contacts.avatars.ContactPhotoFactory;
 import org.smssecure.smssecure.database.CanonicalAddressDatabase;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -109,7 +109,7 @@ public class RecipientFactory {
   private static Optional<Long> getRecipientIdFromNumber(Context context, String number) {
     number = number.trim();
 
-    if (number.isEmpty()) return Optional.absent();
+    if (number.isEmpty()) return Optional.empty();
 
     if (hasBracketedNumber(number)) {
       number = parseBracketedNumber(number);

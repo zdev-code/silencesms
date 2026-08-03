@@ -9,39 +9,42 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-
-import com.annimon.stream.Stream;
-import com.annimon.stream.function.Consumer;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.LRUCache;
 import org.smssecure.smssecure.util.ServiceUtil;
+import org.smssecure.smssecure.util.WindowSizeCompat;
 
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Permissions {
 
   private static final Map<Integer, PermissionsRequest> OUTSTANDING = new LRUCache<>(2);
+  private static Integer activeFragmentRequestCode;
 
   public static PermissionsBuilder with(@NonNull Activity activity) {
     return new PermissionsBuilder(new ActivityPermissionObject(activity));
   }
 
-  public static PermissionsBuilder with(@NonNull Fragment fragment) {
-    return new PermissionsBuilder(new FragmentPermissionObject(fragment));
+  public static PermissionsBuilder with(@NonNull Fragment fragment, @NonNull FragmentPermissionLauncher launcher) {
+    return new PermissionsBuilder(new FragmentPermissionObject(fragment, launcher));
+  }
+
+  public static FragmentPermissionLauncher registerForResult(@NonNull Fragment fragment) {
+    return new FragmentPermissionLauncher(fragment);
   }
 
   public static class PermissionsBuilder {
@@ -183,7 +186,7 @@ public class Permissions {
       }
 
       String[] permissions  = filterNotGranted(permissionObject.getContext(), requestedPermissions);
-      int[]    grantResults = Stream.of(permissions).mapToInt(permission -> PackageManager.PERMISSION_DENIED).toArray();
+      int[]    grantResults = Arrays.stream(permissions).mapToInt(permission -> PackageManager.PERMISSION_DENIED).toArray();
       boolean[] showDialog   = new boolean[permissions.length];
       Arrays.fill(showDialog, true);
 
@@ -196,31 +199,22 @@ public class Permissions {
     ActivityCompat.requestPermissions(activity, filterNotGranted(activity, permissions), requestCode);
   }
 
-  private static void requestPermissions(@NonNull Fragment fragment, int requestCode, String... permissions) {
-    fragment.requestPermissions(filterNotGranted(fragment.getContext(), permissions), requestCode);
-  }
-
   private static String[] filterNotGranted(@NonNull Context context, String... permissions) {
-    return Stream.of(permissions)
+    return Arrays.stream(permissions)
                  .filter(permission -> ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED)
-                 .toList()
-                 .toArray(new String[0]);
+                 .toArray(String[]::new);
   }
 
   public static boolean hasAny(@NonNull Context context, String... permissions) {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-        Stream.of(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
+        Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
 
   }
 
   public static boolean hasAll(@NonNull Context context, String... permissions) {
     return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-        Stream.of(permissions).allMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
+        Arrays.stream(permissions).allMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
 
-  }
-
-  public static void onRequestPermissionsResult(Fragment fragment, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    onRequestPermissionsResult(new FragmentPermissionObject(fragment), requestCode, permissions, grantResults);
   }
 
   public static void onRequestPermissionsResult(Activity activity, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -264,12 +258,7 @@ public class Permissions {
     abstract void requestPermissions(int requestCode, String... permissions);
 
     int getWindowWidth() {
-      WindowManager  windowManager = ServiceUtil.getWindowManager(getContext());
-      Display        display       = windowManager.getDefaultDisplay();
-      DisplayMetrics metrics       = new DisplayMetrics();
-      display.getMetrics(metrics);
-
-      return metrics.widthPixels;
+      return WindowSizeCompat.getWindowWidth(getContext());
     }
   }
 
@@ -302,12 +291,54 @@ public class Permissions {
     }
   }
 
+  public static final class FragmentPermissionLauncher {
+
+    private final Fragment fragment;
+    private final ActivityResultLauncher<String[]> launcher;
+
+    private FragmentPermissionLauncher(@NonNull Fragment fragment) {
+      this.fragment = fragment;
+      this.launcher = fragment.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), this::onResult);
+    }
+
+    private void launch(int requestCode, String... permissions) {
+      synchronized (OUTSTANDING) {
+        if (activeFragmentRequestCode != null) {
+          OUTSTANDING.remove(requestCode);
+          throw new IllegalStateException("A fragment permission request is already active");
+        }
+        activeFragmentRequestCode = requestCode;
+      }
+
+      launcher.launch(filterNotGranted(fragment.requireContext(), permissions));
+    }
+
+    private void onResult(Map<String, Boolean> results) {
+      int requestCode;
+
+      synchronized (OUTSTANDING) {
+        if (activeFragmentRequestCode == null) return;
+        requestCode = activeFragmentRequestCode;
+        activeFragmentRequestCode = null;
+      }
+
+      String[] permissions = results.keySet().toArray(new String[0]);
+      int[] grantResults = results.values().stream()
+                                  .mapToInt(granted -> granted ? PackageManager.PERMISSION_GRANTED : PackageManager.PERMISSION_DENIED)
+                                  .toArray();
+
+      onRequestPermissionsResult(new FragmentPermissionObject(fragment, this), requestCode, permissions, grantResults);
+    }
+  }
+
   private static class FragmentPermissionObject extends PermissionObject {
 
     private Fragment fragment;
+    private FragmentPermissionLauncher launcher;
 
-    FragmentPermissionObject(@NonNull Fragment fragment) {
+    FragmentPermissionObject(@NonNull Fragment fragment, @NonNull FragmentPermissionLauncher launcher) {
       this.fragment = fragment;
+      this.launcher = launcher;
     }
 
     @Override
@@ -327,7 +358,7 @@ public class Permissions {
 
     @Override
     public void requestPermissions(int requestCode, String... permissions) {
-      Permissions.requestPermissions(fragment, requestCode, permissions);
+      launcher.launch(requestCode, permissions);
     }
   }
 

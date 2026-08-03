@@ -11,6 +11,13 @@ Copyright 2011 Whisper Systems
 
 This software has the follow third party dependencies:
 
+Argon2 reference implementation
+<https://github.com/P-H-C/phc-winner-argon2>
+CC0 1.0 Universal or Apache License 2.0
+
+Copyright 2015 Daniel Dinu, Dmitry Khovratovich,
+Jean-Philippe Aumasson, and Samuel Neves
+
 ZXing
 http://code.google.com/p/zxing/
 Apache License 2.0

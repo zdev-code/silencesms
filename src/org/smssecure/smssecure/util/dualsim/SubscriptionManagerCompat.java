@@ -16,7 +16,7 @@ import android.util.Log;
 
 import org.smssecure.smssecure.util.ServiceUtil;
 
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,26 +44,26 @@ public class SubscriptionManagerCompat {
 
   public Optional<SubscriptionInfoCompat> getActiveSubscriptionInfo(int subscriptionId) {
     if (getActiveSubscriptionInfoList().size() <= 0) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     for (SubscriptionInfoCompat subscriptionInfo : getActiveSubscriptionInfoList()) {
       if (subscriptionInfo.getSubscriptionId() == subscriptionId) return Optional.of(subscriptionInfo);
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
   public Optional<SubscriptionInfoCompat> getActiveSubscriptionInfoFromDeviceSubscriptionId(int subscriptionId) {
     if (getActiveSubscriptionInfoList().size() <= 0) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     for (SubscriptionInfoCompat subscriptionInfo : getActiveSubscriptionInfoList()) {
       if (subscriptionInfo.getDeviceSubscriptionId() == subscriptionId) return Optional.of(subscriptionInfo);
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
   @RequiresApi(22)
@@ -100,37 +100,6 @@ public class SubscriptionManagerCompat {
   public @NonNull List<SubscriptionInfoCompat> updateActiveSubscriptionInfoList() {
     compatList = new LinkedList<>();
 
-    if (Build.VERSION.SDK_INT < 22) {
-      TelephonyManager telephonyManager = ServiceUtil.getTelephonyManager(context);
-
-      String lineNumber = null;
-  String simSerial  = null;
-
-      if (telephonyManager != null) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-          try {
-            lineNumber = telephonyManager.getLine1Number();
-          } catch (SecurityException securityException) {
-            Log.w(TAG, "Unable to read line1 number", securityException);
-          }
-
-        } else {
-          Log.w(TAG, "READ_PHONE_STATE permission missing; omitting line number and SIM serial");
-        }
-      }
-
-      compatList.add(new SubscriptionInfoCompat(context,
-                                                -1,
-                                                telephonyManager != null ? telephonyManager.getSimOperatorName() : null,
-                                                lineNumber,
-                                                simSerial,
-                                                1,
-                                                -1,
-                                                -1,
-                                                false));
-      return compatList;
-    }
-
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
       Log.w(TAG, "READ_PHONE_STATE permission missing; returning fallback subscription info");
 
@@ -149,7 +118,7 @@ public class SubscriptionManagerCompat {
       return compatList;
     }
 
-    SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+    SubscriptionManager subscriptionManager = context.getSystemService(SubscriptionManager.class);
 
     if (subscriptionManager == null) {
       Log.w(TAG, "SubscriptionManager is null; returning empty list");
@@ -175,23 +144,62 @@ public class SubscriptionManagerCompat {
       compatList.add(new SubscriptionInfoCompat(context,
                                                 subscriptionInfo.getSubscriptionId(),
                                                 subscriptionInfo.getDisplayName(),
-                                                subscriptionInfo.getNumber(),
+                                                getPhoneNumber(subscriptionManager, subscriptionInfo),
                                                 subscriptionInfo.getIccId(),
                                                 subscriptionInfo.getSimSlotIndex()+1,
-                                                subscriptionInfo.getMcc(),
-                                                subscriptionInfo.getMnc(),
+                                                getMcc(subscriptionInfo),
+                                                getMnc(subscriptionInfo),
                                                 knowThisDisplayNameTwice(subscriptionInfo.getDisplayName())));
     }
 
     return compatList;
   }
 
-  public static Optional<Integer> getDefaultMessagingSubscriptionId() {
-    if (Build.VERSION.SDK_INT < 22) {
-      return Optional.absent();
+  @SuppressWarnings("deprecation")
+  private String getPhoneNumber(SubscriptionManager subscriptionManager, SubscriptionInfo subscriptionInfo) {
+    try {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
+          return null;
+        }
+        return subscriptionManager.getPhoneNumber(subscriptionInfo.getSubscriptionId());
+      }
+      return subscriptionInfo.getNumber();
+    } catch (SecurityException securityException) {
+      Log.w(TAG, "Unable to read subscription phone number", securityException);
+      return null;
     }
+  }
+
+  @SuppressWarnings("deprecation")
+  private int getMcc(SubscriptionInfo subscriptionInfo) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      return parseOperatorCode(subscriptionInfo.getMccString());
+    }
+    return subscriptionInfo.getMcc();
+  }
+
+  @SuppressWarnings("deprecation")
+  private int getMnc(SubscriptionInfo subscriptionInfo) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      return parseOperatorCode(subscriptionInfo.getMncString());
+    }
+    return subscriptionInfo.getMnc();
+  }
+
+  private int parseOperatorCode(String value) {
+    if (value == null) return -1;
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException exception) {
+      Log.w(TAG, "Unable to parse operator code: " + value, exception);
+      return -1;
+    }
+  }
+
+  public static Optional<Integer> getDefaultMessagingSubscriptionId() {
     if(SmsManager.getDefaultSmsSubscriptionId() < 0) {
-      return Optional.absent();
+      return Optional.empty();
     }
 
     return Optional.of(SmsManager.getDefaultSmsSubscriptionId());

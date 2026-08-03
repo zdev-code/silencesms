@@ -142,13 +142,6 @@ public class OutgoingLegacyMmsConnection extends LegacyMmsConnection implements 
 
   public static boolean isConnectionPossible(Context context) {
     try {
-      ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo         networkInfo         = connectivityManager.getNetworkInfo(MmsRadio.TYPE_MOBILE_MMS);
-      if (networkInfo == null) {
-        Log.w(TAG, "MMS network info was null, unsupported by this device");
-        return false;
-      }
-
       getApn(context);
       return true;
     } catch (ApnUnavailableException e) {

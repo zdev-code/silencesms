@@ -2,13 +2,16 @@ package org.smssecure.smssecure.notifications;
 
 
 import android.content.BroadcastReceiver;
+import android.content.BroadcastReceiver.PendingResult;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.util.Log;
 
-import org.smssecure.smssecure.database.DatabaseFactory;
+import org.smssecure.smssecure.util.concurrent.AsyncBroadcastTask;
 
 public class DeleteNotificationReceiver extends BroadcastReceiver {
+
+  private static final String TAG = DeleteNotificationReceiver.class.getSimpleName();
 
   public static String DELETE_NOTIFICATION_ACTION = "org.smssecure.smssecure.DELETE_NOTIFICATION";
 
@@ -25,17 +28,12 @@ public class DeleteNotificationReceiver extends BroadcastReceiver {
 
       if (ids == null  || mms == null || ids.length != mms.length) return;
 
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... params) {
-          for (int i=0;i<ids.length;i++) {
-            if (!mms[i]) DatabaseFactory.getSmsDatabase(context).markAsNotified(ids[i]);
-            else         DatabaseFactory.getMmsDatabase(context).markAsNotified(ids[i]);
-          }
-
-          return null;
-        }
-      }.execute();
+      Context appContext = context.getApplicationContext();
+      PendingResult pendingResult = goAsync();
+      AsyncBroadcastTask.submit(pendingResult, TAG, () -> {
+        NotificationActionOperations.markMessagesNotified(appContext, ids, mms);
+        return null;
+      });
     }
   }
 }

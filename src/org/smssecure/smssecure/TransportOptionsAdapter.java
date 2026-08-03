@@ -1,8 +1,9 @@
 package org.smssecure.smssecure;
 
 import android.content.Context;
-import android.graphics.PorterDuff.Mode;
 import androidx.annotation.NonNull;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class TransportOptionsAdapter extends BaseAdapter {
     TextView        textView    = ViewUtil.findById(convertView, R.id.text);
     TextView        subtextView = ViewUtil.findById(convertView, R.id.subtext);
 
-    imageView.getBackground().setColorFilter(transport.getBackgroundColor(), Mode.MULTIPLY);
+    imageView.getBackground().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(transport.getBackgroundColor(), BlendModeCompat.MODULATE));
     imageView.setImageResource(transport.getDrawable());
     textView.setText(transport.getDescription());
 

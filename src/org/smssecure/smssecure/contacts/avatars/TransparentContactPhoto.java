@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.makeramen.roundedimageview.RoundedDrawable;
-
 import androidx.appcompat.content.res.AppCompatResources;
 
 public class TransparentContactPhoto implements ContactPhoto {
@@ -25,6 +23,6 @@ public class TransparentContactPhoto implements ContactPhoto {
       source = new ColorDrawable(Color.TRANSPARENT);
     }
 
-    return RoundedDrawable.fromDrawable(source);
+    return source;
   }
 }

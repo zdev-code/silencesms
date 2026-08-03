@@ -64,7 +64,7 @@ public class SmsListener extends BroadcastReceiver {
 
     if (bundle == null) return null;
 
-    Object[] pdus = (Object[]) bundle.get("pdus");
+    Object[] pdus = androidx.core.os.BundleCompat.getSerializable(bundle, "pdus", Object[].class);
     if (pdus == null || pdus.length == 0) return null;
 
     String format = bundle.getString("format");
@@ -76,7 +76,7 @@ public class SmsListener extends BroadcastReceiver {
     Bundle bundle = intent.getExtras();
     if (bundle == null) return null;
 
-    Object[] pdus = (Object[]) bundle.get("pdus");
+    Object[] pdus = androidx.core.os.BundleCompat.getSerializable(bundle, "pdus", Object[].class);
     if (pdus == null || pdus.length == 0) return null;
 
     String format = bundle.getString("format");
@@ -93,11 +93,7 @@ public class SmsListener extends BroadcastReceiver {
   private SmsMessage createSmsMessageFromPdu(Object pdu, String format) {
     if (!(pdu instanceof byte[])) return null;
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      return SmsMessage.createFromPdu((byte[]) pdu, format);
-    } else {
-      return SmsMessage.createFromPdu((byte[]) pdu);
-    }
+    return SmsMessage.createFromPdu((byte[]) pdu, format);
   }
 
   private boolean isRelevant(Context context, Intent intent) {
@@ -136,7 +132,7 @@ public class SmsListener extends BroadcastReceiver {
     if ((intent.getAction().equals(SMS_DELIVERED_ACTION)) ||
                (intent.getAction().equals(SMS_RECEIVED_ACTION)) && isRelevant(context, intent))
     {
-      Object[] pdus           = (Object[]) intent.getExtras().get("pdus");
+      Object[] pdus           = androidx.core.os.BundleCompat.getSerializable(intent.getExtras(), "pdus", Object[].class);
       int      subscriptionId = intent.getExtras().getInt("subscription", -1);
       String   format          = intent.getStringExtra("format");
 

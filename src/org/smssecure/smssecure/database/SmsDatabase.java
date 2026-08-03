@@ -22,7 +22,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -42,6 +41,8 @@ import org.smssecure.smssecure.sms.IncomingTextMessage;
 import org.smssecure.smssecure.sms.OutgoingTextMessage;
 import org.smssecure.smssecure.util.InvalidNumberException;
 import org.smssecure.smssecure.util.JsonUtils;
+import org.smssecure.smssecure.util.PhoneNumberFormatter;
+import org.smssecure.smssecure.util.SilencePreferences;
 import org.whispersystems.jobqueue.JobManager;
 
 import java.io.IOException;
@@ -441,7 +442,9 @@ public class SmsDatabase extends MessagingDatabase {
     if      (forceSms)                  type |= Types.MESSAGE_FORCE_SMS_BIT;
 
     ContentValues contentValues = new ContentValues(7);
-    contentValues.put(ADDRESS, PhoneNumberUtils.formatNumber(message.getRecipients().getPrimaryRecipient().getNumber()));
+    String address = message.getRecipients().getPrimaryRecipient().getNumber();
+    contentValues.put(ADDRESS, PhoneNumberFormatter.canonicalizeNumber(address,
+                                       SilencePreferences.getLocalNumber(context)));
     contentValues.put(THREAD_ID, threadId);
     contentValues.put(BODY, message.getMessageBody());
     contentValues.put(DATE_RECEIVED, date);

@@ -36,7 +36,7 @@ public abstract class MediaConstraints {
   public boolean isSatisfied(@NonNull Context context, @NonNull MasterSecret masterSecret, @NonNull Attachment attachment) {
     try {
       return (MediaUtil.isGif(attachment)    && attachment.getSize() <= getGifMaxSize(context)   && isWithinBounds(context, masterSecret, attachment.getDataUri())) ||
-             (MediaUtil.isImage(attachment)  && attachment.getSize() <= getImageMaxSize(context) && isWithinBounds(context, masterSecret, attachment.getDataUri())) ||
+             (MediaUtil.isImage(attachment)  && attachment.getSize() <= getImageMaxSize(context) && isWithinBounds(context, masterSecret, attachment.getDataUri()) && hasNormalOrientation(context, masterSecret, attachment.getDataUri())) ||
              (MediaUtil.isAudio(attachment)  && attachment.getSize() <= getAudioMaxSize(context)) ||
              (MediaUtil.isVideo(attachment)  && attachment.getSize() <= getVideoMaxSize(context)) ||
              (!MediaUtil.isImage(attachment) && !MediaUtil.isAudio(attachment) && !MediaUtil.isVideo(attachment));
@@ -54,6 +54,12 @@ public abstract class MediaConstraints {
              dimensions.second > 0 && dimensions.second <= getImageMaxHeight(context);
     } catch (BitmapDecodingException e) {
       throw new IOException(e);
+    }
+  }
+
+  private boolean hasNormalOrientation(Context context, MasterSecret masterSecret, Uri uri) throws IOException {
+    try (InputStream inputStream = PartAuthority.getAttachmentStream(context, masterSecret, uri)) {
+      return BitmapUtil.getExifRotation(inputStream) == 0;
     }
   }
 

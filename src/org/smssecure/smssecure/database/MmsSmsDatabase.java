@@ -26,7 +26,7 @@ import androidx.annotation.Nullable;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.model.MessageRecord;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -264,7 +264,7 @@ public class MmsSmsDatabase extends Database {
 
     public Reader(Cursor cursor, @Nullable MasterSecret masterSecret) {
       this.cursor       = cursor;
-      this.masterSecret = Optional.fromNullable(masterSecret);
+      this.masterSecret = Optional.ofNullable(masterSecret);
     }
 
     public Reader(Cursor cursor) {
@@ -282,7 +282,7 @@ public class MmsSmsDatabase extends Database {
 
     private MmsDatabase.Reader getMmsReader() {
       if (mmsReader == null) {
-        mmsReader = DatabaseFactory.getMmsDatabase(context).readerFor(masterSecret.orNull(), cursor);
+        mmsReader = DatabaseFactory.getMmsDatabase(context).readerFor(masterSecret.orElse(null), cursor);
       }
 
       return mmsReader;

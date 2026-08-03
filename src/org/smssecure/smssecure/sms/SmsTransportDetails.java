@@ -21,11 +21,16 @@ import android.util.Log;
 
 import org.smssecure.smssecure.protocol.WirePrefix;
 import org.smssecure.smssecure.util.Base64;
-import org.whispersystems.libsignal.protocol.CiphertextMessage;
 
 import java.io.IOException;
 
 public class SmsTransportDetails {
+
+  // Wire overhead of an encrypted Signal Protocol message, in bytes. Sourced locally (was
+  // org.whispersystems.libsignal.protocol.CiphertextMessage.ENCRYPTED_MESSAGE_OVERHEAD) so this
+  // module does not depend on the vendored library; the value is fixed by the v3 wire format and
+  // must not change.
+  private static final int ENCRYPTED_MESSAGE_OVERHEAD = 53;
 
   public static final int SMS_SIZE           = 160;
   public static final int MULTIPART_SMS_SIZE = 153;
@@ -35,7 +40,7 @@ public class SmsTransportDetails {
   public static final int MULTI_MESSAGE_MAX_BYTES       = BASE_MAX_BYTES - MultipartSmsTransportMessage.MULTI_MESSAGE_MULTIPART_OVERHEAD;
   public static final int FIRST_MULTI_MESSAGE_MAX_BYTES = BASE_MAX_BYTES - MultipartSmsTransportMessage.FIRST_MULTI_MESSAGE_MULTIPART_OVERHEAD;
 
-  public static final int ENCRYPTED_SINGLE_MESSAGE_BODY_MAX_SIZE = SINGLE_MESSAGE_MAX_BYTES - CiphertextMessage.ENCRYPTED_MESSAGE_OVERHEAD;
+  public static final int ENCRYPTED_SINGLE_MESSAGE_BODY_MAX_SIZE = SINGLE_MESSAGE_MAX_BYTES - ENCRYPTED_MESSAGE_OVERHEAD;
 
   public byte[] getEncodedMessage(byte[] messageWithMac) {
     String encodedMessage = Base64.encodeBytesWithoutPadding(messageWithMac);
@@ -78,7 +83,7 @@ public class SmsTransportDetails {
   }
 
   private int getMaxBodySizeForBytes(int bodyLength) {
-    int encryptedBodyLength   = bodyLength + CiphertextMessage.ENCRYPTED_MESSAGE_OVERHEAD;
+    int encryptedBodyLength   = bodyLength + ENCRYPTED_MESSAGE_OVERHEAD;
     int messageRecordsForBody = getMessageCountForBytes(encryptedBodyLength);
 
     if (messageRecordsForBody == 1) {
@@ -87,7 +92,7 @@ public class SmsTransportDetails {
       return
           FIRST_MULTI_MESSAGE_MAX_BYTES +
           (MULTI_MESSAGE_MAX_BYTES * (messageRecordsForBody-1)) -
-              CiphertextMessage.ENCRYPTED_MESSAGE_OVERHEAD;
+              ENCRYPTED_MESSAGE_OVERHEAD;
     }
   }
 

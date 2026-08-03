@@ -4,7 +4,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.net.Uri;
-import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import android.util.Log;
 

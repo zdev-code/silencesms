@@ -17,7 +17,6 @@
 package org.smssecure.smssecure;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,10 +28,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.lifecycle.Lifecycle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
@@ -54,6 +56,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ProgressBar;
 
 import org.smssecure.smssecure.attachments.Attachment;
 import org.smssecure.smssecure.attachments.UriAttachment;
@@ -82,13 +85,18 @@ import org.smssecure.smssecure.sms.OutgoingTextMessage;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.util.ViewUtil;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 import org.smssecure.smssecure.util.task.SnackbarAsyncTask;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public class ConversationListFragment extends Fragment
@@ -96,6 +104,9 @@ public class ConversationListFragment extends Fragment
 {
 
   private static final String TAG = ConversationListFragment.class.getSimpleName();
+
+  private final ActivityResultLauncher<Intent> defaultSmsRoleRequest = registerForActivityResult(
+      new ActivityResultContracts.StartActivityForResult(), result -> initializeReminders());
 
   public static final String ARCHIVE = "archive";
 
@@ -107,18 +118,22 @@ public class ConversationListFragment extends Fragment
   private Locale               locale;
   private String               queryFilter  = "";
   private boolean              archive;
+  private final List<TaskHandle> callbackTasks = new ArrayList<>();
+  private @Nullable AlertDialog progressDialog;
+  private boolean              viewDestroyed = true;
 
   @Override
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-    masterSecret = getArguments().getParcelable("master_secret");
-    locale       = (Locale) getArguments().getSerializable(PassphraseRequiredActionBarActivity.LOCALE_EXTRA);
+    masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
+    locale       = androidx.core.os.BundleCompat.getSerializable(getArguments(), PassphraseRequiredActionBarActivity.LOCALE_EXTRA, Locale.class);
     archive      = getArguments().getBoolean(ARCHIVE, false);
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
     final View view = inflater.inflate(R.layout.conversation_list_fragment, container, false);
+    viewDestroyed = false;
     reminderView = ViewUtil.findById(view, R.id.reminder);
     list         = ViewUtil.findById(view, R.id.list);
     fab          = ViewUtil.findById(view, R.id.fab);
@@ -135,10 +150,47 @@ public class ConversationListFragment extends Fragment
   }
 
   @Override
-  public void onActivityCreated(Bundle bundle) {
-    super.onActivityCreated(bundle);
+  public void onDestroyView() {
+    viewDestroyed = true;
+    for (TaskHandle task : callbackTasks) task.cancel();
+    callbackTasks.clear();
+    dismissProgressDialog();
+    super.onDestroyView();
+  }
 
-    setHasOptionsMenu(true);
+  private void trackCallbackTask(TaskHandle task) {
+    if (viewDestroyed) task.cancel();
+    else               callbackTasks.add(task);
+  }
+
+  private boolean isViewActive() {
+    return isAdded() && !viewDestroyed && getView() != null &&
+           getViewLifecycleOwner().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED);
+  }
+
+  private void showProgressDialog(int title, int message) {
+    if (!isViewActive()) return;
+
+    dismissProgressDialog();
+    Context context = requireContext();
+    progressDialog = new AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setView(new ProgressBar(context))
+        .setCancelable(false)
+        .create();
+    progressDialog.show();
+  }
+
+  private void dismissProgressDialog() {
+    if (progressDialog != null) progressDialog.dismiss();
+    progressDialog = null;
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, Bundle bundle) {
+    super.onViewCreated(view, bundle);
+
     fab.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -162,7 +214,7 @@ public class ConversationListFragment extends Fragment
 
   public void setQueryFilter(String query) {
     this.queryFilter = query;
-    getLoaderManager().restartLoader(0, null, this);
+    LoaderManager.getInstance(this).restartLoader(0, null, this);
   }
 
   public void resetQueryFilter() {
@@ -173,38 +225,40 @@ public class ConversationListFragment extends Fragment
 
   private void initializeReminders() {
     reminderView.hide();
-    new AsyncTask<Context, Void, Optional<? extends Reminder>>() {
-      @Override protected Optional<? extends Reminder> doInBackground(Context... params) {
-        final Context context = params[0];
-         if (DefaultSmsReminder.isEligible(context)) {
-          return Optional.of(new DefaultSmsReminder(context));
+    final Context      context              = requireContext().getApplicationContext();
+    final MasterSecret reminderMasterSecret = masterSecret;
+
+    trackCallbackTask(AppTaskExecutor.getInstance().<Optional<? extends Reminder>>submitSerial(
+      () -> {
+        if (DefaultSmsReminder.isEligible(context)) {
+          return Optional.of(new DefaultSmsReminder(context, defaultSmsRoleRequest));
         } else if (Util.isDefaultSmsProvider(context) && SystemSmsImportReminder.isEligible(context)) {
-          return Optional.of((new SystemSmsImportReminder(context, masterSecret)));
+          return Optional.of((new SystemSmsImportReminder(context, reminderMasterSecret)));
         } else if (DeliveryReportsReminder.isEligible(context)) {
           return Optional.of((new DeliveryReportsReminder(context)));
         } else if (StoreRatingReminder.isEligible(context)) {
           return Optional.of((new StoreRatingReminder(context)));
         } else {
-          return Optional.absent();
+          return Optional.empty();
         }
-      }
-
-      @Override protected void onPostExecute(Optional<? extends Reminder> reminder) {
-        if (reminder.isPresent() && getActivity() != null && !isRemoving()) {
+      },
+      reminder -> {
+        if (reminder.isPresent() && isViewActive() && !isRemoving()) {
           reminderView.showReminder(reminder.get());
         }
-      }
-    }.execute(getActivity());
+      },
+      exception -> Log.w(TAG, "Unable to initialize reminders", exception)));
   }
 
   private void initializeListAdapter() {
     list.setAdapter(new ConversationListAdapter(getActivity(), masterSecret, locale, null, this));
-    getLoaderManager().restartLoader(0, null, this);
+    LoaderManager.getInstance(this).restartLoader(0, null, this);
   }
 
   private void handleArchiveAllSelected() {
     final Set<Long> selectedConversations = new HashSet<>(getListAdapter().getBatchSelections());
     final boolean   archive               = this.archive;
+    final Context   context               = requireContext().getApplicationContext();
 
     int snackBarTitleId;
 
@@ -216,7 +270,7 @@ public class ConversationListFragment extends Fragment
 
     new SnackbarAsyncTask<Void>(getView(), snackBarTitle,
                                 getString(R.string.ConversationListFragment_undo),
-                                getResources().getColor(R.color.amber_500),
+                                androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500),
                                 Snackbar.LENGTH_LONG, true)
     {
 
@@ -224,7 +278,7 @@ public class ConversationListFragment extends Fragment
       protected void onPostExecute(Void result) {
         super.onPostExecute(result);
 
-        if (actionMode != null) {
+        if (isViewActive() && actionMode != null) {
           actionMode.finish();
           actionMode = null;
         }
@@ -233,16 +287,16 @@ public class ConversationListFragment extends Fragment
       @Override
       protected void executeAction(@Nullable Void parameter) {
         for (long threadId : selectedConversations) {
-          if (!archive) DatabaseFactory.getThreadDatabase(getActivity()).archiveConversation(threadId);
-          else          DatabaseFactory.getThreadDatabase(getActivity()).unarchiveConversation(threadId);
+          if (!archive) DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
+          else          DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
         }
       }
 
       @Override
       protected void reverseAction(@Nullable Void parameter) {
         for (long threadId : selectedConversations) {
-          if (!archive) DatabaseFactory.getThreadDatabase(getActivity()).unarchiveConversation(threadId);
-          else          DatabaseFactory.getThreadDatabase(getActivity()).archiveConversation(threadId);
+          if (!archive) DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
+          else          DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
         }
       }
     }.execute();
@@ -261,37 +315,31 @@ public class ConversationListFragment extends Fragment
     alert.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        final Set<Long> selectedConversations = (getListAdapter())
-            .getBatchSelections();
+        final Set<Long>    selectedConversations = new HashSet<>(getListAdapter().getBatchSelections());
+        final Context      context               = requireContext().getApplicationContext();
+        final MasterSecret selectedMasterSecret  = masterSecret;
 
         if (!selectedConversations.isEmpty()) {
-          new AsyncTask<Void, Void, Void>() {
-            private ProgressDialog dialog;
-
-            @Override
-            protected void onPreExecute() {
-              dialog = ProgressDialog.show(getActivity(),
-                                           getActivity().getString(R.string.ConversationListFragment_deleting),
-                                           getActivity().getString(R.string.ConversationListFragment_deleting_selected_conversations),
-                                           true, false);
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
-              DatabaseFactory.getThreadDatabase(getActivity()).deleteConversations(selectedConversations);
-              MessageNotifier.updateNotification(getActivity(), masterSecret);
+          showProgressDialog(R.string.ConversationListFragment_deleting,
+                             R.string.ConversationListFragment_deleting_selected_conversations);
+          trackCallbackTask(AppTaskExecutor.getInstance().submitSerial(
+            () -> {
+              DatabaseFactory.getThreadDatabase(context).deleteConversations(selectedConversations);
+              MessageNotifier.updateNotification(context, selectedMasterSecret);
               return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-              dialog.dismiss();
-              if (actionMode != null) {
+            },
+            ignored -> {
+              dismissProgressDialog();
+              if (isViewActive() && actionMode != null) {
                 actionMode.finish();
                 actionMode = null;
               }
+            },
+            exception -> {
+              dismissProgressDialog();
+              Log.w(TAG, "Unable to delete selected conversations", exception);
             }
-          }.execute();
+          ));
         }
       }
     });
@@ -321,50 +369,50 @@ public class ConversationListFragment extends Fragment
     alert.setPositiveButton(R.string.ConversationListFragment_send, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        final Set<Long> selectedConversations = new HashSet<>(getListAdapter().getBatchSelections());
-        final Context context = getActivity();
+        final List<Long> selectedThreadIds = new ArrayList<>(getListAdapter().getBatchSelections());
+        final Context context = requireContext().getApplicationContext();
+        final MasterSecret selectedMasterSecret = masterSecret;
+        final Map<Long, Recipients> selectedRecipients = new LinkedHashMap<>();
+        for (long threadId : selectedThreadIds) {
+          selectedRecipients.put(threadId, getListAdapter().getRecipientsFromThreadId(threadId));
+        }
 
-        if (!selectedConversations.isEmpty() && masterSecret != null) {
-          final MasterCipher masterCipher = new MasterCipher(masterSecret);
+        if (!selectedThreadIds.isEmpty() && selectedMasterSecret != null) {
+          final MasterCipher masterCipher = new MasterCipher(selectedMasterSecret);
 
-          new AsyncTask<Void, Void, Void>() {
-            private ProgressDialog dialog;
-            private boolean        isSingleConversation;
-            private boolean        isSecureDestination;
-            private DraftDatabase  draftDatabase;
-            private Recipients     recipients;
+          showProgressDialog(R.string.ConversationListFragment_sending,
+                             R.string.ConversationListFragment_sending_selected_drafts);
+          trackCallbackTask(AppTaskExecutor.getInstance().submitSerial(
+            () -> {
+              DraftDatabase draftDatabase = DatabaseFactory.getDraftDatabase(context);
+              Map<Long, List<DraftDatabase.Draft>> selectedDrafts = new LinkedHashMap<>();
 
-            @Override
-            protected void onPreExecute() {
-              dialog = ProgressDialog.show(context,
-                                           context.getString(R.string.ConversationListFragment_sending),
-                                           context.getString(R.string.ConversationListFragment_sending_selected_drafts),
-                                           true, false);
-            }
+              for (long threadId : selectedThreadIds) {
+                selectedDrafts.put(threadId, new ArrayList<>(draftDatabase.getDrafts(masterCipher, threadId)));
+              }
 
-            @Override
-            protected Void doInBackground(Void... params) {
-              draftDatabase = DatabaseFactory.getDraftDatabase(context);
-
-              for (long threadId : selectedConversations) {
-                List<DraftDatabase.Draft> drafts = draftDatabase.getDrafts(masterCipher, threadId);
-                recipients = getListAdapter().getRecipientsFromThreadId(threadId);
+              for (long threadId : selectedThreadIds) {
+                List<DraftDatabase.Draft> drafts = selectedDrafts.get(threadId);
+                Recipients recipients = selectedRecipients.get(threadId);
 
                 if (recipients != null) {
-                  int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().or(-1);
-                  isSingleConversation = recipients.isSingleRecipient() && !recipients.isGroupRecipient();
-                  isSecureDestination  = isSingleConversation && SessionUtil.hasSession(context, masterSecret, recipients.getPrimaryRecipient().getNumber(), subscriptionId);
+                  int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
+                  boolean isSingleConversation = recipients.isSingleRecipient() && !recipients.isGroupRecipient();
+                  boolean isSecureDestination  = isSingleConversation && SessionUtil.hasSession(context, selectedMasterSecret, recipients.getPrimaryRecipient().getNumber(), subscriptionId);
 
                   Log.w(TAG, "Number of drafts: " + drafts.size());
                   if (drafts.size() > 1 && !drafts.get(1).getType().equals(DraftDatabase.Draft.TEXT)) {
-                    sendMediaDraft(drafts.get(1), threadId, drafts.get(0).getValue());
+                    sendMediaDraft(context, selectedMasterSecret, recipients, isSecureDestination,
+                                   drafts.get(1), threadId, drafts.get(0).getValue());
                   } else {
                     for (DraftDatabase.Draft draft : drafts) {
                       Log.w(TAG, "getType(): " + draft.getType());
                       if (draft.getType().equals(DraftDatabase.Draft.TEXT)) {
-                        sendTextDraft(draft, threadId);
+                        sendTextDraft(context, selectedMasterSecret, recipients, isSecureDestination,
+                                      draft, threadId);
                       } else {
-                        sendMediaDraft(draft, threadId, null);
+                        sendMediaDraft(context, selectedMasterSecret, recipients, isSecureDestination,
+                                       draft, threadId, null);
                       }
                     }
                   }
@@ -374,50 +422,58 @@ public class ConversationListFragment extends Fragment
                 draftDatabase.clearDrafts(threadId);
               }
               return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void result) {
-              dialog.dismiss();
-              if (actionMode != null) {
+            },
+            ignored -> {
+              dismissProgressDialog();
+              if (isViewActive() && actionMode != null) {
                 actionMode.finish();
                 actionMode = null;
               }
+            },
+            exception -> {
+              dismissProgressDialog();
+              Log.w(TAG, "Unable to send selected drafts", exception);
             }
-
-            private void sendTextDraft(DraftDatabase.Draft draft, long threadId) {
-              OutgoingTextMessage message;
-              if (isSecureDestination) {
-                message = new OutgoingEncryptedMessage(recipients, draft.getValue(), -1);
-              } else {
-                message = new OutgoingTextMessage(recipients, draft.getValue(), -1);
-              }
-              MessageSender.send(context, masterSecret, message, threadId, false);
-            }
-
-            private void sendMediaDraft(DraftDatabase.Draft draft, long threadId, @Nullable String forcedValue) {
-              List<Attachment> attachment = new LinkedList<Attachment>();
-              attachment.add(new UriAttachment(Uri.parse(draft.getValue()), draft.getType() + "/*", AttachmentDatabase.TRANSFER_PROGRESS_DONE));
-
-              OutgoingMediaMessage message = new OutgoingMediaMessage(recipients,
-                                                                      forcedValue != null ? forcedValue : "",
-                                                                      attachment,
-                                                                      System.currentTimeMillis(),
-                                                                      -1,
-                                                                      ThreadDatabase.DistributionTypes.BROADCAST);
-
-              if (isSecureDestination) {
-                message = new OutgoingSecureMediaMessage(message);
-              }
-              MessageSender.send(context, masterSecret, message, threadId, false);
-            }
-          }.execute();
+          ));
         }
       }
     });
 
     alert.setNegativeButton(android.R.string.cancel, null);
     alert.show();
+  }
+
+  private void sendTextDraft(Context context, MasterSecret selectedMasterSecret,
+                             Recipients recipients, boolean isSecureDestination,
+                             DraftDatabase.Draft draft, long threadId)
+  {
+    OutgoingTextMessage message;
+    if (isSecureDestination) {
+      message = new OutgoingEncryptedMessage(recipients, draft.getValue(), -1);
+    } else {
+      message = new OutgoingTextMessage(recipients, draft.getValue(), -1);
+    }
+    MessageSender.send(context, selectedMasterSecret, message, threadId, false);
+  }
+
+  private void sendMediaDraft(Context context, MasterSecret selectedMasterSecret,
+                              Recipients recipients, boolean isSecureDestination,
+                              DraftDatabase.Draft draft, long threadId, @Nullable String forcedValue)
+  {
+    List<Attachment> attachment = new LinkedList<Attachment>();
+    attachment.add(new UriAttachment(Uri.parse(draft.getValue()), draft.getType() + "/*", AttachmentDatabase.TRANSFER_PROGRESS_DONE));
+
+    OutgoingMediaMessage message = new OutgoingMediaMessage(recipients,
+                                                            forcedValue != null ? forcedValue : "",
+                                                            attachment,
+                                                            System.currentTimeMillis(),
+                                                            -1,
+                                                            ThreadDatabase.DistributionTypes.BROADCAST);
+
+    if (isSecureDestination) {
+      message = new OutgoingSecureMediaMessage(message);
+    }
+    MessageSender.send(context, selectedMasterSecret, message, threadId, false);
   }
 
   @Override
@@ -489,11 +545,9 @@ public class ConversationListFragment extends Fragment
     mode.setTitle(R.string.conversation_fragment_cab__batch_selection_mode);
     mode.setSubtitle(null);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = getActivity().getWindow();
-      window.setStatusBarColor(getResources().getColor(R.color.action_mode_status_bar));
-      window.setNavigationBarColor(getResources().getColor(android.R.color.black));
-    }
+    ((BaseActionBarActivity) requireActivity()).setSystemBarColors(
+        androidx.core.content.ContextCompat.getColor(requireContext(), R.color.action_mode_status_bar),
+        androidx.core.content.ContextCompat.getColor(requireContext(), android.R.color.black));
 
     return true;
   }
@@ -506,12 +560,11 @@ public class ConversationListFragment extends Fragment
   @Override
   @SuppressLint("NonConstantResourceId")
   public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-    switch (item.getItemId()) {
-    case R.id.menu_select_all:       handleSelectAllThreads();   return true;
-    case R.id.menu_delete_selected:  handleDeleteAllSelected();  return true;
-    case R.id.menu_archive_selected: handleArchiveAllSelected(); return true;
-    case R.id.menu_send_drafts:      handleSendDrafts();         return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_select_all)       { handleSelectAllThreads();   return true; }
+    else if (itemId == R.id.menu_delete_selected)  { handleDeleteAllSelected();  return true; }
+    else if (itemId == R.id.menu_archive_selected) { handleArchiveAllSelected(); return true; }
+    else if (itemId == R.id.menu_send_drafts)      { handleSendDrafts();         return true; }
 
     return false;
   }
@@ -520,14 +573,7 @@ public class ConversationListFragment extends Fragment
   public void onDestroyActionMode(ActionMode mode) {
     getListAdapter().initializeBatchMode(false);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = getActivity().getWindow();
-      TypedArray color = getActivity().getTheme()
-        .obtainStyledAttributes(new int[] { android.R.attr.statusBarColor });
-      window.setStatusBarColor(color.getColor(0, Color.BLACK));
-      window.setNavigationBarColor(getResources().getColor(android.R.color.black));
-      color.recycle();
-    }
+    ((BaseActionBarActivity) requireActivity()).resetSystemBarColors();
 
     actionMode = null;
   }
@@ -563,48 +609,50 @@ public class ConversationListFragment extends Fragment
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
       final long    threadId = ((ConversationListItem)viewHolder.itemView).getThreadId();
       final boolean read     = ((ConversationListItem)viewHolder.itemView).getRead();
+      final Context context  = requireContext().getApplicationContext();
+      final MasterSecret selectedMasterSecret = masterSecret;
 
       if (archive) {
         new SnackbarAsyncTask<Long>(getView(),
                                     getResources().getQuantityString(R.plurals.ConversationListFragment_moved_conversations_to_inbox, 1, 1),
                                     getString(R.string.ConversationListFragment_undo),
-                                    getResources().getColor(R.color.amber_500),
+                                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500),
                                     Snackbar.LENGTH_LONG, false)
         {
           @Override
           protected void executeAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(getActivity()).unarchiveConversation(threadId);
+            DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
           }
 
           @Override
           protected void reverseAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(getActivity()).archiveConversation(threadId);
+            DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
           }
         }.execute(threadId);
       } else {
         new SnackbarAsyncTask<Long>(getView(),
                                     getResources().getQuantityString(R.plurals.ConversationListFragment_conversations_archived, 1, 1),
                                     getString(R.string.ConversationListFragment_undo),
-                                    getResources().getColor(R.color.amber_500),
+                                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500),
                                     Snackbar.LENGTH_LONG, false)
         {
           @Override
           protected void executeAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(getActivity()).archiveConversation(threadId);
+            DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
 
             if (!read) {
-              DatabaseFactory.getThreadDatabase(getActivity()).setRead(threadId);
-              MessageNotifier.updateNotification(getActivity(), masterSecret);
+              DatabaseFactory.getThreadDatabase(context).setRead(threadId);
+              MessageNotifier.updateNotification(context, selectedMasterSecret);
             }
           }
 
           @Override
           protected void reverseAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(getActivity()).unarchiveConversation(threadId);
+            DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
 
             if (!read) {
-              DatabaseFactory.getThreadDatabase(getActivity()).setUnread(threadId);
-              MessageNotifier.updateNotification(getActivity(), masterSecret);
+              DatabaseFactory.getThreadDatabase(context).setUnread(threadId);
+              MessageNotifier.updateNotification(context, selectedMasterSecret);
             }
           }
         }.execute(threadId);
@@ -628,7 +676,7 @@ public class ConversationListFragment extends Fragment
           if (archive) icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_unarchive_white_36dp);
           else         icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_archive_white_36dp);
 
-          p.setColor(getResources().getColor(R.color.green_500));
+          p.setColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.green_500));
 
           c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX,
                      (float) itemView.getBottom(), p);

@@ -30,13 +30,14 @@ public class SmsDeliveryListener extends BroadcastReceiver {
         break;
       case DELIVERED_SMS_ACTION:
         byte[] pdu = intent.getByteArrayExtra("pdu");
+        String format = intent.getStringExtra("format");
 
         if (pdu == null) {
           Log.w(TAG, "No PDU in delivery receipt!");
           break;
         }
 
-        SmsMessage message = SmsMessage.createFromPdu(pdu);
+        SmsMessage message = SmsMessage.createFromPdu(pdu, format);
 
         if (message == null) {
           Log.w(TAG, "Delivery receipt failed to parse!");

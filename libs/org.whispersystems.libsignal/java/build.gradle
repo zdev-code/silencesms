@@ -5,8 +5,8 @@ plugins {
 evaluationDependsOn(':tests')
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 version          = version_number
@@ -15,14 +15,36 @@ group            = group_info
 repositories {
     mavenCentral()
     mavenLocal()
+    // Pin target is org.signal:libsignal-client:0.72.1, which is hosted on Maven Central
+    // (immutable, GPG-signed). We deliberately do NOT add Signal's own build-artifacts repo:
+    // it can prune old releases, and everything we need (<= 0.86.5) is on Central.
 }
 
 dependencies {
-    api "org.whispersystems:curve25519-java:${curve25519_version}"
+    // The vendored ecc.Curve now delegates to the maintained Rust core. It is compiled against the
+    // maintained API here (compileOnly, so the maintained classes are NOT bundled/duplicated by this
+    // module); at runtime they are provided by the app's libsignal-android (and, for this module's own
+    // JVM tests, by the testImplementation libsignal-client below).
+    compileOnly 'org.signal:libsignal-client:0.72.1'
     api 'com.google.protobuf:protobuf-java:3.25.3'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation project(path: ':tests', configuration: 'testArtifacts')
+    testImplementation(project(path: ':tests', configuration: 'testArtifacts'))
+
+    // Cross-validation tests: the maintained libsignal-client (Rust core + host-native JNI),
+    // pinned to 0.72.1 — the last release whose Java API can both CREATE and RECEIVE a classic
+    // X3DH (session v3) PreKeyBundle. 0.73.0 removed the no-Kyber PreKeyBundle ctor; 0.75.0
+    // removed the Rust X3DH protocol entirely (everything after forces PQXDH/v4).
+    // The JVM artifact bundles desktop .so (incl. Windows x86_64) so the cross-validation tests
+    // run on the dev host without an Android device. Different namespace
+    // (org.signal.libsignal.protocol.*) so it coexists with the vendored
+    // org.whispersystems.libsignal classes on the test classpath.
+    testImplementation 'org.signal:libsignal-client:0.72.1'
+
+    // The archived curve25519-java is retained on the TEST classpath only, to cross-verify that the
+    // maintained Rust engine's X25519 agreement and XEd25519 signatures interoperate with the old
+    // implementation (i.e. peers on the previous build). It is no longer a main/runtime dependency.
+    testImplementation "org.whispersystems:curve25519-java:${curve25519_version}"
 }
 
 
