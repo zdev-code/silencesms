@@ -15,24 +15,32 @@ public class SpanUtil {
 
   public static CharSequence italic(CharSequence sequence, int length) {
     SpannableString spannable = new SpannableString(sequence);
+    if (length == 0) return spannable;
+
     spannable.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannable;
   }
 
   public static CharSequence small(CharSequence sequence) {
     SpannableString spannable = new SpannableString(sequence);
+    if (sequence.length() == 0) return spannable;
+
     spannable.setSpan(new RelativeSizeSpan(0.9f), 0, sequence.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannable;
   }
 
   public static CharSequence bold(CharSequence sequence) {
     SpannableString spannable = new SpannableString(sequence);
+    if (sequence.length() == 0) return spannable;
+
     spannable.setSpan(new StyleSpan(Typeface.BOLD), 0, sequence.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannable;
   }
 
   public static CharSequence color(int color, CharSequence sequence) {
     SpannableString spannable = new SpannableString(sequence);
+    if (sequence.length() == 0) return spannable;
+
     spannable.setSpan(new ForegroundColorSpan(color), 0, sequence.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     return spannable;
   }

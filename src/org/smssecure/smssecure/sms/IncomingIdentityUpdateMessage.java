@@ -1,7 +1,7 @@
 package org.smssecure.smssecure.sms;
 
 import org.smssecure.smssecure.util.Base64;
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
 
 public class IncomingIdentityUpdateMessage extends IncomingKeyExchangeMessage {
 

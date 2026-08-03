@@ -1,7 +1,8 @@
 package org.smssecure.smssecure;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -31,25 +32,27 @@ public class CountrySelectionFragment extends ListFragment implements LoaderMana
   }
 
   @Override
-  public void onActivityCreated(Bundle bundle) {
-    super.onActivityCreated(bundle);
-    this.countryFilter = (EditText)getView().findViewById(R.id.country_search);
+  public void onViewCreated(@NonNull View view, Bundle bundle) {
+    super.onViewCreated(view, bundle);
+    this.countryFilter = (EditText)view.findViewById(R.id.country_search);
     this.countryFilter.addTextChangedListener(new FilterWatcher());
-    getLoaderManager().initLoader(0, null, this).forceLoad();
+    LoaderManager.getInstance(this).initLoader(0, null, this).forceLoad();
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-    this.listener = (CountrySelectedListener)activity;
+  public void onAttach(@NonNull Context context) {
+    super.onAttach(context);
+    this.listener = (CountrySelectedListener) context;
   }
 
   @Override
   public void onListItemClick(ListView listView, View view, int position, long id) {
-    Map<String, String> item = (Map<String, String>)this.getListAdapter().getItem(position);
+    Map<?, ?> item = (Map<?, ?>)this.getListAdapter().getItem(position);
     if (this.listener != null) {
-      this.listener.countrySelected(item.get("country_name"),
-                                    Integer.parseInt(item.get("country_code").substring(1)));
+      String countryName = (String)item.get("country_name");
+      String countryCode = (String)item.get("country_code");
+      this.listener.countrySelected(countryName,
+                                    Integer.parseInt(countryCode.substring(1)));
     }
   }
 

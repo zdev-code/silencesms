@@ -8,16 +8,18 @@
                   android:layout_width="match_parent"
                   android:layout_height="40dp">
 
-        <com.astuetz.PagerSlidingTabStrip android:id="@+id/tabs"
+        <com.google.android.material.tabs.TabLayout android:id="@+id/tabs"
                                           android:layout_weight="1"
                                           android:layout_width="0dp"
                                           android:layout_height="match_parent"
                                           android:background="?emoji_tab_strip_background"
-                                          app:pstsShouldExpand="true"
-                                          app:pstsTabPaddingLeftRight="@dimen/emoji_drawer_left_right_padding"
-                                          app:pstsUnderlineColor="?emoji_tab_underline"
-                                          app:pstsIndicatorColor="?emoji_tab_indicator"
-                                          app:pstsIndicatorHeight="@dimen/emoji_drawer_indicator_height" />
+                                          app:tabMode="fixed"
+                                          app:tabGravity="fill"
+                                          app:tabBackground="@android:color/transparent"
+                                          app:tabPaddingStart="@dimen/emoji_drawer_left_right_padding"
+                                          app:tabPaddingEnd="@dimen/emoji_drawer_left_right_padding"
+                                          app:tabIndicatorColor="?emoji_tab_indicator"
+                                          app:tabIndicatorHeight="@dimen/emoji_drawer_indicator_height" />
 
         <View android:layout_width="1px"
               android:layout_height="match_parent"

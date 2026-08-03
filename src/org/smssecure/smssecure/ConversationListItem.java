@@ -23,6 +23,7 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import android.util.AttributeSet;
@@ -81,7 +82,7 @@ public class ConversationListItem extends RelativeLayout
   private final @DrawableRes int readBackground;
   private final @DrawableRes int unreadBackround;
 
-  private final Handler handler = new Handler();
+  private final Handler handler = new Handler(Looper.getMainLooper());
   private int distributionType;
 
   public ConversationListItem(Context context) {
@@ -129,7 +130,7 @@ public class ConversationListItem extends RelativeLayout
 
     if (thread.getDate() > 0) {
       CharSequence date = DateUtils.getBriefRelativeTimeSpanString(getContext(), locale, thread.getDate());
-      dateView.setText(read ? date : color(getResources().getColor(R.color.silence_primary), date));
+      dateView.setText(read ? date : color(androidx.core.content.ContextCompat.getColor(getContext(), R.color.silence_primary), date));
       dateView.setTypeface(read ? LIGHT_TYPEFACE : BOLD_TYPEFACE);
     }
 

@@ -9,14 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
-import org.smssecure.smssecure.ConversationActivity;
-import org.smssecure.smssecure.ConversationPopupActivity;
 import org.smssecure.smssecure.database.RecipientPreferenceDatabase.VibrateState;
 import org.smssecure.smssecure.recipients.Recipients;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.UUID;
 
 public class NotificationState {
 
@@ -107,69 +107,40 @@ public class NotificationState {
       threadArray[index++] = thread;
     }
 
-    Intent intent = new Intent(MarkReadReceiver.CLEAR_ACTION);
-    intent.setClass(context, MarkReadReceiver.class);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-    intent.putExtra(MarkReadReceiver.THREAD_IDS_EXTRA, threadArray);
-    intent.putExtra(MarkReadReceiver.NOTIFICATION_ID_EXTRA, notificationId);
+    Intent intent = new Intent(context, MessagingNotificationActionService.class);
+    intent.setAction(MessagingNotificationActionService.ACTION_MARK_READ);
+    long identity = Arrays.hashCode(threadArray);
+    intent.setData(Uri.parse(NotificationActionIdentity.data("mark-read", identity)));
+    intent.putExtra(MessagingNotificationActionService.EXTRA_THREAD_IDS, threadArray);
+    intent.putExtra(MessagingNotificationActionService.EXTRA_NOTIFICATION_ID, notificationId);
+    intent.putExtra(MessagingNotificationActionService.EXTRA_ACTION_TOKEN, UUID.randomUUID().toString());
 
-  return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    return PendingIntent.getService(context,
+                    NotificationActionIdentity.requestCode("mark-read", identity),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
   }
 
   public PendingIntent getRemoteReplyIntent(Context context, Recipients recipients) {
     if (threads.size() != 1) throw new AssertionError("We only support replies to single thread notifications!");
 
-    Intent intent = new Intent(RemoteReplyReceiver.REPLY_ACTION);
-    intent.setClass(context, RemoteReplyReceiver.class);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-    intent.putExtra(RemoteReplyReceiver.RECIPIENT_IDS_EXTRA, recipients.getIds());
+    Intent intent = new Intent(context, MessagingNotificationActionService.class);
+    intent.setAction(MessagingNotificationActionService.ACTION_REPLY);
+    long threadId = threads.iterator().next();
+    intent.setData(Uri.parse(NotificationActionIdentity.data("reply", threadId)));
+    intent.putExtra(MessagingNotificationActionService.EXTRA_RECIPIENT_IDS, recipients.getIds());
+    intent.putExtra(MessagingNotificationActionService.EXTRA_THREAD_ID, threadId);
+    intent.putExtra(MessagingNotificationActionService.EXTRA_SUBSCRIPTION_ID,
+            notifications.getFirst().getSubscriptionId());
+    intent.putExtra(MessagingNotificationActionService.EXTRA_SECURE_REPLY_REQUIRED,
+            notifications.getFirst().isSecure());
+    intent.putExtra(MessagingNotificationActionService.EXTRA_ACTION_TOKEN, UUID.randomUUID().toString());
     intent.setPackage(context.getPackageName());
 
-  return PendingIntent.getBroadcast(context, 0, intent, getRemoteReplyMutabilityFlag() | PendingIntent.FLAG_UPDATE_CURRENT);
-  }
-
-  public PendingIntent getAndroidAutoReplyIntent(Context context, Recipients recipients) {
-    if (threads.size() != 1) throw new AssertionError("We only support replies to single thread notifications!");
-
-    Intent intent = new Intent(AndroidAutoReplyReceiver.REPLY_ACTION);
-    intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-    intent.setClass(context, AndroidAutoReplyReceiver.class);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-    intent.putExtra(AndroidAutoReplyReceiver.RECIPIENT_IDS_EXTRA, recipients.getIds());
-    intent.putExtra(AndroidAutoReplyReceiver.THREAD_ID_EXTRA, (long)threads.toArray()[0]);
-    intent.setPackage(context.getPackageName());
-
-  return PendingIntent.getBroadcast(context, 0, intent, getRemoteReplyMutabilityFlag() | PendingIntent.FLAG_UPDATE_CURRENT);
-  }
-
-  public PendingIntent getAndroidAutoHeardIntent(Context context, int notificationId) {
-    long[] threadArray = new long[threads.size()];
-    int    index       = 0;
-    for (long thread : threads) {
-      Log.w("NotificationState", "getAndroidAutoHeardIntent Added thread: " + thread);
-      threadArray[index++] = thread;
-    }
-
-    Intent intent = new Intent(AndroidAutoHeardReceiver.HEARD_ACTION);
-    intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-    intent.setClass(context, AndroidAutoHeardReceiver.class);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-    intent.putExtra(AndroidAutoHeardReceiver.THREAD_IDS_EXTRA, threadArray);
-    intent.putExtra(AndroidAutoHeardReceiver.NOTIFICATION_ID_EXTRA, notificationId);
-    intent.setPackage(context.getPackageName());
-
-    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | getImmutableFlag());
-  }
-
-  public PendingIntent getQuickReplyIntent(Context context, Recipients recipients) {
-    if (threads.size() != 1) throw new AssertionError("We only support replies to single thread notifications! " + threads.size());
-
-    Intent     intent           = new Intent(context, ConversationPopupActivity.class);
-    intent.putExtra(ConversationActivity.RECIPIENTS_EXTRA, recipients.getIds());
-    intent.putExtra(ConversationActivity.THREAD_ID_EXTRA, (long)threads.toArray()[0]);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-
-    return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | getImmutableFlag());
+    return PendingIntent.getService(context,
+                    NotificationActionIdentity.requestCode("reply", threadId),
+                    intent,
+                    getRemoteReplyMutabilityFlag() | PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
   public PendingIntent getDeleteIntent(Context context) {
@@ -186,9 +157,13 @@ public class NotificationState {
     intent.setAction(DeleteNotificationReceiver.DELETE_NOTIFICATION_ACTION);
     intent.putExtra(DeleteNotificationReceiver.EXTRA_IDS, ids);
     intent.putExtra(DeleteNotificationReceiver.EXTRA_MMS, mms);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
+    long identity = Arrays.hashCode(ids);
+    intent.setData(Uri.parse(NotificationActionIdentity.data("delete", identity)));
 
-    return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | getImmutableFlag());
+    return PendingIntent.getBroadcast(context,
+                      NotificationActionIdentity.requestCode("delete", identity),
+                      intent,
+                      PendingIntent.FLAG_UPDATE_CURRENT | getImmutableFlag());
   }
 
   private static int getRemoteReplyMutabilityFlag() {

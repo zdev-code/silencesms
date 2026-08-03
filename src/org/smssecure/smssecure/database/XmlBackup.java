@@ -1,7 +1,5 @@
 package org.smssecure.smssecure.database;
 
-import android.text.TextUtils;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -13,6 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -155,7 +156,7 @@ public class XmlBackup implements Closeable {
     }
   }
 
-  public static class Writer {
+  public static class Writer implements Closeable {
 
     private static final String  XML_HEADER      = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>";
     private static final String  CREATED_BY      = "<!-- File Created By Silence -->";
@@ -171,13 +172,21 @@ public class XmlBackup implements Closeable {
     private final BufferedWriter bufferedWriter;
 
     public Writer(String path, int count) throws IOException {
-      bufferedWriter = new BufferedWriter(new FileWriter(path, false));
+      this(new FileWriter(path, false), count);
+    }
+
+    public Writer(OutputStream outputStream, int count) throws IOException {
+      this(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8), count);
+    }
+
+    private Writer(java.io.Writer writer, int count) throws IOException {
+      bufferedWriter = new BufferedWriter(writer);
 
       bufferedWriter.write(XML_HEADER);
       bufferedWriter.newLine();
       bufferedWriter.write(CREATED_BY);
       bufferedWriter.newLine();
-  bufferedWriter.write(String.format(Locale.US, OPEN_TAG_SMSES, count));
+      bufferedWriter.write(String.format(Locale.US, OPEN_TAG_SMSES, count));
     }
 
     public void writeItem(XmlBackupItem item) throws IOException {
@@ -206,6 +215,7 @@ public class XmlBackup implements Closeable {
       stringBuilder.append(name).append(OPEN_ATTRIBUTE).append(value).append(CLOSE_ATTRIBUTE);
     }
 
+    @Override
     public void close() throws IOException {
       bufferedWriter.newLine();
       bufferedWriter.write(CLOSE_TAG_SMSES);
@@ -213,7 +223,7 @@ public class XmlBackup implements Closeable {
     }
 
     private String escapeXML(String s) {
-      if (TextUtils.isEmpty(s)) return s;
+      if (s == null || s.isEmpty()) return s;
 
       Matcher matcher = PATTERN.matcher( s.replace("&",  "&amp;")
                                           .replace("<",  "&lt;")

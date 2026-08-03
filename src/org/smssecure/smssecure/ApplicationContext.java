@@ -24,6 +24,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
 
+import org.smssecure.smssecure.backup.SecureBackupArchive;
+import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.crypto.PRNGFixes;
 import org.smssecure.smssecure.jobs.persistence.EncryptingJobSerializer;
 import org.smssecure.smssecure.jobs.requirements.MasterSecretRequirementProvider;
@@ -38,6 +40,8 @@ import org.whispersystems.jobqueue.requirements.NetworkRequirementProvider;
 import org.whispersystems.libsignal.logging.SignalProtocolLoggerProvider;
 import org.whispersystems.libsignal.util.AndroidSignalProtocolLogger;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Security;
 
 
@@ -63,6 +67,7 @@ public class ApplicationContext extends Application implements DependencyInjecto
   @Override
   public void onCreate() {
     super.onCreate();
+    recoverInterruptedRestore();
     initializeRandomNumberFix();
     initializeLogging();
     initializeJobManager();
@@ -79,10 +84,21 @@ public class ApplicationContext extends Application implements DependencyInjecto
     return jobManager;
   }
 
+  private void recoverInterruptedRestore() {
+    File filesDirectory = getFilesDir();
+    File root = filesDirectory == null ? null : filesDirectory.getParentFile();
+    if (root == null) return;
+    try {
+      SecureBackupArchive.recoverInterruptedRestore(root);
+      MasterSecretUtil.reconcileDeviceProtection(this);
+    } catch (IOException | java.security.GeneralSecurityException error) {
+      throw new IllegalStateException("Unable to recover interrupted secure backup restore", error);
+    }
+  }
+
   private void initializeRandomNumberFix() {
     PRNGFixes.apply();
   }
-
   private void initializeLogging() {
     SignalProtocolLoggerProvider.setProvider(new AndroidSignalProtocolLogger());
   }

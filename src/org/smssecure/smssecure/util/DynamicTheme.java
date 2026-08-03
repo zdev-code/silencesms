@@ -2,6 +2,7 @@ package org.smssecure.smssecure.util;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 
 import org.smssecure.smssecure.R;
 
@@ -36,8 +37,14 @@ public class DynamicTheme {
   }
 
   private static final class OverridePendingTransition {
+    @SuppressWarnings("deprecation")
     static void invoke(Activity activity) {
-      activity.overridePendingTransition(0, 0);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, 0, 0);
+        activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_CLOSE, 0, 0);
+      } else {
+        activity.overridePendingTransition(0, 0);
+      }
     }
   }
 }

@@ -52,15 +52,18 @@ import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.MmsSmsDatabase;
 import org.smssecure.smssecure.database.SmsDatabase;
 import org.smssecure.smssecure.database.ThreadDatabase;
+import org.smssecure.smssecure.database.model.DisplayRecord;
 import org.smssecure.smssecure.database.model.MediaMmsMessageRecord;
 import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.mms.SlideDeck;
+import org.smssecure.smssecure.protocol.WirePrefix;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.service.KeyCachingService;
 import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.SpanUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.util.Util;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -282,17 +285,20 @@ public class MessageNotifier {
       return;
     }
 
-    SingleRecipientNotificationBuilder builder        = new SingleRecipientNotificationBuilder(context, masterSecret, SilencePreferences.getNotificationPrivacy(context));
+    SingleRecipientNotificationBuilder builder        = new SingleRecipientNotificationBuilder(context, SilencePreferences.getNotificationPrivacy(context));
     List<NotificationItem>             notifications  = notificationState.getNotifications();
     Recipients                         recipients     = notifications.get(0).getRecipients();
     int                                notificationId = (int) (SUMMARY_NOTIFICATION_ID + (bundled ? notifications.get(0).getThreadId() : 0));
 
     builder.setThread(notifications.get(0).getRecipients());
+    builder.setConversation(NotificationConversation.from(context, notificationState,
+                                SilencePreferences.getNotificationPrivacy(context),
+                                masterSecret != null));
     builder.setMessageCount(notificationState.getMessageCount());
     builder.setPrimaryMessageBody(recipients, notifications.get(0).getIndividualRecipient(),
-                                  notifications.get(0).getText(), notifications.get(0).getSlideDeck());
+                                  notifications.get(0).getText());
     builder.setContentIntent(notifications.get(0).getPendingIntent(context));
-    builder.setGroup(NOTIFICATION_GROUP);
+    configureSingleThreadGrouping(builder, bundled);
     builder.setDeleteIntent(notificationState.getDeleteIntent(context));
 
     long timestamp = notifications.get(0).getTimestamp();
@@ -300,28 +306,13 @@ public class MessageNotifier {
 
     builder.addActions(masterSecret,
                        notificationState.getMarkAsReadIntent(context, notificationId),
-                       notificationState.getQuickReplyIntent(context, notifications.get(0).getRecipients()),
                        notificationState.getRemoteReplyIntent(context, notifications.get(0).getRecipients()));
-
-    builder.addAndroidAutoAction(notificationState.getAndroidAutoReplyIntent(context, notifications.get(0).getRecipients()),
-                                 notificationState.getAndroidAutoHeardIntent(context, notificationId), notifications.get(0).getTimestamp());
-
-    ListIterator<NotificationItem> iterator = notifications.listIterator(notifications.size());
-
-    while(iterator.hasPrevious()) {
-      NotificationItem item = iterator.previous();
-      builder.addMessageBody(item.getRecipients(), item.getIndividualRecipient(), item.getText());
-    }
 
     if (notificationsRequested(flags)) {
       triggerNotificationAlarms(builder, notificationState, flags);
 
       builder.setTicker(notifications.get(0).getIndividualRecipient(),
                         notifications.get(0).getText());
-    }
-
-    if (!bundled) {
-      builder.setGroupSummary(true);
     }
 
     if (Build.VERSION.SDK_INT >= 33 &&
@@ -331,6 +322,13 @@ public class MessageNotifier {
     }
 
     notifyWithPermissionCheck(context, notificationId, builder.build());
+  }
+
+  static void configureSingleThreadGrouping(@NonNull SingleRecipientNotificationBuilder builder,
+                                            boolean bundled) {
+    if (bundled) {
+      builder.setGroup(NOTIFICATION_GROUP);
+    }
   }
 
   @SuppressLint("MissingPermission")
@@ -411,13 +409,9 @@ public class MessageNotifier {
       return;
     }
 
-    if (Build.VERSION.SDK_INT >= 21) {
-      ringtone.setAudioAttributes(new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
-                                                               .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
-                                                               .build());
-    } else {
-      ringtone.setStreamType(AudioManager.STREAM_NOTIFICATION);
-    }
+    ringtone.setAudioAttributes(new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
+                                                             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                                                             .build());
 
     ringtone.play();
   }
@@ -448,7 +442,7 @@ public class MessageNotifier {
         threadRecipients = DatabaseFactory.getThreadDatabase(context).getRecipientsForThreadId(threadId);
       }
 
-      if (SmsDatabase.Types.isDecryptInProgressType(record.getType()) || !record.getBody().isPlaintext()) {
+      if (shouldHideNotificationBody(record.getType(), record.getBody())) {
         body = SpanUtil.italic(context.getString(R.string.MessageNotifier_encrypted_message));
       } else if (record.isMms() && TextUtils.isEmpty(body)) {
         body = SpanUtil.italic(context.getString(R.string.MessageNotifier_media_message));
@@ -461,12 +455,20 @@ public class MessageNotifier {
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {
-        notificationState.addNotification(new NotificationItem(id, mms, recipient, recipients, threadRecipients, threadId, body, timestamp, slideDeck));
+        notificationState.addNotification(new NotificationItem(id, mms, recipient, recipients, threadRecipients,
+                                                                threadId, record.getSubscriptionId(), record.isSecure(), body,
+                      timestamp, slideDeck));
       }
     }
 
     reader.close();
     return notificationState;
+  }
+
+  static boolean shouldHideNotificationBody(long type, DisplayRecord.Body body) {
+    return SmsDatabase.Types.isDecryptInProgressType(type) ||
+           !body.isPlaintext() ||
+           WirePrefix.isPrefixedMessage(body.getBody());
   }
 
   private static boolean canPostNotifications(@NonNull Context context) {

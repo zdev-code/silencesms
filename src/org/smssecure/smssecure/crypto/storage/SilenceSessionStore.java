@@ -9,11 +9,11 @@ import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.util.Conversions;
-import org.whispersystems.libsignal.SignalProtocolAddress;
-import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.state.SessionRecord;
-import org.whispersystems.libsignal.state.SessionState;
-import org.whispersystems.libsignal.state.SessionStore;
+import org.signal.libsignal.protocol.InvalidMessageException;
+import org.signal.libsignal.protocol.NoSessionException;
+import org.signal.libsignal.protocol.SignalProtocolAddress;
+import org.signal.libsignal.protocol.state.SessionRecord;
+import org.signal.libsignal.protocol.state.SessionStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,16 +21,23 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.whispersystems.libsignal.state.StorageProtos.SessionStructure;
-
+/**
+ * New-API ({@code org.signal.libsignal.protocol}) session store for the hybrid crypto setup
+ * (maintained libsignal for message encrypt/decrypt, vendored library for Key Exchange). Backs the
+ * SAME on-disk files as the
+ * vendored {@link VendoredSessionStore} (directory {@code sessions-v2}, MasterCipher-encrypted, version
+ * marker {@code 2} = serialized record), so the maintained {@code SessionCipher} and the vendored
+ * Key-Exchange {@code SessionBuilder} read/write the same sessions. Record byte-compatibility across
+ * the two libraries is proven by the migration test ({@code OldToNewSessionRecordTest}).
+ */
 public class SilenceSessionStore implements SessionStore {
 
   private static final String TAG                   = SilenceSessionStore.class.getSimpleName();
   private static final String SESSIONS_DIRECTORY_V2 = "sessions-v2";
-  private static final Object FILE_LOCK             = new Object();
 
   private static final int SINGLE_STATE_VERSION   = 1;
   private static final int ARCHIVE_STATES_VERSION = 2;
@@ -41,132 +48,153 @@ public class SilenceSessionStore implements SessionStore {
   private final int          subscriptionId;
 
   public SilenceSessionStore(Context context, MasterSecret masterSecret, int subscriptionId) {
-    Log.w(TAG, "SilenceSessionStore for subscription ID " + subscriptionId);
-    if (subscriptionId == -1) Log.w(TAG, "Subscription ID should not be -1!");
-
     this.context        = context.getApplicationContext();
     this.masterSecret   = masterSecret;
     this.subscriptionId = subscriptionId;
   }
 
+  /** Shared with {@link VendoredSessionStore} so both libraries serialize over the same files. */
+  private Object sessionLock() {
+    return StorageFileLock.forDirectory(getSessionDirectory());
+  }
+
   @Override
   public SessionRecord loadSession(SignalProtocolAddress address) {
-    synchronized (FILE_LOCK) {
+    synchronized (sessionLock()) {
+      File sessionFile = getSessionFile(address);
+      if (!sessionFile.exists()) {
+        return new SessionRecord();   // no session yet — normal
+      }
+
       try {
-        MasterCipher    cipher = new MasterCipher(masterSecret);
-        FileInputStream in     = new FileInputStream(getSessionFile(address));
-
-        int versionMarker  = readInteger(in);
-
-        if (versionMarker > CURRENT_VERSION) {
-          throw new AssertionError("Unknown version: " + versionMarker);
-        }
-
-        byte[] serialized = cipher.decryptBytes(readBlob(in));
+        MasterCipher    cipher     = new MasterCipher(masterSecret);
+        FileInputStream in         = new FileInputStream(sessionFile);
+        int             marker     = readInteger(in);
+        byte[]          serialized = cipher.decryptBytes(readBlob(in));
         in.close();
 
-        if (versionMarker == SINGLE_STATE_VERSION) {
-          SessionStructure sessionStructure = SessionStructure.parseFrom(serialized);
-          SessionState     sessionState     = new SessionState(sessionStructure);
-          return new SessionRecord(sessionState);
-        } else if (versionMarker == ARCHIVE_STATES_VERSION) {
+        if (marker == ARCHIVE_STATES_VERSION) {
           return new SessionRecord(serialized);
-        } else {
-          throw new AssertionError("Unknown version: " + versionMarker);
         }
-      } catch (InvalidMessageException | IOException e) {
-        Log.w(TAG, "No existing session information found.");
+
+        // A very old raw SessionStructure (marker 1) that the maintained library cannot parse. Fall
+        // through to a fresh session so the next message triggers a re-handshake. No stored message
+        // is lost.
+        Log.w(TAG, "Legacy single-state session (marker " + marker + ") unreadable by the "
+                   + "maintained library; re-handshake will occur.");
+        return new SessionRecord();
+      } catch (InvalidMessageException e) {
+        // A stored record that will not deserialize under the maintained library; re-handshake.
+        Log.w(TAG, "Stored session failed to deserialize; re-handshake will occur.", e);
+        return new SessionRecord();
+      } catch (IOException e) {
+        Log.w(TAG, "Session read error; treating as no session.", e);
         return new SessionRecord();
       }
     }
   }
 
   @Override
+  public List<SessionRecord> loadExistingSessions(List<SignalProtocolAddress> addresses) throws NoSessionException {
+    List<SessionRecord> result = new ArrayList<>(addresses.size());
+    for (SignalProtocolAddress address : addresses) {
+      if (!containsSession(address)) throw new NoSessionException("No session for: " + address);
+      result.add(loadSession(address));
+    }
+    return result;
+  }
+
+  @Override
   public void storeSession(SignalProtocolAddress address, SessionRecord record) {
-    synchronized (FILE_LOCK) {
+    synchronized (sessionLock()) {
+      File target = getSessionFile(address);
+      File temp   = null;
       try {
-        MasterCipher     masterCipher = new MasterCipher(masterSecret);
-        RandomAccessFile sessionFile  = new RandomAccessFile(getSessionFile(address), "rw");
-        FileChannel      out          = sessionFile.getChannel();
+        MasterCipher masterCipher = new MasterCipher(masterSecret);
+        temp = File.createTempFile("session", ".tmp", target.getParentFile());
 
-        out.position(0);
-        writeInteger(CURRENT_VERSION, out);
-        writeBlob(masterCipher.encryptBytes(record.serialize()), out);
-        out.truncate(out.position());
+        try (RandomAccessFile sessionFile = new RandomAccessFile(temp, "rw")) {
+          FileChannel out = sessionFile.getChannel();
+          out.position(0);
+          writeInteger(CURRENT_VERSION, out);
+          writeBlob(masterCipher.encryptBytes(record.serialize()), out);
+          out.truncate(out.position());
+          out.force(true);
+        }
 
-        sessionFile.close();
+        // Atomic replace: readers on the shared lock never observe a half-written record.
+        if (!temp.renameTo(target)) {
+          throw new IOException("Atomic rename failed: " + temp + " -> " + target);
+        }
+        temp = null;
       } catch (IOException e) {
         throw new AssertionError(e);
+      } finally {
+        if (temp != null && temp.exists() && !temp.delete()) {
+          Log.w(TAG, "Could not remove temporary session file " + temp);
+        }
       }
     }
   }
 
   @Override
   public boolean containsSession(SignalProtocolAddress address) {
-    return getSessionFile(address).exists() &&
-           loadSession(address).getSessionState().hasSenderChain();
+    return getSessionFile(address).exists() && loadSession(address).hasSenderChain();
   }
 
   @Override
   public void deleteSession(SignalProtocolAddress address) {
-    getSessionFile(address).delete();
+    synchronized (sessionLock()) {
+      getSessionFile(address).delete();
+    }
   }
 
   @Override
   public void deleteAllSessions(String name) {
-    List<Integer> devices = getSubDeviceSessions(name);
+    synchronized (sessionLock()) {
+      List<Integer> devices = getSubDeviceSessions(name);
 
-    deleteSession(new SignalProtocolAddress(name, 1));
+      deleteSession(new SignalProtocolAddress(name, 1));
 
-    for (int device : devices) {
-      deleteSession(new SignalProtocolAddress(name, device));
+      for (int device : devices) {
+        deleteSession(new SignalProtocolAddress(name, device));
+      }
     }
   }
 
   @Override
   public List<Integer> getSubDeviceSessions(String name) {
-    long          recipientId = RecipientFactory.getRecipientsFromString(context, name, true).getPrimaryRecipient().getRecipientId();
-    List<Integer> results     = new LinkedList<>();
-    File          parent      = getSessionDirectory();
-    String[]      children    = parent.list();
+    synchronized (sessionLock()) {
+      long          recipientId = RecipientFactory.getRecipientsFromString(context, name, true).getPrimaryRecipient().getRecipientId();
+      List<Integer> results     = new LinkedList<>();
+      File          parent      = getSessionDirectory();
+      String[]      children    = parent.list();
 
-    if (children == null) return results;
+      if (children == null) return results;
 
-    for (String child : children) {
-      try {
-        String[] parts              = child.split("[.]", 2);
-        long     sessionRecipientId = Long.parseLong(parts[0]);
+      for (String child : children) {
+        try {
+          String[] parts              = child.split("[.]", 2);
+          long     sessionRecipientId = Long.parseLong(parts[0]);
 
-        if (sessionRecipientId == recipientId && parts.length > 1) {
-          results.add(Integer.parseInt(parts[1]));
+          if (sessionRecipientId == recipientId && parts.length > 1) {
+            results.add(Integer.parseInt(parts[1]));
+          }
+        } catch (NumberFormatException e) {
+          Log.w(TAG, e);
         }
-      } catch (NumberFormatException e) {
-        Log.w(TAG, e);
       }
-    }
 
-    return results;
+      return results;
+    }
   }
 
   private File getSessionFile(SignalProtocolAddress address) {
-    String sessionName = getSessionName(address);
-    return new File(getSessionDirectory(), sessionName);
+    return new File(getSessionDirectory(), getSessionName(address));
   }
 
   private File getSessionDirectory() {
-    return getSessionDirectory(context);
-  }
-
-  public static File getSessionDirectory(Context context) {
-    File directory = new File(context.getFilesDir(), SESSIONS_DIRECTORY_V2);
-
-    if (!directory.exists()) {
-      if (!directory.mkdirs()) {
-        Log.w(TAG, "Session directory creation failed!");
-      }
-    }
-
-    return directory;
+    return VendoredSessionStore.getSessionDirectory(context);
   }
 
   private String getSessionName(SignalProtocolAddress axolotlAddress) {
@@ -177,7 +205,7 @@ public class SilenceSessionStore implements SessionStore {
   }
 
   private byte[] readBlob(FileInputStream in) throws IOException {
-    int length       = readInteger(in);
+    int    length    = readInteger(in);
     byte[] blobBytes = new byte[length];
 
     in.read(blobBytes, 0, blobBytes.length);
@@ -199,5 +227,4 @@ public class SilenceSessionStore implements SessionStore {
     byte[] valueBytes = Conversions.intToByteArray(value);
     out.write(ByteBuffer.wrap(valueBytes));
   }
-
 }

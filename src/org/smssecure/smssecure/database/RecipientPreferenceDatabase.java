@@ -14,7 +14,7 @@ import org.smssecure.smssecure.color.MaterialColor;
 import org.smssecure.smssecure.database.DatabaseContentProviders;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.util.Arrays;
 
@@ -113,7 +113,7 @@ public class RecipientPreferenceDatabase extends Database {
                                                      notificationUri, color, defaultSubscriptionId));
       }
 
-      return Optional.absent();
+      return Optional.empty();
     } finally {
       if (cursor != null) cursor.close();
     }
@@ -219,7 +219,7 @@ public class RecipientPreferenceDatabase extends Database {
     }
 
     public Optional<Integer> getDefaultSubscriptionId() {
-      return defaultSubscriptionId != -1 ? Optional.of(defaultSubscriptionId) : Optional.<Integer>absent();
+      return defaultSubscriptionId != -1 ? Optional.of(defaultSubscriptionId) : Optional.<Integer>empty();
     }
   }
 }

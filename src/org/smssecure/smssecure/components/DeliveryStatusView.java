@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import org.smssecure.smssecure.R;
 
-import pl.tajchert.sample.DotsTextView;
-
 public class DeliveryStatusView extends FrameLayout {
 
   private static final String TAG = DeliveryStatusView.class.getSimpleName();
@@ -53,7 +51,7 @@ public class DeliveryStatusView extends FrameLayout {
 
     if (Build.VERSION.SDK_INT >= 11) {
       inflate(context, R.layout.conversation_item_pending_v11, pendingIndicatorStub);
-      DotsTextView pendingIndicator = (DotsTextView) findViewById(R.id.pending_indicator);
+      AnimatedDotsView pendingIndicator = (AnimatedDotsView) findViewById(R.id.pending_indicator);
       pendingIndicator.setDotsColor(iconColor);
     } else {
       inflate(context, R.layout.conversation_item_pending, pendingIndicatorStub);

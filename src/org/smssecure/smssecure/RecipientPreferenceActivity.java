@@ -1,19 +1,19 @@
 package org.smssecure.smssecure;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
@@ -38,8 +38,8 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicNoActionBarTheme;
 import org.smssecure.smssecure.util.DynamicTheme;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
-@SuppressLint("StaticFieldLeak")
 public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActivity implements Recipients.RecipientsModifiedListener
 {
   private static final String TAG = RecipientPreferenceActivity.class.getSimpleName();
@@ -90,18 +90,11 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.preference_fragment);
-    fragment.onActivityResult(requestCode, resultCode, data);
-  }
-
-  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
     switch (item.getItemId()) {
       case android.R.id.home:
-        super.onBackPressed();
+        getOnBackPressedDispatcher().onBackPressed();
         return true;
     }
 
@@ -128,9 +121,8 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
     this.toolbar.setBackgroundColor(recipients.getColor().toActionBarColor(this));
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = getWindow();
-      window.setStatusBarColor(recipients.getColor().toStatusBarColor(this));
-      window.setNavigationBarColor(getResources().getColor(android.R.color.black));
+      setSystemBarColors(recipients.getColor().toStatusBarColor(this),
+             androidx.core.content.ContextCompat.getColor(this, android.R.color.black));
     }
 
     if (recipients.isBlocked()) this.blockedIndicator.setVisibility(View.VISIBLE);
@@ -152,7 +144,7 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
       implements Recipients.RecipientsModifiedListener
   {
 
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     private Recipients recipients;
 
@@ -267,15 +259,10 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
         }
 
         recipients.setRingtone(uri);
-
-        new AsyncTask<Uri, Void, Void>() {
-          @Override
-          protected Void doInBackground(Uri... params) {
-            DatabaseFactory.getRecipientPreferenceDatabase(getActivity())
-                           .setRingtone(recipients, params[0]);
-            return null;
-          }
-        }.execute(uri);
+        Context context = requireContext().getApplicationContext();
+        Recipients currentRecipients = recipients;
+        submitPreferenceUpdate(() -> DatabaseFactory.getRecipientPreferenceDatabase(context)
+                                                   .setRingtone(currentRecipients, uri));
 
         return false;
       }
@@ -288,15 +275,10 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
         final VibrateState vibrateState = VibrateState.fromId(value);
 
         recipients.setVibrate(vibrateState);
-
-        new AsyncTask<Void, Void, Void>() {
-          @Override
-          protected Void doInBackground(Void... params) {
-            DatabaseFactory.getRecipientPreferenceDatabase(getActivity())
-                           .setVibrate(recipients, vibrateState);
-            return null;
-          }
-        }.execute();
+        Context context = requireContext().getApplicationContext();
+        Recipients currentRecipients = recipients;
+        submitPreferenceUpdate(() -> DatabaseFactory.getRecipientPreferenceDatabase(context)
+                                                   .setVibrate(currentRecipients, vibrateState));
 
         return false;
       }
@@ -314,15 +296,10 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
 
         if (preference.isEnabled() && !currentColor.equals(selectedColor)) {
           recipients.setColor(selectedColor);
-
-          new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-              DatabaseFactory.getRecipientPreferenceDatabase(getActivity())
-                             .setColor(recipients, selectedColor);
-              return null;
-            }
-          }.execute();
+          Context context = requireContext().getApplicationContext();
+          Recipients currentRecipients = recipients;
+          submitPreferenceUpdate(() -> DatabaseFactory.getRecipientPreferenceDatabase(context)
+                                                     .setColor(currentRecipients, selectedColor));
         }
         return true;
       }
@@ -354,15 +331,10 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
 
       private void setMuted(final Recipients recipients, final long until) {
         recipients.setMuted(until);
-
-        new AsyncTask<Void, Void, Void>() {
-          @Override
-          protected Void doInBackground(Void... params) {
-            DatabaseFactory.getRecipientPreferenceDatabase(getActivity())
-                           .setMuted(recipients, until);
-            return null;
-          }
-        }.execute();
+        Context context = requireContext().getApplicationContext();
+        Recipients currentRecipients = recipients;
+        submitPreferenceUpdate(() -> DatabaseFactory.getRecipientPreferenceDatabase(context)
+                                                   .setMuted(currentRecipients, until));
       }
     }
 
@@ -405,16 +377,21 @@ public class RecipientPreferenceActivity extends PassphraseRequiredActionBarActi
 
       private void setBlocked(final Recipients recipients, final boolean blocked) {
         recipients.setBlocked(blocked);
-
-        new AsyncTask<Void, Void, Void>() {
-          @Override
-          protected Void doInBackground(Void... params) {
-            DatabaseFactory.getRecipientPreferenceDatabase(getActivity())
-                           .setBlocked(recipients, blocked);
-            return null;
-          }
-        }.execute();
+        Context context = requireContext().getApplicationContext();
+        Recipients currentRecipients = recipients;
+        submitPreferenceUpdate(() -> DatabaseFactory.getRecipientPreferenceDatabase(context)
+                                                   .setBlocked(currentRecipients, blocked));
       }
+    }
+
+    private static void submitPreferenceUpdate(Runnable update) {
+      AppTaskExecutor.getInstance().submitSerial(
+          () -> {
+            update.run();
+            return null;
+          },
+          ignored -> {},
+          exception -> Log.w(TAG, "Unable to update recipient preference", exception));
     }
   }
 }

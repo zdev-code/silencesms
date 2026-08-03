@@ -29,9 +29,10 @@ import android.widget.Toast;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.crypto.SessionBuilder;
-import org.smssecure.smssecure.crypto.storage.SilenceIdentityKeyStore;
-import org.smssecure.smssecure.crypto.storage.SilencePreKeyStore;
-import org.smssecure.smssecure.crypto.storage.SilenceSessionStore;
+import org.smssecure.smssecure.crypto.storage.KeyExchangeSessionStore;
+import org.smssecure.smssecure.crypto.storage.VendoredIdentityKeyStore;
+import org.smssecure.smssecure.crypto.storage.VendoredPreKeyStore;
+import org.smssecure.smssecure.crypto.storage.VendoredSessionStore;
 import org.smssecure.smssecure.protocol.KeyExchangeMessage;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.RecipientFactory;
@@ -133,10 +134,10 @@ public class KeyExchangeInitiator {
 
   public static void initiateKeyExchange(Context context, MasterSecret masterSecret, Recipients recipients, int subscriptionId) {
     Recipient         recipient         = recipients.getPrimaryRecipient();
-    SessionStore      sessionStore      = new SilenceSessionStore(context, masterSecret, subscriptionId);
-    PreKeyStore       preKeyStore       = new SilencePreKeyStore(context, masterSecret, subscriptionId);
-    SignedPreKeyStore signedPreKeyStore = new SilencePreKeyStore(context, masterSecret, subscriptionId);
-    IdentityKeyStore  identityKeyStore  = new SilenceIdentityKeyStore(context, masterSecret, subscriptionId);
+    SessionStore      sessionStore      = new KeyExchangeSessionStore(context, masterSecret, subscriptionId);
+    PreKeyStore       preKeyStore       = new VendoredPreKeyStore(context, masterSecret, subscriptionId);
+    SignedPreKeyStore signedPreKeyStore = new VendoredPreKeyStore(context, masterSecret, subscriptionId);
+    IdentityKeyStore  identityKeyStore  = new VendoredIdentityKeyStore(context, masterSecret, subscriptionId);
 
     SessionBuilder    sessionBuilder    = new SessionBuilder(sessionStore, preKeyStore, signedPreKeyStore,
                                                              identityKeyStore, new SignalProtocolAddress(recipient.getNumber(), 1));
@@ -157,7 +158,7 @@ public class KeyExchangeInitiator {
                                              Recipients recipients, int subscriptionId)
   {
     Recipient     recipient     = recipients.getPrimaryRecipient();
-    SessionStore  sessionStore  = new SilenceSessionStore(context, masterSecret, subscriptionId);
+    SessionStore  sessionStore  = new KeyExchangeSessionStore(context, masterSecret, subscriptionId);
     SessionRecord sessionRecord = sessionStore.loadSession(new SignalProtocolAddress(recipient.getNumber(), 1));
 
     return sessionRecord.getSessionState().hasPendingKeyExchange();

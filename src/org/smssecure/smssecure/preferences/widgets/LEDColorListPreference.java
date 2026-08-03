@@ -83,14 +83,14 @@ public class LEDColorListPreference extends ListPreference {
     int color;
 
     switch (value) {
-      case "green":   color = getContext().getResources().getColor(R.color.green_500);   break;
-      case "red":     color = getContext().getResources().getColor(R.color.red_500);     break;
-      case "blue":    color = getContext().getResources().getColor(R.color.blue_500);    break;
-      case "yellow":  color = getContext().getResources().getColor(R.color.yellow_500);  break;
-      case "cyan":    color = getContext().getResources().getColor(R.color.cyan_500);    break;
-      case "magenta": color = getContext().getResources().getColor(R.color.pink_500);    break;
-      case "white":   color = getContext().getResources().getColor(R.color.white);       break;
-      default:        color = getContext().getResources().getColor(R.color.transparent); break;
+      case "green":   color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.green_500);   break;
+      case "red":     color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.red_500);     break;
+      case "blue":    color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.blue_500);    break;
+      case "yellow":  color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.yellow_500);  break;
+      case "cyan":    color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.cyan_500);    break;
+      case "magenta": color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.pink_500);    break;
+      case "white":   color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.white);       break;
+      default:        color = androidx.core.content.ContextCompat.getColor(getContext(), R.color.transparent); break;
     }
 
     if (colorImageView != null) {

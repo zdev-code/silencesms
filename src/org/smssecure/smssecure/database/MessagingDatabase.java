@@ -12,7 +12,7 @@ import org.smssecure.smssecure.database.documents.Document;
 import org.smssecure.smssecure.database.documents.IdentityKeyMismatch;
 import org.smssecure.smssecure.database.documents.IdentityKeyMismatchList;
 import org.smssecure.smssecure.util.JsonUtils;
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,8 +132,8 @@ public abstract class MessagingDatabase extends Database implements MmsSmsColumn
       }
 
       try {
-        return clazz.newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
+        return clazz.getDeclaredConstructor().newInstance();
+      } catch (ReflectiveOperationException e) {
         throw new AssertionError(e);
       }
 

@@ -16,7 +16,7 @@
  */
 package org.smssecure.smssecure;
 
-import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import androidx.fragment.app.ListFragment;
@@ -46,7 +46,7 @@ public class ShareFragment extends ListFragment implements LoaderManager.LoaderC
   @Override
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-    masterSecret = getArguments().getParcelable("master_secret");
+    masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
   }
 
   @Override
@@ -55,17 +55,17 @@ public class ShareFragment extends ListFragment implements LoaderManager.LoaderC
   }
 
   @Override
-  public void onActivityCreated(Bundle bundle) {
-    super.onActivityCreated(bundle);
+  public void onViewCreated(View view, Bundle bundle) {
+    super.onViewCreated(view, bundle);
 
     initializeListAdapter();
-    getLoaderManager().initLoader(0, null, this);
+    LoaderManager.getInstance(this).initLoader(0, null, this);
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-    this.listener = (ConversationSelectedListener) activity;
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    this.listener = (ConversationSelectedListener) context;
   }
 
   @Override
@@ -81,7 +81,7 @@ public class ShareFragment extends ListFragment implements LoaderManager.LoaderC
   private void initializeListAdapter() {
     this.setListAdapter(new ShareListAdapter(getActivity(), null, masterSecret));
     getListView().setRecyclerListener((ShareListAdapter) getListAdapter());
-    getLoaderManager().restartLoader(0, null, this);
+    LoaderManager.getInstance(this).restartLoader(0, null, this);
   }
 
   private void handleCreateConversation(long threadId, Recipients recipients, int distributionType) {

@@ -4,6 +4,7 @@
 
     <style name="Silence.LightNoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="theme_type">light</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="actionBarStyle">@style/Silence.LightActionBar</item>
         <item name="actionBarTabBarStyle">@style/Silence.LightActionBar.TabBar</item>
         <item name="colorPrimary">@color/silence_primary</item>
@@ -81,6 +82,7 @@
 
     <style name="Silence.LightTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="theme_type">light</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="actionBarStyle">@style/Silence.LightActionBar</item>
         <item name="actionBarTabBarStyle">@style/Silence.LightActionBar.TabBar</item>
         <item name="colorPrimary">@color/silence_primary</item>
@@ -189,8 +191,6 @@
         <item name="pref_ic_appearance">@drawable/ic_brightness_6_black</item>
         <item name="pref_ic_chats">@drawable/ic_forum_black_32dp</item>
         <item name="pref_ic_advanced">@drawable/ic_advanced_black</item>
-
-        <item name="app_protect_timeout_picker_color">@style/BetterPickersDialogFragment.Light</item>
 
         <item name="group_members_dialog_icon">@drawable/ic_group_grey600_24dp</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Fix</item>
@@ -305,8 +305,6 @@
         <item name="pref_ic_appearance">@drawable/ic_brightness_6_gray</item>
         <item name="pref_ic_chats">@drawable/ic_forum_grey_32dp</item>
         <item name="pref_ic_advanced">@drawable/ic_advanced_gray</item>
-
-        <item name="app_protect_timeout_picker_color">@style/BetterPickersDialogFragment</item>
 
         <item name="group_members_dialog_icon">@drawable/ic_group_white_24dp</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Fix</item>

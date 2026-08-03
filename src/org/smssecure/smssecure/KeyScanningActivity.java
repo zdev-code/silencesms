@@ -29,12 +29,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.activity.result.ActivityResultLauncher;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.util.Base64;
@@ -42,7 +44,7 @@ import org.smssecure.smssecure.util.Dialogs;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
 import org.smssecure.smssecure.util.Hex;
-import org.whispersystems.libsignal.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKey;
 
 /**
  * Activity for initiating/receiving key QR code scans.
@@ -55,6 +57,8 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
 
   private final DynamicTheme    dynamicTheme    = new DynamicTheme();
   private final DynamicLanguage dynamicLanguage = new DynamicLanguage();
+  private final ActivityResultLauncher<ScanOptions> scanLauncher =
+      registerForActivityResult(new ScanContract(), this::handleScanResult);
 
   @Override
   protected void onPreCreate() {
@@ -89,22 +93,17 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 
-    switch (item.getItemId()) {
-    case R.id.menu_scan:              initiateScan();    return true;
-    case R.id.menu_get_scanned:       initiateDisplay(); return true;
-    case R.id.menu_share_fingerprint: initiateShare();   return true;
-    case android.R.id.home:           finish();          return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_scan)              { initiateScan();    return true; }
+    else if (itemId == R.id.menu_get_scanned)       { initiateDisplay(); return true; }
+    else if (itemId == R.id.menu_share_fingerprint) { initiateShare();   return true; }
+    else if (itemId == android.R.id.home)           { finish();          return true; }
 
     return false;
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    super.onActivityResult(requestCode, resultCode, intent);
-    IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-
-    if ((scanResult != null) && (scanResult.getContents() != null)) {
+  private void handleScanResult(ScanIntentResult scanResult) {
+    if (scanResult.getContents() != null) {
       String data = scanResult.getContents();
 
       if (data.equals(Base64.encodeBytes(getIdentityKeyToCompare().serialize()))) {
@@ -118,18 +117,15 @@ public abstract class KeyScanningActivity extends PassphraseRequiredActionBarAct
     }
   }
 
-  private IntentIntegrator getIntentIntegrator() {
-    IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-    intentIntegrator.setOrientationLocked(false);
-    intentIntegrator.setBeepEnabled(false);
-    intentIntegrator.setPrompt(getScanString());
-    intentIntegrator.setBarcodeImageEnabled(false);
-    return intentIntegrator;
+  private ScanOptions getScanOptions() {
+    return new ScanOptions().setOrientationLocked(false)
+                            .setBeepEnabled(false)
+                            .setPrompt(getScanString())
+                            .setBarcodeImageEnabled(false);
   }
 
   protected void initiateScan() {
-    IntentIntegrator intentIntegrator = getIntentIntegrator();
-    intentIntegrator.initiateScan();
+    scanLauncher.launch(getScanOptions());
   }
 
   protected void initiateDisplay() {

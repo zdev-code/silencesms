@@ -20,6 +20,7 @@ import org.smssecure.smssecure.BaseActionBarActivity;
 import org.smssecure.smssecure.notifications.NotificationChannels;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.permissions.Permissions;
+import org.smssecure.smssecure.util.ActivityTransitionCompat;
 import org.smssecure.smssecure.util.ServiceUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
@@ -60,13 +61,14 @@ public class WelcomeActivity extends BaseActionBarActivity {
 
   private void onContinueClicked() {
     Permissions.with(this)
-        .request(withNotificationPermissionIfRequired(Manifest.permission.WRITE_CONTACTS,
-                                                      Manifest.permission.READ_CONTACTS,
-                                                      Manifest.permission.READ_PHONE_STATE,
-                                                      Manifest.permission.RECEIVE_SMS,
-                                                      Manifest.permission.RECEIVE_MMS,
-                                                      Manifest.permission.READ_SMS,
-                                                      Manifest.permission.SEND_SMS))
+        .request(withNotificationPermissionIfRequired(
+            withPhoneNumberPermissionIfRequired(Manifest.permission.WRITE_CONTACTS,
+                                                Manifest.permission.READ_CONTACTS,
+                                                Manifest.permission.READ_PHONE_STATE,
+                                                Manifest.permission.RECEIVE_SMS,
+                                                Manifest.permission.RECEIVE_MMS,
+                                                Manifest.permission.READ_SMS,
+                                                Manifest.permission.SEND_SMS)))
         .ifNecessary()
         .withRationaleDialog(getString(R.string.WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms),
           R.drawable.ic_contacts_white_48dp, R.drawable.ic_phone_white_48dp)
@@ -93,20 +95,20 @@ public class WelcomeActivity extends BaseActionBarActivity {
   }
 
   private void goToNextIntent() {
-    Intent nextIntent = getIntent().getParcelableExtra("next_intent");
+    Intent nextIntent = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class);
 
     if (nextIntent == null) {
       throw new IllegalStateException("Was not supplied a next_intent.");
     }
 
     startActivity(nextIntent);
-    overridePendingTransition(R.anim.slide_from_right, R.anim.fade_scale_out);
+    ActivityTransitionCompat.overrideOpen(this, R.anim.slide_from_right, R.anim.fade_scale_out);
     finish();
   }
 
   private void setStatusBarColor() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      getWindow().setStatusBarColor(backgroundColor);
+      setStatusBarColorCompat(backgroundColor);
     }
   }
 
@@ -126,14 +128,24 @@ public class WelcomeActivity extends BaseActionBarActivity {
     return extended;
   }
 
+  private static String[] withPhoneNumberPermissionIfRequired(String... basePermissions) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+      return basePermissions;
+    }
+
+    String[] extended = Arrays.copyOf(basePermissions, basePermissions.length + 1);
+    extended[basePermissions.length] = Manifest.permission.READ_PHONE_NUMBERS;
+    return extended;
+  }
+
   @SuppressLint({"MissingPermission", "NotificationPermission"})
   private static void displayPermissionsNotification(Context context) {
     Intent       targetIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
     Notification notification = new NotificationCompat.Builder(context, NotificationChannels.OTHER)
-                                    .setPriority(Notification.PRIORITY_MAX)
+                                    .setPriority(NotificationCompat.PRIORITY_MAX)
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                     .setSmallIcon(R.drawable.icon_notification)
-                                    .setColor(context.getResources().getColor(R.color.silence_primary))
+                                    .setColor(ContextCompat.getColor(context, R.color.silence_primary))
                                     .setContentTitle(context.getString(R.string.WelcomeActivity_action_required))
                                     .setContentText(context.getString(R.string.WelcomeActivity_you_need_to_grant_some_permissions_to_silence))
                                     .setStyle(new NotificationCompat.BigTextStyle().bigText(context.getString(R.string.WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it)))

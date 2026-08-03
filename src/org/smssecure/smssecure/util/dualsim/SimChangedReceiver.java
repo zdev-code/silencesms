@@ -62,7 +62,7 @@ public class SimChangedReceiver extends BroadcastReceiver {
       return "1";
     }
 
-    SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+    SubscriptionManager subscriptionManager = context.getSystemService(SubscriptionManager.class);
 
     if (subscriptionManager == null) {
       Log.w(TAG, "SubscriptionManager was null");

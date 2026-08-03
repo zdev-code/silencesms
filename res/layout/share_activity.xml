@@ -11,10 +11,12 @@
                  android:layout_height="match_parent"
                  android:visibility="gone" />
 
-    <com.pnikosis.materialishprogress.ProgressWheel android:id="@+id/progress_wheel"
-                                                    android:layout_width="70dp"
-                                                    android:layout_height="70dp"
+    <com.google.android.material.progressindicator.CircularProgressIndicator android:id="@+id/progress_wheel"
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
                                                     android:layout_gravity="center"
-                                                    wheel:matProg_progressIndeterminate="true" />
+                                                    android:indeterminate="true"
+                                                    wheel:indicatorSize="70dp"
+                                                    wheel:trackThickness="4dp" />
 
 </FrameLayout>

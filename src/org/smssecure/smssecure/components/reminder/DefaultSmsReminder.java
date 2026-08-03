@@ -8,6 +8,7 @@ import android.os.Build;
 import android.provider.Telephony;
 import android.view.View;
 import android.view.View.OnClickListener;
+import androidx.activity.result.ActivityResultLauncher;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.SilencePreferences;
@@ -15,7 +16,7 @@ import org.smssecure.smssecure.util.Util;
 
 public class DefaultSmsReminder extends Reminder {
 
-  public DefaultSmsReminder(final Context context) {
+  public DefaultSmsReminder(final Context context, ActivityResultLauncher<Intent> roleRequestLauncher) {
     super(context.getString(R.string.reminder_header_sms_default_title),
           context.getString(R.string.reminder_header_sms_default_text_mandatory),
           context.getString(R.string.reminder_header_sms_default_button));
@@ -28,8 +29,8 @@ public class DefaultSmsReminder extends Reminder {
           RoleManager roleManager = (RoleManager) context.getSystemService(Context.ROLE_SERVICE);
           if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_SMS) && !roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
             Intent roleIntent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS);
-            if (context instanceof Activity) {
-              ((Activity) context).startActivityForResult(roleIntent, 0);
+            if (roleRequestLauncher != null) {
+              roleRequestLauncher.launch(roleIntent);
             } else {
               roleIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
               context.startActivity(roleIntent);

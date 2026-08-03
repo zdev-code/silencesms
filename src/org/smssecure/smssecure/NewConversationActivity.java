@@ -66,7 +66,7 @@ public class NewConversationActivity extends ContactSelectionActivity {
     super.onOptionsItemSelected(item);
 
     switch (item.getItemId()) {
-      case android.R.id.home: super.onBackPressed(); return true;
+      case android.R.id.home: getOnBackPressedDispatcher().onBackPressed(); return true;
     }
 
     return false;

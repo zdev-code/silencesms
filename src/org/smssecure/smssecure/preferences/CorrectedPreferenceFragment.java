@@ -37,6 +37,7 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
   }
 
   @Override
+  @SuppressWarnings("deprecation") // Required by PreferenceDialogFragmentCompat until AndroidX removes target-fragment lookup.
   public void onDisplayPreferenceDialog(Preference preference) {
     DialogFragment dialogFragment = null;
 
@@ -51,6 +52,7 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
     }
 
     if (dialogFragment != null) {
+      dialogFragment.setTargetFragment(this, 0);
       dialogFragment.show(getParentFragmentManager(), PREFERENCE_DIALOG_FRAGMENT_TAG);
     } else {
       super.onDisplayPreferenceDialog(preference);

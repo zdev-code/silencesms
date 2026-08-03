@@ -17,27 +17,15 @@
 
 package org.smssecure.smssecure.notifications;
 
+import android.content.BroadcastReceiver.PendingResult;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.core.app.RemoteInput;
 
-import org.smssecure.smssecure.attachments.Attachment;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.crypto.SessionUtil;
-import org.smssecure.smssecure.database.DatabaseFactory;
-import org.smssecure.smssecure.database.RecipientPreferenceDatabase.RecipientsPreferences;
-import org.smssecure.smssecure.mms.OutgoingMediaMessage;
-import org.smssecure.smssecure.recipients.RecipientFactory;
-import org.smssecure.smssecure.recipients.Recipients;
-import org.smssecure.smssecure.sms.MessageSender;
-import org.smssecure.smssecure.sms.OutgoingEncryptedMessage;
-import org.smssecure.smssecure.sms.OutgoingTextMessage;
-import org.whispersystems.libsignal.util.guava.Optional;
-
-import java.util.LinkedList;
+import org.smssecure.smssecure.util.concurrent.AsyncBroadcastTask;
 
 /**
  * Get the response text from the Wearable Device and sends an message as a reply
@@ -61,41 +49,17 @@ public class RemoteReplyReceiver extends MasterSecretBroadcastReceiver {
     final long[]       recipientIds = intent.getLongArrayExtra(RECIPIENT_IDS_EXTRA);
     final CharSequence responseText = remoteInput.getCharSequence(MessageNotifier.EXTRA_REMOTE_REPLY);
 
-    if (masterSecret != null && responseText != null) {
-      new AsyncTask<Void, Void, Void>() {
-        @Override
-        protected Void doInBackground(Void... params) {
-          long threadId;
+    if (masterSecret == null || recipientIds == null || responseText == null) return;
 
-          Optional<RecipientsPreferences> preferences = DatabaseFactory.getRecipientPreferenceDatabase(context).getRecipientsPreferences(recipientIds);
-          int subscriptionId = preferences.isPresent() ? preferences.get().getDefaultSubscriptionId().or(-1) : -1;
-
-          Recipients recipients = RecipientFactory.getRecipientsForIds(context, recipientIds, false);
-          if (recipients.isGroupRecipient()) {
-            OutgoingMediaMessage reply = new OutgoingMediaMessage(recipients, responseText.toString(), new LinkedList<Attachment>(), System.currentTimeMillis(), subscriptionId, 0);
-            threadId = MessageSender.send(context, masterSecret, reply, -1, false);
-          } else {
-            boolean secure = SessionUtil.hasSession(context, masterSecret, recipients.getPrimaryRecipient().getNumber(), subscriptionId);
-
-            OutgoingTextMessage reply;
-            if (!secure) {
-              reply = new OutgoingTextMessage(recipients, responseText.toString(), subscriptionId);
-            } else {
-              reply = new OutgoingEncryptedMessage(recipients, responseText.toString(), subscriptionId);
-            }
-
-            threadId = MessageSender.send(context, masterSecret, reply, -1, false);
-          }
-
-          DatabaseFactory.getThreadDatabase(context).setRead(threadId);
-          DatabaseFactory.getThreadDatabase(context).setLastSeen(threadId);
-
-          MessageNotifier.updateNotification(context, masterSecret);
-
-          return null;
-        }
-      }.execute();
-    }
+    Context appContext = context.getApplicationContext();
+    PendingResult pendingResult = goAsync();
+    AsyncBroadcastTask.submit(pendingResult, TAG, () -> {
+      NotificationActionOperations.sendReply(appContext, masterSecret, recipientIds,
+                                             responseText, -1,
+                                             NotificationActionOperations.UNKNOWN_SUBSCRIPTION_ID,
+                                             false, true);
+      return null;
+    });
 
   }
 }

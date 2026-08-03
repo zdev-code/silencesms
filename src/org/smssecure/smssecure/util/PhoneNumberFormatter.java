@@ -19,9 +19,10 @@ package org.smssecure.smssecure.util;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.MatchType;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
-import org.whispersystems.libsignal.logging.Log;
+import android.util.Log;
 
 import java.util.Locale;
 
@@ -100,9 +101,42 @@ public class PhoneNumberFormatter {
     }
   }
 
+  public static String canonicalizeNumber(String number, String localNumber) {
+    try {
+      return formatNumber(number, localNumber);
+    } catch (InvalidNumberException exception) {
+      Log.w(TAG, "Unable to canonicalize number", exception);
+      return number;
+    }
+  }
+
+  public static String formatNumberForDisplay(String number) {
+    if (number == null || number.contains("@")) return number;
+
+    try {
+      PhoneNumberUtil util = PhoneNumberUtil.getInstance();
+      String region = Locale.getDefault().getCountry();
+      PhoneNumber parsedNumber = util.parse(number, region.isEmpty() ? null : region);
+      PhoneNumberFormat format = number.startsWith("+") ? PhoneNumberFormat.INTERNATIONAL
+                                                         : PhoneNumberFormat.NATIONAL;
+      return util.format(parsedNumber, format);
+    } catch (NumberParseException exception) {
+      Log.w(TAG, "Unable to format number for display", exception);
+      return number;
+    }
+  }
+
+  public static boolean areSameNumber(String first, String second) {
+    if (first == null || second == null) return false;
+
+    MatchType match = PhoneNumberUtil.getInstance().isNumberMatch(first, second);
+    return match == MatchType.EXACT_MATCH || match == MatchType.NSN_MATCH ||
+           match == MatchType.SHORT_NSN_MATCH;
+  }
+
   public static String getRegionDisplayName(String regionCode) {
     return (regionCode == null || regionCode.equals("ZZ") || regionCode.equals(PhoneNumberUtil.REGION_CODE_FOR_NON_GEO_ENTITY))
-        ? "Unknown country" : new Locale("", regionCode).getDisplayCountry(Locale.getDefault());
+        ? "Unknown country" : Locale.forLanguageTag("und-" + regionCode).getDisplayCountry(Locale.getDefault());
   }
 
   public static String formatE164(String countryCode, String number) {
