@@ -21,6 +21,8 @@ public class NotificationItem {
   private final @NonNull  Recipient         individualRecipient;
   private final @Nullable Recipients        threadRecipients;
   private final long                        threadId;
+  private final int                         subscriptionId;
+  private final boolean                     secure;
   private final @Nullable CharSequence      text;
   private final long                        timestamp;
   private final @Nullable SlideDeck         slideDeck;
@@ -29,7 +31,8 @@ public class NotificationItem {
                           @NonNull   Recipient individualRecipient,
                           @NonNull   Recipients recipients,
                           @Nullable  Recipients threadRecipients,
-                          long threadId, @Nullable CharSequence text, long timestamp,
+                          long threadId, int subscriptionId, boolean secure,
+                          @Nullable CharSequence text, long timestamp,
                           @Nullable SlideDeck slideDeck)
   {
     this.id                  = id;
@@ -39,6 +42,8 @@ public class NotificationItem {
     this.threadRecipients    = threadRecipients;
     this.text                = text;
     this.threadId            = threadId;
+    this.subscriptionId      = subscriptionId;
+    this.secure              = secure;
     this.timestamp           = timestamp;
     this.slideDeck           = slideDeck;
   }
@@ -63,6 +68,14 @@ public class NotificationItem {
     return threadId;
   }
 
+  public int getSubscriptionId() {
+    return subscriptionId;
+  }
+
+  public boolean isSecure() {
+    return secure;
+  }
+
   public @Nullable SlideDeck getSlideDeck() {
     return slideDeck;
   }
@@ -73,11 +86,12 @@ public class NotificationItem {
     if (notifyRecipients != null) intent.putExtra("recipients", notifyRecipients.getIds());
 
     intent.putExtra("thread_id", threadId);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
+    intent.setData(Uri.parse(NotificationActionIdentity.data("content", threadId)));
 
     return TaskStackBuilder.create(context)
                            .addNextIntentWithParentStack(intent)
-                           .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                 .getPendingIntent(NotificationActionIdentity.requestCode("content", threadId),
+                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
   }
 
   public long getId() {

@@ -19,6 +19,7 @@ package org.smssecure.smssecure.util;
 
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class Rfc5724Uri {
       String[] parts = keyValue.split("=");
 
       if (parts.length == 1) queryParams.put(parts[0], "");
-      else                  queryParams.put(parts[0], URLDecoder.decode(parts[1]));
+      else                  queryParams.put(parts[0], URLDecoder.decode(parts[1], StandardCharsets.UTF_8));
     }
 
     return queryParams;

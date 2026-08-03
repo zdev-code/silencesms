@@ -21,17 +21,21 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.smssecure.smssecure.components.ZoomingImageView;
@@ -45,6 +49,8 @@ import org.smssecure.smssecure.util.DateUtils;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.SaveAttachmentTask;
 import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 import org.smssecure.smssecure.video.VideoPlayer;
 
 import java.io.IOException;
@@ -73,6 +79,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   private long      threadId;
   private long      date;
   private long      size;
+  private TaskHandle saveAttachmentTask;
+  private AlertDialog saveProgressDialog;
 
   @Override
   protected void onCreate(Bundle bundle, @NonNull MasterSecret masterSecret) {
@@ -81,8 +89,6 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     dynamicLanguage.onCreate(this);
 
     setFullscreenIfPossible();
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     setContentView(R.layout.media_preview_activity);
@@ -90,6 +96,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     initializeViews();
     initializeResources();
     initializeActionBar();
+    getSupportActionBar().hide();
   }
 
   @Override
@@ -99,9 +106,15 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   }
 
   private void setFullscreenIfPossible() {
-    if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-      getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
+    WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+    controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+    controller.hide(WindowInsetsCompat.Type.systemBars());
+  }
+
+  @Override
+  protected boolean applyDefaultWindowInsets() {
+    // Immersive media viewer draws edge-to-edge; it manages its own insets.
+    return false;
   }
 
   @Override
@@ -223,14 +236,63 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
            .request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
            .ifNecessary()
            .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-           .onAnyDenied(() -> Toast.makeText(this, R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())
+           .onAnyDenied(() -> {
+             if (isActivityActive()) {
+               Toast.makeText(getApplicationContext(), R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show();
+             }
+           })
            .onAllGranted(() -> {
-             SaveAttachmentTask saveTask = new SaveAttachmentTask(MediaPreviewActivity.this, masterSecret);
+             if (!isActivityActive()) return;
              long saveDate = (date > 0) ? date : System.currentTimeMillis();
-             saveTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new Attachment(mediaUri, mediaType, saveDate));
+             Attachment attachment = new Attachment(mediaUri, mediaType, saveDate);
+             showSaveProgressDialog(1);
+             saveAttachmentTask = AppTaskExecutor.getInstance().submitParallel(
+                 () -> SaveAttachmentTask.save(getApplicationContext(), masterSecret, attachment),
+                 result -> {
+                   if (!isActivityActive()) return;
+                   dismissSaveProgressDialog();
+                   saveAttachmentTask = null;
+                   if (result != SaveAttachmentTask.SUCCESS) Log.w(TAG, "Unable to save attachment, result: " + result);
+                   SaveAttachmentTask.showResultToast(getApplicationContext(), result, 1);
+                 },
+                 exception -> {
+                   Log.w(TAG, "Unable to save attachment", exception);
+                   if (!isActivityActive()) return;
+                   dismissSaveProgressDialog();
+                   saveAttachmentTask = null;
+                   SaveAttachmentTask.showResultToast(getApplicationContext(), SaveAttachmentTask.FAILURE, 1);
+                 });
            })
            .execute();
     });
+  }
+
+  private void showSaveProgressDialog(int count) {
+    dismissSaveProgressDialog();
+    saveProgressDialog = new AlertDialog.Builder(this)
+        .setTitle(getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments, count, count))
+        .setMessage(getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments_to_sd_card, count, count))
+        .setView(new ProgressBar(this))
+        .setCancelable(false)
+        .create();
+    saveProgressDialog.show();
+  }
+
+  private void dismissSaveProgressDialog() {
+    if (saveProgressDialog != null) saveProgressDialog.dismiss();
+    saveProgressDialog = null;
+  }
+
+  private boolean isActivityActive() {
+    return !isFinishing() && !isDestroyed();
+  }
+
+  @Override
+  protected void onDestroy() {
+    if (saveAttachmentTask != null) saveAttachmentTask.cancel();
+    saveAttachmentTask = null;
+    dismissSaveProgressDialog();
+    super.onDestroy();
   }
 
   @Override
@@ -250,12 +312,11 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
 
-    switch (item.getItemId()) {
-      case R.id.media_preview__overview: showOverview(); return true;
-      case R.id.media_preview__forward:  forward();      return true;
-      case R.id.save:                    saveToDisk();   return true;
-      case android.R.id.home:            finish();       return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.media_preview__overview) { showOverview(); return true; }
+    else if (itemId == R.id.media_preview__forward)  { forward();      return true; }
+    else if (itemId == R.id.save)                    { saveToDisk();   return true; }
+    else if (itemId == android.R.id.home)            { finish();       return true; }
 
     return false;
   }

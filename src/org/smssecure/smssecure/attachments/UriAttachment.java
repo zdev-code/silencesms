@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.util.MediaUtil;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.io.InputStream;

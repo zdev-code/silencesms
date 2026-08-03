@@ -19,18 +19,15 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.sms.MessageSender;
 import org.smssecure.smssecure.sms.OutgoingTextMessage;
 import org.smssecure.smssecure.util.Rfc5724Uri;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 public class QuickResponseService extends MasterSecretIntentService {
 
   private static final String TAG = QuickResponseService.class.getSimpleName();
-
-  public QuickResponseService() {
-    super("QuickResponseService");
-  }
 
   @Override
   protected void onHandleIntent(Intent intent, @Nullable MasterSecret masterSecret) {
@@ -50,12 +47,12 @@ public class QuickResponseService extends MasterSecretIntentService {
       String     content    = intent.getStringExtra(Intent.EXTRA_TEXT);
       String     numbers    = uri.getPath();
       if(numbers.contains("%")){
-        numbers = URLDecoder.decode(numbers);
+        numbers = URLDecoder.decode(numbers, StandardCharsets.UTF_8);
       }
 
       Recipients                      recipients     = RecipientFactory.getRecipientsFromString(this, numbers, false);
       Optional<RecipientsPreferences> preferences    = DatabaseFactory.getRecipientPreferenceDatabase(this).getRecipientsPreferences(recipients.getIds());
-      int                             subscriptionId = preferences.isPresent() ? preferences.get().getDefaultSubscriptionId().or(-1) : -1;
+      int                             subscriptionId = preferences.isPresent() ? preferences.get().getDefaultSubscriptionId().orElse(-1) : -1;
 
       if (!TextUtils.isEmpty(content)) {
         if (recipients.isSingleRecipient()) {

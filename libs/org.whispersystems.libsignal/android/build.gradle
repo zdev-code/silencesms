@@ -2,8 +2,6 @@ plugins {
     id 'com.android.library'
 }
 
-evaluationDependsOn(':tests')
-
 version          = version_number
 group            = group_info
 
@@ -20,14 +18,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-
-    testOptions {
-        unitTests.all { unitTestTask ->
-            unitTestTask.dependsOn project(':tests').tasks.named('testClasses')
-            unitTestTask.testClassesDirs.from(project(':tests').sourceSets.test.output.classesDirs)
-            unitTestTask.classpath += project(':tests').sourceSets.test.runtimeClasspath
-        }
-    }
 }
 
 repositories {
@@ -38,6 +28,7 @@ repositories {
 
 dependencies {
     api(project(':java'))
-    testImplementation project(path: ':tests', configuration: 'testArtifacts')
+    // The vendored protocol tests in :tests are pure JVM and run in :java:test, which has the
+    // libsignal-client and curve25519 runtime deps they need; do not duplicate them here.
     androidTestImplementation 'junit:junit:4.13.2'
 }

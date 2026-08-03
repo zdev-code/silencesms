@@ -244,8 +244,11 @@ public class ColorPickerPreference extends DialogPreference {
   }
 
   @Override
-  protected void onSetInitialValue(boolean restoreValue, Object defaultValueObj) {
-    final String defaultValue = (String) defaultValueObj;
-    setInternalColor(restoreValue ? getPersistedInt(0) : (!TextUtils.isEmpty(defaultValue) ? Color.parseColor(defaultValue) : 0), true);
+  protected void onSetInitialValue(Object defaultValueObj) {
+    String defaultValue = (String) defaultValueObj;
+    int initialValue = shouldPersist() && getSharedPreferences().contains(getKey())
+        ? getPersistedInt(0)
+        : (!TextUtils.isEmpty(defaultValue) ? Color.parseColor(defaultValue) : 0);
+    setInternalColor(initialValue, true);
   }
 }

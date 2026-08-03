@@ -21,52 +21,66 @@ subprojects {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.core:core:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.core:core:1.18.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.viewpager:viewpager:1.1.0'
     implementation 'androidx.interpolator:interpolator:1.0.0'
     implementation 'androidx.loader:loader:1.1.0'
     implementation 'androidx.cursoradapter:cursoradapter:1.0.0'
+    implementation 'androidx.work:work-runtime:2.10.5'
+    implementation 'androidx.documentfile:documentfile:1.1.0'
 
-    implementation 'se.emilsjolander:stickylistheaders:2.7.0'
-    implementation 'com.jpardogo.materialtabstrip:library:1.0.9'
+    // okhttp: kept at 4.12.0 (the last 4.x; 5.x is still alpha). Used for carrier-MMSC HTTP over the
+    // mobile-data proxy. NOT replaceable by Jetpack: AndroidX has no HTTP client, and android.telephony
+    // MMS APIs don't expose the manual APN/proxy routing carriers require.
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-    implementation 'com.github.chrisbanes.photoview:library:1.2.3'
+    // photoview 1.2.3 (last release at this coordinate, 2015): pinch-zoom ImageView. No Jetpack widget
+    // provides gesture zoom/pan. 1.2.3 declares a spurious com.android.support:support-v4 POM dep its
+    // bytecode never uses, so the transitive dep is excluded (no Jetifier needed).
+    implementation('com.github.chrisbanes.photoview:library:1.2.3') {
+        exclude group: 'com.android.support'
+    }
     implementation 'com.github.bumptech.glide:glide:4.16.0'
-    implementation 'com.makeramen:roundedimageview:2.1.0'
-    implementation 'com.pnikosis:materialish-progress:1.5'
+    // eventbus 3.3.1 (2021, latest): app-wide background→UI pub/sub for attachment progress. No Jetpack
+    // equivalent — LiveData/Flow are lifecycle-scoped, not a global bus.
     implementation 'org.greenrobot:eventbus:3.3.1'
-    implementation 'pl.tajchert:waitingdots:0.1.0'
-    implementation 'com.melnykov:floatingactionbutton:1.3.0'
+    // zxing 4.3.0/3.5.3 (latest): QR scan + generate for safety-number verification. No Jetpack barcode
+    // API; the only alternative (ML Kit) pulls in Google Play Services, which this FOSS app avoids.
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.zxing:core:3.5.3'
-    implementation('com.davemorrissey.labs:subsampling-scale-image-view:3.6.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
+    // subsampling-scale-image-view 3.10.0 (2020, last release): tiled deep-zoom for large images. No
+    // Jetpack tiled-image view exists.
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
-    implementation("com.doomonafireball.betterpickers:library:1.5.3") {
-        exclude group: 'com.android.support', module: 'support-v4'
-    }
+    implementation(project(':org.whispersystems.jobmanager'))
+    implementation(project(':org.whispersystems.libpastelog'))
+    implementation(project(':org.whispersystems.libsignal'))
 
-    implementation project(':org.whispersystems.jobmanager')
-    implementation project(':org.whispersystems.libpastelog')
-    implementation project(':org.whispersystems.libsignal')
+    // Maintained Rust-core Signal Protocol, pinned at 0.72.1 (last release able to CREATE and RECEIVE a
+    // classic X3DH session v3). Different namespace (org.signal.libsignal.protocol.*) so it coexists
+    // with the vendored org.whispersystems.libsignal during the incremental crypto migration. Android
+    // AAR bundles native .so per ABI.
+    implementation 'org.signal:libsignal-android:0.72.1'
 
-    implementation 'com.annimon:stream:1.2.2'
+    // 2.22.1 is the latest stable 2.x; patches CVE-2026-5451/5513/5454 (PTV bypasses + InetSocketAddress
+    // SSRF, fixed 2.21.4) and CVE-2026-54515 (@JsonIgnoreProperties bypass, fixed 2.22.1). annotations
+    // tracks the minor (2.22) since it only bumps per-minor. Jackson 3.x is a coordinate/package migration.
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.22'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.22.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.32'
 
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.2'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.35'
+    implementation(project(':com.amulyakhare.textdrawable'))
 
-    implementation project(':com.amulyakhare.textdrawable')
-
+    // android-smsmms 5.2.1 (klinkerapps, 2020, effectively abandoned): SMS/MMS send-receive incl.
+    // carrier MMSC transaction handling. No Jetpack replacement — the platform exposes no MMS-send API
+    // covering the legacy APN/transaction flow this relies on; would require vendoring to move off.
     implementation 'com.klinkerapps:android-smsmms:5.2.1'
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
@@ -98,12 +112,20 @@ android {
     namespace = 'org.smssecure.smssecure'
     compileSdk = 36
 
+    // NDK provides llvm-strip so AGP can strip the (unstripped) libsignal_jni.so shipped in the AAR.
+    // Matches libsignal's r28 build toolchain. Local SDK component only — not committed to git.
+    ndkVersion = '28.2.13676358'
+
     defaultConfig {
         applicationId = 'org.smssecure.smssecure'
-        versionCode = 212
+        versionCode = 215
         versionName = "0.16.13-unstable"
+        buildConfigField 'boolean', 'MODERN_CRYPTO_WRITES', 'true'
 
         minSdkVersion = 23
+        // Edge-to-edge (enforced on Android 15+/targetSdk 35+) is handled centrally in
+        // BaseActionBarActivity, which applies the system-bar/cutout insets as padding to the action
+        // bar and content and repaints the bar regions with each theme's declared colours.
         targetSdkVersion = 36
 
     testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
@@ -111,14 +133,27 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         ndk {
-            abiFilters += ['armeabi-v7a', 'arm64-v8a']
+            abiFilters += ['arm64-v8a']
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments += ['-DANDROID_STL=none']
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file('cpp/CMakeLists.txt')
+            version = '3.22.1'
         }
     }
 
     compileOptions {
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -159,9 +194,15 @@ android {
     packaging {
         resources {
             excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE']
+            // The libsignal-client JVM jar (transitive of libsignal-android) bundles DESKTOP natives
+            // (Windows .dll, macOS .dylib, Linux amd64/aarch64 .so) as Java resources. On Android these
+            // are dead weight (~180 MB). The real Android libs live under lib/<abi>/ and are unaffected.
+            excludes += ['**/*.dll', '**/*.dylib', '**/*_amd64.so', '**/*_aarch64.so']
         }
         jniLibs {
-            keepDebugSymbols += ['**/libcurve25519.so']
+            // libsignal-android bundles a testing-only native lib alongside the real one; it must never
+            // ship in the app. Excluding it removes ~130 MB across the two ARM ABIs.
+            excludes += ['**/libsignal_jni_testing.so']
         }
     }
 
@@ -175,6 +216,12 @@ android {
             minifyEnabled = true
             proguardFiles = buildTypes.debug.proguardFiles
             testProguardFiles = buildTypes.debug.testProguardFiles
+        }
+        phaseARelease {
+            initWith release
+            buildConfigField 'boolean', 'MODERN_CRYPTO_WRITES', 'false'
+            versionNameSuffix = '-phase-a'
+            matchingFallbacks = ['release']
         }
     }
 
@@ -197,6 +244,109 @@ android {
     }
 
 }
+
+def verifyCryptoReleaseStages = tasks.register('verifyCryptoReleaseStages') {
+    group = 'verification'
+    description = 'Verifies normal builds enable modern crypto writes and Phase A builds disable them.'
+
+    dependsOn 'generateDebugBuildConfig', 'generatePhaseAReleaseBuildConfig'
+
+    doLast {
+        def debugBuildConfig = fileTree(layout.buildDirectory.dir('generated/source/buildConfig/debug')) {
+            include '**/BuildConfig.java'
+        }.singleFile.text
+        def phaseABuildConfig = fileTree(layout.buildDirectory.dir('generated/source/buildConfig/phaseARelease')) {
+            include '**/BuildConfig.java'
+        }.singleFile.text
+
+        if (!debugBuildConfig.contains('MODERN_CRYPTO_WRITES = true')) {
+            throw new GradleException('Debug must enable modern crypto writes')
+        }
+        if (!phaseABuildConfig.contains('MODERN_CRYPTO_WRITES = false')) {
+            throw new GradleException('Phase A release must disable modern crypto writes')
+        }
+    }
+}
+
+def checkNoNewAsyncTaskUsage = tasks.register('checkNoNewAsyncTaskUsage') {
+    group = 'verification'
+    description = 'Fails when app source uses the removed android.os.AsyncTask API.'
+
+    inputs.files(fileTree('src') { include '**/*.java' })
+
+    doLast {
+        Set<String> actual = new TreeSet<>()
+
+        fileTree('src') { include '**/*.java' }.each { sourceFile ->
+            String source = sourceFile.getText('UTF-8')
+            boolean importsAsyncTask = source =~ /import\s+android\.os\.AsyncTask\s*;/
+            boolean extendsAsyncTask = source =~ /extends\s+(?:android\.os\.)?AsyncTask\s*</
+
+            if (importsAsyncTask || extendsAsyncTask) {
+                actual.add(rootDir.toPath()
+                                  .relativize(sourceFile.toPath())
+                                  .toString()
+                                  .replace('\\', '/'))
+            }
+        }
+
+        if (!actual.isEmpty()) {
+            throw new GradleException('android.os.AsyncTask usage is forbidden:\n  ' + actual.join('\n  '))
+        }
+    }
+}
+
+def checkAndroidDeprecationAllowlist = tasks.register('checkAndroidDeprecationAllowlist') {
+    group = 'verification'
+    description = 'Verifies localized Android deprecation suppressions match the documented allowlist.'
+
+    def allowlistFile = file('config/android-deprecation-allowlist.tsv')
+    inputs.file(allowlistFile)
+    inputs.files(fileTree('src') { include '**/*.java' })
+
+    doLast {
+        Set<String> expected = new TreeSet<>()
+
+        allowlistFile.readLines('UTF-8').eachWithIndex { line, index ->
+            if (line.isBlank() || line.startsWith('#')) return
+
+            String[] fields = line.split('\t', -1)
+            if (fields.length != 4 || fields.any { it.isBlank() }) {
+                throw new GradleException("Malformed deprecation allowlist row ${index + 1}; expected four non-empty tab-separated fields")
+            }
+            if (!expected.add(fields[0])) {
+                throw new GradleException("Duplicate deprecation allowlist path: ${fields[0]}")
+            }
+        }
+
+        Set<String> actual = new TreeSet<>()
+        fileTree('src') { include '**/*.java' }.each { sourceFile ->
+            if (sourceFile.getText('UTF-8').contains('@SuppressWarnings("deprecation")')) {
+                actual.add(rootDir.toPath()
+                                  .relativize(sourceFile.toPath())
+                                  .toString()
+                                  .replace('\\', '/'))
+            }
+        }
+
+        Set<String> undocumented = new TreeSet<>(actual)
+        undocumented.removeAll(expected)
+        Set<String> stale = new TreeSet<>(expected)
+        stale.removeAll(actual)
+
+        if (!undocumented.isEmpty() || !stale.isEmpty()) {
+            throw new GradleException('Android deprecation allowlist mismatch' +
+                                      (undocumented.isEmpty() ? '' : '\nUndocumented suppressions:\n  ' + undocumented.join('\n  ')) +
+                                      (stale.isEmpty() ? '' : '\nStale allowlist entries:\n  ' + stale.join('\n  ')))
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    dependsOn(checkNoNewAsyncTaskUsage)
+    dependsOn(checkAndroidDeprecationAllowlist)
+}
+
 def props = new Properties()
 def propFile = file('signing.properties')
 if (propFile.canRead()) {
@@ -245,4 +395,53 @@ allprojects {
         options.deprecation = true
         options.warnings = true
     }
+}
+
+// --- Supply-chain pin: verify the libsignal-android AAR hash before every build ---
+// Enforces the immutable 0.72.1 pin. The expected value is the official SHA-256 published on Maven
+// Central for libsignal-android-0.72.1.aar; if the resolved artifact ever differs (silent swap, cache
+// poisoning, coordinate change) the build fails loudly.
+// Deliberately scoped to this ONE security-critical artifact — full Gradle dependency verification
+// (gradle/verification-metadata.xml) would require a trusted checksum for every dependency and break the
+// build on any unrelated version bump.
+def libsignalPinnedCoordinate = 'org.signal:libsignal-android:0.72.1'
+def libsignalPinnedSha256     = '9859acc14aab4f4744abbc9ad150829afce090aa143a58a95af7da1767a6761f'
+def libsignalPinConfiguration = configurations.detachedConfiguration(
+    dependencies.create(libsignalPinnedCoordinate))
+libsignalPinConfiguration.transitive = false
+def buildLogger = logger
+
+def verifyLibsignalPin = tasks.register('verifyLibsignalPin') {
+    description = 'Verifies the pinned libsignal-android AAR matches its known-good SHA-256.'
+    group = 'verification'
+    doLast {
+        def artifact = libsignalPinConfiguration.files.find { it.name.endsWith('.aar') }
+        if (artifact == null) {
+            throw new GradleException(
+                "verifyLibsignalPin: could not resolve an AAR for ${libsignalPinnedCoordinate}")
+        }
+        def md = java.security.MessageDigest.getInstance('SHA-256')
+        artifact.withInputStream { input ->
+            byte[] buf = new byte[65536]
+            int n
+            while ((n = input.read(buf)) != -1) {
+                md.update(buf, 0, n)
+            }
+        }
+        def actual = md.digest().encodeHex().toString()
+        if (actual != libsignalPinnedSha256) {
+            throw new GradleException(
+                    "libsignal-android pin verification FAILED — refusing to build.\n" +
+                    "  coordinate:       ${libsignalPinnedCoordinate}\n" +
+                    "  expected SHA-256: ${libsignalPinnedSha256}\n" +
+                    "  actual   SHA-256: ${actual}\n" +
+                    "  artifact:         ${artifact}")
+        }
+        buildLogger.lifecycle("verifyLibsignalPin: ${libsignalPinnedCoordinate} SHA-256 OK")
+    }
+}
+
+// Gate the build on the pin check.
+tasks.matching { it.name == 'preBuild' }.configureEach {
+    dependsOn verifyLibsignalPin
 }

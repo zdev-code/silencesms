@@ -6,8 +6,11 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.LocaleList;
 import android.text.TextUtils;
+
+import androidx.core.os.ConfigurationCompat;
 
 import java.util.Locale;
 
@@ -63,6 +66,9 @@ public class DynamicLanguage {
     return getConfigurationLocale(activity.getResources().getConfiguration());
   }
 
+  // new Locale(...) is deprecated in favour of Locale.of(...) (JDK 19+), but is retained to preserve
+  // exact legacy language-code resolution (e.g. iw/in) that matches the values-* resource folders.
+  @SuppressWarnings("deprecation")
   private static Locale getSelectedLocale(Context context) {
     String language[] = TextUtils.split(SilencePreferences.getLanguage(context), "-r");
 
@@ -76,17 +82,18 @@ public class DynamicLanguage {
   }
 
   private static Locale getConfigurationLocale(Configuration configuration) {
-    LocaleList locales = configuration.getLocales();
-    if (locales != null && !locales.isEmpty()) {
-      return locales.get(0);
-    }
-    Locale legacyLocale = configuration.locale;
-    return legacyLocale != null ? legacyLocale : Locale.getDefault();
+    return ConfigurationCompat.getLocales(configuration).get(0);
   }
 
   private static final class OverridePendingTransition {
+    @SuppressWarnings("deprecation")
     static void invoke(Activity activity) {
-      activity.overridePendingTransition(0, 0);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, 0, 0);
+        activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_CLOSE, 0, 0);
+      } else {
+        activity.overridePendingTransition(0, 0);
+      }
     }
   }
 }

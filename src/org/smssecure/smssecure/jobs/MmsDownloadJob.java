@@ -18,7 +18,6 @@ import org.smssecure.smssecure.attachments.Attachment;
 import org.smssecure.smssecure.attachments.UriAttachment;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MmsCipher;
-import org.smssecure.smssecure.crypto.storage.SilenceSignalProtocolStore;
 import org.smssecure.smssecure.database.AttachmentDatabase;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.MmsDatabase;
@@ -39,12 +38,12 @@ import org.smssecure.smssecure.service.KeyCachingService;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
-import org.whispersystems.libsignal.DuplicateMessageException;
-import org.whispersystems.libsignal.InvalidMessageException;
-import org.whispersystems.libsignal.LegacyMessageException;
-import org.whispersystems.libsignal.NoSessionException;
+import org.signal.libsignal.protocol.DuplicateMessageException;
+import org.signal.libsignal.protocol.InvalidMessageException;
+import org.signal.libsignal.protocol.LegacyMessageException;
+import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -127,7 +126,7 @@ public class MmsDownloadJob extends MasterSecretJob {
       }
 
       if (retrieveConf.getSubject() != null && WirePrefix.isEncryptedMmsSubject(retrieveConf.getSubject().getString())) {
-        MmsCipher            mmsCipher    = new MmsCipher(new SilenceSignalProtocolStore(context, masterSecret, notification.get().getSubscriptionId()));
+        MmsCipher            mmsCipher    = new MmsCipher(context, masterSecret, notification.get().getSubscriptionId());
         MultimediaMessagePdu plaintextPdu = (MultimediaMessagePdu) mmsCipher.decrypt(context, retrieveConf);
 
         storeRetrievedMms(masterSecret, contentLocation, messageId, threadId, retrieveConf.getFrom(), retrieveConf.getTo(), retrieveConf.getCc(),

@@ -163,6 +163,7 @@ class EmojiProvider {
     }
 
     @Override
+    @SuppressWarnings("deprecation") // Drawable.getOpacity() deprecated in API 29 but still required by the base class
     public int getOpacity() {
       return PixelFormat.TRANSLUCENT;
     }

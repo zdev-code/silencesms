@@ -91,9 +91,7 @@ public class PassphrasePromptActivity extends PassphraseActivity {
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
-    switch (item.getItemId()) {
-    case R.id.menu_submit_debug_logs: handleLogSubmit(); return true;
-    }
+    if (item.getItemId() == R.id.menu_submit_debug_logs) { handleLogSubmit(); return true; }
 
     return false;
   }

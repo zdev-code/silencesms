@@ -8,7 +8,7 @@ import android.util.Log;
 import org.smssecure.smssecure.ApplicationContext;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.SecurityEvent;
-import org.smssecure.smssecure.crypto.storage.SilenceSessionStore;
+import org.smssecure.smssecure.crypto.storage.VendoredSessionStore;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.EncryptingSmsDatabase;
 import org.smssecure.smssecure.database.NoSuchMessageException;
@@ -94,7 +94,7 @@ public class SmsSentJob extends MasterSecretJob {
 
           if (record != null && record.isEndSession()) {
             Log.w(TAG, "Ending session...");
-            SessionStore sessionStore = new SilenceSessionStore(context, masterSecret, record.getSubscriptionId());
+            SessionStore sessionStore = new VendoredSessionStore(context, masterSecret, record.getSubscriptionId());
             sessionStore.deleteAllSessions(record.getIndividualRecipient().getNumber());
             SecurityEvent.broadcastSecurityUpdateEvent(context, record.getThreadId());
           }

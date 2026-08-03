@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -73,12 +74,12 @@ public class BlockedContactsActivity extends PassphraseRequiredActionBarActivity
     public void onCreate(Bundle bundle) {
       super.onCreate(bundle);
       setListAdapter(new BlockedContactAdapter(getActivity(), null));
-      getLoaderManager().initLoader(0, null, this);
+      LoaderManager.getInstance(this).initLoader(0, null, this);
     }
 
     @Override
-    public void onActivityCreated(Bundle bundle) {
-      super.onActivityCreated(bundle);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle bundle) {
+      super.onViewCreated(view, bundle);
       getListView().setOnItemClickListener(this);
     }
 
@@ -113,7 +114,7 @@ public class BlockedContactsActivity extends PassphraseRequiredActionBarActivity
     private static class BlockedContactAdapter extends CursorAdapter {
 
       public BlockedContactAdapter(Context context, Cursor c) {
-        super(context, c);
+        super(context, c, 0);
       }
 
       @Override

@@ -13,58 +13,33 @@ import android.widget.Toast;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.mms.PartAuthority;
-import org.smssecure.smssecure.util.task.ProgressDialogAsyncTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class SaveAttachmentTask extends ProgressDialogAsyncTask<SaveAttachmentTask.Attachment, Void, Integer> {
+public final class SaveAttachmentTask {
   private static final String TAG = SaveAttachmentTask.class.getSimpleName();
 
-  private static final int SUCCESS              = 0;
-  private static final int FAILURE              = 1;
-  private static final int WRITE_ACCESS_FAILURE = 2;
+  public static final int SUCCESS              = 0;
+  public static final int FAILURE              = 1;
+  public static final int WRITE_ACCESS_FAILURE = 2;
 
-  private final WeakReference<Context> contextReference;
-  private final WeakReference<MasterSecret> masterSecretReference;
-
-  private final int attachmentCount;
-
-  public SaveAttachmentTask(Context context, MasterSecret masterSecret) {
-    this(context, masterSecret, 1);
+  private SaveAttachmentTask() {
   }
 
-  public SaveAttachmentTask(Context context, MasterSecret masterSecret, int count) {
-    super(context,
-          context.getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments, count, count),
-          context.getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments_to_sd_card, count, count));
-    this.contextReference      = new WeakReference<>(context);
-    this.masterSecretReference = new WeakReference<>(masterSecret);
-    this.attachmentCount       = count;
-  }
-
-  @Override
-  protected Integer doInBackground(SaveAttachmentTask.Attachment... attachments) {
+  public static int save(Context context, MasterSecret masterSecret, Attachment... attachments) {
     if (attachments == null || attachments.length == 0) {
       throw new AssertionError("must pass in at least one attachment");
     }
 
     try {
-      Context context           = contextReference.get();
-      MasterSecret masterSecret = masterSecretReference.get();
-
       if (!Environment.getExternalStorageDirectory().canWrite()) {
         return WRITE_ACCESS_FAILURE;
-      }
-
-      if (context == null) {
-        return FAILURE;
       }
 
       for (Attachment attachment : attachments) {
@@ -80,7 +55,7 @@ public class SaveAttachmentTask extends ProgressDialogAsyncTask<SaveAttachmentTa
     }
   }
 
-  private boolean saveAttachment(Context context, MasterSecret masterSecret, Attachment attachment) throws IOException {
+  private static boolean saveAttachment(Context context, MasterSecret masterSecret, Attachment attachment) throws IOException {
     String contentType      = MediaUtil.getCorrectedMimeType(attachment.contentType);
     File mediaFile          = constructOutputFile(contentType, attachment.date);
     InputStream inputStream = PartAuthority.getAttachmentStream(context, masterSecret, attachment.uri);
@@ -98,12 +73,7 @@ public class SaveAttachmentTask extends ProgressDialogAsyncTask<SaveAttachmentTa
     return true;
   }
 
-  @Override
-  protected void onPostExecute(Integer result) {
-    super.onPostExecute(result);
-    Context context = contextReference.get();
-    if (context == null) return;
-
+  public static void showResultToast(Context context, int result, int attachmentCount) {
     switch (result) {
       case FAILURE:
         Toast.makeText(context,
@@ -124,7 +94,7 @@ public class SaveAttachmentTask extends ProgressDialogAsyncTask<SaveAttachmentTa
     }
   }
 
-  private File constructOutputFile(String contentType, long timestamp) throws IOException {
+  private static File constructOutputFile(String contentType, long timestamp) throws IOException {
     File sdCard = Environment.getExternalStorageDirectory();
     File outputDirectory;
 
@@ -142,7 +112,7 @@ public class SaveAttachmentTask extends ProgressDialogAsyncTask<SaveAttachmentTa
 
     MimeTypeMap       mimeTypeMap   = MimeTypeMap.getSingleton();
     String            extension     = mimeTypeMap.getExtensionFromMimeType(contentType);
-  SimpleDateFormat  dateFormatter = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
+    SimpleDateFormat  dateFormatter = new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.US);
     String            base          = "silence-" + dateFormatter.format(timestamp);
 
     if (extension == null) extension = "attach";

@@ -17,16 +17,17 @@
 package org.smssecure.smssecure;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +37,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator.ItemAnimatorFinishedListener;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
-import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +49,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,12 +66,12 @@ import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.sms.MessageSender;
 import org.smssecure.smssecure.util.SilencePreferences;
-import org.smssecure.smssecure.util.task.ProgressDialogAsyncTask;
 import org.smssecure.smssecure.util.SaveAttachmentTask;
 import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
 import org.smssecure.smssecure.util.StickyHeaderDecoration;
 import org.smssecure.smssecure.util.ViewUtil;
-import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,17 +105,23 @@ public class ConversationFragment extends Fragment
   private View                        composeDivider;
   private View                        scrollToBottomButton;
   private TextView                    scrollDateHeader;
+  private TaskHandle                  deleteTask;
+  private TaskHandle                  saveAttachmentTask;
+  private AlertDialog                 deleteProgressDialog;
+  private AlertDialog                 saveProgressDialog;
+  private boolean                     viewDestroyed;
 
   @Override
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-    this.masterSecret = getArguments().getParcelable("master_secret");
-    this.locale       = (Locale) getArguments().getSerializable(PassphraseRequiredActionBarActivity.LOCALE_EXTRA);
+    this.masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
+    this.locale       = androidx.core.os.BundleCompat.getSerializable(getArguments(), PassphraseRequiredActionBarActivity.LOCALE_EXTRA, Locale.class);
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
     final View view = inflater.inflate(R.layout.conversation_fragment, container, false);
+    viewDestroyed        = false;
     list                 = ViewUtil.findById(view, android.R.id.list);
     composeDivider       = ViewUtil.findById(view, R.id.compose_divider);
     scrollToBottomButton = ViewUtil.findById(view, R.id.scroll_to_bottom_button);
@@ -137,24 +144,65 @@ public class ConversationFragment extends Fragment
       public void onClick(View v) {
         Bundle args = new Bundle();
         args.putLong("limit", 0);
-        getLoaderManager().restartLoader(0, args, ConversationFragment.this);
+        LoaderManager.getInstance(ConversationFragment.this).restartLoader(0, args, ConversationFragment.this);
       }
     });
     return view;
   }
 
   @Override
-  public void onActivityCreated(Bundle bundle) {
-    super.onActivityCreated(bundle);
+  public void onDestroyView() {
+    viewDestroyed = true;
+    if (deleteTask != null) deleteTask.cancel();
+    if (saveAttachmentTask != null) saveAttachmentTask.cancel();
+    deleteTask = null;
+    saveAttachmentTask = null;
+    dismissDialog(deleteProgressDialog);
+    dismissDialog(saveProgressDialog);
+    deleteProgressDialog = null;
+    saveProgressDialog = null;
+    super.onDestroyView();
+  }
+
+  private boolean isViewActive() {
+    return isAdded() && !viewDestroyed && getView() != null &&
+           getViewLifecycleOwner().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.INITIALIZED);
+  }
+
+  private AlertDialog showProgressDialog(CharSequence title, CharSequence message) {
+    if (!isViewActive()) return null;
+
+    Context context = requireContext();
+    AlertDialog dialog = new AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setView(new ProgressBar(context))
+        .setCancelable(false)
+        .create();
+    dialog.show();
+    return dialog;
+  }
+
+  private AlertDialog showProgressDialog(int title, int message) {
+    return showProgressDialog(getString(title), getString(message));
+  }
+
+  private void dismissDialog(AlertDialog dialog) {
+    if (dialog != null) dialog.dismiss();
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, Bundle bundle) {
+    super.onViewCreated(view, bundle);
 
     initializeResources();
     initializeListAdapter();
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-    this.listener = (ConversationFragmentListener)activity;
+  public void onAttach(@NonNull Context context) {
+    super.onAttach(context);
+    this.listener = (ConversationFragmentListener) context;
   }
 
   @Override
@@ -175,12 +223,12 @@ public class ConversationFragment extends Fragment
     initializeListAdapter();
 
     if (threadId == -1) {
-      getLoaderManager().restartLoader(0, Bundle.EMPTY, this);
+      LoaderManager.getInstance(this).restartLoader(0, Bundle.EMPTY, this);
     }
   }
 
   public void reloadList() {
-    getLoaderManager().restartLoader(0, Bundle.EMPTY, this);
+    LoaderManager.getInstance(this).restartLoader(0, Bundle.EMPTY, this);
   }
 
   private void initializeResources() {
@@ -200,7 +248,7 @@ public class ConversationFragment extends Fragment
       list.addItemDecoration(new StickyHeaderDecoration(adapter, false, false));
 
       setLastSeen(lastSeen);
-      getLoaderManager().restartLoader(0, Bundle.EMPTY, this);
+      LoaderManager.getInstance(this).restartLoader(0, Bundle.EMPTY, this);
       list.getItemAnimator().setMoveDuration(120);
     }
   }
@@ -281,7 +329,7 @@ public class ConversationFragment extends Fragment
     });
 
     StringBuilder    bodyBuilder = new StringBuilder();
-    ClipboardManager clipboard   = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipboardManager clipboard   = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
     boolean          first       = true;
 
     for (MessageRecord messageRecord : messageList) {
@@ -297,7 +345,7 @@ public class ConversationFragment extends Fragment
     String result = bodyBuilder.toString();
 
     if (!TextUtils.isEmpty(result))
-        clipboard.setText(result);
+      clipboard.setPrimaryClip(ClipData.newPlainText(null, result));
   }
 
   private void handleDeleteMessages(final Set<MessageRecord> messageRecords) {
@@ -312,30 +360,39 @@ public class ConversationFragment extends Fragment
     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        new ProgressDialogAsyncTask<MessageRecord, Void, Void>(getActivity(),
-                                                               R.string.ConversationFragment_deleting,
-                                                               R.string.ConversationFragment_deleting_messages)
-        {
-          @Override
-          protected Void doInBackground(MessageRecord... messageRecords) {
-            for (MessageRecord messageRecord : messageRecords) {
-              boolean threadDeleted;
-
-              if (messageRecord.isMms()) {
-                threadDeleted = DatabaseFactory.getMmsDatabase(getActivity()).delete(messageRecord.getId());
-              } else {
-                threadDeleted = DatabaseFactory.getSmsDatabase(getActivity()).deleteMessage(messageRecord.getId());
+        final Context context = requireContext().getApplicationContext();
+        final MessageRecord[] records = messageRecords.toArray(new MessageRecord[messageRecords.size()]);
+        deleteProgressDialog = showProgressDialog(R.string.ConversationFragment_deleting,
+                                                  R.string.ConversationFragment_deleting_messages);
+        deleteTask = AppTaskExecutor.getInstance().submitSerial(
+            () -> {
+              boolean threadDeleted = false;
+              for (MessageRecord messageRecord : records) {
+                if (messageRecord.isMms()) {
+                  threadDeleted |= DatabaseFactory.getMmsDatabase(context).delete(messageRecord.getId());
+                } else {
+                  threadDeleted |= DatabaseFactory.getSmsDatabase(context).deleteMessage(messageRecord.getId());
+                }
               }
-
+              return threadDeleted;
+            },
+            threadDeleted -> {
+              if (!isViewActive()) return;
+              dismissDialog(deleteProgressDialog);
+              deleteProgressDialog = null;
+              deleteTask = null;
               if (threadDeleted) {
                 threadId = -1;
                 listener.setThreadId(threadId);
               }
-            }
-
-            return null;
-          }
-        }.execute(messageRecords.toArray(new MessageRecord[messageRecords.size()]));
+            },
+            exception -> {
+              Log.w(TAG, "Unable to delete selected messages", exception);
+              if (!isViewActive()) return;
+              dismissDialog(deleteProgressDialog);
+              deleteProgressDialog = null;
+              deleteTask = null;
+            });
       }
     });
 
@@ -369,13 +426,14 @@ public class ConversationFragment extends Fragment
 
   private void handleResendMessage(final MessageRecord message) {
     final Context context = getActivity().getApplicationContext();
-    new AsyncTask<MessageRecord, Void, Void>() {
-      @Override
-      protected Void doInBackground(MessageRecord... messageRecords) {
-        MessageSender.resend(context, masterSecret, messageRecords[0]);
-        return null;
-      }
-    }.execute(message);
+    final MasterSecret taskMasterSecret = masterSecret;
+    AppTaskExecutor.getInstance().submitSerial(
+        () -> {
+          MessageSender.resend(context, taskMasterSecret, message);
+          return null;
+        },
+        ignored -> {},
+        exception -> Log.w(TAG, "Unable to resend message", exception));
   }
 
   private void handleSaveAttachment(final MediaMmsMessageRecord message) {
@@ -383,8 +441,29 @@ public class ConversationFragment extends Fragment
       public void onClick(DialogInterface dialog, int which) {
         for (Slide slide : message.getSlideDeck().getSlides()) {
           if (slide.hasImage() || slide.hasVideo() || slide.hasAudio()) {
-            SaveAttachmentTask saveTask = new SaveAttachmentTask(getActivity(), masterSecret);
-            saveTask.execute(new Attachment(slide.getUri(), slide.getContentType(), message.getDateReceived()));
+            final Context context = requireContext().getApplicationContext();
+            final Attachment attachment = new Attachment(slide.getUri(), slide.getContentType(), message.getDateReceived());
+            saveProgressDialog = showProgressDialog(
+                getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments, 1, 1),
+                getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments_to_sd_card, 1, 1));
+            saveAttachmentTask = AppTaskExecutor.getInstance().submitSerial(
+                () -> SaveAttachmentTask.save(context, masterSecret, attachment),
+                result -> {
+                  if (!isViewActive()) return;
+                  dismissDialog(saveProgressDialog);
+                  saveProgressDialog = null;
+                  saveAttachmentTask = null;
+                  if (result != SaveAttachmentTask.SUCCESS) Log.w(TAG, "Unable to save attachment, result: " + result);
+                  SaveAttachmentTask.showResultToast(context, result, 1);
+                },
+                exception -> {
+                  Log.w(TAG, "Unable to save attachment", exception);
+                  if (!isViewActive()) return;
+                  dismissDialog(saveProgressDialog);
+                  saveProgressDialog = null;
+                  saveAttachmentTask = null;
+                  SaveAttachmentTask.showResultToast(context, SaveAttachmentTask.FAILURE, 1);
+                });
             return;
           }
         }
@@ -561,19 +640,14 @@ public class ConversationFragment extends Fragment
 
   private class ActionModeCallback implements ActionMode.Callback {
 
-    private int statusBarColor;
-
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
       MenuInflater inflater = mode.getMenuInflater();
       inflater.inflate(R.menu.conversation_context, menu);
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        Window window = getActivity().getWindow();
-        statusBarColor = window.getStatusBarColor();
-        window.setStatusBarColor(getResources().getColor(R.color.action_mode_status_bar));
-        window.setNavigationBarColor(getResources().getColor(android.R.color.black));
-      }
+      ((BaseActionBarActivity) requireActivity()).setSystemBarColors(
+          androidx.core.content.ContextCompat.getColor(requireContext(), R.color.action_mode_status_bar),
+          androidx.core.content.ContextCompat.getColor(requireContext(), android.R.color.black));
 
       setCorrectMenuVisibility(menu);
       return true;
@@ -589,11 +663,7 @@ public class ConversationFragment extends Fragment
       ((ConversationAdapter)list.getAdapter()).clearSelection();
       list.getAdapter().notifyDataSetChanged();
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        Window window = getActivity().getWindow();
-        window.setStatusBarColor(statusBarColor);
-        window.setNavigationBarColor(getResources().getColor(android.R.color.black));
-      }
+      ((BaseActionBarActivity) requireActivity()).resetSystemBarColors();
 
       actionMode = null;
     }
@@ -601,32 +671,32 @@ public class ConversationFragment extends Fragment
   @Override
   @SuppressLint("NonConstantResourceId")
   public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-      switch(item.getItemId()) {
-        case R.id.menu_context_copy:
+      int itemId = item.getItemId();
+      if (itemId == R.id.menu_context_copy) {
           handleCopyMessage(getListAdapter().getSelectedItems());
           actionMode.finish();
           return true;
-        case R.id.menu_context_delete_message:
+        } else if (itemId == R.id.menu_context_delete_message) {
           handleDeleteMessages(getListAdapter().getSelectedItems());
           actionMode.finish();
           return true;
-        case R.id.menu_context_details:
+        } else if (itemId == R.id.menu_context_details) {
           handleDisplayDetails(getSelectedMessageRecord());
           actionMode.finish();
           return true;
-        case R.id.menu_context_forward:
+        } else if (itemId == R.id.menu_context_forward) {
           handleForwardMessage(getSelectedMessageRecord());
           actionMode.finish();
           return true;
-        case R.id.menu_context_resend:
+        } else if (itemId == R.id.menu_context_resend) {
           handleResendMessage(getSelectedMessageRecord());
           actionMode.finish();
           return true;
-        case R.id.menu_context_save_attachment:
+        } else if (itemId == R.id.menu_context_save_attachment) {
           handleSaveAttachment((MediaMmsMessageRecord)getSelectedMessageRecord());
           actionMode.finish();
           return true;
-      }
+        }
 
       return false;
     }

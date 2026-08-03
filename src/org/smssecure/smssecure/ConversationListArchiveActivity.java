@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.recipients.Recipients;
+import org.smssecure.smssecure.util.ActivityTransitionCompat;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
 
@@ -47,7 +48,7 @@ public class ConversationListArchiveActivity extends PassphraseRequiredActionBar
     super.onOptionsItemSelected(item);
 
     switch (item.getItemId()) {
-      case android.R.id.home: super.onBackPressed(); return true;
+      case android.R.id.home: getOnBackPressedDispatcher().onBackPressed(); return true;
     }
 
     return false;
@@ -63,7 +64,7 @@ public class ConversationListArchiveActivity extends PassphraseRequiredActionBar
     intent.putExtra(ConversationActivity.LAST_SEEN_EXTRA, lastSeenTime);
 
     startActivity(intent);
-    overridePendingTransition(R.anim.slide_from_right, R.anim.fade_scale_out);
+    ActivityTransitionCompat.overrideOpen(this, R.anim.slide_from_right, R.anim.fade_scale_out);
   }
 
   @Override

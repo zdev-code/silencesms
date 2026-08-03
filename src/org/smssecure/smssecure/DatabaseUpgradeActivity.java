@@ -19,12 +19,10 @@ package org.smssecure.smssecure;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -39,14 +37,19 @@ import org.smssecure.smssecure.util.ParcelUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.util.VersionTracker;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 import org.whispersystems.jobqueue.EncryptionKeys;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class DatabaseUpgradeActivity extends BaseActivity {
   private static final String TAG = DatabaseUpgradeActivity.class.getSimpleName();
+  private static final Object UPGRADE_LOCK = new Object();
+
+  private static UpgradeController activeUpgrade;
 
   public static final int ASK_FOR_SIM_CARD_VERSION     = 143;
   public static final int MULTI_SIM_MULTI_KEYS_VERSION = 200;
@@ -56,22 +59,30 @@ public class DatabaseUpgradeActivity extends BaseActivity {
     add(MULTI_SIM_MULTI_KEYS_VERSION);
   }};
 
-  private MasterSecret masterSecret;
+  private ProgressBar       indeterminateProgress;
+  private ProgressBar       determinateProgress;
+  private UpgradeController upgradeController;
 
   @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
-    this.masterSecret = getIntent().getParcelableExtra("master_secret");
+    MasterSecret masterSecret = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "master_secret", MasterSecret.class);
 
     if (needsUpgradeTask()) {
       Log.w(TAG, "Upgrading...");
       setContentView(R.layout.database_upgrade_activity);
 
-      ProgressBar indeterminateProgress = (ProgressBar)findViewById(R.id.indeterminate_progress);
-      ProgressBar determinateProgress   = (ProgressBar)findViewById(R.id.determinate_progress);
+      indeterminateProgress = (ProgressBar)findViewById(R.id.indeterminate_progress);
+      determinateProgress   = (ProgressBar)findViewById(R.id.determinate_progress);
 
-      new DatabaseUpgradeTask(indeterminateProgress, determinateProgress)
-          .execute(VersionTracker.getLastSeenVersion(this));
+      synchronized (UPGRADE_LOCK) {
+        if (activeUpgrade == null) {
+          activeUpgrade = new UpgradeController(getApplicationContext(), masterSecret,
+                                                VersionTracker.getLastSeenVersion(this));
+          activeUpgrade.start();
+        }
+        upgradeController = activeUpgrade;
+      }
     } else {
       VersionTracker.updateLastSeenVersion(this);
       ApplicationContext.getInstance(this)
@@ -79,9 +90,21 @@ public class DatabaseUpgradeActivity extends BaseActivity {
                         .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
 //      DecryptingQueue.schedulePendingDecrypts(DatabaseUpgradeActivity.this, masterSecret);
       updateNotifications(this, masterSecret);
-      startActivity((Intent)getIntent().getParcelableExtra("next_intent"));
+      startActivity(androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class));
       finish();
     }
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    if (upgradeController != null) upgradeController.attach(this);
+  }
+
+  @Override
+  protected void onStop() {
+    if (upgradeController != null) upgradeController.detach(this);
+    super.onStop();
   }
 
   private boolean needsUpgradeTask() {
@@ -103,51 +126,87 @@ public class DatabaseUpgradeActivity extends BaseActivity {
   }
 
   public static boolean isUpdate(Context context) {
-    try {
-      int currentVersionCode  = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-      int previousVersionCode = VersionTracker.getLastSeenVersion(context);
+    int currentVersionCode  = Util.getCurrentApkReleaseVersion(context);
+    int previousVersionCode = VersionTracker.getLastSeenVersion(context);
 
-      return previousVersionCode < currentVersionCode;
-    } catch (PackageManager.NameNotFoundException e) {
-      throw new AssertionError(e);
-    }
+    return previousVersionCode < currentVersionCode;
   }
 
-  private void updateNotifications(final Context context, final MasterSecret masterSecret) {
-    new AsyncTask<Void, Void, Void>() {
-      @Override
-      protected Void doInBackground(Void... params) {
-        MessageNotifier.updateNotification(context, masterSecret);
-        return null;
-      }
-    }.execute();
+  private static void updateNotifications(Context context, MasterSecret masterSecret) {
+    Context applicationContext = context.getApplicationContext();
+    AppTaskExecutor.getInstance().submitSerial(
+        () -> {
+          MessageNotifier.updateNotification(applicationContext, masterSecret);
+          return null;
+        },
+        ignored -> {},
+        exception -> Log.w(TAG, "Unable to update notifications after database upgrade", exception));
   }
 
   public interface DatabaseUpgradeListener {
     public void setProgress(int progress, int total);
   }
 
-  private class DatabaseUpgradeTask extends AsyncTask<Integer, Double, Void>
-      implements DatabaseUpgradeListener
-  {
+  private void renderProgress(boolean hasProgress, double progress) {
+    if (!hasProgress) return;
 
-    private final ProgressBar indeterminateProgress;
-    private final ProgressBar determinateProgress;
+    indeterminateProgress.setVisibility(View.GONE);
+    determinateProgress.setVisibility(View.VISIBLE);
+    determinateProgress.setProgress((int)Math.floor(determinateProgress.getMax() * progress));
+  }
 
-    public DatabaseUpgradeTask(ProgressBar indeterminateProgress, ProgressBar determinateProgress) {
-      this.indeterminateProgress = indeterminateProgress;
-      this.determinateProgress   = determinateProgress;
+  private void handleUpgradeCompleted(UpgradeController controller) {
+    if (!controller.claimSuccessfulNavigation(this)) return;
+
+    synchronized (UPGRADE_LOCK) {
+      if (activeUpgrade == controller) activeUpgrade = null;
+    }
+    upgradeController = null;
+
+    startActivity(androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class));
+    finish();
+  }
+
+  private static final class UpgradeController implements DatabaseUpgradeListener {
+    private final Context      context;
+    private final MasterSecret masterSecret;
+    private final int          lastSeenVersion;
+    private final Handler      mainHandler = new Handler(Looper.getMainLooper());
+
+    private WeakReference<DatabaseUpgradeActivity> activityReference = new WeakReference<>(null);
+    private boolean completed;
+    private boolean failed;
+    private boolean navigationClaimed;
+    private boolean hasProgress;
+    private double  progress;
+
+    private UpgradeController(Context context, MasterSecret masterSecret, int lastSeenVersion) {
+      this.context         = context.getApplicationContext();
+      this.masterSecret    = masterSecret;
+      this.lastSeenVersion = lastSeenVersion;
     }
 
-    @Override
-    protected Void doInBackground(Integer... params) {
-      Context context = DatabaseUpgradeActivity.this.getApplicationContext();
+    private void start() {
+      AppTaskExecutor.getInstance().submitSerial(
+          () -> {
+            runUpgrade();
+            ApplicationContext.getInstance(context)
+                              .getJobManager()
+                              .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
+            MessageNotifier.updateNotification(context, masterSecret);
+            VersionTracker.updateLastSeenVersion(context);
+            return null;
+          },
+          ignored -> finishSuccessfully(),
+          this::finishWithFailure);
+    }
 
+    private void runUpgrade() {
       Log.w(TAG, "Running background upgrade..");
-      DatabaseFactory.getInstance(DatabaseUpgradeActivity.this)
-                     .onApplicationLevelUpgrade(context, masterSecret, params[0], this);
+      DatabaseFactory.getInstance(context)
+                     .onApplicationLevelUpgrade(context, masterSecret, lastSeenVersion, this);
 
-      if (params[0] < ASK_FOR_SIM_CARD_VERSION) {
+      if (lastSeenVersion < ASK_FOR_SIM_CARD_VERSION) {
         if (!SilencePreferences.isFirstRun(context) &&
             SubscriptionManagerCompat.from(context).getActiveSubscriptionInfoList().size() > 1)
         {
@@ -155,7 +214,7 @@ public class DatabaseUpgradeActivity extends BaseActivity {
         }
       }
 
-      if (params[0] < MULTI_SIM_MULTI_KEYS_VERSION) {
+      if (lastSeenVersion < MULTI_SIM_MULTI_KEYS_VERSION) {
         if (Build.VERSION.SDK_INT >= 22) {
           /*
            * getDefaultSubscriptionId() is available for API 24+ only, so we
@@ -178,37 +237,52 @@ public class DatabaseUpgradeActivity extends BaseActivity {
           SubscriptionManagerCompat.from(context).updateActiveSubscriptionInfoList();
         }
       }
-
-      return null;
     }
 
-    @Override
-    protected void onProgressUpdate(Double... update) {
-      indeterminateProgress.setVisibility(View.GONE);
-      determinateProgress.setVisibility(View.VISIBLE);
-
-      double scaler = update[0];
-      determinateProgress.setProgress((int)Math.floor(determinateProgress.getMax() * scaler));
+    private void attach(DatabaseUpgradeActivity activity) {
+      activityReference = new WeakReference<>(activity);
+      render(activity);
     }
 
-    @Override
-    protected void onPostExecute(Void result) {
-      VersionTracker.updateLastSeenVersion(DatabaseUpgradeActivity.this);
-//      DecryptingQueue.schedulePendingDecrypts(DatabaseUpgradeActivity.this, masterSecret);
-      ApplicationContext.getInstance(DatabaseUpgradeActivity.this)
-                        .getJobManager()
-                        .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
+    private void detach(DatabaseUpgradeActivity activity) {
+      if (activityReference.get() == activity) activityReference.clear();
+    }
 
-      updateNotifications(DatabaseUpgradeActivity.this, masterSecret);
+    private void finishSuccessfully() {
+      completed = true;
+      DatabaseUpgradeActivity activity = activityReference.get();
+      if (activity != null) activity.handleUpgradeCompleted(this);
+    }
 
-      startActivity((Intent)getIntent().getParcelableExtra("next_intent"));
-      finish();
+    private void finishWithFailure(Exception exception) {
+      failed = true;
+      Log.w(TAG, "Database upgrade failed", exception);
+      DatabaseUpgradeActivity activity = activityReference.get();
+      if (activity != null) render(activity);
+    }
+
+    private boolean claimSuccessfulNavigation(DatabaseUpgradeActivity activity) {
+      if (!completed || failed || navigationClaimed || activityReference.get() != activity) return false;
+      navigationClaimed = true;
+      return true;
+    }
+
+    private void render(DatabaseUpgradeActivity activity) {
+      activity.renderProgress(hasProgress, progress);
+      if (completed && !failed) activity.handleUpgradeCompleted(this);
     }
 
     @Override
     public void setProgress(int progress, int total) {
-      publishProgress(((double)progress / (double)total));
+      if (total <= 0) return;
+
+      double scaledProgress = Math.max(0.0, Math.min(1.0, progress / (double)total));
+      mainHandler.post(() -> {
+        hasProgress = true;
+        this.progress = scaledProgress;
+        DatabaseUpgradeActivity activity = activityReference.get();
+        if (activity != null) activity.renderProgress(true, scaledProgress);
+      });
     }
   }
-
 }

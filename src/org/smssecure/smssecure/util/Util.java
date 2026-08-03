@@ -31,6 +31,7 @@ import android.provider.Telephony;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
+import androidx.core.content.pm.PackageInfoCompat;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -215,8 +216,7 @@ public class Util {
   })
   @SuppressLint({"MissingPermission", "HardwareIds"})
   public static String getDeviceE164Number(Context context) {
-    String localNumber = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE))
-        .getLine1Number();
+    String localNumber = TelephonyUtil.getPhoneNumber(context);
 
     if (!TextUtils.isEmpty(localNumber) && !localNumber.startsWith("+"))
     {
@@ -302,7 +302,8 @@ public class Util {
 
   public static int getCurrentApkReleaseVersion(Context context) {
     try {
-      return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        return toIntExact(PackageInfoCompat.getLongVersionCode(
+          context.getPackageManager().getPackageInfo(context.getPackageName(), 0)));
     } catch (PackageManager.NameNotFoundException e) {
       throw new AssertionError(e);
     }

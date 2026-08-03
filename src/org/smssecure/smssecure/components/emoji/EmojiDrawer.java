@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
-import com.astuetz.PagerSlidingTabStrip;
+import com.google.android.material.tabs.TabLayout;
 
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.components.InputAwareLayout.InputView;
@@ -32,7 +32,7 @@ public class EmojiDrawer extends LinearLayout implements InputView {
 
   private ViewPager            pager;
   private List<EmojiPageModel> models;
-  private PagerSlidingTabStrip strip;
+  private TabLayout            strip;
   private RecentEmojiPageModel recentModel;
   private EmojiEventListener   listener;
   private EmojiDrawerListener  drawerListener;
@@ -64,7 +64,7 @@ public class EmojiDrawer extends LinearLayout implements InputView {
   private void initializeResources(View v) {
     Log.w("EmojiDrawer", "initializeResources()");
     this.pager     = (ViewPager)            v.findViewById(R.id.emoji_pager);
-    this.strip     = (PagerSlidingTabStrip) v.findViewById(R.id.tabs);
+    this.strip     = (TabLayout)            v.findViewById(R.id.tabs);
 
     RepeatableImageKey backspace = (RepeatableImageKey)v.findViewById(R.id.backspace);
     backspace.setOnKeyEventListener(new KeyEventListener() {
@@ -99,7 +99,7 @@ public class EmojiDrawer extends LinearLayout implements InputView {
   }
 
   private void initializeEmojiGrid() {
-    pager.setAdapter(new EmojiPagerAdapter(getContext(),
+    EmojiPagerAdapter adapter = new EmojiPagerAdapter(getContext(),
                                            models,
                                            new EmojiSelectionListener() {
                                              @Override
@@ -108,12 +108,20 @@ public class EmojiDrawer extends LinearLayout implements InputView {
                                                recentModel.onCodePointSelected(emoji);
                                                if (listener != null) listener.onEmojiSelected(emoji);
                                              }
-                                           }));
+                                           });
+    pager.setAdapter(adapter);
 
     if (recentModel.getEmoji().length == 0) {
       pager.setCurrentItem(1);
     }
-    strip.setViewPager(pager);
+
+    strip.setupWithViewPager(pager);
+    for (int i = 0; i < strip.getTabCount(); i++) {
+      TabLayout.Tab tab = strip.getTabAt(i);
+      if (tab != null) {
+        tab.setCustomView(adapter.getCustomTabView(strip, i));
+      }
+    }
   }
 
   private void initializePageModels() {
@@ -124,7 +132,6 @@ public class EmojiDrawer extends LinearLayout implements InputView {
   }
 
   public static class EmojiPagerAdapter extends PagerAdapter
-      implements PagerSlidingTabStrip.CustomTabProvider
   {
     private Context                context;
     private List<EmojiPageModel>   pages;
@@ -171,7 +178,6 @@ public class EmojiDrawer extends LinearLayout implements InputView {
       return view == object;
     }
 
-    @Override
     public View getCustomTabView(ViewGroup viewGroup, int i) {
       ImageView  image = new ImageView(context);
       image.setScaleType(ScaleType.CENTER_INSIDE);

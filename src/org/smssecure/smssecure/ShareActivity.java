@@ -21,7 +21,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,9 +41,12 @@ import org.smssecure.smssecure.util.DynamicTheme;
 import org.smssecure.smssecure.util.MediaUtil;
 import org.smssecure.smssecure.util.ShareShortcutHelper;
 import org.smssecure.smssecure.util.ViewUtil;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * An activity to quickly share content with contacts
@@ -69,6 +71,9 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   private Uri          resolvedExtra;
   private String       mimeType;
   private boolean      isPassingAlongMedia;
+  private final AtomicBoolean activityActive = new AtomicBoolean(true);
+  private final AtomicInteger mediaGeneration = new AtomicInteger();
+  private AppTaskExecutor.TaskHandle resolveMediaTask;
 
   @Override
   protected void onPreCreate() {
@@ -97,6 +102,15 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   }
 
   @Override
+  protected void onDestroy() {
+    activityActive.set(false);
+    mediaGeneration.incrementAndGet();
+    if (resolveMediaTask != null) resolveMediaTask.cancel();
+    resolveMediaTask = null;
+    super.onDestroy();
+  }
+
+  @Override
   public void onResume() {
     super.onResume();
     dynamicTheme.onResume(this);
@@ -116,10 +130,14 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void initializeMedia() {
-    final Context context = this;
+    if (resolveMediaTask != null) resolveMediaTask.cancel();
+
+    int generation = mediaGeneration.incrementAndGet();
+    Context appContext = getApplicationContext();
+    Intent shareIntent = getIntent();
     isPassingAlongMedia = false;
 
-    Uri streamExtra = getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
+    Uri streamExtra = androidx.core.content.IntentCompat.getParcelableExtra(shareIntent, Intent.EXTRA_STREAM, Uri.class);
     mimeType        = getMimeType(streamExtra);
 
     if (streamExtra != null && PartAuthority.isLocalUri(streamExtra)) {
@@ -129,7 +147,14 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     } else {
       fragmentContainer.setVisibility(View.GONE);
       progressWheel.setVisibility(View.VISIBLE);
-      new ResolveMediaTask(context).execute(streamExtra);
+      MasterSecret currentMasterSecret = masterSecret;
+      String currentMimeType = mimeType;
+
+      resolveMediaTask = AppTaskExecutor.getInstance().submitSerial(
+          () -> resolveMedia(appContext, currentMasterSecret, streamExtra, currentMimeType,
+                             mediaGeneration, generation, activityActive),
+          uri -> handleResolvedMediaResult(uri, shareIntent, generation),
+          exception -> Log.w(TAG, "Unable to resolve shared media", exception));
     }
   }
 
@@ -147,10 +172,9 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
-    switch (item.getItemId()) {
-    case R.id.menu_new_message: handleNewConversation(); return true;
-    case android.R.id.home:     finish();                return true;
-    }
+    int itemId = item.getItemId();
+    if      (itemId == R.id.menu_new_message) { handleNewConversation(); return true; }
+    else if (itemId == android.R.id.home)     { finish();                return true; }
     return false;
   }
 
@@ -210,36 +234,48 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     return MediaUtil.getCorrectedMimeType(getIntent().getType());
   }
 
-  private class ResolveMediaTask extends AsyncTask<Uri, Void, Uri> {
-    private final Context context;
-
-    public ResolveMediaTask(Context context) {
-      this.context = context;
+  private static Uri resolveMedia(Context context,
+                                  MasterSecret masterSecret,
+                                  Uri source,
+                                  String mimeType,
+                                  AtomicInteger mediaGeneration,
+                                  int generation,
+                                  AtomicBoolean activityActive)
+      throws IOException
+  {
+    if (source == null || !isCurrentResolution(mediaGeneration, generation, activityActive)) {
+      return null;
     }
 
-    @Override
-    protected Uri doInBackground(Uri... uris) {
-      try {
-        if (uris.length != 1 || uris[0] == null) {
-          return null;
-        }
-
-        InputStream input = context.getContentResolver().openInputStream(uris[0]);
-        if (input == null) {
-          return null;
-        }
-
-        return PersistentBlobProvider.getInstance(context).create(masterSecret, input, mimeType);
-      } catch (IOException ioe) {
-        Log.w(TAG, ioe);
-        return null;
-      }
+    Uri resolved;
+    try (InputStream input = context.getContentResolver().openInputStream(source)) {
+      if (input == null) return null;
+      resolved = PersistentBlobProvider.getInstance(context).create(masterSecret, input, mimeType);
     }
 
-    @Override
-    protected void onPostExecute(Uri uri) {
-      resolvedExtra = uri;
-      handleResolvedMedia(getIntent(), true);
+    if (!isCurrentResolution(mediaGeneration, generation, activityActive)) {
+      if (resolved != null) PersistentBlobProvider.getInstance(context).delete(resolved);
+      return null;
     }
+
+    return resolved;
+  }
+
+  private static boolean isCurrentResolution(AtomicInteger mediaGeneration,
+                                             int generation,
+                                             AtomicBoolean activityActive)
+  {
+    return activityActive.get() && mediaGeneration.get() == generation &&
+           !Thread.currentThread().isInterrupted();
+  }
+
+  private void handleResolvedMediaResult(Uri uri, Intent shareIntent, int generation) {
+    if (mediaGeneration.get() != generation || isFinishing() || isDestroyed()) {
+      if (uri != null) PersistentBlobProvider.getInstance(getApplicationContext()).delete(uri);
+      return;
+    }
+
+    resolvedExtra = uri;
+    handleResolvedMedia(shareIntent, true);
   }
 }

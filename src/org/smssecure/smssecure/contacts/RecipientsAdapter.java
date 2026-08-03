@@ -47,7 +47,7 @@ public class RecipientsAdapter extends ResourceCursorAdapter {
     private ContactAccessor mContactAccessor;
 
     public RecipientsAdapter(Context context) {
-        super(context, R.layout.recipient_filter_item, null);
+        super(context, R.layout.recipient_filter_item, null, 0);
         mContext = context;
         mContentResolver = context.getContentResolver();
         mContactAccessor = ContactAccessor.getInstance();

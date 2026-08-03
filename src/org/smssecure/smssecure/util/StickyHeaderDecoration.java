@@ -24,15 +24,15 @@ public class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
 
   private static final long NO_HEADER_ID = -1L;
 
-  private final Map<Long, ViewHolder> headerCache;
-  private final StickyHeaderAdapter   adapter;
-  private final boolean               renderInline;
-  private       boolean               sticky;
+  private final Map<Long, ViewHolder>  headerCache;
+  private final StickyHeaderAdapter<?> adapter;
+  private final boolean                renderInline;
+  private       boolean                sticky;
 
   /**
    * @param adapter the sticky header adapter to use
    */
-  public StickyHeaderDecoration(StickyHeaderAdapter adapter, boolean renderInline, boolean sticky) {
+  public StickyHeaderDecoration(StickyHeaderAdapter<?> adapter, boolean renderInline, boolean sticky) {
     this.adapter      = adapter;
     this.headerCache  = new HashMap<>();
     this.renderInline = renderInline;
@@ -57,7 +57,7 @@ public class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
     outRect.set(0, headerHeight, 0, 0);
   }
 
-  protected boolean hasHeader(RecyclerView parent, StickyHeaderAdapter adapter, int adapterPos) {
+  protected boolean hasHeader(RecyclerView parent, StickyHeaderAdapter<?> adapter, int adapterPos) {
     boolean isReverse = isReverseLayout(parent);
     int     itemCount = ((RecyclerView.Adapter)adapter).getItemCount();
 
@@ -74,17 +74,14 @@ public class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
     return headerId != NO_HEADER_ID && previousHeaderId != NO_HEADER_ID && headerId != previousHeaderId;
   }
 
-  protected ViewHolder getHeader(RecyclerView parent, StickyHeaderAdapter adapter, int position) {
+  protected ViewHolder getHeader(RecyclerView parent, StickyHeaderAdapter<?> adapter, int position) {
     final long key = adapter.getHeaderId(position);
 
     if (headerCache.containsKey(key)) {
       return headerCache.get(key);
     } else {
-      final ViewHolder holder = adapter.onCreateHeaderViewHolder(parent);
+      final ViewHolder holder = createAndBindHeaderViewHolder(adapter, parent, position);
       final View header = holder.itemView;
-
-      //noinspection unchecked
-      adapter.onBindHeaderViewHolder(holder, position);
 
       int widthSpec = View.MeasureSpec.makeMeasureSpec(parent.getWidth(), View.MeasureSpec.EXACTLY);
       int heightSpec = View.MeasureSpec.makeMeasureSpec(parent.getHeight(), View.MeasureSpec.UNSPECIFIED);
@@ -101,6 +98,21 @@ public class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
 
       return holder;
     }
+  }
+
+  /**
+   * Captures the adapter's concrete header view-holder type into a single type variable {@code T} so
+   * that {@link StickyHeaderAdapter#onCreateHeaderViewHolder} and
+   * {@link StickyHeaderAdapter#onBindHeaderViewHolder} provably operate on the same type. This is what
+   * lets the decoration hold the adapter as {@code StickyHeaderAdapter<?>} without an unchecked call.
+   */
+  private static <T extends ViewHolder> T createAndBindHeaderViewHolder(StickyHeaderAdapter<T> adapter,
+                                                                        RecyclerView parent,
+                                                                        int position)
+  {
+    final T holder = adapter.onCreateHeaderViewHolder(parent);
+    adapter.onBindHeaderViewHolder(holder, position);
+    return holder;
   }
 
   /**
@@ -168,7 +180,7 @@ public class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
       parent.getChildVisibleRect(child, rect, null);
       return rect.top;
     } else {
-      return (int)ViewCompat.getY(child);
+      return (int)child.getY();
     }
   }
 

@@ -3,9 +3,9 @@ package org.smssecure.smssecure.contacts.avatars;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
-import com.makeramen.roundedimageview.RoundedDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 public class BitmapContactPhoto implements ContactPhoto {
 
@@ -22,8 +22,8 @@ public class BitmapContactPhoto implements ContactPhoto {
 
   @Override
   public Drawable asDrawable(Context context, int color, boolean inverted) {
-    return RoundedDrawable.fromBitmap(bitmap)
-                          .setScaleType(ImageView.ScaleType.CENTER_CROP)
-                          .setOval(true);
+    RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+    drawable.setCircular(true);
+    return drawable;
   }
 }

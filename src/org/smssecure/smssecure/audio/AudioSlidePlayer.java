@@ -1,9 +1,11 @@
 package org.smssecure.smssecure.audio;
 
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +18,7 @@ import org.smssecure.smssecure.attachments.AttachmentServer;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.mms.AudioSlide;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -25,7 +27,7 @@ public class AudioSlidePlayer {
 
   private static final String TAG = AudioSlidePlayer.class.getSimpleName();
 
-  private static @NonNull Optional<AudioSlidePlayer> playing = Optional.absent();
+  private static @NonNull Optional<AudioSlidePlayer> playing = Optional.empty();
 
   private final @NonNull Context      context;
   private final @NonNull MasterSecret masterSecret;
@@ -70,7 +72,10 @@ public class AudioSlidePlayer {
     audioAttachmentServer.start();
 
     mediaPlayer.setDataSource(context, audioAttachmentServer.getUri());
-    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                                       .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                       .setUsage(AudioAttributes.USAGE_MEDIA)
+                                       .build());
     mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
       @Override
       public void onPrepared(MediaPlayer mp) {
@@ -231,7 +236,7 @@ public class AudioSlidePlayer {
 
   private synchronized static void removePlaying(@NonNull AudioSlidePlayer player) {
     if (playing.isPresent() && playing.get() == player) {
-      playing = Optional.absent();
+      playing = Optional.empty();
     }
   }
 
@@ -246,6 +251,7 @@ public class AudioSlidePlayer {
     private final WeakReference<AudioSlidePlayer> playerReference;
 
     private ProgressEventHandler(@NonNull AudioSlidePlayer player) {
+      super(Looper.getMainLooper());
       this.playerReference = new WeakReference<>(player);
     }
 

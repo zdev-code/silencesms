@@ -69,7 +69,7 @@ public class Recipients implements Iterable<Recipient>, RecipientModifiedListene
       mutedUntil            = preferences.getMuteUntil();
       vibrate               = preferences.getVibrateState();
       blocked               = preferences.isBlocked();
-      defaultSubscriptionId = preferences.getDefaultSubscriptionId().or(-1);
+      defaultSubscriptionId = preferences.getDefaultSubscriptionId().orElse(-1);
     }
   }
 
@@ -99,7 +99,7 @@ public class Recipients implements Iterable<Recipient>, RecipientModifiedListene
             mutedUntil            = result.getMuteUntil();
             vibrate               = result.getVibrateState();
             blocked               = result.isBlocked();
-            defaultSubscriptionId = result.getDefaultSubscriptionId().or(-1);
+            defaultSubscriptionId = result.getDefaultSubscriptionId().orElse(-1);
 
             localListeners = new HashSet<>(listeners);
           }

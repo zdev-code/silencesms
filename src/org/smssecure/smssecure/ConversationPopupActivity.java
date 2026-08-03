@@ -2,13 +2,13 @@ package org.smssecure.smssecure;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityOptionsCompat;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.WindowManager;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.util.ActivityTransitionCompat;
+import org.smssecure.smssecure.util.WindowSizeCompat;
 import org.smssecure.smssecure.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.ExecutionException;
@@ -28,7 +30,7 @@ public class ConversationPopupActivity extends ConversationActivity {
   @Override
   protected void onPreCreate() {
     super.onPreCreate();
-    overridePendingTransition(R.anim.slide_from_top, R.anim.slide_to_top);
+    ActivityTransitionCompat.overrideOpen(this, R.anim.slide_from_top, R.anim.slide_to_top);
   }
 
   @Override
@@ -42,9 +44,9 @@ public class ConversationPopupActivity extends ConversationActivity {
     params.gravity   = Gravity.TOP;
     getWindow().setAttributes(params);
 
-    Display display = getWindowManager().getDefaultDisplay();
-    int     width   = display.getWidth();
-    int     height  = display.getHeight();
+    Point windowSize = WindowSizeCompat.getWindowSize(this);
+    int width = windowSize.x;
+    int height = windowSize.y;
 
     if (height > width) getWindow().setLayout((int) (width * .85), (int) (height * .5));
     else                getWindow().setLayout((int) (width * .7), (int) (height * .75));
@@ -63,7 +65,7 @@ public class ConversationPopupActivity extends ConversationActivity {
   @Override
   protected void onPause() {
     super.onPause();
-    if (isFinishing()) overridePendingTransition(R.anim.slide_from_top, R.anim.slide_to_top);
+    if (isFinishing()) ActivityTransitionCompat.overrideClose(this, R.anim.slide_from_top, R.anim.slide_to_top);
   }
 
   @Override
@@ -78,8 +80,7 @@ public class ConversationPopupActivity extends ConversationActivity {
   @Override
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_expand:
+    if (item.getItemId() == R.id.menu_expand) {
         saveDraft().addListener(new ListenableFuture.Listener<Long>() {
           @Override
           public void onSuccess(Long result) {
@@ -92,7 +93,7 @@ public class ConversationPopupActivity extends ConversationActivity {
               startActivity(intent, transition.toBundle());
             } else {
               startActivity(intent);
-              overridePendingTransition(R.anim.fade_scale_in, R.anim.slide_to_right);
+              ActivityTransitionCompat.overrideOpen(ConversationPopupActivity.this, R.anim.fade_scale_in, R.anim.slide_to_right);
             }
 
             finish();

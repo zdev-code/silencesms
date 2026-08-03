@@ -1,15 +1,18 @@
 package org.smssecure.smssecure.util.task;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.snackbar.Snackbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
+
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 public abstract class SnackbarAsyncTask<Params>
-    extends AsyncTask<Params, Void, Void>
     implements View.OnClickListener
 {
+  private static final String TAG = SnackbarAsyncTask.class.getSimpleName();
 
   private final View    view;
   private final String  snackbarText;
@@ -19,7 +22,7 @@ public abstract class SnackbarAsyncTask<Params>
   private final boolean showProgress;
 
   private @Nullable Params         reversibleParameter;
-  private @Nullable ProgressDialog progressDialog;
+  private @Nullable AlertDialog    progressDialog;
 
   public SnackbarAsyncTask(View view,
                            String snackbarText,
@@ -36,57 +39,62 @@ public abstract class SnackbarAsyncTask<Params>
     this.showProgress        = showProgress;
   }
 
-  @Override
-  protected void onPreExecute() {
-    if (this.showProgress) this.progressDialog = ProgressDialog.show(view.getContext(), "", "", true);
-    else                   this.progressDialog = null;
-  }
-
   @SafeVarargs
-  @Override
-  protected final Void doInBackground(Params... params) {
-    this.reversibleParameter = params != null && params.length > 0 ?params[0] : null;
-    executeAction(reversibleParameter);
-    return null;
-  }
-
-  @Override
-  protected void onPostExecute(Void result) {
-    if (this.showProgress && this.progressDialog != null) {
-      this.progressDialog.dismiss();
-      this.progressDialog = null;
-    }
-
-    Snackbar.make(view, snackbarText, snackbarDuration)
-            .setAction(snackbarActionText, this)
-            .setActionTextColor(snackbarActionColor)
-            .show();
+  public final void execute(Params... parameters) {
+    Params parameter = parameters != null && parameters.length > 0 ? parameters[0] : null;
+    reversibleParameter = parameter;
+    showProgress();
+    AppTaskExecutor.getInstance().submitSerial(
+        () -> {
+          executeAction(parameter);
+          return null;
+        },
+        ignored -> {
+          dismissProgress();
+          onPostExecute(null);
+          if (view.isAttachedToWindow()) {
+            Snackbar.make(view, snackbarText, snackbarDuration)
+                    .setAction(snackbarActionText, this)
+                    .setActionTextColor(snackbarActionColor)
+                    .show();
+          }
+        },
+        exception -> {
+          dismissProgress();
+          Log.w(TAG, "Unable to execute snackbar operation", exception);
+        });
   }
 
   @Override
   public void onClick(View v) {
-    new AsyncTask<Void, Void, Void>() {
-      @Override
-      protected void onPreExecute() {
-        if (showProgress) progressDialog = ProgressDialog.show(view.getContext(), "", "", true);
-        else              progressDialog = null;
-      }
-
-      @Override
-      protected Void doInBackground(Void... params) {
-        reverseAction(reversibleParameter);
-        return null;
-      }
-
-      @Override
-      protected void onPostExecute(Void result) {
-        if (showProgress && progressDialog != null) {
-          progressDialog.dismiss();
-          progressDialog = null;
-        }
-      }
-    }.execute();
+    showProgress();
+    AppTaskExecutor.getInstance().submitSerial(
+        () -> {
+          reverseAction(reversibleParameter);
+          return null;
+        },
+        ignored -> dismissProgress(),
+        exception -> {
+          dismissProgress();
+          Log.w(TAG, "Unable to reverse snackbar operation", exception);
+        });
   }
+
+  private void showProgress() {
+    if (!showProgress || !view.isAttachedToWindow()) return;
+    progressDialog = new AlertDialog.Builder(view.getContext())
+        .setView(new ProgressBar(view.getContext()))
+        .setCancelable(false)
+        .create();
+    progressDialog.show();
+  }
+
+  private void dismissProgress() {
+    if (progressDialog != null) progressDialog.dismiss();
+    progressDialog = null;
+  }
+
+  protected void onPostExecute(Void result) {}
 
   protected abstract void executeAction(@Nullable Params parameter);
   protected abstract void reverseAction(@Nullable Params parameter);

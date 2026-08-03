@@ -26,7 +26,6 @@ import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -46,49 +45,24 @@ import org.smssecure.smssecure.util.concurrent.SettableFuture;
 import org.smssecure.smssecure.util.views.Stub;
 
 public class ViewUtil {
-  @SuppressWarnings("deprecation")
   public static void setBackground(final @NonNull View v, final @Nullable Drawable drawable) {
-    if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-      v.setBackground(drawable);
-    } else {
-      v.setBackgroundDrawable(drawable);
-    }
+    v.setBackground(drawable);
   }
 
   public static void setY(final @NonNull View v, final int y) {
-    if (VERSION.SDK_INT >= 11) {
-      ViewCompat.setY(v, y);
-    } else {
-      ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)v.getLayoutParams();
-      params.topMargin = y;
-      v.setLayoutParams(params);
-    }
+    v.setY(y);
   }
 
   public static float getY(final @NonNull View v) {
-    if (VERSION.SDK_INT >= 11) {
-      return ViewCompat.getY(v);
-    } else {
-      return ((ViewGroup.MarginLayoutParams)v.getLayoutParams()).topMargin;
-    }
+    return v.getY();
   }
 
   public static void setX(final @NonNull View v, final int x) {
-    if (VERSION.SDK_INT >= 11) {
-      ViewCompat.setX(v, x);
-    } else {
-      ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)v.getLayoutParams();
-      params.leftMargin = x;
-      v.setLayoutParams(params);
-    }
+    v.setX(x);
   }
 
   public static float getX(final @NonNull View v) {
-    if (VERSION.SDK_INT >= 11) {
-      return ViewCompat.getX(v);
-    } else {
-      return ((LayoutParams)v.getLayoutParams()).leftMargin;
-    }
+    return v.getX();
   }
 
   public static void swapChildInPlace(ViewGroup parent, View toRemove, View toAdd, int defaultIndex) {
@@ -123,8 +97,9 @@ public class ViewUtil {
     return (T) parent.findViewById(resId);
   }
 
-  public static <T extends View> Stub<T> findStubById(@NonNull Activity parent, @IdRes int resId) {
-    return new Stub<T>((ViewStub)parent.findViewById(resId));
+  public static <T extends View> Stub<T> findStubById(@NonNull Activity parent, @IdRes int resId,
+                                                      @NonNull Class<T> viewClass) {
+    return new Stub<>((ViewStub)parent.findViewById(resId), viewClass);
   }
 
   private static Animation getAlphaAnimation(float from, float to, int duration) {
@@ -147,7 +122,7 @@ public class ViewUtil {
   }
 
   public static ListenableFuture<Boolean> animateOut(final @NonNull View view, final @NonNull Animation animation, final int visibility) {
-    final SettableFuture future = new SettableFuture();
+    final SettableFuture<Boolean> future = new SettableFuture<>();
     if (view.getVisibility() == visibility) {
       future.set(true);
     } else {

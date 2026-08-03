@@ -10,7 +10,6 @@ import android.util.Log;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.SmsCipher;
-import org.smssecure.smssecure.crypto.storage.SilenceSignalProtocolStore;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.EncryptingSmsDatabase;
 import org.smssecure.smssecure.database.NoSuchMessageException;
@@ -30,7 +29,7 @@ import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.SmsManagerUtil;
 import org.smssecure.smssecure.util.dualsim.DualSimUtil;
 import org.whispersystems.jobqueue.JobParameters;
-import org.whispersystems.libsignal.NoSessionException;
+import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
 
 import java.util.ArrayList;
@@ -151,7 +150,7 @@ public class SmsSendJob extends SendJob {
 
   {
     try {
-      return new SmsCipher(new SilenceSignalProtocolStore(context, masterSecret, message.getSubscriptionId())).encrypt(message);
+      return new SmsCipher(context, masterSecret, message.getSubscriptionId()).encrypt(message);
     } catch (NoSessionException e) {
       throw new UndeliverableMessageException(e);
     }

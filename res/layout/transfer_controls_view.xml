@@ -2,15 +2,16 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.pnikosis.materialishprogress.ProgressWheel
+    <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress_wheel"
-            android:layout_width="@dimen/transfer_controls_contracted_width"
-            android:layout_height="@dimen/transfer_controls_contracted_width"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_gravity="center"
-            app:matProg_barColor="@color/white"
-            app:matProg_linearProgress="true"
-            app:matProg_spinSpeed="0.333" />
+            android:indeterminate="true"
+            app:indicatorColor="@color/white"
+            app:indicatorSize="@dimen/transfer_controls_contracted_width"
+            app:trackThickness="3dp" />
 
     <TextView android:id="@+id/download_details"
               android:layout_width="@dimen/transfer_controls_expanded_width"

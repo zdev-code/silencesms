@@ -7,8 +7,10 @@ import org.whispersystems.libsignal.ecc.ECKeyPair;
 
 public class CurveTest extends TestCase {
 
-  public void testPureJava() {
-    assertFalse(Curve.isNative());
+  public void testEngineIsNative() {
+    // The EC engine now delegates to the maintained Rust core, which is always native
+    // (the archived pure-Java curve25519 fallback is no longer used).
+    assertTrue(Curve.isNative());
   }
 
   public void testLargeSignatures() throws InvalidKeyException {

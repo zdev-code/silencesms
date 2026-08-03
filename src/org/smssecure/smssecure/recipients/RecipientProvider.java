@@ -36,7 +36,7 @@ import org.smssecure.smssecure.database.RecipientPreferenceDatabase.RecipientsPr
 import org.smssecure.smssecure.util.LRUCache;
 import org.smssecure.smssecure.util.ListenableFutureTask;
 import org.smssecure.smssecure.util.Util;
-import org.whispersystems.libsignal.util.guava.Optional;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -157,7 +157,7 @@ class RecipientProvider {
   private @Nullable RecipientsPreferences getRecipientsPreferencesSync(Context context, long[] recipientIds) {
     return DatabaseFactory.getRecipientPreferenceDatabase(context)
                           .getRecipientsPreferences(recipientIds)
-                          .orNull();
+                          .orElse(null);
   }
 
   private ListenableFutureTask<RecipientsPreferences> getRecipientsPreferencesAsync(final Context context, final long[] recipientIds) {
