@@ -1,18 +1,18 @@
 {
   ".vscode/settings.json": {
-    "mtime": 1781891663.6057365,
+    "mtime": 1785765988.3491251,
     "ast_hash": "2d06b60b7caf61c40b4ebbd7f8a1afa2",
     "semantic_hash": "2d06b60b7caf61c40b4ebbd7f8a1afa2"
   },
   "build.gradle": {
-    "mtime": 1785745417.662112,
+    "mtime": 1785765988.3522682,
     "ast_hash": "c259ef412bb1b92e7bf992f3fced224e",
     "semantic_hash": "c259ef412bb1b92e7bf992f3fced224e"
   },
   "gradlew": {
-    "mtime": 1783670270.0655928,
-    "ast_hash": "a43be8432bac3ffd05b3769aa42fe996",
-    "semantic_hash": "a43be8432bac3ffd05b3769aa42fe996"
+    "mtime": 1785765988.3656118,
+    "ast_hash": "343bf72f71043b4da467584bfb1d13cc",
+    "semantic_hash": ""
   },
   "libs/com.amulyakhare.textdrawable/build.gradle": {
     "mtime": 1765920809.6166584,
@@ -60,9 +60,9 @@
     "semantic_hash": "193608dd1c4f5e467cbc8f24eca1021a"
   },
   "libs/org.greenrobot.eventbus/EventBusPerformance/build.gradle": {
-    "mtime": 1765920809.639028,
-    "ast_hash": "04c64dd6433f53407d08763a6ee1f6b0",
-    "semantic_hash": "04c64dd6433f53407d08763a6ee1f6b0"
+    "mtime": 1785849394.5861945,
+    "ast_hash": "ec4f0578f99471ec7c61d00f3f6d4387",
+    "semantic_hash": ""
   },
   "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/Test.java": {
     "mtime": 1765920809.6420915,
@@ -125,9 +125,9 @@
     "semantic_hash": "fe4bcd0c1b595ae35cd45e7a85f0c759"
   },
   "libs/org.greenrobot.eventbus/EventBusTest/build.gradle": {
-    "mtime": 1765920809.6466882,
-    "ast_hash": "77f2933db46f6ae633fee5314c9085b6",
-    "semantic_hash": "77f2933db46f6ae633fee5314c9085b6"
+    "mtime": 1785849394.5887406,
+    "ast_hash": "035897bd5396527f0d0da6f7363a336e",
+    "semantic_hash": ""
   },
   "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/AbstractEventBusTest.java": {
     "mtime": 1765920809.64822,
@@ -685,7 +685,7 @@
     "semantic_hash": "f92c00e50923b74fc8e1ed6d969a75ff"
   },
   "libs/org.whispersystems.libsignal/android/build.gradle": {
-    "mtime": 1785764388.8911316,
+    "mtime": 1785765988.4642425,
     "ast_hash": "cca74167b23ca8409302af83095523e8",
     "semantic_hash": "cca74167b23ca8409302af83095523e8"
   },
@@ -705,7 +705,7 @@
     "semantic_hash": "dbcfcee27561015c6717412c95d25a5e"
   },
   "libs/org.whispersystems.libsignal/java/build.gradle": {
-    "mtime": 1785657727.3139539,
+    "mtime": 1785765988.4658403,
     "ast_hash": "1ee2cf1dfe79163156f8cafb6b86bb05",
     "semantic_hash": "1ee2cf1dfe79163156f8cafb6b86bb05"
   },
@@ -790,7 +790,7 @@
     "semantic_hash": "41ec5bbaa7b5a9912a17d9548e23851f"
   },
   "libs/org.whispersystems.libsignal/java/src/main/java/org/whispersystems/libsignal/ecc/Curve.java": {
-    "mtime": 1783699901.3096998,
+    "mtime": 1785765988.4658403,
     "ast_hash": "a712f7418dfbc0f81f2ed8787df562c5",
     "semantic_hash": "a712f7418dfbc0f81f2ed8787df562c5"
   },
@@ -1155,42 +1155,42 @@
     "semantic_hash": "80552e1ade975f42385a07a09d0d2190"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/CurveTest.java": {
-    "mtime": 1783699901.308046,
+    "mtime": 1785765988.4673655,
     "ast_hash": "0df855cc8e071b31aba3b5581c617f56",
     "semantic_hash": "0df855cc8e071b31aba3b5581c617f56"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/migration/EcKeyCrossLibraryTest.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.4673655,
     "ast_hash": "cdda220f3235ee51600ea065b96dc0ae",
     "semantic_hash": "cdda220f3235ee51600ea065b96dc0ae"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/migration/NewLibraryV3RoundTripTest.java": {
-    "mtime": 1783693894.9387038,
+    "mtime": 1785765988.468898,
     "ast_hash": "fcc9deee9859cc3ce8009d43138de00f",
     "semantic_hash": "fcc9deee9859cc3ce8009d43138de00f"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/migration/OldToNewKeyRecordsTest.java": {
-    "mtime": 1783693894.9463437,
+    "mtime": 1785765988.4694107,
     "ast_hash": "9e7774a6be80197fa1637e231c9262ce",
     "semantic_hash": "9e7774a6be80197fa1637e231c9262ce"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/migration/OldToNewSessionRecordTest.java": {
-    "mtime": 1783693894.9387038,
+    "mtime": 1785765988.4704149,
     "ast_hash": "e4affd8da1033e31970173aa25b710e0",
     "semantic_hash": "e4affd8da1033e31970173aa25b710e0"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/migration/SilenceIdentityChangeTest.java": {
-    "mtime": 1783835296.178811,
+    "mtime": 1785765988.4704149,
     "ast_hash": "42d13793edb25653069eb9e7e8335f2f",
     "semantic_hash": "42d13793edb25653069eb9e7e8335f2f"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/migration/SilenceStyleSignalProtocolStore.java": {
-    "mtime": 1783693894.9463437,
+    "mtime": 1785765988.4704149,
     "ast_hash": "c5ab5587122742f854c9dd9fa7e53551",
     "semantic_hash": "c5ab5587122742f854c9dd9fa7e53551"
   },
   "libs/org.whispersystems.libsignal/java/src/test/java/org/whispersystems/libsignal/migration/SilenceStyleStoreV3Test.java": {
-    "mtime": 1783693894.9463437,
+    "mtime": 1785765988.47198,
     "ast_hash": "081dbd0648c51afb831013322687046f",
     "semantic_hash": "081dbd0648c51afb831013322687046f"
   },
@@ -1198,11 +1198,6 @@
     "mtime": 1765920809.732379,
     "ast_hash": "2ca7fe90a84a2a86ed25c6b764e3d6f4",
     "semantic_hash": "2ca7fe90a84a2a86ed25c6b764e3d6f4"
-  },
-  "scripts/androidx-migrate.ps1": {
-    "mtime": 1765920810.0376537,
-    "ast_hash": "1e5447f31da00cd6ea1621a7b28debf0",
-    "semantic_hash": "1e5447f31da00cd6ea1621a7b28debf0"
   },
   "scripts/apntool/apntool.py": {
     "mtime": 1765920810.0407145,
@@ -1239,11 +1234,6 @@
     "ast_hash": "c66c8556b773526e166f9c87b5086b0b",
     "semantic_hash": "c66c8556b773526e166f9c87b5086b0b"
   },
-  "scripts/find-missing-strings.sh": {
-    "mtime": 1765920810.0422552,
-    "ast_hash": "928968e3dcf71b330ad377b1e0e85d8e",
-    "semantic_hash": "928968e3dcf71b330ad377b1e0e85d8e"
-  },
   "scripts/fix-patch.sh": {
     "mtime": 1765920810.0444784,
     "ast_hash": "009efcb3c745518399fbbb8cfd010b19",
@@ -1253,11 +1243,6 @@
     "mtime": 1765920810.0444784,
     "ast_hash": "08697d4c970f645d5e56036b673362e0",
     "semantic_hash": "08697d4c970f645d5e56036b673362e0"
-  },
-  "scripts/travis-upload.sh": {
-    "mtime": 1765920810.0450265,
-    "ast_hash": "004cec6df81c8913dbb216112d9f2518",
-    "semantic_hash": "004cec6df81c8913dbb216112d9f2518"
   },
   "settings.gradle": {
     "mtime": 1781891349.138988,
@@ -1280,17 +1265,17 @@
     "semantic_hash": "fd6bc81d32f8b5993b9061f1ecc1ee9c"
   },
   "src/org/smssecure/smssecure/ApplicationContext.java": {
-    "mtime": 1785764388.8911316,
-    "ast_hash": "9145c917b46e9cd932aad9dcdc5570cb",
+    "mtime": 1785765988.4792757,
+    "ast_hash": "7933ae5d90258fe3584de5bb44296ab3",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/ApplicationPreferencesActivity.java": {
-    "mtime": 1785652416.8792465,
+    "mtime": 1785765988.4792757,
     "ast_hash": "6a61b250c66186b5876581dc2ec25ec5",
     "semantic_hash": "6a61b250c66186b5876581dc2ec25ec5"
   },
   "src/org/smssecure/smssecure/BaseActionBarActivity.java": {
-    "mtime": 1785686249.7269468,
+    "mtime": 1785765988.4808033,
     "ast_hash": "665acce78783ff46e3ab51e60ef68a44",
     "semantic_hash": "665acce78783ff46e3ab51e60ef68a44"
   },
@@ -1310,42 +1295,42 @@
     "semantic_hash": "b70cc7fbabc7b7a76df8d26e384a2585"
   },
   "src/org/smssecure/smssecure/BlockedContactsActivity.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.4808033,
     "ast_hash": "89ac93794cc4a2a66f23fa5f5d9eaa2a",
     "semantic_hash": "89ac93794cc4a2a66f23fa5f5d9eaa2a"
   },
   "src/org/smssecure/smssecure/ContactSelectionActivity.java": {
-    "mtime": 1785648987.7725441,
+    "mtime": 1785765988.4823277,
     "ast_hash": "e667188af0ee2efe8804978dd83c6504",
     "semantic_hash": "e667188af0ee2efe8804978dd83c6504"
   },
   "src/org/smssecure/smssecure/ContactSelectionListFragment.java": {
-    "mtime": 1785657727.294796,
+    "mtime": 1785765988.4823277,
     "ast_hash": "0b1f5a09780a5dc3cb4576f2cc536ac5",
     "semantic_hash": "0b1f5a09780a5dc3cb4576f2cc536ac5"
   },
   "src/org/smssecure/smssecure/ConversationActivity.java": {
-    "mtime": 1785686249.7269468,
+    "mtime": 1785765988.483571,
     "ast_hash": "ac8f33d83a56f468561bcc30148269b0",
     "semantic_hash": "ac8f33d83a56f468561bcc30148269b0"
   },
   "src/org/smssecure/smssecure/ConversationAdapter.java": {
-    "mtime": 1785686249.76684,
+    "mtime": 1785765988.483571,
     "ast_hash": "6b18c44ff81f6c6fa1b8c7124092aa5e",
     "semantic_hash": "6b18c44ff81f6c6fa1b8c7124092aa5e"
   },
   "src/org/smssecure/smssecure/ConversationFragment.java": {
-    "mtime": 1785657727.2763069,
+    "mtime": 1785765988.483571,
     "ast_hash": "b660874aba41881613b5d380dec3e5f4",
     "semantic_hash": "b660874aba41881613b5d380dec3e5f4"
   },
   "src/org/smssecure/smssecure/ConversationItem.java": {
-    "mtime": 1785686249.721764,
+    "mtime": 1785765988.4850981,
     "ast_hash": "1aeb8a3d221088ea11d4962d7bfc1d85",
     "semantic_hash": "1aeb8a3d221088ea11d4962d7bfc1d85"
   },
   "src/org/smssecure/smssecure/ConversationListActivity.java": {
-    "mtime": 1785657727.273234,
+    "mtime": 1785765988.4850981,
     "ast_hash": "3cc04e282750713b0f1c419826fee5f1",
     "semantic_hash": "3cc04e282750713b0f1c419826fee5f1"
   },
@@ -1355,17 +1340,17 @@
     "semantic_hash": "8207c9abf723cffce831ee4702e7fcf2"
   },
   "src/org/smssecure/smssecure/ConversationListArchiveActivity.java": {
-    "mtime": 1785657727.3139539,
+    "mtime": 1785765988.4866219,
     "ast_hash": "1cabce4ef5e74ca9628a75da6414f122",
     "semantic_hash": "1cabce4ef5e74ca9628a75da6414f122"
   },
   "src/org/smssecure/smssecure/ConversationListFragment.java": {
-    "mtime": 1785657727.2763069,
+    "mtime": 1785765988.4866219,
     "ast_hash": "ca5d8e59eef0189d28bf16117dbc0ae0",
     "semantic_hash": "ca5d8e59eef0189d28bf16117dbc0ae0"
   },
   "src/org/smssecure/smssecure/ConversationListItem.java": {
-    "mtime": 1785648987.7463582,
+    "mtime": 1785765988.4881475,
     "ast_hash": "36e71b87eaa60efd1469cdff11ab011a",
     "semantic_hash": "36e71b87eaa60efd1469cdff11ab011a"
   },
@@ -1375,7 +1360,7 @@
     "semantic_hash": "39c96e4e2a3e98cf17e5d0e9ae2dc81d"
   },
   "src/org/smssecure/smssecure/ConversationPopupActivity.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.4881475,
     "ast_hash": "d0a76a0b0e0021fdd293025b93467df6",
     "semantic_hash": "d0a76a0b0e0021fdd293025b93467df6"
   },
@@ -1395,17 +1380,17 @@
     "semantic_hash": "44d032f6a0cc87a01917a7d5be6eec70"
   },
   "src/org/smssecure/smssecure/CountrySelectionFragment.java": {
-    "mtime": 1785686249.7269468,
+    "mtime": 1785765988.4881475,
     "ast_hash": "c178ddb1bec8a5a3469e0a736ff84501",
     "semantic_hash": "c178ddb1bec8a5a3469e0a736ff84501"
   },
   "src/org/smssecure/smssecure/DatabaseMigrationActivity.java": {
-    "mtime": 1785657727.2763069,
+    "mtime": 1785765988.4896872,
     "ast_hash": "a12ee6b2794547f0e82dfe863f02e15f",
     "semantic_hash": "a12ee6b2794547f0e82dfe863f02e15f"
   },
   "src/org/smssecure/smssecure/DatabaseUpgradeActivity.java": {
-    "mtime": 1785654738.138035,
+    "mtime": 1785765988.4896872,
     "ast_hash": "0f8b228207bd66541d325bb1cbd56522",
     "semantic_hash": "0f8b228207bd66541d325bb1cbd56522"
   },
@@ -1420,7 +1405,7 @@
     "semantic_hash": "6db999cf4d886738e4c0f9addd99404e"
   },
   "src/org/smssecure/smssecure/GroupCreateActivity.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.4912202,
     "ast_hash": "1f45c8827a0ae555084f5d8c9ef51815",
     "semantic_hash": "1f45c8827a0ae555084f5d8c9ef51815"
   },
@@ -1440,12 +1425,12 @@
     "semantic_hash": "e0ab5c71cf6ad87fdb2faf9e912611d5"
   },
   "src/org/smssecure/smssecure/ImportExportFragment.java": {
-    "mtime": 1785745417.662112,
+    "mtime": 1785765988.4917583,
     "ast_hash": "79ea0743475be6008640a0c6a47b1878",
     "semantic_hash": "79ea0743475be6008640a0c6a47b1878"
   },
   "src/org/smssecure/smssecure/KeyScanningActivity.java": {
-    "mtime": 1785657727.3139539,
+    "mtime": 1785765988.4922698,
     "ast_hash": "170a97d98e0569b25a9b1277c354b7fa",
     "semantic_hash": "170a97d98e0569b25a9b1277c354b7fa"
   },
@@ -1460,17 +1445,17 @@
     "semantic_hash": "fc3fa0a7412f4faa5555818b9282ce13"
   },
   "src/org/smssecure/smssecure/MediaOverviewActivity.java": {
-    "mtime": 1785657727.2969203,
+    "mtime": 1785765988.4922698,
     "ast_hash": "5d2ae9c02719b54930e14e7a765f24c9",
     "semantic_hash": "5d2ae9c02719b54930e14e7a765f24c9"
   },
   "src/org/smssecure/smssecure/MediaPreviewActivity.java": {
-    "mtime": 1785686249.7269468,
+    "mtime": 1785765988.4922698,
     "ast_hash": "d874be3cb7763b7e8de422d300c947dd",
     "semantic_hash": "d874be3cb7763b7e8de422d300c947dd"
   },
   "src/org/smssecure/smssecure/MessageDetailsActivity.java": {
-    "mtime": 1785657727.2763069,
+    "mtime": 1785765988.493795,
     "ast_hash": "51b3853795053caa445319b3bbfc7ad6",
     "semantic_hash": "51b3853795053caa445319b3bbfc7ad6"
   },
@@ -1480,7 +1465,7 @@
     "semantic_hash": "a9299cd82a10962df77d0133589827bf"
   },
   "src/org/smssecure/smssecure/MessageRecipientListItem.java": {
-    "mtime": 1785649172.1029968,
+    "mtime": 1785765988.493795,
     "ast_hash": "8d37b435b00d3043d4fba933ee0a0ceb",
     "semantic_hash": "8d37b435b00d3043d4fba933ee0a0ceb"
   },
@@ -1490,7 +1475,7 @@
     "semantic_hash": "86dbd084861312c2139f2ac449914255"
   },
   "src/org/smssecure/smssecure/NewConversationActivity.java": {
-    "mtime": 1785657727.3139539,
+    "mtime": 1785765988.4953275,
     "ast_hash": "28b9dd6f68939b399a2b0646aa6a2b16",
     "semantic_hash": "28b9dd6f68939b399a2b0646aa6a2b16"
   },
@@ -1500,22 +1485,22 @@
     "semantic_hash": "4e095d57070c200a55a203f98c1e88ba"
   },
   "src/org/smssecure/smssecure/PassphraseActivity.java": {
-    "mtime": 1785648987.7710204,
+    "mtime": 1785765988.4953275,
     "ast_hash": "8a8f835d9bca30760244176054fef9b9",
     "semantic_hash": "8a8f835d9bca30760244176054fef9b9"
   },
   "src/org/smssecure/smssecure/PassphraseChangeActivity.java": {
-    "mtime": 1785745417.6676395,
+    "mtime": 1785765988.4968505,
     "ast_hash": "a5c2b36c3d7110a227a0b0a4dc410140",
     "semantic_hash": "a5c2b36c3d7110a227a0b0a4dc410140"
   },
   "src/org/smssecure/smssecure/PassphraseCreateActivity.java": {
-    "mtime": 1785745417.6651287,
+    "mtime": 1785765988.4968505,
     "ast_hash": "2f7e7b68c95e055111b40d463446d7b7",
     "semantic_hash": "2f7e7b68c95e055111b40d463446d7b7"
   },
   "src/org/smssecure/smssecure/PassphrasePromptActivity.java": {
-    "mtime": 1783691863.1231496,
+    "mtime": 1785765988.4978547,
     "ast_hash": "a20810147a7a809c0c2b6b376d48539e",
     "semantic_hash": "a20810147a7a809c0c2b6b376d48539e"
   },
@@ -1535,22 +1520,22 @@
     "semantic_hash": "91edf041a82d3a0f6e03c9d3e10913e1"
   },
   "src/org/smssecure/smssecure/ReceiveKeyDialog.java": {
-    "mtime": 1785651300.0077932,
+    "mtime": 1785765988.4983578,
     "ast_hash": "5a2089bd97c3d9495210e6ab3c98a56b",
     "semantic_hash": "5a2089bd97c3d9495210e6ab3c98a56b"
   },
   "src/org/smssecure/smssecure/RecipientPreferenceActivity.java": {
-    "mtime": 1785657727.2701576,
+    "mtime": 1785765988.4983578,
     "ast_hash": "148218f4a8f2baaba51ee8829b832635",
     "semantic_hash": "148218f4a8f2baaba51ee8829b832635"
   },
   "src/org/smssecure/smssecure/ShareActivity.java": {
-    "mtime": 1785651299.9632444,
+    "mtime": 1785765988.499884,
     "ast_hash": "2c19980ddbdc8eed8d3ec69e43df70a5",
     "semantic_hash": "2c19980ddbdc8eed8d3ec69e43df70a5"
   },
   "src/org/smssecure/smssecure/ShareFragment.java": {
-    "mtime": 1785648987.7710204,
+    "mtime": 1785765988.499884,
     "ast_hash": "ef77569d2111007facd9467ab3782bc1",
     "semantic_hash": "ef77569d2111007facd9467ab3782bc1"
   },
@@ -1560,7 +1545,7 @@
     "semantic_hash": "d107edd21e491e67ef7b79b9d1533372"
   },
   "src/org/smssecure/smssecure/ShareListItem.java": {
-    "mtime": 1785648987.7493937,
+    "mtime": 1785765988.499884,
     "ast_hash": "fc9297458ec34f3f27453d4d30b71856",
     "semantic_hash": "fc9297458ec34f3f27453d4d30b71856"
   },
@@ -1570,17 +1555,17 @@
     "semantic_hash": "f140140762ee33621077cb955b9e1935"
   },
   "src/org/smssecure/smssecure/TransportOption.java": {
-    "mtime": 1783644147.932615,
+    "mtime": 1785765988.501412,
     "ast_hash": "8d7c30ea037696543b1d4cfb948f3985",
     "semantic_hash": "8d7c30ea037696543b1d4cfb948f3985"
   },
   "src/org/smssecure/smssecure/TransportOptions.java": {
-    "mtime": 1783705982.2184803,
+    "mtime": 1785765988.501412,
     "ast_hash": "26fc8888348aa7d95001f6757e5bff95",
     "semantic_hash": "26fc8888348aa7d95001f6757e5bff95"
   },
   "src/org/smssecure/smssecure/TransportOptionsAdapter.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5029397,
     "ast_hash": "57c571b0d1a02000a3dee2d51dac4282",
     "semantic_hash": "57c571b0d1a02000a3dee2d51dac4282"
   },
@@ -1595,17 +1580,17 @@
     "semantic_hash": "15cc066c8a8535552d87e0c8fde2bf0f"
   },
   "src/org/smssecure/smssecure/VerifyIdentityActivity.java": {
-    "mtime": 1785648979.8711858,
+    "mtime": 1785765988.5029397,
     "ast_hash": "14f6a34eb04b27540a7c5f297a9634ca",
     "semantic_hash": "14f6a34eb04b27540a7c5f297a9634ca"
   },
   "src/org/smssecure/smssecure/ViewIdentityActivity.java": {
-    "mtime": 1785648987.7710204,
+    "mtime": 1785765988.5040286,
     "ast_hash": "7e8b0a9efd6e6d9834e5c7e48dd59bb7",
     "semantic_hash": "7e8b0a9efd6e6d9834e5c7e48dd59bb7"
   },
   "src/org/smssecure/smssecure/WelcomeActivity.java": {
-    "mtime": 1785764370.682712,
+    "mtime": 1785765988.5040286,
     "ast_hash": "693dca65facee599c94f09cb34a1e84c",
     "semantic_hash": ""
   },
@@ -1630,12 +1615,12 @@
     "semantic_hash": "6b33994d34997ed780c7f9d1f629e45a"
   },
   "src/org/smssecure/smssecure/attachments/UriAttachment.java": {
-    "mtime": 1783644147.882167,
+    "mtime": 1785765988.5040286,
     "ast_hash": "a818cbd4b4140bc1d7f4f77da5d0470f",
     "semantic_hash": "a818cbd4b4140bc1d7f4f77da5d0470f"
   },
   "src/org/smssecure/smssecure/audio/AudioSlidePlayer.java": {
-    "mtime": 1783705982.2157924,
+    "mtime": 1785765988.50557,
     "ast_hash": "09fc7b359a8c62216b778535129268b2",
     "semantic_hash": "09fc7b359a8c62216b778535129268b2"
   },
@@ -1655,7 +1640,7 @@
     "semantic_hash": "557654a62a679a21bc7254799e6e0e81"
   },
   "src/org/smssecure/smssecure/components/AnimatedDotsView.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5099945,
     "ast_hash": "f2384b51971f2e97fede59b5fe9801e0",
     "semantic_hash": "f2384b51971f2e97fede59b5fe9801e0"
   },
@@ -1665,7 +1650,7 @@
     "semantic_hash": "6c9f6ebee920233de28da95cd086f89b"
   },
   "src/org/smssecure/smssecure/components/AudioView.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.510512,
     "ast_hash": "55c845bc9ceaf5530ea59e815d75097f",
     "semantic_hash": "55c845bc9ceaf5530ea59e815d75097f"
   },
@@ -1680,7 +1665,7 @@
     "semantic_hash": "b76122e4c7cc2e2d1cf23d5d53366f4b"
   },
   "src/org/smssecure/smssecure/components/ComposeText.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5111482,
     "ast_hash": "51617a95732f58235f0886cd8a5e6d1b",
     "semantic_hash": "51617a95732f58235f0886cd8a5e6d1b"
   },
@@ -1690,7 +1675,7 @@
     "semantic_hash": "411e6ff64e119656b2d258347c5827eb"
   },
   "src/org/smssecure/smssecure/components/DeliveryStatusView.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5121808,
     "ast_hash": "31e1ab8799e0b44766cb15a4c2e2403e",
     "semantic_hash": "31e1ab8799e0b44766cb15a4c2e2403e"
   },
@@ -1740,7 +1725,7 @@
     "semantic_hash": "a6c83f872df04a392339ef1a69dabd9a"
   },
   "src/org/smssecure/smssecure/components/SendButton.java": {
-    "mtime": 1783644147.882704,
+    "mtime": 1785765988.512699,
     "ast_hash": "ee186d008cd4d09f2bf760d4a3756aec",
     "semantic_hash": "ee186d008cd4d09f2bf760d4a3756aec"
   },
@@ -1765,17 +1750,17 @@
     "semantic_hash": "a1572fc4e7dca34b0b93ea9166e83af7"
   },
   "src/org/smssecure/smssecure/components/ThumbnailView.java": {
-    "mtime": 1783644147.882704,
+    "mtime": 1785765988.5135934,
     "ast_hash": "7fe68e1ff6801939efedaafeae3ff672",
     "semantic_hash": "7fe68e1ff6801939efedaafeae3ff672"
   },
   "src/org/smssecure/smssecure/components/TransferControlView.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5141177,
     "ast_hash": "9d869f467ae3e07eca196260508eae22",
     "semantic_hash": "9d869f467ae3e07eca196260508eae22"
   },
   "src/org/smssecure/smssecure/components/ZoomingImageView.java": {
-    "mtime": 1785686249.7492237,
+    "mtime": 1785765988.514628,
     "ast_hash": "2b596c7f3ec4693873203164cf5e9eb3",
     "semantic_hash": "2b596c7f3ec4693873203164cf5e9eb3"
   },
@@ -1785,7 +1770,7 @@
     "semantic_hash": "6da07e97872de628780024ce3627161f"
   },
   "src/org/smssecure/smssecure/components/emoji/EmojiDrawer.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5151472,
     "ast_hash": "4bbe5f5a24439b8610216789ef1d9e9e",
     "semantic_hash": "4bbe5f5a24439b8610216789ef1d9e9e"
   },
@@ -1815,7 +1800,7 @@
     "semantic_hash": "f5456363efbcc5ec05cb480b80668ed8"
   },
   "src/org/smssecure/smssecure/components/emoji/EmojiProvider.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.515694,
     "ast_hash": "32176ea2cd671a22c62a316e4465e135",
     "semantic_hash": "32176ea2cd671a22c62a316e4465e135"
   },
@@ -1875,7 +1860,7 @@
     "semantic_hash": "ea49cd753c91384f28540e28ee87547e"
   },
   "src/org/smssecure/smssecure/components/reminder/DefaultSmsReminder.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.5162194,
     "ast_hash": "592f636c2241451334675a05761ddb67",
     "semantic_hash": "592f636c2241451334675a05761ddb67"
   },
@@ -1895,7 +1880,7 @@
     "semantic_hash": "76993d82518b28039ca7113e00a026a7"
   },
   "src/org/smssecure/smssecure/components/reminder/StoreRatingReminder.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5167296,
     "ast_hash": "17253a866d69aa9da15a02b795487c47",
     "semantic_hash": "17253a866d69aa9da15a02b795487c47"
   },
@@ -1910,7 +1895,7 @@
     "semantic_hash": "6bc04efe39a6748add3916ef73f3a7a2"
   },
   "src/org/smssecure/smssecure/components/subsampling/AttachmentRegionDecoder.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5172408,
     "ast_hash": "4964fff78fcb47b72f0eb6d6b2487e87",
     "semantic_hash": "4964fff78fcb47b72f0eb6d6b2487e87"
   },
@@ -1920,7 +1905,7 @@
     "semantic_hash": "a5ca5c2d389ac9824aab02f627cc0ae4"
   },
   "src/org/smssecure/smssecure/contacts/ContactAccessor.java": {
-    "mtime": 1783707683.7329843,
+    "mtime": 1785765988.517892,
     "ast_hash": "83f4b16396d36f926e43aa9b63997bf8",
     "semantic_hash": "83f4b16396d36f926e43aa9b63997bf8"
   },
@@ -1950,7 +1935,7 @@
     "semantic_hash": "97ab4818e4d03c8d5005a8dc08ce1105"
   },
   "src/org/smssecure/smssecure/contacts/RecipientsAdapter.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5189273,
     "ast_hash": "2d96e718869e51591bf43b504f57b521",
     "semantic_hash": "2d96e718869e51591bf43b504f57b521"
   },
@@ -1960,7 +1945,7 @@
     "semantic_hash": "72c502fccc9bb5047a4895aa079660c7"
   },
   "src/org/smssecure/smssecure/contacts/avatars/BitmapContactPhoto.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.519327,
     "ast_hash": "e144e836cb8bc8bc2552390e5813b244",
     "semantic_hash": "e144e836cb8bc8bc2552390e5813b244"
   },
@@ -1985,27 +1970,27 @@
     "semantic_hash": "27c7d16277b14e650ff9d81b8d1fa035"
   },
   "src/org/smssecure/smssecure/contacts/avatars/ResourceContactPhoto.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5198298,
     "ast_hash": "f26c6c0d2b58218fad35a664ed90f3e9",
     "semantic_hash": "f26c6c0d2b58218fad35a664ed90f3e9"
   },
   "src/org/smssecure/smssecure/contacts/avatars/TransparentContactPhoto.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.520342,
     "ast_hash": "0b3724239b0016192b1982e973114013",
     "semantic_hash": "0b3724239b0016192b1982e973114013"
   },
   "src/org/smssecure/smssecure/crypto/AsymmetricMasterCipher.java": {
-    "mtime": 1785709649.7276213,
+    "mtime": 1785765988.5229282,
     "ast_hash": "2a7c6c3420da57a7e22c1cb27db3a6b2",
     "semantic_hash": "2a7c6c3420da57a7e22c1cb27db3a6b2"
   },
   "src/org/smssecure/smssecure/crypto/AsymmetricMasterSecret.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5229282,
     "ast_hash": "35f6a7b4f2395c4bdc964ef10b7a273d",
     "semantic_hash": "35f6a7b4f2395c4bdc964ef10b7a273d"
   },
   "src/org/smssecure/smssecure/crypto/AttachmentCipherInputStream.java": {
-    "mtime": 1783699901.2909503,
+    "mtime": 1785765988.5229282,
     "ast_hash": "c65a7be8f524c07e464425b11eae3eb6",
     "semantic_hash": "c65a7be8f524c07e464425b11eae3eb6"
   },
@@ -2020,17 +2005,17 @@
     "semantic_hash": "168c07c8ba647ca520af837cdda1a55d"
   },
   "src/org/smssecure/smssecure/crypto/IdentityKeyParcelable.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5259807,
     "ast_hash": "ed4ce8755c6f3da4ea40857e9ff9ed81",
     "semantic_hash": "ed4ce8755c6f3da4ea40857e9ff9ed81"
   },
   "src/org/smssecure/smssecure/crypto/IdentityKeyUtil.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5259807,
     "ast_hash": "f89dfee83a1ce483e02a61128683b056",
     "semantic_hash": "f89dfee83a1ce483e02a61128683b056"
   },
   "src/org/smssecure/smssecure/crypto/InvalidMacException.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5259807,
     "ast_hash": "18ca43bab02dd07ae394950303a3efc2",
     "semantic_hash": "18ca43bab02dd07ae394950303a3efc2"
   },
@@ -2040,17 +2025,17 @@
     "semantic_hash": "978ed6dd089a2dc9e88663cde0ed7a33"
   },
   "src/org/smssecure/smssecure/crypto/KeyExchangeInitiator.java": {
-    "mtime": 1783691863.0853024,
+    "mtime": 1785765988.5275192,
     "ast_hash": "530584ac455efe6e84c1c50b4325158c",
     "semantic_hash": "530584ac455efe6e84c1c50b4325158c"
   },
   "src/org/smssecure/smssecure/crypto/MasterCipher.java": {
-    "mtime": 1785745417.6681433,
+    "mtime": 1785765988.5275192,
     "ast_hash": "2106e36516c6349b4d890428e9914537",
     "semantic_hash": "2106e36516c6349b4d890428e9914537"
   },
   "src/org/smssecure/smssecure/crypto/MasterCipherEnvelope.java": {
-    "mtime": 1785709649.7269475,
+    "mtime": 1785765988.5275192,
     "ast_hash": "72c71e309b8758ec91fddd4a6b27462b",
     "semantic_hash": "72c71e309b8758ec91fddd4a6b27462b"
   },
@@ -2060,12 +2045,12 @@
     "semantic_hash": "5d1f3b6a193960c62ff36f45ce565a5c"
   },
   "src/org/smssecure/smssecure/crypto/MasterSecretUtil.java": {
-    "mtime": 1785764388.8936548,
-    "ast_hash": "bee26d6e368b39b70f51c4527ccfa76f",
+    "mtime": 1785765988.5290475,
+    "ast_hash": "69267a980a50ed906cf87b34e14d641f",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/crypto/MmsCipher.java": {
-    "mtime": 1783699901.2837179,
+    "mtime": 1785765988.5305772,
     "ast_hash": "9e2110d2119cd01d049afbd40c8dc076",
     "semantic_hash": "9e2110d2119cd01d049afbd40c8dc076"
   },
@@ -2075,7 +2060,7 @@
     "semantic_hash": "d882098c1bf78e9da3ee448361f032e4"
   },
   "src/org/smssecure/smssecure/crypto/PublicKey.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5305772,
     "ast_hash": "ee2c99041f51a9f2e8aaa4adf9512825",
     "semantic_hash": "ee2c99041f51a9f2e8aaa4adf9512825"
   },
@@ -2090,67 +2075,67 @@
     "semantic_hash": "56a6488688d2426aeaef5c432f42da85"
   },
   "src/org/smssecure/smssecure/crypto/SessionUtil.java": {
-    "mtime": 1783644147.882167,
+    "mtime": 1785765988.5321062,
     "ast_hash": "6f97d1d5967265b96077eafaf506c8c1",
     "semantic_hash": "6f97d1d5967265b96077eafaf506c8c1"
   },
   "src/org/smssecure/smssecure/crypto/SmsCipher.java": {
-    "mtime": 1783699901.2837179,
+    "mtime": 1785765988.5321062,
     "ast_hash": "b231ab99f58d843cad8f77861c8bee14",
     "semantic_hash": "b231ab99f58d843cad8f77861c8bee14"
   },
   "src/org/smssecure/smssecure/crypto/storage/KeyExchangeSessionStore.java": {
-    "mtime": 1783691863.1236615,
+    "mtime": 1785765988.5336316,
     "ast_hash": "2d251db63ca333460cd0707882126521",
     "semantic_hash": "2d251db63ca333460cd0707882126521"
   },
   "src/org/smssecure/smssecure/crypto/storage/SilenceIdentityKeyStore.java": {
-    "mtime": 1783847349.5177412,
+    "mtime": 1785765988.5336316,
     "ast_hash": "067c6dcc90fc14b653551cb035930bfe",
     "semantic_hash": "067c6dcc90fc14b653551cb035930bfe"
   },
   "src/org/smssecure/smssecure/crypto/storage/SilencePreKeyStore.java": {
-    "mtime": 1783835296.1649587,
+    "mtime": 1785765988.534678,
     "ast_hash": "1b582b4aac19f145a0882d0ef11c92d1",
     "semantic_hash": "1b582b4aac19f145a0882d0ef11c92d1"
   },
   "src/org/smssecure/smssecure/crypto/storage/SilenceSessionStore.java": {
-    "mtime": 1783835296.1649587,
+    "mtime": 1785765988.534678,
     "ast_hash": "f65a039dacae6de2c69224c6bf8b64e6",
     "semantic_hash": "f65a039dacae6de2c69224c6bf8b64e6"
   },
   "src/org/smssecure/smssecure/crypto/storage/SilenceSignalProtocolStore.java": {
-    "mtime": 1783693894.9463437,
+    "mtime": 1785765988.534678,
     "ast_hash": "01f8638c42c7d3d7872f8200d62a9d5f",
     "semantic_hash": "01f8638c42c7d3d7872f8200d62a9d5f"
   },
   "src/org/smssecure/smssecure/crypto/storage/StorageFileLock.java": {
-    "mtime": 1783835296.1710832,
+    "mtime": 1785765988.5362065,
     "ast_hash": "f0e9cd13e0018ad0d4399074a501ece3",
     "semantic_hash": "f0e9cd13e0018ad0d4399074a501ece3"
   },
   "src/org/smssecure/smssecure/crypto/storage/VendoredIdentityKeyStore.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5362065,
     "ast_hash": "946cce53cc7efddf7fcf1652e4bced7a",
     "semantic_hash": "946cce53cc7efddf7fcf1652e4bced7a"
   },
   "src/org/smssecure/smssecure/crypto/storage/VendoredPreKeyStore.java": {
-    "mtime": 1783835296.1710832,
+    "mtime": 1785765988.53774,
     "ast_hash": "46c071bab3d6bc13c794c38b0b8f0ff3",
     "semantic_hash": "46c071bab3d6bc13c794c38b0b8f0ff3"
   },
   "src/org/smssecure/smssecure/crypto/storage/VendoredSessionStore.java": {
-    "mtime": 1783835296.1710832,
+    "mtime": 1785765988.538298,
     "ast_hash": "8f0fcfc343ce52a7888cf66d3b3795ce",
     "semantic_hash": "8f0fcfc343ce52a7888cf66d3b3795ce"
   },
   "src/org/smssecure/smssecure/crypto/storage/VendoredSignalProtocolStore.java": {
-    "mtime": 1783643681.4176426,
+    "mtime": 1785765988.538298,
     "ast_hash": "0bbd516ff051d2981c35ce2cb96f8f97",
     "semantic_hash": "0bbd516ff051d2981c35ce2cb96f8f97"
   },
   "src/org/smssecure/smssecure/database/ApnDatabase.java": {
-    "mtime": 1783644147.882704,
+    "mtime": 1785765988.53881,
     "ast_hash": "8985327bf5f81d0abd6da968f42a1a78",
     "semantic_hash": "8985327bf5f81d0abd6da968f42a1a78"
   },
@@ -2190,27 +2175,27 @@
     "semantic_hash": "f85d13d6449c4c6d18d0ebac5d6e8567"
   },
   "src/org/smssecure/smssecure/database/DatabaseFactory.java": {
-    "mtime": 1785745417.6945539,
+    "mtime": 1785765988.5394084,
     "ast_hash": "ee1baeb7b01c7bd1aed52b57d60a4944",
     "semantic_hash": "ee1baeb7b01c7bd1aed52b57d60a4944"
   },
   "src/org/smssecure/smssecure/database/DraftDatabase.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5404136,
     "ast_hash": "0cacf8a4326b42c0feba2401d1b472ca",
     "semantic_hash": "0cacf8a4326b42c0feba2401d1b472ca"
   },
   "src/org/smssecure/smssecure/database/EncryptedBackupExporter.java": {
-    "mtime": 1785764388.8936548,
-    "ast_hash": "4625eebdf8d4a401357498f091bda0a2",
+    "mtime": 1785765988.540917,
+    "ast_hash": "c6f3be9741da63adec8b4cd00303ba86",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/database/EncryptingSmsDatabase.java": {
-    "mtime": 1785659359.9359732,
+    "mtime": 1785765988.5415537,
     "ast_hash": "88c3ffdbc61c9cfb49b6fb179d9e39ff",
     "semantic_hash": "88c3ffdbc61c9cfb49b6fb179d9e39ff"
   },
   "src/org/smssecure/smssecure/database/IdentityDatabase.java": {
-    "mtime": 1783847349.517238,
+    "mtime": 1785765988.5420737,
     "ast_hash": "aa3aecbc209458480524c12bae7e2333",
     "semantic_hash": "aa3aecbc209458480524c12bae7e2333"
   },
@@ -2220,7 +2205,7 @@
     "semantic_hash": "23c1ce65a02889168106dfd99e60adae"
   },
   "src/org/smssecure/smssecure/database/MessagingDatabase.java": {
-    "mtime": 1785648987.7453535,
+    "mtime": 1785765988.5429304,
     "ast_hash": "fd74737a5aaa1d0e0213e491a6aba7d4",
     "semantic_hash": "fd74737a5aaa1d0e0213e491a6aba7d4"
   },
@@ -2235,7 +2220,7 @@
     "semantic_hash": "ec1f608549881a3a436e6bdd4b7c0da6"
   },
   "src/org/smssecure/smssecure/database/MmsDatabase.java": {
-    "mtime": 1785657727.3258946,
+    "mtime": 1785765988.5439446,
     "ast_hash": "e07e4cbb452abe7a89dce1122c47858f",
     "semantic_hash": "e07e4cbb452abe7a89dce1122c47858f"
   },
@@ -2245,7 +2230,7 @@
     "semantic_hash": "90aa01da650167144cd3922d83e5c94c"
   },
   "src/org/smssecure/smssecure/database/MmsSmsDatabase.java": {
-    "mtime": 1783644147.882704,
+    "mtime": 1785765988.544467,
     "ast_hash": "2340aec9694c390b293527b100636e82",
     "semantic_hash": "2340aec9694c390b293527b100636e82"
   },
@@ -2265,7 +2250,7 @@
     "semantic_hash": "a8e0f104f39384b1c4ffd31e78ace3d2"
   },
   "src/org/smssecure/smssecure/database/PlaintextBackupExporter.java": {
-    "mtime": 1785686249.7406626,
+    "mtime": 1785765988.5449765,
     "ast_hash": "ce70acf231337031a55f7284717bf025",
     "semantic_hash": "ce70acf231337031a55f7284717bf025"
   },
@@ -2275,12 +2260,12 @@
     "semantic_hash": "ecee15f8b0a5377114e8aa5b5ed1442b"
   },
   "src/org/smssecure/smssecure/database/RecipientPreferenceDatabase.java": {
-    "mtime": 1783644147.882704,
+    "mtime": 1785765988.5454874,
     "ast_hash": "78c221222271fba6c620344e835813cc",
     "semantic_hash": "78c221222271fba6c620344e835813cc"
   },
   "src/org/smssecure/smssecure/database/SmsDatabase.java": {
-    "mtime": 1785654738.1426404,
+    "mtime": 1785765988.546297,
     "ast_hash": "f9d0119b830fb067265d7f98fcbba46e",
     "semantic_hash": "f9d0119b830fb067265d7f98fcbba46e"
   },
@@ -2290,12 +2275,12 @@
     "semantic_hash": "8e6baadf078ee2d81136295c7d466249"
   },
   "src/org/smssecure/smssecure/database/ThreadDatabase.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.546815,
     "ast_hash": "b8bb0dca76aaa3adc5e2536e6b2cad0f",
     "semantic_hash": "b8bb0dca76aaa3adc5e2536e6b2cad0f"
   },
   "src/org/smssecure/smssecure/database/XmlBackup.java": {
-    "mtime": 1785686249.744693,
+    "mtime": 1785765988.5473979,
     "ast_hash": "a4cb89f96cf1d8db5d646dae91c74171",
     "semantic_hash": "a4cb89f96cf1d8db5d646dae91c74171"
   },
@@ -2305,7 +2290,7 @@
     "semantic_hash": "36e9e10ffa4ca7da41e58be455257e45"
   },
   "src/org/smssecure/smssecure/database/documents/IdentityKeyMismatch.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.547915,
     "ast_hash": "b94cf40f2f68d6585f9247d43306d77b",
     "semantic_hash": "b94cf40f2f68d6585f9247d43306d77b"
   },
@@ -2365,7 +2350,7 @@
     "semantic_hash": "22b8d981526fc8347f273453f6cf5810"
   },
   "src/org/smssecure/smssecure/database/model/MessageRecord.java": {
-    "mtime": 1785764370.685223,
+    "mtime": 1785765988.5484471,
     "ast_hash": "b3bf06f7f579672e6c3758b88363d7b1",
     "semantic_hash": ""
   },
@@ -2380,7 +2365,7 @@
     "semantic_hash": "c0a6a0f52baeb5588520a3e41f5b4446"
   },
   "src/org/smssecure/smssecure/database/model/ThreadRecord.java": {
-    "mtime": 1785764370.6958196,
+    "mtime": 1785765988.5489633,
     "ast_hash": "40f21bd2ea8d9639bce0b3fbed35dd68",
     "semantic_hash": ""
   },
@@ -2410,7 +2395,7 @@
     "semantic_hash": "4c9a8b2e4e7d5d11dacb1bb522e71826"
   },
   "src/org/smssecure/smssecure/jobs/MmsDownloadJob.java": {
-    "mtime": 1783699901.2879345,
+    "mtime": 1785765988.5499563,
     "ast_hash": "07b275ad5370d4c349b21939d0cc1772",
     "semantic_hash": "07b275ad5370d4c349b21939d0cc1772"
   },
@@ -2420,7 +2405,7 @@
     "semantic_hash": "c7b293903b8c66a046f01b447b228972"
   },
   "src/org/smssecure/smssecure/jobs/MmsSendJob.java": {
-    "mtime": 1783699901.2879345,
+    "mtime": 1785765988.5504797,
     "ast_hash": "1bfec85128992cf05ed2718112fcb694",
     "semantic_hash": "1bfec85128992cf05ed2718112fcb694"
   },
@@ -2430,22 +2415,22 @@
     "semantic_hash": "0c3fd7557639a42a71ae57edb3696aac"
   },
   "src/org/smssecure/smssecure/jobs/SmsDecryptJob.java": {
-    "mtime": 1783699901.2879345,
+    "mtime": 1785765988.551006,
     "ast_hash": "189983902ef2b5249a3dffbc7f383f7e",
     "semantic_hash": "189983902ef2b5249a3dffbc7f383f7e"
   },
   "src/org/smssecure/smssecure/jobs/SmsReceiveJob.java": {
-    "mtime": 1785648987.7493937,
+    "mtime": 1785765988.551006,
     "ast_hash": "e55ada935ef95a2c7b362745f05638b0",
     "semantic_hash": "e55ada935ef95a2c7b362745f05638b0"
   },
   "src/org/smssecure/smssecure/jobs/SmsSendJob.java": {
-    "mtime": 1783699901.2879345,
+    "mtime": 1785765988.5525393,
     "ast_hash": "3cde2500a5efa4e7fefcb747c6d38fc1",
     "semantic_hash": "3cde2500a5efa4e7fefcb747c6d38fc1"
   },
   "src/org/smssecure/smssecure/jobs/SmsSentJob.java": {
-    "mtime": 1783644147.9351559,
+    "mtime": 1785765988.5530841,
     "ast_hash": "a03a1671fd74de997cbf76548b6ba097",
     "semantic_hash": "a03a1671fd74de997cbf76548b6ba097"
   },
@@ -2455,7 +2440,7 @@
     "semantic_hash": "69c73b40003a073e477615ff724bce02"
   },
   "src/org/smssecure/smssecure/jobs/persistence/EncryptingJobSerializer.java": {
-    "mtime": 1783699901.308046,
+    "mtime": 1785765988.5530841,
     "ast_hash": "87a54314a8ad6db4b6fb4f90fec4fd15",
     "semantic_hash": "87a54314a8ad6db4b6fb4f90fec4fd15"
   },
@@ -2490,7 +2475,7 @@
     "semantic_hash": "017d5504b586ed3dbfaef680ed898aee"
   },
   "src/org/smssecure/smssecure/jobs/requirements/ServiceRequirementProvider.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.5540879,
     "ast_hash": "48af7cb1048fb15e40b23381bf781196",
     "semantic_hash": "48af7cb1048fb15e40b23381bf781196"
   },
@@ -2500,12 +2485,12 @@
     "semantic_hash": "9aee358d4fc27003fee538dd2b46a084"
   },
   "src/org/smssecure/smssecure/mms/AttachmentManager.java": {
-    "mtime": 1785686249.7391539,
+    "mtime": 1785765988.5552657,
     "ast_hash": "12a1a4a6aaf05da874e588182518b6d3",
     "semantic_hash": "12a1a4a6aaf05da874e588182518b6d3"
   },
   "src/org/smssecure/smssecure/mms/AttachmentStreamLocalUriFetcher.java": {
-    "mtime": 1783644147.882704,
+    "mtime": 1785765988.5552657,
     "ast_hash": "0ae6b7168e0bae55aa472bcceb30d9bd",
     "semantic_hash": "0ae6b7168e0bae55aa472bcceb30d9bd"
   },
@@ -2570,7 +2555,7 @@
     "semantic_hash": "18728aa63ddc03d2c89a448311e3db9e"
   },
   "src/org/smssecure/smssecure/mms/IncomingMediaMessage.java": {
-    "mtime": 1783644147.882704,
+    "mtime": 1785765988.5552657,
     "ast_hash": "8788e9a74840b7af47b677c4708419f0",
     "semantic_hash": "8788e9a74840b7af47b677c4708419f0"
   },
@@ -2580,7 +2565,7 @@
     "semantic_hash": "58f92f529d4cf81ecb2da8787b7b4850"
   },
   "src/org/smssecure/smssecure/mms/LegacyMmsConnection.java": {
-    "mtime": 1785657727.3258946,
+    "mtime": 1785765988.5567968,
     "ast_hash": "1b1111a42b3aa18f92e00f3297074489",
     "semantic_hash": "1b1111a42b3aa18f92e00f3297074489"
   },
@@ -2590,7 +2575,7 @@
     "semantic_hash": "65560cc79721615cced14f04da51dd93"
   },
   "src/org/smssecure/smssecure/mms/MediaConstraints.java": {
-    "mtime": 1785686249.7497282,
+    "mtime": 1785765988.5567968,
     "ast_hash": "a881f4c908f53c9f3c0d8ef710ed13aa",
     "semantic_hash": "a881f4c908f53c9f3c0d8ef710ed13aa"
   },
@@ -2610,7 +2595,7 @@
     "semantic_hash": "ea5485745f614f87946f158c53770ea3"
   },
   "src/org/smssecure/smssecure/mms/MmsConfigManager.java": {
-    "mtime": 1783644147.8832202,
+    "mtime": 1785765988.5583272,
     "ast_hash": "abdab596c71fbae7d37d99b835137268",
     "semantic_hash": "abdab596c71fbae7d37d99b835137268"
   },
@@ -2625,7 +2610,7 @@
     "semantic_hash": "ac0aacb484e046ccc5d7d7060eb66b24"
   },
   "src/org/smssecure/smssecure/mms/MmsRadio.java": {
-    "mtime": 1785657727.3258946,
+    "mtime": 1785765988.5583272,
     "ast_hash": "b4b72ed63e5e60c87937f3944b149043",
     "semantic_hash": "b4b72ed63e5e60c87937f3944b149043"
   },
@@ -2640,7 +2625,7 @@
     "semantic_hash": "98b6907e8e2efadcd4379fb99112b47e"
   },
   "src/org/smssecure/smssecure/mms/OutgoingLegacyMmsConnection.java": {
-    "mtime": 1785657727.3258946,
+    "mtime": 1785765988.5583272,
     "ast_hash": "e03d93b29d2070070f7bd022389668f3",
     "semantic_hash": "e03d93b29d2070070f7bd022389668f3"
   },
@@ -2690,7 +2675,7 @@
     "semantic_hash": "d0a606b54e11f7eadc47db9cb247a0e2"
   },
   "src/org/smssecure/smssecure/mms/Slide.java": {
-    "mtime": 1783644147.8832202,
+    "mtime": 1785765988.5598528,
     "ast_hash": "305b6a86c551e86a1c59a86ff61e9c80",
     "semantic_hash": "305b6a86c551e86a1c59a86ff61e9c80"
   },
@@ -2700,7 +2685,7 @@
     "semantic_hash": "26b99476b8f2a5e92b7da0a5a2ff94cc"
   },
   "src/org/smssecure/smssecure/mms/SlideDeck.java": {
-    "mtime": 1783644147.8832202,
+    "mtime": 1785765988.5598528,
     "ast_hash": "412a93dcca48bc5fdbdfbde33436ac00",
     "semantic_hash": "412a93dcca48bc5fdbdfbde33436ac00"
   },
@@ -2715,12 +2700,12 @@
     "semantic_hash": "7a76b3b56bd4d4ea38dd38b8745c6a59"
   },
   "src/org/smssecure/smssecure/notifications/AbstractNotificationBuilder.java": {
-    "mtime": 1785657727.3258946,
+    "mtime": 1785765988.5613823,
     "ast_hash": "ce8cc7211f1ed466d1b205a8bf923d02",
     "semantic_hash": "ce8cc7211f1ed466d1b205a8bf923d02"
   },
   "src/org/smssecure/smssecure/notifications/DeleteNotificationReceiver.java": {
-    "mtime": 1785651299.976943,
+    "mtime": 1785765988.5613823,
     "ast_hash": "5b6326c9b850ab00450851e15eedcbae",
     "semantic_hash": "5b6326c9b850ab00450851e15eedcbae"
   },
@@ -2735,7 +2720,7 @@
     "semantic_hash": "5e56db85e300e51ebd71023edeaa5859"
   },
   "src/org/smssecure/smssecure/notifications/MarkReadReceiver.java": {
-    "mtime": 1785651299.976943,
+    "mtime": 1785765988.5629213,
     "ast_hash": "91b4ec7f69b2685b143bebfffb95ae47",
     "semantic_hash": "91b4ec7f69b2685b143bebfffb95ae47"
   },
@@ -2745,32 +2730,32 @@
     "semantic_hash": "85eb584eebf60e39d63d8230f8b1d653"
   },
   "src/org/smssecure/smssecure/notifications/MessageNotifier.java": {
-    "mtime": 1785686940.1034355,
+    "mtime": 1785765988.5629213,
     "ast_hash": "a801fe388c64a8ec59be8fd28104a9e5",
     "semantic_hash": "a801fe388c64a8ec59be8fd28104a9e5"
   },
   "src/org/smssecure/smssecure/notifications/MessagingNotificationActionService.java": {
-    "mtime": 1785666970.3196177,
+    "mtime": 1785765988.5629213,
     "ast_hash": "dff39fe576b64d0202cfba58e39ed4f5",
     "semantic_hash": "dff39fe576b64d0202cfba58e39ed4f5"
   },
   "src/org/smssecure/smssecure/notifications/MultipleRecipientNotificationBuilder.java": {
-    "mtime": 1785657727.2763069,
+    "mtime": 1785765988.5644484,
     "ast_hash": "44fcf0df7dfa800c6b4ce21a125e2b43",
     "semantic_hash": "44fcf0df7dfa800c6b4ce21a125e2b43"
   },
   "src/org/smssecure/smssecure/notifications/NotificationActionIdentity.java": {
-    "mtime": 1785651300.0077932,
+    "mtime": 1785765988.5644484,
     "ast_hash": "a6c3dc61d379ee412df95db8e05b68ba",
     "semantic_hash": "a6c3dc61d379ee412df95db8e05b68ba"
   },
   "src/org/smssecure/smssecure/notifications/NotificationActionOperations.java": {
-    "mtime": 1785659359.9273672,
+    "mtime": 1785765988.5655284,
     "ast_hash": "902ef1dff759e010696a10a29b1e75bd",
     "semantic_hash": "902ef1dff759e010696a10a29b1e75bd"
   },
   "src/org/smssecure/smssecure/notifications/NotificationActionTokenRegistry.java": {
-    "mtime": 1785651300.0077932,
+    "mtime": 1785765988.5655284,
     "ast_hash": "2b3926d30ec1be8692e72bd91ffc2640",
     "semantic_hash": "2b3926d30ec1be8692e72bd91ffc2640"
   },
@@ -2780,37 +2765,37 @@
     "semantic_hash": "d75ff6ea881e1f0466f8bb8321999a9a"
   },
   "src/org/smssecure/smssecure/notifications/NotificationConversation.java": {
-    "mtime": 1785651299.991051,
+    "mtime": 1785765988.5655284,
     "ast_hash": "c89d7eda9256a50d74911d032086281f",
     "semantic_hash": "c89d7eda9256a50d74911d032086281f"
   },
   "src/org/smssecure/smssecure/notifications/NotificationItem.java": {
-    "mtime": 1785659359.9359732,
+    "mtime": 1785765988.5655284,
     "ast_hash": "652eb4a736774b3f853db7dad6051356",
     "semantic_hash": "652eb4a736774b3f853db7dad6051356"
   },
   "src/org/smssecure/smssecure/notifications/NotificationState.java": {
-    "mtime": 1785666970.3186152,
+    "mtime": 1785765988.5670578,
     "ast_hash": "9dbd35542190d523a87ebc69959f0b5d",
     "semantic_hash": "9dbd35542190d523a87ebc69959f0b5d"
   },
   "src/org/smssecure/smssecure/notifications/RemoteReplyReceiver.java": {
-    "mtime": 1785659359.9273672,
+    "mtime": 1785765988.5670578,
     "ast_hash": "e3bb1f76a4efb87e49fd5860c592e1ed",
     "semantic_hash": "e3bb1f76a4efb87e49fd5860c592e1ed"
   },
   "src/org/smssecure/smssecure/notifications/SingleRecipientNotificationBuilder.java": {
-    "mtime": 1785666970.3073556,
+    "mtime": 1785765988.5685816,
     "ast_hash": "7ee5edeb2cff6f2cf4c6ba8ae3c4862a",
     "semantic_hash": "7ee5edeb2cff6f2cf4c6ba8ae3c4862a"
   },
   "src/org/smssecure/smssecure/permissions/Permissions.java": {
-    "mtime": 1785657727.3139539,
+    "mtime": 1785765988.569123,
     "ast_hash": "a1db40ddc8469e646070999d74d36630",
     "semantic_hash": "a1db40ddc8469e646070999d74d36630"
   },
   "src/org/smssecure/smssecure/permissions/PermissionsRequest.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.5696335,
     "ast_hash": "23fe999be1f5bb9498b5f8f97c13444d",
     "semantic_hash": "23fe999be1f5bb9498b5f8f97c13444d"
   },
@@ -2825,7 +2810,7 @@
     "semantic_hash": "48256ef70e5598efafdeb5249b4f384e"
   },
   "src/org/smssecure/smssecure/preferences/AppProtectionPreferenceFragment.java": {
-    "mtime": 1785745417.6651287,
+    "mtime": 1785765988.5696335,
     "ast_hash": "9308078db75bd04aaefe79dac7f88cfa",
     "semantic_hash": "9308078db75bd04aaefe79dac7f88cfa"
   },
@@ -2845,7 +2830,7 @@
     "semantic_hash": "d21aa9121f7c77848d931378464ed996"
   },
   "src/org/smssecure/smssecure/preferences/CorrectedPreferenceFragment.java": {
-    "mtime": 1785686249.7492237,
+    "mtime": 1785765988.571164,
     "ast_hash": "3ddea6a5cd1a14ae34cda557f0344d9a",
     "semantic_hash": "3ddea6a5cd1a14ae34cda557f0344d9a"
   },
@@ -2860,12 +2845,12 @@
     "semantic_hash": "45e4615f717aaec0a09a57a12c8f3afc"
   },
   "src/org/smssecure/smssecure/preferences/MmsPreferencesFragment.java": {
-    "mtime": 1785651300.0077932,
+    "mtime": 1785765988.5717542,
     "ast_hash": "2eb3c2f31d5a89539c7e980193dea1b2",
     "semantic_hash": "2eb3c2f31d5a89539c7e980193dea1b2"
   },
   "src/org/smssecure/smssecure/preferences/NotificationsPreferenceFragment.java": {
-    "mtime": 1785651299.9632444,
+    "mtime": 1785765988.5722666,
     "ast_hash": "6943aea618aeed17cb2f1b71dd9ee7ec",
     "semantic_hash": "6943aea618aeed17cb2f1b71dd9ee7ec"
   },
@@ -2880,7 +2865,7 @@
     "semantic_hash": "f9df97db95420d21554e406a60e989e6"
   },
   "src/org/smssecure/smssecure/preferences/widgets/ColorPickerPreference.java": {
-    "mtime": 1785657727.3258946,
+    "mtime": 1785765988.572776,
     "ast_hash": "9affad7d4253c754125c803dbef09023",
     "semantic_hash": "9affad7d4253c754125c803dbef09023"
   },
@@ -2890,7 +2875,7 @@
     "semantic_hash": "5b97884b927dc334ab0017ac57da7dca"
   },
   "src/org/smssecure/smssecure/preferences/widgets/LEDColorListPreference.java": {
-    "mtime": 1785648987.7710204,
+    "mtime": 1785765988.5737836,
     "ast_hash": "696907a8c0752774ad02354477b35e6a",
     "semantic_hash": "696907a8c0752774ad02354477b35e6a"
   },
@@ -2900,12 +2885,12 @@
     "semantic_hash": "1f189a5c3175b3fdd59f84ddac9f73d7"
   },
   "src/org/smssecure/smssecure/preferences/widgets/RingtonePreference.java": {
-    "mtime": 1785686249.7406626,
+    "mtime": 1785765988.5742874,
     "ast_hash": "622b32c02e3727654a197187890e0c54",
     "semantic_hash": "622b32c02e3727654a197187890e0c54"
   },
   "src/org/smssecure/smssecure/preferences/widgets/RingtonePreferenceDialogFragmentCompat.java": {
-    "mtime": 1785686249.7406626,
+    "mtime": 1785765988.5752926,
     "ast_hash": "a768f843878c7092dba8d648d9cbdd84",
     "semantic_hash": "a768f843878c7092dba8d648d9cbdd84"
   },
@@ -2980,7 +2965,7 @@
     "semantic_hash": "edff93d5adde7839a4ad6dac88efdeae"
   },
   "src/org/smssecure/smssecure/providers/SingleUseBlobProvider.java": {
-    "mtime": 1785648987.7725441,
+    "mtime": 1785765988.5757954,
     "ast_hash": "f528a0995a876c2affce516321e52c66",
     "semantic_hash": "f528a0995a876c2affce516321e52c66"
   },
@@ -2990,7 +2975,7 @@
     "semantic_hash": "f996efaee110ba506d3ffe2f6ac85c5b"
   },
   "src/org/smssecure/smssecure/recipients/RecipientFactory.java": {
-    "mtime": 1783644147.885368,
+    "mtime": 1785765988.5757954,
     "ast_hash": "db7837234866bf535d7fb7925aa7719f",
     "semantic_hash": "db7837234866bf535d7fb7925aa7719f"
   },
@@ -3000,22 +2985,22 @@
     "semantic_hash": "1776b9e384daea7f1440d91674ae63d9"
   },
   "src/org/smssecure/smssecure/recipients/RecipientProvider.java": {
-    "mtime": 1783644147.9045196,
+    "mtime": 1785765988.5768003,
     "ast_hash": "516f43413ededd151d7c9e36f1e209d8",
     "semantic_hash": "516f43413ededd151d7c9e36f1e209d8"
   },
   "src/org/smssecure/smssecure/recipients/Recipients.java": {
-    "mtime": 1783644147.932615,
+    "mtime": 1785765988.5773044,
     "ast_hash": "505a46d9c15b78613a9729d66e067f72",
     "semantic_hash": "505a46d9c15b78613a9729d66e067f72"
   },
   "src/org/smssecure/smssecure/recipients/RecipientsFormatter.java": {
-    "mtime": 1785654738.1426404,
+    "mtime": 1785765988.5783107,
     "ast_hash": "b6e70a00e7e1f5246b21ea6de9421ae0",
     "semantic_hash": "b6e70a00e7e1f5246b21ea6de9421ae0"
   },
   "src/org/smssecure/smssecure/service/ApplicationMigrationService.java": {
-    "mtime": 1785657727.2763069,
+    "mtime": 1785765988.5788138,
     "ast_hash": "2e7dfc3f1e34a9a6d5906b38f89d57d3",
     "semantic_hash": "2e7dfc3f1e34a9a6d5906b38f89d57d3"
   },
@@ -3030,12 +3015,12 @@
     "semantic_hash": "d5c7c0852ff5470d6c40c51a0465c889"
   },
   "src/org/smssecure/smssecure/service/KeyCachingService.java": {
-    "mtime": 1785657727.294796,
+    "mtime": 1785765988.5788138,
     "ast_hash": "e2494ddd5e6445308ed4d1900369d9de",
     "semantic_hash": "e2494ddd5e6445308ed4d1900369d9de"
   },
   "src/org/smssecure/smssecure/service/MasterSecretIntentService.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.5798182,
     "ast_hash": "106829cea78e70cc6e9ab9e94cde2d01",
     "semantic_hash": "106829cea78e70cc6e9ab9e94cde2d01"
   },
@@ -3045,17 +3030,17 @@
     "semantic_hash": "234807b44d9889d604daedaf4524a04b"
   },
   "src/org/smssecure/smssecure/service/QuickResponseService.java": {
-    "mtime": 1785657727.273234,
+    "mtime": 1785765988.5803227,
     "ast_hash": "5e55efcf97b952a73fa59487e8331b78",
     "semantic_hash": "5e55efcf97b952a73fa59487e8331b78"
   },
   "src/org/smssecure/smssecure/service/SmsDeliveryListener.java": {
-    "mtime": 1785654738.141104,
+    "mtime": 1785765988.5813274,
     "ast_hash": "1eafca01c0a4693c4f5f2be2983d5cb5",
     "semantic_hash": "1eafca01c0a4693c4f5f2be2983d5cb5"
   },
   "src/org/smssecure/smssecure/service/SmsListener.java": {
-    "mtime": 1785648987.7493937,
+    "mtime": 1785765988.5818303,
     "ast_hash": "9ef61b68df5377592c6c171a685ed26c",
     "semantic_hash": "9ef61b68df5377592c6c171a685ed26c"
   },
@@ -3070,7 +3055,7 @@
     "semantic_hash": "8b0d17a2d7510ac7625d1f2de5ca0f7a"
   },
   "src/org/smssecure/smssecure/sms/IncomingIdentityUpdateMessage.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5818303,
     "ast_hash": "1b06ea2b663426c6ce11aa0f07e32719",
     "semantic_hash": "1b06ea2b663426c6ce11aa0f07e32719"
   },
@@ -3085,7 +3070,7 @@
     "semantic_hash": "87d596ed842a380f23df9bff4bd5c9ff"
   },
   "src/org/smssecure/smssecure/sms/IncomingTextMessage.java": {
-    "mtime": 1783644147.932615,
+    "mtime": 1785765988.582834,
     "ast_hash": "0be3b74c38b6edd508ebaf23e3249502",
     "semantic_hash": "0be3b74c38b6edd508ebaf23e3249502"
   },
@@ -3095,7 +3080,7 @@
     "semantic_hash": "5a2dda136c73c2813dde62a098f3eac6"
   },
   "src/org/smssecure/smssecure/sms/MessageSender.java": {
-    "mtime": 1783644147.932615,
+    "mtime": 1785765988.5833373,
     "ast_hash": "ed922e1644609802b59980e4a729f532",
     "semantic_hash": "ed922e1644609802b59980e4a729f532"
   },
@@ -3145,12 +3130,12 @@
     "semantic_hash": "a4ab9fe187476c50b091fa0778a220df"
   },
   "src/org/smssecure/smssecure/sms/SmsTransportDetails.java": {
-    "mtime": 1783699901.3075247,
+    "mtime": 1785765988.5833373,
     "ast_hash": "f506cdf48e4b4cbcc7730e31f4cb23f6",
     "semantic_hash": "f506cdf48e4b4cbcc7730e31f4cb23f6"
   },
   "src/org/smssecure/smssecure/sms/TelephonyServiceState.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.584845,
     "ast_hash": "bd7c7b1d6078fc20a75b9a4c91581d1a",
     "semantic_hash": "bd7c7b1d6078fc20a75b9a4c91581d1a"
   },
@@ -3165,7 +3150,7 @@
     "semantic_hash": "090e0a42d96ce1d1502f6a89e0a25465"
   },
   "src/org/smssecure/smssecure/util/ActivityTransitionCompat.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.584845,
     "ast_hash": "5ff2dd26c7859b4ce704472544dd7849",
     "semantic_hash": "5ff2dd26c7859b4ce704472544dd7849"
   },
@@ -3180,7 +3165,7 @@
     "semantic_hash": "46b55ad40dcc5e4edc50cdd3ff10714e"
   },
   "src/org/smssecure/smssecure/util/BitmapUtil.java": {
-    "mtime": 1785686249.7492237,
+    "mtime": 1785765988.58585,
     "ast_hash": "ee55b0ab0763eedc47f0631fbf87a39e",
     "semantic_hash": "ee55b0ab0763eedc47f0631fbf87a39e"
   },
@@ -3215,7 +3200,7 @@
     "semantic_hash": "95643a84b312c0eac20b64e0b5b97729"
   },
   "src/org/smssecure/smssecure/util/DynamicLanguage.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.58585,
     "ast_hash": "70fb9622db5e0c37228f91aefae1cf44",
     "semantic_hash": "70fb9622db5e0c37228f91aefae1cf44"
   },
@@ -3225,7 +3210,7 @@
     "semantic_hash": "8cfd5cb01fab12cf68434241eeb997c8"
   },
   "src/org/smssecure/smssecure/util/DynamicTheme.java": {
-    "mtime": 1783705982.22573,
+    "mtime": 1785765988.58585,
     "ast_hash": "951a2e3f9d5b1713d1e5f611184f7389",
     "semantic_hash": "951a2e3f9d5b1713d1e5f611184f7389"
   },
@@ -3295,7 +3280,7 @@
     "semantic_hash": "b587d02b4c24136020dbc3673014c7a3"
   },
   "src/org/smssecure/smssecure/util/PhoneNumberFormatter.java": {
-    "mtime": 1785654738.141104,
+    "mtime": 1785765988.5873806,
     "ast_hash": "3aef053535ad537f2940581ecd0fe67d",
     "semantic_hash": "3aef053535ad537f2940581ecd0fe67d"
   },
@@ -3310,12 +3295,12 @@
     "semantic_hash": "d985bf38f666ba9ef96e9cf5f6d8c0c3"
   },
   "src/org/smssecure/smssecure/util/Rfc5724Uri.java": {
-    "mtime": 1785648987.7493937,
+    "mtime": 1785765988.5873806,
     "ast_hash": "055103babc5153b2632c76ce6181b9cd",
     "semantic_hash": "055103babc5153b2632c76ce6181b9cd"
   },
   "src/org/smssecure/smssecure/util/SaveAttachmentTask.java": {
-    "mtime": 1785652416.8792465,
+    "mtime": 1785765988.5873806,
     "ast_hash": "014826979084fbedc6dee6da73cb8ab2",
     "semantic_hash": "014826979084fbedc6dee6da73cb8ab2"
   },
@@ -3355,12 +3340,12 @@
     "semantic_hash": "97034c3869efb7ce896f8b05b6f6114f"
   },
   "src/org/smssecure/smssecure/util/SpanUtil.java": {
-    "mtime": 1785764370.6958196,
+    "mtime": 1785765988.5889058,
     "ast_hash": "ffab04d21d380a7aeeb3bebf7c01f944",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/util/StickyHeaderDecoration.java": {
-    "mtime": 1783707683.7329843,
+    "mtime": 1785765988.5889058,
     "ast_hash": "6282abe64a1ac9e639065fa607cf0bb6",
     "semantic_hash": "6282abe64a1ac9e639065fa607cf0bb6"
   },
@@ -3370,27 +3355,27 @@
     "semantic_hash": "7247e2df88826bb2adba80019c7a826f"
   },
   "src/org/smssecure/smssecure/util/TelephonyUtil.java": {
-    "mtime": 1785764370.682712,
+    "mtime": 1785765988.5904412,
     "ast_hash": "46b711a31dd21090bbd077017ddeb3f5",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/util/Trimmer.java": {
-    "mtime": 1785652416.8792465,
+    "mtime": 1785765988.5904412,
     "ast_hash": "9a1ceba1b95512369aef873f83440619",
     "semantic_hash": "9a1ceba1b95512369aef873f83440619"
   },
   "src/org/smssecure/smssecure/util/Util.java": {
-    "mtime": 1785657727.2763069,
+    "mtime": 1785765988.5904412,
     "ast_hash": "86e66b8143fc792dd47ba4a06a2f68e0",
     "semantic_hash": "86e66b8143fc792dd47ba4a06a2f68e0"
   },
   "src/org/smssecure/smssecure/util/VersionTracker.java": {
-    "mtime": 1785648987.7493937,
+    "mtime": 1785765988.5919626,
     "ast_hash": "3971e2a07afca543bd13dfa4f908ca72",
     "semantic_hash": "3971e2a07afca543bd13dfa4f908ca72"
   },
   "src/org/smssecure/smssecure/util/ViewUtil.java": {
-    "mtime": 1785686249.7233932,
+    "mtime": 1785765988.5919626,
     "ast_hash": "83a87031350d71cc0b143fd533303657",
     "semantic_hash": "83a87031350d71cc0b143fd533303657"
   },
@@ -3400,7 +3385,7 @@
     "semantic_hash": "d148f615325fed3da633f69f6fd3d6d2"
   },
   "src/org/smssecure/smssecure/util/WindowSizeCompat.java": {
-    "mtime": 1785657727.314983,
+    "mtime": 1785765988.5919626,
     "ast_hash": "2ebb82025a5ac8f693415f023e8b4649",
     "semantic_hash": "2ebb82025a5ac8f693415f023e8b4649"
   },
@@ -3410,7 +3395,7 @@
     "semantic_hash": "dc978d55592ddda45c9cea92d80ce431"
   },
   "src/org/smssecure/smssecure/util/concurrent/AppTaskExecutor.java": {
-    "mtime": 1785648987.7725441,
+    "mtime": 1785765988.5934901,
     "ast_hash": "de9b7380210614248ac43ed341af22e8",
     "semantic_hash": "de9b7380210614248ac43ed341af22e8"
   },
@@ -3420,7 +3405,7 @@
     "semantic_hash": "b5a4aed2f5b3a6f6d7529b6432092156"
   },
   "src/org/smssecure/smssecure/util/concurrent/AsyncBroadcastTask.java": {
-    "mtime": 1785651299.976943,
+    "mtime": 1785765988.5934901,
     "ast_hash": "c80de748907959d7dddff3000e677fa5",
     "semantic_hash": "c80de748907959d7dddff3000e677fa5"
   },
@@ -3450,12 +3435,12 @@
     "semantic_hash": "25ebdff63382a83bb805485da4a3cce8"
   },
   "src/org/smssecure/smssecure/util/dualsim/DualSimUtil.java": {
-    "mtime": 1783847349.5162334,
+    "mtime": 1785765988.5934901,
     "ast_hash": "1ce028145bce6fa4d2af8becf1bed97f",
     "semantic_hash": "1ce028145bce6fa4d2af8becf1bed97f"
   },
   "src/org/smssecure/smssecure/util/dualsim/SimChangedReceiver.java": {
-    "mtime": 1785648987.7710204,
+    "mtime": 1785765988.5950146,
     "ast_hash": "ea14e9f470bf51d9f658a28b12c8db4e",
     "semantic_hash": "ea14e9f470bf51d9f658a28b12c8db4e"
   },
@@ -3465,17 +3450,17 @@
     "semantic_hash": "f4cdcf9f640285cb06e09c5e84807b66"
   },
   "src/org/smssecure/smssecure/util/dualsim/SubscriptionManagerCompat.java": {
-    "mtime": 1785764370.685223,
+    "mtime": 1785765988.5950146,
     "ast_hash": "c9af9e16eb20f101d3ffaa3b4026b2ff",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/util/task/SnackbarAsyncTask.java": {
-    "mtime": 1785652416.8792465,
+    "mtime": 1785765988.5965254,
     "ast_hash": "77ab05815e2b7e0a6f5aa1125963395d",
     "semantic_hash": "77ab05815e2b7e0a6f5aa1125963395d"
   },
   "src/org/smssecure/smssecure/util/views/Stub.java": {
-    "mtime": 1785686249.76684,
+    "mtime": 1785765988.5965254,
     "ast_hash": "144a9e82e0addb05190074f96db7a2c3",
     "semantic_hash": "144a9e82e0addb05190074f96db7a2c3"
   },
@@ -3495,7 +3480,7 @@
     "semantic_hash": "c4e7a285336635c904bcf451bc3938a4"
   },
   "test/androidTest/java/org/smssecure/smssecure/util/BitmapUtilTest.java": {
-    "mtime": 1785686249.7497282,
+    "mtime": 1785765988.5980334,
     "ast_hash": "7017b13ca45380f84d2b409db62e2055",
     "semantic_hash": "7017b13ca45380f84d2b409db62e2055"
   },
@@ -3510,17 +3495,17 @@
     "semantic_hash": "eae95628539c8fbb409c32bffc2b3c5d"
   },
   "test/unitTest/java/org/smssecure/smssecure/SystemBarThemeContractTest.java": {
-    "mtime": 1785686249.76684,
+    "mtime": 1785765988.5990376,
     "ast_hash": "8b1a55b6877da3da80236d3b0bb350aa",
     "semantic_hash": "8b1a55b6877da3da80236d3b0bb350aa"
   },
   "test/unitTest/java/org/smssecure/smssecure/crypto/AsymmetricMasterCipherTest.java": {
-    "mtime": 1785709649.7276213,
+    "mtime": 1785765988.6031158,
     "ast_hash": "2c58e661384abc92c8e241b89c8ce254",
     "semantic_hash": "2c58e661384abc92c8e241b89c8ce254"
   },
   "test/unitTest/java/org/smssecure/smssecure/crypto/MasterCipherTest.java": {
-    "mtime": 1785745417.6681433,
+    "mtime": 1785765988.6036193,
     "ast_hash": "70a3398cc89955559736cead0352a864",
     "semantic_hash": "70a3398cc89955559736cead0352a864"
   },
@@ -3530,42 +3515,42 @@
     "semantic_hash": "b8069843a73fe354abf473bf447f3f27"
   },
   "test/unitTest/java/org/smssecure/smssecure/database/XmlBackupWriterTest.java": {
-    "mtime": 1785686249.7477129,
+    "mtime": 1785765988.6056428,
     "ast_hash": "f07101993ccdb0c82f9a79f9f98afc54",
     "semantic_hash": "f07101993ccdb0c82f9a79f9f98afc54"
   },
   "test/unitTest/java/org/smssecure/smssecure/notifications/AndroidAutoNotificationContractTest.java": {
-    "mtime": 1785666970.3119533,
+    "mtime": 1785765988.6061542,
     "ast_hash": "6e4c66845c0208901f019fef27a32870",
     "semantic_hash": "6e4c66845c0208901f019fef27a32870"
   },
   "test/unitTest/java/org/smssecure/smssecure/notifications/NotificationActionIdentityTest.java": {
-    "mtime": 1785651300.0077932,
+    "mtime": 1785765988.6061542,
     "ast_hash": "a04a17dbab864a83a36dac5b7de87a57",
     "semantic_hash": "a04a17dbab864a83a36dac5b7de87a57"
   },
   "test/unitTest/java/org/smssecure/smssecure/notifications/NotificationActionOperationsTest.java": {
-    "mtime": 1785659359.9344664,
+    "mtime": 1785765988.6061542,
     "ast_hash": "e01533fa354a3639715b3bfb19d094e8",
     "semantic_hash": "e01533fa354a3639715b3bfb19d094e8"
   },
   "test/unitTest/java/org/smssecure/smssecure/notifications/NotificationActionTokenRegistryTest.java": {
-    "mtime": 1785651300.0077932,
+    "mtime": 1785765988.6076932,
     "ast_hash": "9138176374bb64d6200be265462b55fa",
     "semantic_hash": "9138176374bb64d6200be265462b55fa"
   },
   "test/unitTest/java/org/smssecure/smssecure/notifications/NotificationConversationTest.java": {
-    "mtime": 1785659359.9359732,
+    "mtime": 1785765988.6076932,
     "ast_hash": "1e18c44aa844f3632e1445514f25ded4",
     "semantic_hash": "1e18c44aa844f3632e1445514f25ded4"
   },
   "test/unitTest/java/org/smssecure/smssecure/util/BitmapUtilTest.java": {
-    "mtime": 1785686249.7492237,
+    "mtime": 1785765988.6076932,
     "ast_hash": "8668bf625c56fc4b31397594974c2a5a",
     "semantic_hash": "8668bf625c56fc4b31397594974c2a5a"
   },
   "test/unitTest/java/org/smssecure/smssecure/util/CompatExtrasTest.java": {
-    "mtime": 1785654738.1426404,
+    "mtime": 1785765988.6076932,
     "ast_hash": "ce8d8a564de84df0f920afe300406dd2",
     "semantic_hash": "ce8d8a564de84df0f920afe300406dd2"
   },
@@ -3580,7 +3565,7 @@
     "semantic_hash": "7067d2b861ac873e7505790fc39b6506"
   },
   "test/unitTest/java/org/smssecure/smssecure/util/PhoneNumberFormatterTest.java": {
-    "mtime": 1785654738.141104,
+    "mtime": 1785765988.6092217,
     "ast_hash": "6d498bbf98594195cef9a7156c0d93c8",
     "semantic_hash": "6d498bbf98594195cef9a7156c0d93c8"
   },
@@ -3595,44 +3580,29 @@
     "semantic_hash": "d7a5af3c8983484dc02ce3197702f9e9"
   },
   "test/unitTest/java/org/smssecure/smssecure/util/concurrent/AppTaskExecutorTest.java": {
-    "mtime": 1785651299.9750316,
+    "mtime": 1785765988.6092217,
     "ast_hash": "87be8782bac32bd10a3645a1c92775a7",
     "semantic_hash": "87be8782bac32bd10a3645a1c92775a7"
   },
-  ".gitlab/issue_templates/Bug.md": {
-    "mtime": 1765920809.578412,
-    "ast_hash": "6739026fd5e69bf32a192a9be10c5339",
-    "semantic_hash": "6739026fd5e69bf32a192a9be10c5339"
-  },
-  ".gitlab/merge_request_templates/Merge Request.md": {
-    "mtime": 1765920809.578412,
-    "ast_hash": "22dd73a689e3717bbba6b43c540297d9",
-    "semantic_hash": "22dd73a689e3717bbba6b43c540297d9"
-  },
-  ".travis.yml": {
-    "mtime": 1765920809.5799491,
-    "ast_hash": "6f69cda6ed084d4d40aafb12cabbdcfb",
-    "semantic_hash": "6f69cda6ed084d4d40aafb12cabbdcfb"
-  },
   "BUILDING.md": {
-    "mtime": 1785745417.6681433,
-    "ast_hash": "8a1706decd9d068f18e0215b584ec3b7",
-    "semantic_hash": "8a1706decd9d068f18e0215b584ec3b7"
+    "mtime": 1785850163.3015003,
+    "ast_hash": "72c5f05a6da2d11433e04c62877c9df6",
+    "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1765920809.5799491,
-    "ast_hash": "b95a7b5236cf8cc8401b3d9e8eeb6f19",
-    "semantic_hash": "b95a7b5236cf8cc8401b3d9e8eeb6f19"
+    "mtime": 1785849574.036839,
+    "ast_hash": "dcf1b5ad0d55465a79efa3cfad48e0ae",
+    "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
-    "mtime": 1765920809.5799491,
-    "ast_hash": "8cbe061658d30373e738bc29f83758d5",
-    "semantic_hash": "8cbe061658d30373e738bc29f83758d5"
+    "mtime": 1785850326.4246979,
+    "ast_hash": "0b549c27cf4a78b7bc7091da83540602",
+    "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1765920809.5814795,
-    "ast_hash": "09f540dcb9d4d5f630b129d121842d6a",
-    "semantic_hash": "09f540dcb9d4d5f630b129d121842d6a"
+    "mtime": 1785850163.294456,
+    "ast_hash": "1b27d359cf7607bcacf4cad89635aef3",
+    "semantic_hash": ""
   },
   "libs/com.amulyakhare.textdrawable/README.md": {
     "mtime": 1765920809.6166584,
@@ -3643,11 +3613,6 @@
     "mtime": 1765920809.6212578,
     "ast_hash": "cf328416c498536352d0ee3b04c611c3",
     "semantic_hash": "cf328416c498536352d0ee3b04c611c3"
-  },
-  "libs/org.greenrobot.eventbus/.travis.yml": {
-    "mtime": 1765920809.6243384,
-    "ast_hash": "16a8364cc953ffbf81c2d7e9838a1574",
-    "semantic_hash": "16a8364cc953ffbf81c2d7e9838a1574"
   },
   "libs/org.greenrobot.eventbus/COMPARISON.md": {
     "mtime": 1765920809.624912,
@@ -3665,9 +3630,9 @@
     "semantic_hash": "a8e31d01b7d94e721851a4dd39b088cb"
   },
   "libs/org.greenrobot.eventbus/README.md": {
-    "mtime": 1765920809.6622431,
-    "ast_hash": "1e9217d8b695e04a72e413809e26b628",
-    "semantic_hash": "1e9217d8b695e04a72e413809e26b628"
+    "mtime": 1785849394.5861945,
+    "ast_hash": "e62567947a6a2503ed124fba78ee49e4",
+    "semantic_hash": ""
   },
   "libs/org.whispersystems.jobmanager/README.md": {
     "mtime": 1765920809.663759,
@@ -3695,267 +3660,267 @@
     "semantic_hash": "d9c13ef924dc66db411326352e86f5e3"
   },
   "cpp/argon2/include/argon2.h": {
-    "mtime": 1558275480.0,
-    "ast_hash": "06325a873b454bf69c95d49adf23cf98",
-    "semantic_hash": "06325a873b454bf69c95d49adf23cf98"
+    "mtime": 1785765988.3553822,
+    "ast_hash": "94c744e7e7e7260c798fcfc9451a77d0",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/argon2.c": {
-    "mtime": 1558275480.0,
-    "ast_hash": "6537b7cbc010dc01cffdf11cce7af4f3",
-    "semantic_hash": "6537b7cbc010dc01cffdf11cce7af4f3"
+    "mtime": 1785765988.3553822,
+    "ast_hash": "f387218117447325e3d8bdd714c78269",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/blake2/blake2-impl.h": {
-    "mtime": 1558275480.0,
-    "ast_hash": "bfa8c0ec7711f5653b17ef1591646923",
-    "semantic_hash": "bfa8c0ec7711f5653b17ef1591646923"
+    "mtime": 1785765988.356913,
+    "ast_hash": "c9f82b835c335215d539559222e3e809",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/blake2/blake2.h": {
-    "mtime": 1558275480.0,
-    "ast_hash": "d3d419987b925a7d49dd020e85e2bd21",
-    "semantic_hash": "d3d419987b925a7d49dd020e85e2bd21"
+    "mtime": 1785765988.356913,
+    "ast_hash": "37d6163163be16f071491027a0a6bf3d",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/blake2/blake2b.c": {
-    "mtime": 1558275480.0,
-    "ast_hash": "70d9b7f5b34c1ad214113a942d34c4cf",
-    "semantic_hash": "70d9b7f5b34c1ad214113a942d34c4cf"
+    "mtime": 1785765988.3584435,
+    "ast_hash": "cc19fb8531feb451ceb2ba7e13807238",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/blake2/blamka-round-ref.h": {
-    "mtime": 1558275480.0,
-    "ast_hash": "f8806e2b29201c0054f3b1a16614072f",
-    "semantic_hash": "f8806e2b29201c0054f3b1a16614072f"
+    "mtime": 1785765988.3584435,
+    "ast_hash": "b70bfb0248b295d1c65c988b4953884d",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/core.c": {
-    "mtime": 1558275480.0,
-    "ast_hash": "ea91e17d13de31ebc132997812879347",
-    "semantic_hash": "ea91e17d13de31ebc132997812879347"
+    "mtime": 1785765988.3584435,
+    "ast_hash": "aae7faf928f3ff8c141b19dc5d9e08a6",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/core.h": {
-    "mtime": 1558275480.0,
-    "ast_hash": "8188330fafc68c5386881b6e2221a5de",
-    "semantic_hash": "8188330fafc68c5386881b6e2221a5de"
+    "mtime": 1785765988.3594973,
+    "ast_hash": "51a57bd5e21c31e96bce5dd974ad593e",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/encoding.c": {
-    "mtime": 1558275480.0,
-    "ast_hash": "9b2edda46be1b507f808fecc16083200",
-    "semantic_hash": "9b2edda46be1b507f808fecc16083200"
+    "mtime": 1785765988.3594973,
+    "ast_hash": "bab7a30d96b46ddc3546cdf30c13b7d2",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/encoding.h": {
-    "mtime": 1558275480.0,
-    "ast_hash": "b376ca1e095947a3ee7c24f162476903",
-    "semantic_hash": "b376ca1e095947a3ee7c24f162476903"
+    "mtime": 1785765988.3594973,
+    "ast_hash": "f5ee54badcccc604f27c201f37b7736d",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/ref.c": {
-    "mtime": 1558275480.0,
-    "ast_hash": "81a9bd55542189ab933b45762d83666d",
-    "semantic_hash": "81a9bd55542189ab933b45762d83666d"
+    "mtime": 1785765988.3610265,
+    "ast_hash": "de6e35b74761cf75641b017cce892326",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/thread.c": {
-    "mtime": 1558275480.0,
-    "ast_hash": "b90f2f105f8511767060fd7869741df4",
-    "semantic_hash": "b90f2f105f8511767060fd7869741df4"
+    "mtime": 1785765988.3610265,
+    "ast_hash": "fff638055bb28a06582da03ae409c2c9",
+    "semantic_hash": ""
   },
   "cpp/argon2/src/thread.h": {
-    "mtime": 1558275480.0,
-    "ast_hash": "f7e7765e0f347a0735dfafdcc52f31fe",
-    "semantic_hash": "f7e7765e0f347a0735dfafdcc52f31fe"
+    "mtime": 1785765988.3610265,
+    "ast_hash": "0ed7de838c05fc22175dd710ef80f64b",
+    "semantic_hash": ""
   },
   "cpp/argon2_bench.c": {
-    "mtime": 1785711569.2433746,
+    "mtime": 1785765988.3625536,
     "ast_hash": "faa6ccf6529f785dab7dc2d7a9ccf749",
     "semantic_hash": "faa6ccf6529f785dab7dc2d7a9ccf749"
   },
   "cpp/argon2_jni.c": {
-    "mtime": 1785711569.238849,
+    "mtime": 1785765988.3625536,
     "ast_hash": "c76149d50d820258a2af034ff9c1d22c",
     "semantic_hash": "c76149d50d820258a2af034ff9c1d22c"
   },
   "cpp/argon2_kat.c": {
-    "mtime": 1785711569.239854,
+    "mtime": 1785765988.3625536,
     "ast_hash": "dc4db6260de48572e7112400be4cfece",
     "semantic_hash": "dc4db6260de48572e7112400be4cfece"
   },
   "src/org/smssecure/smssecure/backup/AutomaticBackupManager.java": {
-    "mtime": 1785745417.6930003,
+    "mtime": 1785765988.5061677,
     "ast_hash": "9cdbd35ab2df982936d9910441d54076",
     "semantic_hash": "9cdbd35ab2df982936d9910441d54076"
   },
   "src/org/smssecure/smssecure/backup/AutomaticBackupWorker.java": {
-    "mtime": 1785745417.6930003,
+    "mtime": 1785765988.5071735,
     "ast_hash": "e1911e1370809d81fbbc478610fe310a",
     "semantic_hash": "e1911e1370809d81fbbc478610fe310a"
   },
   "src/org/smssecure/smssecure/backup/BackupRecoveryKey.java": {
-    "mtime": 1785745417.6796994,
+    "mtime": 1785765988.5076778,
     "ast_hash": "7e1197a13fda7a05a29823906adb75f4",
     "semantic_hash": "7e1197a13fda7a05a29823906adb75f4"
   },
   "src/org/smssecure/smssecure/backup/RestoredPreferences.java": {
-    "mtime": 1785764388.8936548,
-    "ast_hash": "73f480426fa672349c5c10d7d633c508",
+    "mtime": 1785765988.5081964,
+    "ast_hash": "cab788814f0a99358f9b19f42068a8fc",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/backup/SecureBackupArchive.java": {
-    "mtime": 1785764388.8936548,
-    "ast_hash": "092196c7824725c55b0608663fb03e6f",
+    "mtime": 1785765988.5087066,
+    "ast_hash": "0d5be9b52616f5ed0b6a0cf17add325d",
     "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/backup/SecureBackupContainer.java": {
-    "mtime": 1785764388.8936548,
+    "mtime": 1785765988.5092218,
     "ast_hash": "b2fea192fadbceb702613aa0f27261d6",
     "semantic_hash": "b2fea192fadbceb702613aa0f27261d6"
   },
   "src/org/smssecure/smssecure/backup/SecureBackupRestoreCoordinator.java": {
-    "mtime": 1785764375.1779366,
+    "mtime": 1785765988.5092218,
     "ast_hash": "0072b4058b332e675baeef20d4303c95",
     "semantic_hash": "0072b4058b332e675baeef20d4303c95"
   },
   "src/org/smssecure/smssecure/crypto/AndroidKeystoreKeyManager.java": {
-    "mtime": 1785745417.6930003,
+    "mtime": 1785765988.520342,
     "ast_hash": "38304ce06bbb4ab7c9de39b88cfad3f5",
     "semantic_hash": "38304ce06bbb4ab7c9de39b88cfad3f5"
   },
   "src/org/smssecure/smssecure/crypto/Argon2Exception.java": {
-    "mtime": 1785711569.2433746,
+    "mtime": 1785765988.520342,
     "ast_hash": "ea809698bfc880fb112dee2f9c54198f",
     "semantic_hash": "ea809698bfc880fb112dee2f9c54198f"
   },
   "src/org/smssecure/smssecure/crypto/Argon2MasterSecretEnvelope.java": {
-    "mtime": 1785764388.8936548,
+    "mtime": 1785765988.5218644,
     "ast_hash": "162289ed99ba618f085ca0783fc9dda5",
     "semantic_hash": "162289ed99ba618f085ca0783fc9dda5"
   },
   "src/org/smssecure/smssecure/crypto/Argon2id.java": {
-    "mtime": 1785709857.914838,
+    "mtime": 1785765988.5224156,
     "ast_hash": "c6479400f39972cd37be178cc2210c99",
     "semantic_hash": "c6479400f39972cd37be178cc2210c99"
   },
   "src/org/smssecure/smssecure/crypto/DeviceKeyEnvelope.java": {
-    "mtime": 1785745417.6930003,
+    "mtime": 1785765988.5244546,
     "ast_hash": "f174083c035e51d4149281aa0c7b9ef0",
     "semantic_hash": "f174083c035e51d4149281aa0c7b9ef0"
   },
   "src/org/smssecure/smssecure/crypto/HkdfSha256.java": {
-    "mtime": 1785709649.7276213,
+    "mtime": 1785765988.5244546,
     "ast_hash": "026ef08fe22d33975e81d3c10753b565",
     "semantic_hash": "026ef08fe22d33975e81d3c10753b565"
   },
   "src/org/smssecure/smssecure/crypto/MasterSecretMigration.java": {
-    "mtime": 1785713336.483857,
+    "mtime": 1785765988.5290475,
     "ast_hash": "ee2ea7154bcf24e3399dfd059c9e4f2b",
     "semantic_hash": "ee2ea7154bcf24e3399dfd059c9e4f2b"
   },
   "src/org/smssecure/smssecure/crypto/MasterSecretStorageException.java": {
-    "mtime": 1785745417.6686475,
+    "mtime": 1785765988.5290475,
     "ast_hash": "b5f9ca36fcc4e246378444e5f1313e2c",
     "semantic_hash": "b5f9ca36fcc4e246378444e5f1313e2c"
   },
   "test/androidTest/java/org/smssecure/smssecure/crypto/Argon2idDeviceTest.java": {
-    "mtime": 1785715696.8237295,
+    "mtime": 1785765988.5980334,
     "ast_hash": "7a45898fb8061197aa1d0d344efd2af7",
     "semantic_hash": "7a45898fb8061197aa1d0d344efd2af7"
   },
   "test/unitTest/java/org/smssecure/smssecure/backup/RestoredPreferencesTest.java": {
-    "mtime": 1785764388.8936548,
+    "mtime": 1785765988.6000874,
     "ast_hash": "149fdf9379bcbc84f8d950291f2cee91",
     "semantic_hash": "149fdf9379bcbc84f8d950291f2cee91"
   },
   "test/unitTest/java/org/smssecure/smssecure/backup/SecureBackupArchiveTest.java": {
-    "mtime": 1785764388.8936548,
-    "ast_hash": "5558bc5a51d3824e52a0ceed2e0dc9d3",
+    "mtime": 1785765988.6006029,
+    "ast_hash": "363b77511083b8c9c6caa3c20cf8c1c8",
     "semantic_hash": ""
   },
   "test/unitTest/java/org/smssecure/smssecure/backup/SecureBackupContainerTest.java": {
-    "mtime": 1785745417.6873767,
+    "mtime": 1785765988.601607,
     "ast_hash": "25fd86623f8c896f9f018b179c67aa53",
     "semantic_hash": "25fd86623f8c896f9f018b179c67aa53"
   },
   "test/unitTest/java/org/smssecure/smssecure/backup/SecureBackupRestoreCoordinatorTest.java": {
-    "mtime": 1785764375.1779366,
+    "mtime": 1785765988.6021106,
     "ast_hash": "22281d99f84677701bcf468fbda6690d",
     "semantic_hash": "22281d99f84677701bcf468fbda6690d"
   },
   "test/unitTest/java/org/smssecure/smssecure/crypto/Argon2MasterSecretEnvelopeTest.java": {
-    "mtime": 1785764388.8936548,
+    "mtime": 1785765988.6021106,
     "ast_hash": "5c488d590975703e73a516222b4075bb",
     "semantic_hash": "5c488d590975703e73a516222b4075bb"
   },
   "test/unitTest/java/org/smssecure/smssecure/crypto/Argon2idTest.java": {
-    "mtime": 1785711569.2433746,
+    "mtime": 1785765988.6021106,
     "ast_hash": "438e82b426640e6da3dda2e269eb2d50",
     "semantic_hash": "438e82b426640e6da3dda2e269eb2d50"
   },
   "test/unitTest/java/org/smssecure/smssecure/crypto/DeviceKeyEnvelopeTest.java": {
-    "mtime": 1785745417.6930003,
+    "mtime": 1785765988.6036193,
     "ast_hash": "8c71f847a50ec733b14565bcee1bbc63",
     "semantic_hash": "8c71f847a50ec733b14565bcee1bbc63"
   },
   "test/unitTest/java/org/smssecure/smssecure/crypto/MasterSecretMigrationTest.java": {
-    "mtime": 1785713336.483857,
+    "mtime": 1785765988.6046245,
     "ast_hash": "1ca831bb1b2123b44954ea9b745634dd",
     "semantic_hash": "1ca831bb1b2123b44954ea9b745634dd"
   },
   "test/unitTest/java/org/smssecure/smssecure/crypto/MasterSecretUtilArgon2Test.java": {
-    "mtime": 1785764388.8936548,
+    "mtime": 1785765988.6051283,
     "ast_hash": "0fac3ced63194bcc31c8ebba7aa59852",
     "semantic_hash": "0fac3ced63194bcc31c8ebba7aa59852"
   },
   ".agents/skills/graphify/SKILL.md": {
-    "mtime": 1785711384.173462,
-    "ast_hash": "4388891114e3af2d60510a23f3dd8069",
-    "semantic_hash": "4388891114e3af2d60510a23f3dd8069"
+    "mtime": 1785765988.3435273,
+    "ast_hash": "1f763d7fdbf5491a14712a75b1353058",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/add-watch.md": {
-    "mtime": 1785412660.014163,
-    "ast_hash": "d59d027fe449f06aa03905a01184e779",
-    "semantic_hash": "d59d027fe449f06aa03905a01184e779"
+    "mtime": 1785765988.344301,
+    "ast_hash": "58c888b5ec0689a886543dd765c1acc9",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/exports.md": {
-    "mtime": 1785412660.015169,
-    "ast_hash": "9da2a2152e60a22f07f05fed5158f287",
-    "semantic_hash": "9da2a2152e60a22f07f05fed5158f287"
+    "mtime": 1785765988.3448222,
+    "ast_hash": "ecc0c36852fee4ba6280cdf2b9149039",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/extraction-spec.md": {
-    "mtime": 1785412660.0156722,
-    "ast_hash": "42fef56a01698118f7fd722acdadea34",
-    "semantic_hash": "42fef56a01698118f7fd722acdadea34"
+    "mtime": 1785765988.345404,
+    "ast_hash": "024c6f2a3c146b03c72cc871dc56ed3c",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/github-and-merge.md": {
-    "mtime": 1785412660.0156722,
-    "ast_hash": "cde13df085e4c492aeb7ba298a996d0d",
-    "semantic_hash": "cde13df085e4c492aeb7ba298a996d0d"
+    "mtime": 1785765988.3459249,
+    "ast_hash": "aa0e7ef186392cad062e60483ca7dbbf",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/hooks.md": {
-    "mtime": 1785412660.016679,
-    "ast_hash": "aea24fe86e18fe8aeb304403032cfce7",
-    "semantic_hash": "aea24fe86e18fe8aeb304403032cfce7"
+    "mtime": 1785765988.3465328,
+    "ast_hash": "94a1d96efdc6c6d21b4287dc950a9c17",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/query.md": {
-    "mtime": 1785412660.016679,
-    "ast_hash": "3c46f8ad006874260614ed8657d02307",
-    "semantic_hash": "3c46f8ad006874260614ed8657d02307"
+    "mtime": 1785765988.3470597,
+    "ast_hash": "852ef14334d60a75ae666ea103d4c4f0",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/transcribe.md": {
-    "mtime": 1785412660.016679,
-    "ast_hash": "67b6a5fa6c0974e18f60db9f8932fbd8",
-    "semantic_hash": "67b6a5fa6c0974e18f60db9f8932fbd8"
+    "mtime": 1785765988.347568,
+    "ast_hash": "5c6a9af05d12b5797b2fa8b9493dcc37",
+    "semantic_hash": ""
   },
   ".agents/skills/graphify/references/update.md": {
-    "mtime": 1785412660.016679,
-    "ast_hash": "9378bd03d56baaf78bd738ab3848f142",
-    "semantic_hash": "9378bd03d56baaf78bd738ab3848f142"
+    "mtime": 1785765988.3480902,
+    "ast_hash": "07bf4293ea21b4e00a9655dd4e7f0af5",
+    "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1785715806.8305411,
-    "ast_hash": "de6989dd962bb35d005dcaa3ffc32cef",
-    "semantic_hash": "de6989dd962bb35d005dcaa3ffc32cef"
+    "mtime": 1785848583.3926234,
+    "ast_hash": "bcd42171042c5283287763760f54e302",
+    "semantic_hash": ""
   },
   "cpp/CMakeLists.txt": {
-    "mtime": 1785711569.238849,
+    "mtime": 1785765988.3533256,
     "ast_hash": "6adb50d73daff724e5e13d908b1bf36a",
     "semantic_hash": "6adb50d73daff724e5e13d908b1bf36a"
   },
   "cpp/argon2/UPSTREAM.md": {
-    "mtime": 1785709858.066197,
+    "mtime": 1785765988.354869,
     "ast_hash": "e1ce2ecf680ae527f34f6bdcdbb1655e",
     "semantic_hash": "e1ce2ecf680ae527f34f6bdcdbb1655e"
   }

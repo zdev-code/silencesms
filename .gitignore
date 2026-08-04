@@ -24,6 +24,7 @@ signing.properties
 library/lib/
 library/obj/
 *.patch
+docs/
 
 # Graphify local caches and machine-specific runtime metadata
 graphify-out/cache/

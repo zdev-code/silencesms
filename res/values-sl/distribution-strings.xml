@@ -15,10 +15,10 @@ Komuniciranje z aplikacijo Silence je:
 * Transparentno. Silence je odprtokodna aplikacija. To pomeni, da lahko vsakdo preveri njeno kodo in tudi prispeva k nadaljnemu razvoju.
 
 Prgramske hrošče in druge probleme ter želje lahko javite na:
-https://git.silence.dev/Silence/Silence-Android/issues
+https://github.com/zdev-code/silencesms/issues
 
 Koda aplikacije je na voljo na:
-https://git.silence.dev/Silence/Silence-Android
+https://github.com/zdev-code/silencesms
 
 Več o aplikaciji Silence:
 https://silence.im

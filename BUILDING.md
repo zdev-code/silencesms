@@ -1,93 +1,75 @@
-Building Silence
-================
+# Building Silence
 
-Basics
-------
+Silence uses the checked-in Gradle wrapper. You do not need to install Gradle separately.
 
-Silence uses [Gradle](http://gradle.org) to build the project and to maintain
-dependencies.
+## Prerequisites
 
-Building Silence
-----------------
+Install the following tools:
 
-The following steps should help you (re)build Silence from the command line.
+* JDK 17
+* Android SDK Platform 36
+* Android SDK Build Tools
+* Android NDK 28.2.13676358
+* CMake 3.22.1
 
-1. Checkout the source somewhere on your filesystem with
+Android Studio can install the Android components through its SDK Manager.
 
-        git clone --recursive https://git.silence.dev/Silence/Silence-Android.git
+## Command-line build
 
-2. Make sure you have the [Android SDK](https://developer.android.com/sdk/index.html) installed somewhere on your system.
-3. Ensure that the following packages are installed from the Android SDK manager:
-    * Android SDK Build Tools
-    * SDK Platform
-    * Android Support Repository
-    * Google Repository
-4. Create a local.properties file at the root of your source checkout and add an sdk.dir entry to it.
+1. Clone the repository:
 
-        sdk.dir=\<path to your sdk installation\>
+   ```console
+   git clone https://github.com/zdev-code/silencesms.git
+   cd silencesms
+   ```
 
-5. (Optional) Build [Gradle-Witness](https://git.silence.dev/Silence/gradle-witness)
+2. If Android Studio has not generated it, create `local.properties` in the repository root and set the Android SDK path:
 
-        ./scripts/build-witness.sh
+   ```properties
+   sdk.dir=<path-to-android-sdk>
+   ```
 
-6. Execute Gradle:
+3. Build the debug APK on Linux or macOS:
 
-        ./gradlew assembleDebug
+   ```console
+   ./gradlew assembleDebug
+   ```
 
-Crypto release stages
----------------------
+   On Windows PowerShell, use `./gradlew.bat assembleDebug`.
 
-The local-crypto rollout has two release artifacts:
+## Release builds
 
-* `assemblePhaseARelease` builds the staged Phase A APK. It retains all modern readers but writes
-        only the versioned AES-CBC/HMAC field envelope and keeps the legacy PBKDF1 master-secret wrapper
-        authoritative.
-* `assembleRelease` builds the modernized Phase B-D APK. New fields use AES-256-GCM and successful
-        legacy unlocks may migrate the master-secret wrapper to Argon2id.
+The repository defines two release variants:
 
-Verify the generated write-policy flags and build both stages with:
+* `assembleRelease` builds the standard release with modern local-crypto writes enabled.
+* `assemblePhaseARelease` builds a compatibility release with modern local-crypto writes disabled. It retains modern readers while preserving the legacy write policy for staged deployment or rollback.
 
-                                ./gradlew verifyCryptoReleaseStages assemblePhaseARelease assembleRelease
+Verify the build-policy flags and build both variants on Linux or macOS with:
 
-Do not substitute `assembleRelease` for the Phase A artifact during the staged rollout. Both builds
-retain legacy and modern readers so upgrade and rollback data remain readable; their new-write policy
-is intentionally different.
-
-If you get a `Configuration with name 'default' not found.`, please update submodules:
-
-        git submodule init && git submodule update
-
-Visual assets
--------------
-
-Sample command for generating our audio placeholder image:
-
-```bash
-pngs_from_svg.py ic_audio.svg /path/to/Silence/res/ 150 --color #000 --opacity 0.54 --suffix _light
-pngs_from_svg.py ic_audio.svg /path/to/Silence/res/ 150 --color #fff --opacity 1.00 --suffix _light
+```console
+./gradlew verifyCryptoReleaseStages assemblePhaseARelease assembleRelease
 ```
 
+On Windows PowerShell, use:
 
-Translations
-------------
+```console
+./gradlew.bat verifyCryptoReleaseStages assemblePhaseARelease assembleRelease
+```
 
-Translations are available on [Weblate](https://translate.silence.dev) and automatically updated in the source code. Make sure you run on the latest `master` revision.
+Both variants retain legacy and modern readers so data remains readable across upgrades and rollbacks. Use the compatibility variant only when that write policy is intentional.
 
-Setting up a development environment
-------------------------------------
+## Setting up a development environment
 
-[Android Studio](https://developer.android.com/sdk/installing/studio.html) is the recommended development environment.
+[Android Studio](https://developer.android.com/studio) is the recommended development environment.
 
 1. Install Android Studio.
-2. Make sure the "Android Support Repository" is installed in the Android Studio SDK.
-3. Make sure the latest "Android SDK build-tools" is installed in the Android Studio SDK.
-4. Create a new Android Studio project. from the Quickstart pannel (use File > Close Project to see it), choose "Checkout from Version Control" then "git".
-5. Paste the URL for the Silence project when prompted (https://github.com/SilenceIM/Silence.git).
-6. Android studio should detect the presence of a project file and ask you whether to open it. Click "yes".
-7. Default config options should be good enough.
-8. Project initialisation and build should proceed.
+2. Install the Android components listed under Prerequisites using **Tools > SDK Manager**.
+3. Select JDK 17 as the Gradle JDK in Android Studio settings.
+4. Choose **File > New > Project from Version Control** and clone `https://github.com/zdev-code/silencesms.git`, or open an existing clone.
+5. Allow Android Studio to synchronize the Gradle project.
 
-Contributing code
------------------
+The project uses a legacy source layout configured in `build.gradle`; do not move source files into a generated modern layout simply to satisfy IDE suggestions.
 
-Code contributions should be sent via GitLab as merge requests, from feature branches.
+## Contributing code
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for pull request and validation guidance.
