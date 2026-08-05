@@ -5,489 +5,14 @@
     "semantic_hash": "2d06b60b7caf61c40b4ebbd7f8a1afa2"
   },
   "build.gradle": {
-    "mtime": 1785765988.3522682,
-    "ast_hash": "c259ef412bb1b92e7bf992f3fced224e",
-    "semantic_hash": "c259ef412bb1b92e7bf992f3fced224e"
+    "mtime": 1785916503.5773945,
+    "ast_hash": "5bd492beea01f2cb1bec287fbb70b167",
+    "semantic_hash": ""
   },
   "gradlew": {
     "mtime": 1785765988.3656118,
     "ast_hash": "343bf72f71043b4da467584bfb1d13cc",
     "semantic_hash": ""
-  },
-  "libs/com.amulyakhare.textdrawable/build.gradle": {
-    "mtime": 1765920809.6166584,
-    "ast_hash": "063606951e0b08b4110b0d6b9900aeb8",
-    "semantic_hash": "063606951e0b08b4110b0d6b9900aeb8"
-  },
-  "libs/com.amulyakhare.textdrawable/src/main/java/com/amulyakhare/textdrawable/TextDrawable.java": {
-    "mtime": 1765920809.6181877,
-    "ast_hash": "a7d0586e469966e91171215ac871f70d",
-    "semantic_hash": "a7d0586e469966e91171215ac871f70d"
-  },
-  "libs/com.amulyakhare.textdrawable/src/main/java/com/amulyakhare/textdrawable/util/ColorGenerator.java": {
-    "mtime": 1765920809.619722,
-    "ast_hash": "683c7da984e62358b54626e0cdc7556c",
-    "semantic_hash": "683c7da984e62358b54626e0cdc7556c"
-  },
-  "libs/gradle-witness/build.gradle": {
-    "mtime": 1765920809.6212578,
-    "ast_hash": "2931f5606d55dd875d12911a9e0ebc14",
-    "semantic_hash": "2931f5606d55dd875d12911a9e0ebc14"
-  },
-  "libs/gradle-witness/settings.gradle": {
-    "mtime": 1765920809.6212578,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
-    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
-  },
-  "libs/gradle-witness/src/main/groovy/org/whispersystems/witness/WitnessPlugin.groovy": {
-    "mtime": 1765920809.6227865,
-    "ast_hash": "ab37bb2c6814e88b750db29bdb36a869",
-    "semantic_hash": "ab37bb2c6814e88b750db29bdb36a869"
-  },
-  "libs/org.greenrobot.eventbus/EventBusAnnotationProcessor/build.gradle": {
-    "mtime": 1765920809.635922,
-    "ast_hash": "70157606376e6b6de7d9d4618cf0a648",
-    "semantic_hash": "70157606376e6b6de7d9d4618cf0a648"
-  },
-  "libs/org.greenrobot.eventbus/EventBusAnnotationProcessor/settings.gradle": {
-    "mtime": 1765920809.636435,
-    "ast_hash": "122b00f2b9e06359672d138adf1bbd9b",
-    "semantic_hash": "122b00f2b9e06359672d138adf1bbd9b"
-  },
-  "libs/org.greenrobot.eventbus/EventBusAnnotationProcessor/src/org/greenrobot/eventbus/annotationprocessor/EventBusAnnotationProcessor.java": {
-    "mtime": 1765920809.6379726,
-    "ast_hash": "193608dd1c4f5e467cbc8f24eca1021a",
-    "semantic_hash": "193608dd1c4f5e467cbc8f24eca1021a"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/build.gradle": {
-    "mtime": 1785849394.5861945,
-    "ast_hash": "ec4f0578f99471ec7c61d00f3f6d4387",
-    "semantic_hash": ""
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/Test.java": {
-    "mtime": 1765920809.6420915,
-    "ast_hash": "00afb549ecad5d72844723c884e7e0a4",
-    "semantic_hash": "00afb549ecad5d72844723c884e7e0a4"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/TestEvent.java": {
-    "mtime": 1765920809.6420915,
-    "ast_hash": "c96e5cbe68b282cb1a8ab768356aba9c",
-    "semantic_hash": "c96e5cbe68b282cb1a8ab768356aba9c"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/TestFinishedEvent.java": {
-    "mtime": 1765920809.6436274,
-    "ast_hash": "0a6bf4379e0f87030a809aa6d2e9194d",
-    "semantic_hash": "0a6bf4379e0f87030a809aa6d2e9194d"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/TestParams.java": {
-    "mtime": 1765920809.6436274,
-    "ast_hash": "6de1b51d33312a3c45440a94de7bd668",
-    "semantic_hash": "6de1b51d33312a3c45440a94de7bd668"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/TestRunner.java": {
-    "mtime": 1765920809.6436274,
-    "ast_hash": "8b6b69e6709db8b8fdda51921f41e4d4",
-    "semantic_hash": "8b6b69e6709db8b8fdda51921f41e4d4"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/TestRunnerActivity.java": {
-    "mtime": 1765920809.6436274,
-    "ast_hash": "8d850097de032f2da40741e28e583792",
-    "semantic_hash": "8d850097de032f2da40741e28e583792"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/TestSetupActivity.java": {
-    "mtime": 1765920809.6451578,
-    "ast_hash": "554ada82cbeeb81f207fe58cf4762833",
-    "semantic_hash": "554ada82cbeeb81f207fe58cf4762833"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/testsubject/PerfTestEventBus.java": {
-    "mtime": 1765920809.6451578,
-    "ast_hash": "929c655fd415f3a6b08e2f5db95e719a",
-    "semantic_hash": "929c655fd415f3a6b08e2f5db95e719a"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/testsubject/PerfTestOtto.java": {
-    "mtime": 1765920809.6451578,
-    "ast_hash": "863a7e5fef4ae6247d693e76846c35a3",
-    "semantic_hash": "863a7e5fef4ae6247d693e76846c35a3"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/src/org/greenrobot/eventbusperf/testsubject/SubscribeClassEventBusDefault.java": {
-    "mtime": 1765920809.6466882,
-    "ast_hash": "243e502a4f585197fe7d7f75a234026d",
-    "semantic_hash": "243e502a4f585197fe7d7f75a234026d"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTestSubscriberInJar/build.gradle": {
-    "mtime": 1765920809.6607084,
-    "ast_hash": "c1a1b5f0f4dcfe4d0bb24fd879aed289",
-    "semantic_hash": "c1a1b5f0f4dcfe4d0bb24fd879aed289"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTestSubscriberInJar/src/org/greenrobot/eventbus/SubscriberInJar.java": {
-    "mtime": 1765920809.6607084,
-    "ast_hash": "fe4bcd0c1b595ae35cd45e7a85f0c759",
-    "semantic_hash": "fe4bcd0c1b595ae35cd45e7a85f0c759"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/build.gradle": {
-    "mtime": 1785849394.5887406,
-    "ast_hash": "035897bd5396527f0d0da6f7363a336e",
-    "semantic_hash": ""
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/AbstractEventBusTest.java": {
-    "mtime": 1765920809.64822,
-    "ast_hash": "66b90dd77aa830580b9c4d93dd6bd75e",
-    "semantic_hash": "66b90dd77aa830580b9c4d93dd6bd75e"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/ClassMapPerfTest.java": {
-    "mtime": 1765920809.64822,
-    "ast_hash": "1993238953b1b2726fda5d52eb31bbd7",
-    "semantic_hash": "1993238953b1b2726fda5d52eb31bbd7"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusBackgroundThreadTest.java": {
-    "mtime": 1765920809.64822,
-    "ast_hash": "c2a71f5bb25cb70010db5c6be781d7ac",
-    "semantic_hash": "c2a71f5bb25cb70010db5c6be781d7ac"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusBasicTest.java": {
-    "mtime": 1765920809.64822,
-    "ast_hash": "03b53575e7c59293de3830b0997dbcf3",
-    "semantic_hash": "03b53575e7c59293de3830b0997dbcf3"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusBuilderTest.java": {
-    "mtime": 1765920809.64822,
-    "ast_hash": "37b082a23d3981c677ccf79e0fa1de49",
-    "semantic_hash": "37b082a23d3981c677ccf79e0fa1de49"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusCancelEventDeliveryTest.java": {
-    "mtime": 1765920809.6498637,
-    "ast_hash": "5eea39d2f2e0ca207cab0d4591c07c6e",
-    "semantic_hash": "5eea39d2f2e0ca207cab0d4591c07c6e"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusFallbackToReflectionTest.java": {
-    "mtime": 1765920809.6498637,
-    "ast_hash": "8de000597a29e3f965c4f83190424e4b",
-    "semantic_hash": "8de000597a29e3f965c4f83190424e4b"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusGenericsTest.java": {
-    "mtime": 1765920809.6498637,
-    "ast_hash": "148d63ba667780290310800090c3a6b2",
-    "semantic_hash": "148d63ba667780290310800090c3a6b2"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusIndexTest.java": {
-    "mtime": 1765920809.6498637,
-    "ast_hash": "3729c3a74951e0281e6b8a412c8fab36",
-    "semantic_hash": "3729c3a74951e0281e6b8a412c8fab36"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusInheritanceDisabledTest.java": {
-    "mtime": 1765920809.6498637,
-    "ast_hash": "92c7b11f469b5683acaa7052b6942c97",
-    "semantic_hash": "92c7b11f469b5683acaa7052b6942c97"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusInheritanceTest.java": {
-    "mtime": 1765920809.6498637,
-    "ast_hash": "09c514ccc93eb6e1e2fe336ff0af0de6",
-    "semantic_hash": "09c514ccc93eb6e1e2fe336ff0af0de6"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusMainThreadRacingTest.java": {
-    "mtime": 1765920809.6513972,
-    "ast_hash": "c4e6ec8b5a24726b391113dcc35eecc2",
-    "semantic_hash": "c4e6ec8b5a24726b391113dcc35eecc2"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusMainThreadTest.java": {
-    "mtime": 1765920809.6513972,
-    "ast_hash": "48db075baa754854f6de90a2dedd42f2",
-    "semantic_hash": "48db075baa754854f6de90a2dedd42f2"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusMethodModifiersTest.java": {
-    "mtime": 1765920809.6513972,
-    "ast_hash": "1464bb579c0d724e3eed3c4673db2a31",
-    "semantic_hash": "1464bb579c0d724e3eed3c4673db2a31"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusMultithreadedTest.java": {
-    "mtime": 1765920809.6513972,
-    "ast_hash": "9fc4e4d1f2a912d43210d25bf0d2882d",
-    "semantic_hash": "9fc4e4d1f2a912d43210d25bf0d2882d"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusNoSubscriberEventTest.java": {
-    "mtime": 1765920809.6529312,
-    "ast_hash": "e08e3dba7542e2f8b7cf2713fbf081fe",
-    "semantic_hash": "e08e3dba7542e2f8b7cf2713fbf081fe"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusOrderedSubscriptionsTest.java": {
-    "mtime": 1765920809.6529312,
-    "ast_hash": "cc9cfa187d4e735c83c53ed559258c36",
-    "semantic_hash": "cc9cfa187d4e735c83c53ed559258c36"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusRegistrationRacingTest.java": {
-    "mtime": 1765920809.653445,
-    "ast_hash": "bc889db66b0701413bf1660302681768",
-    "semantic_hash": "bc889db66b0701413bf1660302681768"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusStickyEventTest.java": {
-    "mtime": 1765920809.653445,
-    "ast_hash": "b0ffafa7c343e7ea94d842f1497f5b39",
-    "semantic_hash": "b0ffafa7c343e7ea94d842f1497f5b39"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusSubscriberExceptionTest.java": {
-    "mtime": 1765920809.6539793,
-    "ast_hash": "e38ec7b44775349d347101d3e4e8484a",
-    "semantic_hash": "e38ec7b44775349d347101d3e4e8484a"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusSubscriberInJarTest.java": {
-    "mtime": 1765920809.6539793,
-    "ast_hash": "18c230c659029aef06bf1c430ba2b16f",
-    "semantic_hash": "18c230c659029aef06bf1c430ba2b16f"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/EventBusSubscriberLegalTest.java": {
-    "mtime": 1765920809.654507,
-    "ast_hash": "74016543d389873ec27f8a491414973c",
-    "semantic_hash": "74016543d389873ec27f8a491414973c"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/IntTestEvent.java": {
-    "mtime": 1765920809.654507,
-    "ast_hash": "7e67c4904b8461c1a85b023846a9ffc4",
-    "semantic_hash": "7e67c4904b8461c1a85b023846a9ffc4"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusBackgroundThreadTestWithIndex.java": {
-    "mtime": 1765920809.6550217,
-    "ast_hash": "e0993a5b39ddfb3c026bd5af0aca80be",
-    "semantic_hash": "e0993a5b39ddfb3c026bd5af0aca80be"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusBasicTestWithIndex.java": {
-    "mtime": 1765920809.6550217,
-    "ast_hash": "13ba347e23f838794f10707a6add5479",
-    "semantic_hash": "13ba347e23f838794f10707a6add5479"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusCancelEventDeliveryTestWithIndex.java": {
-    "mtime": 1765920809.6550217,
-    "ast_hash": "6a605338f9b7995098c551df22653807",
-    "semantic_hash": "6a605338f9b7995098c551df22653807"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusFallbackToReflectionTestWithIndex.java": {
-    "mtime": 1765920809.6550217,
-    "ast_hash": "c7dcf052cb671c57c579c31f8a18b757",
-    "semantic_hash": "c7dcf052cb671c57c579c31f8a18b757"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusGenericsTestWithIndex.java": {
-    "mtime": 1765920809.6565568,
-    "ast_hash": "1ec1dc7a3aeaf6b75f593cb1cd144916",
-    "semantic_hash": "1ec1dc7a3aeaf6b75f593cb1cd144916"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusInheritanceDisabledTestWithIndex.java": {
-    "mtime": 1765920809.6565568,
-    "ast_hash": "0fbc9a086e6edd99976786189604aeb8",
-    "semantic_hash": "0fbc9a086e6edd99976786189604aeb8"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusInheritanceTestWithIndex.java": {
-    "mtime": 1765920809.6571426,
-    "ast_hash": "ae357d006d9e3f1f681bc00e8ff22b04",
-    "semantic_hash": "ae357d006d9e3f1f681bc00e8ff22b04"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusMainThreadRacingTestWithIndex.java": {
-    "mtime": 1765920809.6571426,
-    "ast_hash": "ccf268b30114253b3a59c9fe9b9bb991",
-    "semantic_hash": "ccf268b30114253b3a59c9fe9b9bb991"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusMainThreadTestWithIndex.java": {
-    "mtime": 1765920809.6576574,
-    "ast_hash": "849633fc6fe5c4e83043ffc983787851",
-    "semantic_hash": "849633fc6fe5c4e83043ffc983787851"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusMethodModifiersTestWithIndex.java": {
-    "mtime": 1765920809.6576574,
-    "ast_hash": "41733ab3deba964d8697084afd57b1e2",
-    "semantic_hash": "41733ab3deba964d8697084afd57b1e2"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusMultithreadedTestWithIndex.java": {
-    "mtime": 1765920809.6581714,
-    "ast_hash": "a9509eec7fafa72884427717e6b13a48",
-    "semantic_hash": "a9509eec7fafa72884427717e6b13a48"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusNoSubscriberEventTestWithIndex.java": {
-    "mtime": 1765920809.6581714,
-    "ast_hash": "dcbc8dc437aafc06113251150d6701b5",
-    "semantic_hash": "dcbc8dc437aafc06113251150d6701b5"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusOrderedSubscriptionsTestWithIndex.java": {
-    "mtime": 1765920809.6581714,
-    "ast_hash": "45ecca3dcf0ee0bcc71b4833bb43b10f",
-    "semantic_hash": "45ecca3dcf0ee0bcc71b4833bb43b10f"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusRegistrationRacingTestWithIndex.java": {
-    "mtime": 1765920809.6591787,
-    "ast_hash": "3b6670ca573911d5c0a023f82996c882",
-    "semantic_hash": "3b6670ca573911d5c0a023f82996c882"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusStickyEventTestWithIndex.java": {
-    "mtime": 1765920809.6596825,
-    "ast_hash": "e9099780ede36b617a44368ca249437d",
-    "semantic_hash": "e9099780ede36b617a44368ca249437d"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusSubscriberExceptionTestWithIndex.java": {
-    "mtime": 1765920809.6596825,
-    "ast_hash": "15c4e35a6496325f9b2b04b89a0f9896",
-    "semantic_hash": "15c4e35a6496325f9b2b04b89a0f9896"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/EventBusSubscriberInJarTestWithIndex.java": {
-    "mtime": 1765920809.6601954,
-    "ast_hash": "bd45155c4bfe7abd90879f3f6db849d8",
-    "semantic_hash": "bd45155c4bfe7abd90879f3f6db849d8"
-  },
-  "libs/org.greenrobot.eventbus/EventBusTest/src/org/greenrobot/eventbus/indexed/Indexed.java": {
-    "mtime": 1765920809.6601954,
-    "ast_hash": "a930f36212e6edff815fe806b894a305",
-    "semantic_hash": "a930f36212e6edff815fe806b894a305"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/build.gradle": {
-    "mtime": 1765920809.6259193,
-    "ast_hash": "86fdc3de4293d9784faeac2cfcad9611",
-    "semantic_hash": "86fdc3de4293d9784faeac2cfcad9611"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/AsyncPoster.java": {
-    "mtime": 1765920809.626981,
-    "ast_hash": "b0cb1cfe30192d893543f1f3787c7aa8",
-    "semantic_hash": "b0cb1cfe30192d893543f1f3787c7aa8"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/BackgroundPoster.java": {
-    "mtime": 1765920809.626981,
-    "ast_hash": "95f9b2f031abad7ab8716b55b259fc20",
-    "semantic_hash": "95f9b2f031abad7ab8716b55b259fc20"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/EventBus.java": {
-    "mtime": 1765920809.6275065,
-    "ast_hash": "2331f98f857ebef60d8a3df518bb10d0",
-    "semantic_hash": "2331f98f857ebef60d8a3df518bb10d0"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/EventBusBuilder.java": {
-    "mtime": 1765920809.6280198,
-    "ast_hash": "f6bd0e95d37491a10d6673d642785b53",
-    "semantic_hash": "f6bd0e95d37491a10d6673d642785b53"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/EventBusException.java": {
-    "mtime": 1765920809.6280198,
-    "ast_hash": "388f63cc9668c2c38f682e9b1ef44d3a",
-    "semantic_hash": "388f63cc9668c2c38f682e9b1ef44d3a"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/HandlerPoster.java": {
-    "mtime": 1765920809.6285472,
-    "ast_hash": "76610669c067e5b563bb9851f3aac969",
-    "semantic_hash": "76610669c067e5b563bb9851f3aac969"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/NoSubscriberEvent.java": {
-    "mtime": 1765920809.6285472,
-    "ast_hash": "d4e62a6ea8848be84366f96b94c8cf3c",
-    "semantic_hash": "d4e62a6ea8848be84366f96b94c8cf3c"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/PendingPost.java": {
-    "mtime": 1765920809.629072,
-    "ast_hash": "4a1e9fc4a07f0ce5b5e49be394873274",
-    "semantic_hash": "4a1e9fc4a07f0ce5b5e49be394873274"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/PendingPostQueue.java": {
-    "mtime": 1765920809.629072,
-    "ast_hash": "0ef6d0a2506a086674716da5f65a9016",
-    "semantic_hash": "0ef6d0a2506a086674716da5f65a9016"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/Subscribe.java": {
-    "mtime": 1765920809.6295958,
-    "ast_hash": "519c25921c005d747be15cfd9a608cad",
-    "semantic_hash": "519c25921c005d747be15cfd9a608cad"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/SubscriberExceptionEvent.java": {
-    "mtime": 1765920809.6295958,
-    "ast_hash": "07626b7b6e4460b2f85037ad78a9076b",
-    "semantic_hash": "07626b7b6e4460b2f85037ad78a9076b"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/SubscriberMethod.java": {
-    "mtime": 1765920809.630109,
-    "ast_hash": "fa3634d324d695923a3509ecaae042f0",
-    "semantic_hash": "fa3634d324d695923a3509ecaae042f0"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/SubscriberMethodFinder.java": {
-    "mtime": 1765920809.6306367,
-    "ast_hash": "e56072ea390d2c3e732911737cbaad9d",
-    "semantic_hash": "e56072ea390d2c3e732911737cbaad9d"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/Subscription.java": {
-    "mtime": 1765920809.6306367,
-    "ast_hash": "2f23e7fd693e5e7a71934df4e16d86a5",
-    "semantic_hash": "2f23e7fd693e5e7a71934df4e16d86a5"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/ThreadMode.java": {
-    "mtime": 1765920809.6311498,
-    "ast_hash": "12cdfc53ff9ef8a6509252c5c64a55f1",
-    "semantic_hash": "12cdfc53ff9ef8a6509252c5c64a55f1"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/meta/AbstractSubscriberInfo.java": {
-    "mtime": 1765920809.6311498,
-    "ast_hash": "f8a1c734f2feee358b9b88d630a81f58",
-    "semantic_hash": "f8a1c734f2feee358b9b88d630a81f58"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/meta/SimpleSubscriberInfo.java": {
-    "mtime": 1765920809.631677,
-    "ast_hash": "56bc4376da914225851a7b00c3d61720",
-    "semantic_hash": "56bc4376da914225851a7b00c3d61720"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/meta/SubscriberInfo.java": {
-    "mtime": 1765920809.632187,
-    "ast_hash": "fcb0eecb7ce3891e318f0a94f50152fe",
-    "semantic_hash": "fcb0eecb7ce3891e318f0a94f50152fe"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/meta/SubscriberInfoIndex.java": {
-    "mtime": 1765920809.632187,
-    "ast_hash": "8e561ff7d9db3b2cc5daf20b4123f4d9",
-    "semantic_hash": "8e561ff7d9db3b2cc5daf20b4123f4d9"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/meta/SubscriberMethodInfo.java": {
-    "mtime": 1765920809.632717,
-    "ast_hash": "0845ccd2f8c04de35c08f9c0b6668f3d",
-    "semantic_hash": "0845ccd2f8c04de35c08f9c0b6668f3d"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/AsyncExecutor.java": {
-    "mtime": 1765920809.632717,
-    "ast_hash": "2cc58641cfef001c83ee71ea759f0686",
-    "semantic_hash": "2cc58641cfef001c83ee71ea759f0686"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/ErrorDialogConfig.java": {
-    "mtime": 1765920809.6333177,
-    "ast_hash": "0d7e71a25d001a13558a9c9e44b269c5",
-    "semantic_hash": "0d7e71a25d001a13558a9c9e44b269c5"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/ErrorDialogFragmentFactory.java": {
-    "mtime": 1765920809.6338387,
-    "ast_hash": "c18d8465d727694c604c77ae66218f79",
-    "semantic_hash": "c18d8465d727694c604c77ae66218f79"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/ErrorDialogFragments.java": {
-    "mtime": 1765920809.6343596,
-    "ast_hash": "ef32eafaca04516e10d8eee927755f85",
-    "semantic_hash": "ef32eafaca04516e10d8eee927755f85"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/ErrorDialogManager.java": {
-    "mtime": 1765920809.6343596,
-    "ast_hash": "d39a8650e6f21fceb7d9dd91baa97199",
-    "semantic_hash": "d39a8650e6f21fceb7d9dd91baa97199"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/ExceptionToResourceMapping.java": {
-    "mtime": 1765920809.6348836,
-    "ast_hash": "299b85ad8cc442b6383d43b973e425f7",
-    "semantic_hash": "299b85ad8cc442b6383d43b973e425f7"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/HasExecutionScope.java": {
-    "mtime": 1765920809.6348836,
-    "ast_hash": "90510db0f20e252a53351067abbaa452",
-    "semantic_hash": "90510db0f20e252a53351067abbaa452"
-  },
-  "libs/org.greenrobot.eventbus/EventBus/src/org/greenrobot/eventbus/util/ThrowableFailureEvent.java": {
-    "mtime": 1765920809.6353972,
-    "ast_hash": "3367c3002957f7314e2c0ead5db4345e",
-    "semantic_hash": "3367c3002957f7314e2c0ead5db4345e"
-  },
-  "libs/org.greenrobot.eventbus/build.gradle": {
-    "mtime": 1765920809.6622431,
-    "ast_hash": "a578538571bf8f3117f4eb981e792b48",
-    "semantic_hash": "a578538571bf8f3117f4eb981e792b48"
-  },
-  "libs/org.greenrobot.eventbus/settings.gradle": {
-    "mtime": 1765920809.663759,
-    "ast_hash": "18dc2250d3d2327be077f9324a086c5f",
-    "semantic_hash": "18dc2250d3d2327be077f9324a086c5f"
   },
   "libs/org.whispersystems.jobmanager/build.gradle": {
     "mtime": 1765920809.663759,
@@ -638,51 +163,6 @@
     "mtime": 1765920809.6779542,
     "ast_hash": "5b71dcbc9990c0cba202f610d404e711",
     "semantic_hash": "5b71dcbc9990c0cba202f610d404e711"
-  },
-  "libs/org.whispersystems.libpastelog/build.gradle": {
-    "mtime": 1765920809.6799738,
-    "ast_hash": "6089ae88f0e4cf52960e536e38766f11",
-    "semantic_hash": "6089ae88f0e4cf52960e536e38766f11"
-  },
-  "libs/org.whispersystems.libpastelog/library/build.gradle": {
-    "mtime": 1765920809.681493,
-    "ast_hash": "dbc46730a4c1206dcce058f4a58ae94b",
-    "semantic_hash": "dbc46730a4c1206dcce058f4a58ae94b"
-  },
-  "libs/org.whispersystems.libpastelog/library/src/org/whispersystems/libpastelog/ShareIntentListAdapter.java": {
-    "mtime": 1765920809.684517,
-    "ast_hash": "f68d716ba837985595daf73534357acb",
-    "semantic_hash": "f68d716ba837985595daf73534357acb"
-  },
-  "libs/org.whispersystems.libpastelog/library/src/org/whispersystems/libpastelog/SubmitLogFragment.java": {
-    "mtime": 1765920809.684517,
-    "ast_hash": "d892a7b0fc7bac3d8652a6a85c882a14",
-    "semantic_hash": "d892a7b0fc7bac3d8652a6a85c882a14"
-  },
-  "libs/org.whispersystems.libpastelog/library/src/org/whispersystems/libpastelog/util/ProgressDialogAsyncTask.java": {
-    "mtime": 1765920809.685023,
-    "ast_hash": "8cd16ca10e652553be17db109d56e085",
-    "semantic_hash": "8cd16ca10e652553be17db109d56e085"
-  },
-  "libs/org.whispersystems.libpastelog/library/src/org/whispersystems/libpastelog/util/Scrubber.java": {
-    "mtime": 1765920809.685023,
-    "ast_hash": "be6be93435a675643397271cb9bbff28",
-    "semantic_hash": "be6be93435a675643397271cb9bbff28"
-  },
-  "libs/org.whispersystems.libpastelog/sample/build.gradle": {
-    "mtime": 1765920809.6860306,
-    "ast_hash": "85ec3b1746fbd2002b2a808c658ff072",
-    "semantic_hash": "85ec3b1746fbd2002b2a808c658ff072"
-  },
-  "libs/org.whispersystems.libpastelog/sample/src/org/whispersystems/libpastelog/sample/SendLogActivity.java": {
-    "mtime": 1765920809.6891263,
-    "ast_hash": "28bda690dc68d63e005677e6457c61a6",
-    "semantic_hash": "28bda690dc68d63e005677e6457c61a6"
-  },
-  "libs/org.whispersystems.libpastelog/settings.gradle": {
-    "mtime": 1765920809.6896994,
-    "ast_hash": "f92c00e50923b74fc8e1ed6d969a75ff",
-    "semantic_hash": "f92c00e50923b74fc8e1ed6d969a75ff"
   },
   "libs/org.whispersystems.libsignal/android/build.gradle": {
     "mtime": 1785765988.4642425,
@@ -1209,11 +689,6 @@
     "ast_hash": "2543050776e617550ef40692bec0d2b3",
     "semantic_hash": "2543050776e617550ef40692bec0d2b3"
   },
-  "scripts/build-witness.sh": {
-    "mtime": 1765920810.0407145,
-    "ast_hash": "3dc599681aa4dcff30ad26498af0b4b6",
-    "semantic_hash": "3dc599681aa4dcff30ad26498af0b4b6"
-  },
   "scripts/copy-icons.sh": {
     "mtime": 1765920810.0407145,
     "ast_hash": "7f9af4aa2dd78bc8f3e9ed8b119cbe68",
@@ -1245,9 +720,9 @@
     "semantic_hash": "08697d4c970f645d5e56036b673362e0"
   },
   "settings.gradle": {
-    "mtime": 1781891349.138988,
-    "ast_hash": "43fc8d334d853945327a4d3bd1fadcd2",
-    "semantic_hash": "43fc8d334d853945327a4d3bd1fadcd2"
+    "mtime": 1785916503.5543375,
+    "ast_hash": "9a829d2620023bfcccdc100991b83c49",
+    "semantic_hash": ""
   },
   "src/com/takisoft/colorpicker/ColorPickerDialog.java": {
     "mtime": 1765920810.0460308,
@@ -1435,9 +910,9 @@
     "semantic_hash": "170a97d98e0569b25a9b1277c354b7fa"
   },
   "src/org/smssecure/smssecure/LogSubmitActivity.java": {
-    "mtime": 1765920810.0576406,
-    "ast_hash": "2dc348800ba4cd830a4de28517747ec9",
-    "semantic_hash": "2dc348800ba4cd830a4de28517747ec9"
+    "mtime": 1785916503.588195,
+    "ast_hash": "ae79f5dee4a1ed9eb5fcdfd2e01389da",
+    "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/MasterSecretListener.java": {
     "mtime": 1765920810.0576406,
@@ -1965,14 +1440,14 @@
     "semantic_hash": "dde4f79a8acdb9d7ec7f86ea068c5912"
   },
   "src/org/smssecure/smssecure/contacts/avatars/GeneratedContactPhoto.java": {
-    "mtime": 1765920810.0878239,
-    "ast_hash": "27c7d16277b14e650ff9d81b8d1fa035",
-    "semantic_hash": "27c7d16277b14e650ff9d81b8d1fa035"
+    "mtime": 1785916416.0403502,
+    "ast_hash": "7fbcf33279f2c9fcf1f0af9d83101423",
+    "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/contacts/avatars/ResourceContactPhoto.java": {
-    "mtime": 1785765988.5198298,
-    "ast_hash": "f26c6c0d2b58218fad35a664ed90f3e9",
-    "semantic_hash": "f26c6c0d2b58218fad35a664ed90f3e9"
+    "mtime": 1785916416.0433688,
+    "ast_hash": "9cd1669700a3a4c05bb7de08c1bdf344",
+    "semantic_hash": ""
   },
   "src/org/smssecure/smssecure/contacts/avatars/TransparentContactPhoto.java": {
     "mtime": 1785765988.520342,
@@ -3584,75 +3059,30 @@
     "ast_hash": "87be8782bac32bd10a3645a1c92775a7",
     "semantic_hash": "87be8782bac32bd10a3645a1c92775a7"
   },
-  ".gitlab/issue_templates/Bug.md": {
-    "mtime": 1765920809.578412,
-    "ast_hash": "6739026fd5e69bf32a192a9be10c5339",
-    "semantic_hash": "6739026fd5e69bf32a192a9be10c5339"
-  },
-  ".gitlab/merge_request_templates/Merge Request.md": {
-    "mtime": 1765920809.578412,
-    "ast_hash": "22dd73a689e3717bbba6b43c540297d9",
-    "semantic_hash": "22dd73a689e3717bbba6b43c540297d9"
-  },
   "BUILDING.md": {
-    "mtime": 1785850163.3015003,
+    "mtime": 1785850450.154819,
     "ast_hash": "72c5f05a6da2d11433e04c62877c9df6",
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1785849574.036839,
+    "mtime": 1785850450.1578848,
     "ast_hash": "dcf1b5ad0d55465a79efa3cfad48e0ae",
     "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
-    "mtime": 1785850163.3015003,
-    "ast_hash": "c6d3185d3669c3b1e168b982c3d1d8f4",
+    "mtime": 1785850450.154819,
+    "ast_hash": "0b549c27cf4a78b7bc7091da83540602",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1785850163.294456,
+    "mtime": 1785850450.1015573,
     "ast_hash": "1b27d359cf7607bcacf4cad89635aef3",
-    "semantic_hash": ""
-  },
-  "libs/com.amulyakhare.textdrawable/README.md": {
-    "mtime": 1765920809.6166584,
-    "ast_hash": "51172a0b35319fae5adea939e94fdb16",
-    "semantic_hash": "51172a0b35319fae5adea939e94fdb16"
-  },
-  "libs/gradle-witness/README.md": {
-    "mtime": 1765920809.6212578,
-    "ast_hash": "cf328416c498536352d0ee3b04c611c3",
-    "semantic_hash": "cf328416c498536352d0ee3b04c611c3"
-  },
-  "libs/org.greenrobot.eventbus/COMPARISON.md": {
-    "mtime": 1765920809.624912,
-    "ast_hash": "3f299afd61762809e032fa95bb11c178",
-    "semantic_hash": "3f299afd61762809e032fa95bb11c178"
-  },
-  "libs/org.greenrobot.eventbus/CONTRIBUTING.md": {
-    "mtime": 1765920809.624912,
-    "ast_hash": "f13948d59a74a16556078f15d0a1443a",
-    "semantic_hash": "f13948d59a74a16556078f15d0a1443a"
-  },
-  "libs/org.greenrobot.eventbus/EventBusPerformance/proguard-project.txt": {
-    "mtime": 1765920809.639028,
-    "ast_hash": "a8e31d01b7d94e721851a4dd39b088cb",
-    "semantic_hash": "a8e31d01b7d94e721851a4dd39b088cb"
-  },
-  "libs/org.greenrobot.eventbus/README.md": {
-    "mtime": 1785849394.5861945,
-    "ast_hash": "e62567947a6a2503ed124fba78ee49e4",
     "semantic_hash": ""
   },
   "libs/org.whispersystems.jobmanager/README.md": {
     "mtime": 1765920809.663759,
     "ast_hash": "83f5c64a33b601f8cab83ac412ecacd4",
     "semantic_hash": "83f5c64a33b601f8cab83ac412ecacd4"
-  },
-  "libs/org.whispersystems.libpastelog/README.md": {
-    "mtime": 1765920809.679468,
-    "ast_hash": "2ffba0a32181d063f775469ba0adea75",
-    "semantic_hash": "2ffba0a32181d063f775469ba0adea75"
   },
   "libs/org.whispersystems.libsignal/README.md": {
     "mtime": 1765920809.6907065,
@@ -3933,5 +3363,20 @@
     "mtime": 1785765988.354869,
     "ast_hash": "e1ce2ecf680ae527f34f6bdcdbb1655e",
     "semantic_hash": "e1ce2ecf680ae527f34f6bdcdbb1655e"
+  },
+  "src/org/smssecure/smssecure/SubmitLogFragment.java": {
+    "mtime": 1785916503.588195,
+    "ast_hash": "b73283dce66e0d0f8ccb916680240bef",
+    "semantic_hash": ""
+  },
+  "src/org/smssecure/smssecure/contacts/avatars/ContactPhotoDrawable.java": {
+    "mtime": 1785916416.1216407,
+    "ast_hash": "2a768bb1ebb5271e33e9fe31dca0ef6a",
+    "semantic_hash": ""
+  },
+  "src/org/smssecure/smssecure/util/Scrubber.java": {
+    "mtime": 1785916503.588704,
+    "ast_hash": "11ade1f871209d832dded11315e32687",
+    "semantic_hash": ""
   }
 }

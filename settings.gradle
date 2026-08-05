@@ -6,14 +6,8 @@ pluginManagement {
 	}
 }
 
-include ':com.amulyakhare.textdrawable'
-project(':com.amulyakhare.textdrawable').projectDir = new File(rootDir, 'libs/com.amulyakhare.textdrawable')
-
 include ':org.whispersystems.jobmanager'
 project(':org.whispersystems.jobmanager').projectDir = new File(rootDir, 'libs/org.whispersystems.jobmanager')
-
-include ':org.whispersystems.libpastelog'
-project(':org.whispersystems.libpastelog').projectDir = new File(rootDir, 'libs/org.whispersystems.libpastelog/library')
 
 include ':java', ':tests'
 project(':tests').projectDir = new File(rootDir, 'libs/org.whispersystems.libsignal/tests')

@@ -570,7 +570,22 @@
     <!-- log_submit_activity -->
     <string name="log_submit_activity__log_fetch_failed">Could not read the log on your device. You can still use ADB to get a debug log instead.</string>
     <string name="log_submit_activity__thanks">Thanks for your help!</string>
+    <string name="log_submit_activity__button_dont_share">Don\'t share</string>
+    <string name="log_submit_activity__button_share">Share</string>
+    <string name="log_submit_activity__button_got_it">Got it</string>
+    <string name="log_submit_activity__button_compose_email">Compose email</string>
+    <string name="log_submit_activity__this_log_will_be_shared">This diagnostic log will be shared with an app you choose. You may examine and edit it before sharing.</string>
+    <string name="log_submit_activity__loading_logs">Loading logs…</string>
     <string name="log_submit_activity__submitting">Submitting</string>
+    <string name="log_submit_activity__uploading_logs">Uploading logs…</string>
+    <string name="log_submit_activity__success">Success!</string>
+    <string name="log_submit_activity__copy_this_url_and_add_it_to_your_issue">Copy this URL and add it to your issue report or support email:\n\n&lt;b>%1$s&lt;/b>\n</string>
+    <string name="log_submit_activity__copied_to_clipboard">Copied to clipboard</string>
+    <string name="log_submit_activity__choose_email_app">Choose email app</string>
+    <string name="log_submit_activity__choose_share_app">Share diagnostic log</string>
+    <string name="log_submit_activity__share_failed">Could not prepare the diagnostic log for sharing.</string>
+    <string name="log_submit_activity__please_review_this_log_from_my_app">Please review this log from my app: %1$s</string>
+    <string name="log_submit_activity__network_failure">Network failure. Please try again.</string>
     <string name="log_submit_activity__posting_logs">Posting the logs to gist…</string>
 
     <!-- database_migration_activity -->

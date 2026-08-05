@@ -59,7 +59,6 @@ dependencies {
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 
     implementation(project(':org.whispersystems.jobmanager'))
-    implementation(project(':org.whispersystems.libpastelog'))
     implementation(project(':org.whispersystems.libsignal'))
 
     // Maintained Rust-core Signal Protocol, pinned at 0.72.1 (last release able to CREATE and RECEIVE a
@@ -75,8 +74,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.22.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
     implementation 'com.googlecode.libphonenumber:libphonenumber:9.0.32'
-
-    implementation(project(':com.amulyakhare.textdrawable'))
 
     // android-smsmms 5.2.1 (klinkerapps, 2020, effectively abandoned): SMS/MMS send-receive incl.
     // carrier MMSC transaction handling. No Jetpack replacement — the platform exposes no MMS-send API

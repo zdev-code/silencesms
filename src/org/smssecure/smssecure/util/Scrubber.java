@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.whispersystems.libpastelog.util;
+package org.smssecure.smssecure.util;
 
 import android.util.Log;
 

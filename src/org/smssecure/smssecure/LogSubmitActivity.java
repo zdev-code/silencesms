@@ -6,8 +6,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.smssecure.smssecure.util.DynamicTheme;
-import org.whispersystems.libpastelog.SubmitLogFragment;
-
 /**
  * Activity for submitting logcat logs to a pastebin service.
  */

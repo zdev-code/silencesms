@@ -15,18 +15,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.whispersystems.libpastelog;
+package org.smssecure.smssecure;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -35,43 +32,31 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.whispersystems.libpastelog.util.Scrubber;
+import org.smssecure.smssecure.util.FileProviderUtil;
+import org.smssecure.smssecure.util.Scrubber;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-
 /**
- * A helper {@link Fragment} to preview and submit logcat information to a public pastebin.
+ * A helper {@link Fragment} to preview and share scrubbed logcat information.
  * Activities that contain this fragment must implement the
  * {@link SubmitLogFragment.OnLogSubmittedListener} interface
  * to handle interaction events.
@@ -85,18 +70,10 @@ public class SubmitLogFragment extends Fragment {
   private EditText logPreview;
   private Button   okButton;
   private Button   cancelButton;
-  private String   supportEmailAddress;
-  private String   supportEmailSubject;
-  private String   hackSavedLogUrl;
-  private boolean  emailActivityWasStarted = false;
-
-  private static final String API_ENDPOINT = "https://paste.silence.dev";
-  private static final MediaType PLAIN_TEXT = MediaType.get("text/plain; charset=utf-8");
-  private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+  private boolean  shareActivityWasStarted = false;
 
   private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
   private final Handler mainHandler = new Handler(Looper.getMainLooper());
-  private AlertDialog progressDialog;
 
   private OnLogSubmittedListener mListener;
 
@@ -106,20 +83,9 @@ public class SubmitLogFragment extends Fragment {
    *
    * @return A new instance of fragment SubmitLogFragment.
    */
-  public static SubmitLogFragment newInstance(String supportEmailAddress,
-                                              String supportEmailSubject)
-  {
-    SubmitLogFragment fragment = new SubmitLogFragment();
-
-    fragment.supportEmailAddress = supportEmailAddress;
-    fragment.supportEmailSubject = supportEmailSubject;
-
-    return fragment;
-  }
-
   public static SubmitLogFragment newInstance()
   {
-    return newInstance(null, null);
+    return new SubmitLogFragment();
   }
 
   public SubmitLogFragment() { }
@@ -156,7 +122,7 @@ public class SubmitLogFragment extends Fragment {
   public void onResume() {
     super.onResume();
 
-    if (emailActivityWasStarted && mListener != null)
+    if (shareActivityWasStarted && mListener != null)
       mListener.onSuccess();
   }
 
@@ -164,12 +130,6 @@ public class SubmitLogFragment extends Fragment {
   public void onDetach() {
     super.onDetach();
     mListener = null;
-  }
-
-  @Override
-  public void onDestroyView() {
-    dismissProgressDialog();
-    super.onDestroyView();
   }
 
   @Override
@@ -186,7 +146,7 @@ public class SubmitLogFragment extends Fragment {
     okButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        submitLogAsync(logPreview.getText().toString());
+        shareLog(logPreview.getText().toString());
       }
     });
 
@@ -218,107 +178,51 @@ public class SubmitLogFragment extends Fragment {
     }
   }
 
-  private Intent getIntentForSupportEmail(String logUrl) {
-    Intent emailSendIntent = new Intent(Intent.ACTION_SEND);
+  private void shareLog(String log) {
+    Context appContext = requireContext().getApplicationContext();
+    okButton.setEnabled(false);
 
-    emailSendIntent.putExtra(Intent.EXTRA_EMAIL,   new String[] { supportEmailAddress });
-    emailSendIntent.putExtra(Intent.EXTRA_SUBJECT, supportEmailSubject);
-    emailSendIntent.putExtra(
-        Intent.EXTRA_TEXT,
-        getString(R.string.log_submit_activity__please_review_this_log_from_my_app, logUrl)
-    );
-    emailSendIntent.setType("message/rfc822");
-
-    return emailSendIntent;
-  }
-
-  private void handleShowChooserForIntent(final Intent intent, String chooserTitle) {
-    final AlertDialog.Builder    builder = new AlertDialog.Builder(getActivity());
-    final ShareIntentListAdapter adapter = ShareIntentListAdapter.getAdapterForIntent(getActivity(), intent);
-
-    builder.setTitle(chooserTitle)
-           .setAdapter(adapter, new DialogInterface.OnClickListener() {
-
-             @Override
-             public void onClick(DialogInterface dialog, int which) {
-               ActivityInfo info = adapter.getItem(which).activityInfo;
-               intent.setClassName(info.packageName, info.name);
-               startActivity(intent);
-
-               emailActivityWasStarted = true;
-             }
-
-           })
-           .setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-             @Override
-             public void onCancel(DialogInterface dialogInterface) {
-               if (hackSavedLogUrl != null)
-                 handleShowSuccessDialog(hackSavedLogUrl);
-             }
-
-           })
-           .create().show();
-  }
-
-  private TextView handleBuildSuccessTextView(final String logUrl) {
-    TextView showText = new TextView(getActivity());
-
-    showText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-    showText.setPadding(15, 30, 15, 30);
-    showText.setText(getString(R.string.log_submit_activity__copy_this_url_and_add_it_to_your_issue, logUrl));
-    showText.setAutoLinkMask(Linkify.WEB_URLS);
-    showText.setMovementMethod(LinkMovementMethod.getInstance());
-    showText.setOnLongClickListener(new View.OnLongClickListener() {
-
-      @Override
-      public boolean onLongClick(View v) {
-        ClipboardManager manager = ContextCompat.getSystemService(requireContext(), ClipboardManager.class);
-        if (manager != null) {
-          manager.setPrimaryClip(ClipData.newPlainText("log-url", logUrl));
-          Toast.makeText(getActivity(),
-                         R.string.log_submit_activity__copied_to_clipboard,
-                         Toast.LENGTH_SHORT).show();
+    backgroundExecutor.execute(() -> {
+      try {
+        File cacheDirectory = appContext.getExternalCacheDir();
+        if (cacheDirectory == null) {
+          throw new IOException("External cache is unavailable.");
         }
-        return true;
+
+        File logFile = new File(cacheDirectory, "silence-diagnostic-log.txt");
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(logFile), StandardCharsets.UTF_8)) {
+          writer.write(log);
+        }
+
+        Uri logUri = FileProviderUtil.getUriFor(appContext, logFile);
+        mainHandler.post(() -> showShareChooser(logUri));
+      } catch (IOException e) {
+        Log.w(TAG, "Failed to prepare diagnostic log for sharing.", e);
+        mainHandler.post(() -> {
+          if (!isAdded()) {
+            return;
+          }
+          okButton.setEnabled(true);
+          Toast.makeText(requireContext(), R.string.log_submit_activity__share_failed, Toast.LENGTH_LONG).show();
+        });
       }
     });
-
-    Linkify.addLinks(showText, Linkify.WEB_URLS);
-    return showText;
   }
 
-  private void handleShowSuccessDialog(final String logUrl) {
+  private void showShareChooser(Uri logUri) {
     if (!isAdded()) {
       return;
     }
-    TextView            showText = handleBuildSuccessTextView(logUrl);
-    AlertDialog.Builder builder  = new AlertDialog.Builder(getActivity());
 
-    builder.setTitle(R.string.log_submit_activity__success)
-           .setView(showText)
-           .setCancelable(false)
-           .setNeutralButton(R.string.log_submit_activity__button_got_it, new DialogInterface.OnClickListener() {
-             @Override
-             public void onClick(DialogInterface dialogInterface, int i) {
-               dialogInterface.dismiss();
-               if (mListener != null) mListener.onSuccess();
-             }
-           });
-    if (supportEmailAddress != null) {
-      builder.setPositiveButton(R.string.log_submit_activity__button_compose_email, new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-          handleShowChooserForIntent(
-              getIntentForSupportEmail(logUrl),
-              getString(R.string.log_submit_activity__choose_email_app)
-          );
-        }
-      });
-    }
+    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    shareIntent.putExtra(Intent.EXTRA_STREAM, logUri);
+    shareIntent.setClipData(ClipData.newRawUri("diagnostic-log", logUri));
+    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    shareIntent.setType("text/plain");
 
-    builder.create().show();
-    hackSavedLogUrl = logUrl;
+    okButton.setEnabled(true);
+    startActivity(Intent.createChooser(shareIntent, getString(R.string.log_submit_activity__choose_share_app)));
+    shareActivityWasStarted = true;
   }
 
   private void populateLogPreviewAsync() {
@@ -350,99 +254,6 @@ public class SubmitLogFragment extends Fragment {
         okButton.setEnabled(true);
       });
     });
-  }
-
-  private void submitLogAsync(final String paste) {
-    if (!isAdded()) {
-      return;
-    }
-
-    showProgressDialog();
-
-    backgroundExecutor.execute(() -> {
-      String response = uploadPaste(paste);
-
-      mainHandler.post(() -> {
-        if (!isAdded()) {
-          dismissProgressDialog();
-          return;
-        }
-
-        dismissProgressDialog();
-
-        if (response != null) {
-          handleShowSuccessDialog(response);
-        } else {
-          Log.w(TAG, "Response was null from paste service.");
-          Toast.makeText(requireContext(), R.string.log_submit_activity__network_failure, Toast.LENGTH_LONG).show();
-        }
-      });
-    });
-  }
-
-  private @Nullable String uploadPaste(String paste) {
-    try {
-  RequestBody body = RequestBody.create(paste, PLAIN_TEXT);
-
-      Request request = new Request.Builder()
-                                   .url(API_ENDPOINT + "/documents")
-                                   .post(body)
-                                   .build();
-
-      try (Response postResponse = HTTP_CLIENT.newCall(request).execute()) {
-        ResponseBody responseBody = postResponse.body();
-
-        if (!postResponse.isSuccessful() || responseBody == null) {
-          throw new IOException("Bad response: " + postResponse);
-        }
-
-        JSONObject responseJson = new JSONObject(responseBody.string());
-        Object key = responseJson.opt("key");
-
-        if (key == null) {
-          throw new IOException("Bad response: " + postResponse);
-        }
-
-        return API_ENDPOINT + "/" + key;
-      }
-    } catch (IOException | JSONException e) {
-      Log.w(TAG, e);
-      return null;
-    }
-  }
-
-  private void showProgressDialog() {
-    if (!isAdded()) {
-      return;
-    }
-
-    if (progressDialog != null && progressDialog.isShowing()) {
-      return;
-    }
-
-    Context context = requireContext();
-    ProgressBar progressBar = new ProgressBar(context);
-    progressBar.setIndeterminate(true);
-
-    int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, context.getResources().getDisplayMetrics());
-    FrameLayout frameLayout = new FrameLayout(context);
-    frameLayout.setPadding(padding, padding, padding, padding);
-    frameLayout.addView(progressBar);
-
-    progressDialog = new AlertDialog.Builder(context)
-        .setTitle(R.string.log_submit_activity__submitting)
-        .setMessage(R.string.log_submit_activity__uploading_logs)
-        .setView(frameLayout)
-        .setCancelable(false)
-        .create();
-    progressDialog.show();
-  }
-
-  private void dismissProgressDialog() {
-    if (progressDialog != null) {
-      progressDialog.dismiss();
-      progressDialog = null;
-    }
   }
 
   private static long asMegs(long bytes) {

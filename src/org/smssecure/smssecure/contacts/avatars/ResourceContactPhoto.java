@@ -7,8 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.view.Gravity;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.BlendModeColorFilterCompat;
@@ -30,7 +28,7 @@ public class ResourceContactPhoto implements ContactPhoto {
 
   @Override
   public Drawable asDrawable(Context context, int color, boolean inverted) {
-    Drawable background = TextDrawable.builder().buildRound(" ", inverted ? Color.WHITE : color);
+    Drawable background = new ContactPhotoDrawable(null, inverted ? Color.WHITE : color, Color.TRANSPARENT, -1);
     Drawable source     = AppCompatResources.getDrawable(context, resourceId);
 
     if (source == null) {

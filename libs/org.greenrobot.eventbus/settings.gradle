@@ -1,5 +1,0 @@
-include 'EventBus'
-include 'EventBusAnnotationProcessor'
-include 'EventBusTest'
-include 'EventBusTestSubscriberInJar'
-include 'EventBusPerformance'
