@@ -628,6 +628,12 @@
     <string name="message_recipients_list_item__verify">VERIFY</string>
     <string name="message_recipients_list_item__resend">RESEND</string>
 
+    <string name="ConversationListFragment_load_failed" tools:ignore="MissingTranslation">Unable to load conversations.</string>
+    <string name="ConversationListFragment_delete_failed" tools:ignore="MissingTranslation">Unable to delete the selected conversations.</string>
+    <string name="ConversationListFragment_send_drafts_failed" tools:ignore="MissingTranslation">Unable to send the selected drafts.</string>
+    <string name="ConversationListFragment_mutation_failed" tools:ignore="MissingTranslation">Unable to update the selected conversations.</string>
+    <string name="ConversationListFragment_operation_locked" tools:ignore="MissingTranslation">Silence is locked. Unlock it and try again.</string>
+
     <!-- prompt_passphrase_activity -->
     <string name="prompt_passphrase_activity__unlock">Unlock</string>
 

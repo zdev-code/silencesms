@@ -22,14 +22,9 @@ import android.widget.TextView;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.database.AttachmentDatabase;
-import org.smssecure.smssecure.events.PartProgressEvent;
 import org.smssecure.smssecure.mms.Slide;
-import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.util.ViewUtil;
 
 public class TransferControlView extends FrameLayout {
@@ -79,18 +74,6 @@ public class TransferControlView extends FrameLayout {
   public void setClickable(boolean clickable) {
     super.setClickable(clickable);
     downloadDetails.setClickable(clickable);
-  }
-
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    EventBus.getDefault().unregister(this);
   }
 
   public void setSlide(final @NonNull Slide slide) {
@@ -165,15 +148,4 @@ public class TransferControlView extends FrameLayout {
     return anim;
   }
 
-  @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
-  public void onEventAsync(final PartProgressEvent event) {
-    if (this.slide != null && event.attachment.equals(this.slide.asAttachment())) {
-      Util.runOnMain(new Runnable() {
-        @Override
-        public void run() {
-          progressWheel.setProgressCompat((int) ((((float) event.progress) / event.total) * 100), true);
-        }
-      });
-    }
-  }
 }

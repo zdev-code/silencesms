@@ -26,17 +26,12 @@ import androidx.core.graphics.BlendModeCompat;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.audio.AudioSlidePlayer;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.AttachmentDatabase;
-import org.smssecure.smssecure.events.PartProgressEvent;
 import org.smssecure.smssecure.mms.AudioSlide;
 import org.smssecure.smssecure.mms.SlideClickListener;
-import org.smssecure.smssecure.util.Util;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -115,18 +110,6 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
       container.setBackgroundColor(typedArray.getColor(R.styleable.AudioView_widgetBackground, Color.TRANSPARENT));
       typedArray.recycle();
     }
-  }
-
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    EventBus.getDefault().unregister(this);
   }
 
   public void setAudio(final @NonNull MasterSecret masterSecret,
@@ -353,18 +336,6 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
       return true;
-    }
-  }
-
-  @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
-  public void onEventAsync(final PartProgressEvent event) {
-    if (audioSlidePlayer != null && event.attachment.equals(this.audioSlidePlayer.getAudioSlide().asAttachment())) {
-      Util.runOnMain(new Runnable() {
-        @Override
-        public void run() {
-          downloadProgress.setProgressCompat((int) (((float) event.progress / event.total) * 100), true);
-        }
-      });
     }
   }
 

@@ -22,14 +22,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ActionMode;
@@ -53,14 +51,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.smssecure.smssecure.ConversationAdapter.HeaderViewHolder;
-import org.smssecure.smssecure.ConversationAdapter.ItemClickListener;
+import org.smssecure.smssecure.ConversationModelAdapter.HeaderViewHolder;
+import org.smssecure.smssecure.ConversationModelAdapter.ItemClickListener;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.MmsSmsDatabase;
-import org.smssecure.smssecure.database.loaders.ConversationLoader;
 import org.smssecure.smssecure.database.model.MediaMmsMessageRecord;
 import org.smssecure.smssecure.database.model.MessageRecord;
+import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
 import org.smssecure.smssecure.mms.Slide;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
@@ -72,6 +69,9 @@ import org.smssecure.smssecure.util.StickyHeaderDecoration;
 import org.smssecure.smssecure.util.ViewUtil;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
+import org.smssecure.smssecure.ui.conversationthread.ConversationThreadUiState;
+import org.smssecure.smssecure.ui.conversationthread.ConversationThreadViewModel;
+import org.smssecure.smssecure.ui.conversationthread.ConversationThreadViewModelFactory;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -80,12 +80,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class ConversationFragment extends Fragment
-  implements LoaderManager.LoaderCallbacks<Cursor>
-{
+public class ConversationFragment extends Fragment {
   private static final String TAG = ConversationFragment.class.getSimpleName();
-
-  private static final long   PARTIAL_CONVERSATION_LIMIT = 500L;
 
   private final ActionModeCallback actionModeCallback     = new ActionModeCallback();
   private final ItemClickListener  selectionClickListener = new ConversationFragmentItemClickListener();
@@ -110,6 +106,8 @@ public class ConversationFragment extends Fragment
   private AlertDialog                 deleteProgressDialog;
   private AlertDialog                 saveProgressDialog;
   private boolean                     viewDestroyed;
+  private ConversationThreadViewModel viewModel;
+  private ConversationMessageMapper   messageMapper;
 
   @Override
   public void onCreate(Bundle icicle) {
@@ -139,13 +137,8 @@ public class ConversationFragment extends Fragment
     list.setLayoutManager(layoutManager);
 
     loadMoreView = inflater.inflate(R.layout.load_more_header, container, false);
-    loadMoreView.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Bundle args = new Bundle();
-        args.putLong("limit", 0);
-        LoaderManager.getInstance(ConversationFragment.this).restartLoader(0, args, ConversationFragment.this);
-      }
+    loadMoreView.setOnClickListener(v -> {
+      if (viewModel != null) viewModel.loadMore();
     });
     return view;
   }
@@ -161,6 +154,9 @@ public class ConversationFragment extends Fragment
     dismissDialog(saveProgressDialog);
     deleteProgressDialog = null;
     saveProgressDialog = null;
+    if (messageMapper != null) messageMapper.clear();
+    messageMapper = null;
+    if (list != null) list.setAdapter(null);
     super.onDestroyView();
   }
 
@@ -222,13 +218,10 @@ public class ConversationFragment extends Fragment
     initializeResources();
     initializeListAdapter();
 
-    if (threadId == -1) {
-      LoaderManager.getInstance(this).restartLoader(0, Bundle.EMPTY, this);
-    }
   }
 
   public void reloadList() {
-    LoaderManager.getInstance(this).restartLoader(0, Bundle.EMPTY, this);
+    if (viewModel != null) viewModel.refresh();
   }
 
   private void initializeResources() {
@@ -243,12 +236,20 @@ public class ConversationFragment extends Fragment
 
   private void initializeListAdapter() {
     if (this.recipients != null && this.threadId != -1) {
-      ConversationAdapter adapter = new ConversationAdapter(getActivity(), masterSecret, locale, selectionClickListener, null, this.recipients);
+      if (viewModel != null) viewModel.getState().removeObservers(getViewLifecycleOwner());
+      messageMapper = new ConversationMessageMapper(requireContext(), masterSecret);
+      ConversationModelAdapter adapter = new ConversationModelAdapter(
+        requireContext(), masterSecret, locale, selectionClickListener, recipients, messageMapper);
       list.setAdapter(adapter);
       list.addItemDecoration(new StickyHeaderDecoration(adapter, false, false));
 
       setLastSeen(lastSeen);
-      LoaderManager.getInstance(this).restartLoader(0, Bundle.EMPTY, this);
+      ConversationThreadViewModelFactory factory = new ConversationThreadViewModelFactory(
+        ApplicationContext.getInstance(requireContext()).getAppDependencies().conversationThreadRepository(),
+        threadId, lastSeen);
+      viewModel = new ViewModelProvider(this, factory)
+        .get("conversation-thread-" + threadId, ConversationThreadViewModel.class);
+      viewModel.getState().observe(getViewLifecycleOwner(), this::renderState);
       list.getItemAnimator().setMoveDuration(120);
     }
   }
@@ -280,8 +281,8 @@ public class ConversationFragment extends Fragment
     }
   }
 
-  private ConversationAdapter getListAdapter() {
-    return (ConversationAdapter) list.getAdapter();
+  private ConversationModelAdapter getListAdapter() {
+    return (ConversationModelAdapter) list.getAdapter();
   }
 
   private MessageRecord getSelectedMessageRecord() {
@@ -312,7 +313,7 @@ public class ConversationFragment extends Fragment
 
     final Context context = getActivity().getApplicationContext();
     if (!SilencePreferences.hideUnreadMessageDivider(context)) {
-      lastSeenDecoration = new ConversationAdapter.LastSeenHeader(getListAdapter(), lastSeen);
+      lastSeenDecoration = new ConversationModelAdapter.LastSeenHeader(getListAdapter(), lastSeen);
       list.addItemDecoration(lastSeenDecoration);
     }
   }
@@ -360,39 +361,7 @@ public class ConversationFragment extends Fragment
     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        final Context context = requireContext().getApplicationContext();
-        final MessageRecord[] records = messageRecords.toArray(new MessageRecord[messageRecords.size()]);
-        deleteProgressDialog = showProgressDialog(R.string.ConversationFragment_deleting,
-                                                  R.string.ConversationFragment_deleting_messages);
-        deleteTask = AppTaskExecutor.getInstance().submitSerial(
-            () -> {
-              boolean threadDeleted = false;
-              for (MessageRecord messageRecord : records) {
-                if (messageRecord.isMms()) {
-                  threadDeleted |= DatabaseFactory.getMmsDatabase(context).delete(messageRecord.getId());
-                } else {
-                  threadDeleted |= DatabaseFactory.getSmsDatabase(context).deleteMessage(messageRecord.getId());
-                }
-              }
-              return threadDeleted;
-            },
-            threadDeleted -> {
-              if (!isViewActive()) return;
-              dismissDialog(deleteProgressDialog);
-              deleteProgressDialog = null;
-              deleteTask = null;
-              if (threadDeleted) {
-                threadId = -1;
-                listener.setThreadId(threadId);
-              }
-            },
-            exception -> {
-              Log.w(TAG, "Unable to delete selected messages", exception);
-              if (!isViewActive()) return;
-              dismissDialog(deleteProgressDialog);
-              deleteProgressDialog = null;
-              deleteTask = null;
-            });
+        viewModel.deleteSelected(new ConversationUnlockCapability(masterSecret));
       }
     });
 
@@ -476,47 +445,33 @@ public class ConversationFragment extends Fragment
     });
   }
 
-  @Override
-  public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-    return new ConversationLoader(getActivity(), threadId, args.getLong("limit", PARTIAL_CONVERSATION_LIMIT), lastSeen);
-  }
+  private void renderState(ConversationThreadUiState state) {
+    if (!isViewActive() || list.getAdapter() == null) return;
+    ConversationModelAdapter adapter = getListAdapter();
+    adapter.setMessages(state.getMessages(), state.getSelectedMessageIds());
+    adapter.setFooterView(state.isLimited() ? loadMoreView : null);
 
-
-  @Override
-  public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-    Log.w(TAG, "onLoadFinished");
-    ConversationLoader loader = (ConversationLoader)cursorLoader;
-
-    if (list.getAdapter() != null) {
-      if (cursor.getCount() >= PARTIAL_CONVERSATION_LIMIT && loader.hasLimit()) {
-        getListAdapter().setFooterView(loadMoreView);
-      } else {
-        getListAdapter().setFooterView(null);
-      }
-
-      if (lastSeen == -1) {
-        setLastSeen(loader.getLastSeen());
-      }
-
-      getListAdapter().changeCursor(cursor);
-
-      int lastSeenPosition = getListAdapter().findLastSeenPosition(lastSeen);
-
-      if (firstLoad) {
-        scrollToLastSeenPosition(lastSeenPosition);
-        firstLoad = false;
-      }
-
-      if (lastSeenPosition <= 0) {
-        setLastSeen(0);
-      }
+    if (lastSeen != state.getLastSeen()) setLastSeen(state.getLastSeen());
+    int lastSeenPosition = adapter.findLastSeenPosition(lastSeen);
+    if (firstLoad && !state.isLoading()) {
+      scrollToLastSeenPosition(lastSeenPosition);
+      firstLoad = false;
     }
-  }
+    if (!state.isLoading() && lastSeenPosition <= 0 && lastSeen != 0) setLastSeen(0);
 
-  @Override
-  public void onLoaderReset(Loader<Cursor> arg0) {
-    if (list.getAdapter() != null) {
-      getListAdapter().changeCursor(null);
+    if (state.getMutation() == ConversationThreadUiState.Mutation.DELETE &&
+        deleteProgressDialog == null) {
+      deleteProgressDialog = showProgressDialog(R.string.ConversationFragment_deleting,
+                                                R.string.ConversationFragment_deleting_messages);
+    } else if (state.getMutation() == ConversationThreadUiState.Mutation.NONE &&
+               deleteProgressDialog != null) {
+      dismissDialog(deleteProgressDialog);
+      deleteProgressDialog = null;
+    }
+    if (state.isThreadDeleted()) {
+      threadId = -1;
+      listener.setThreadId(threadId);
+      viewModel.acknowledgeThreadDeleted();
     }
   }
 
@@ -608,8 +563,8 @@ public class ConversationFragment extends Fragment
     }
 
     private void bindScrollHeader(HeaderViewHolder headerViewHolder, int positionId) {
-      if (((ConversationAdapter)list.getAdapter()).getHeaderId(positionId) != -1) {
-        ((ConversationAdapter) list.getAdapter()).onBindHeaderViewHolder(headerViewHolder, positionId);
+      if (((ConversationModelAdapter)list.getAdapter()).getHeaderId(positionId) != -1) {
+        ((ConversationModelAdapter) list.getAdapter()).onBindHeaderViewHolder(headerViewHolder, positionId);
       }
     }
   }
@@ -620,8 +575,7 @@ public class ConversationFragment extends Fragment
     public void onItemClick(ConversationItem item) {
       if (actionMode != null) {
         MessageRecord messageRecord = item.getMessageRecord();
-        ((ConversationAdapter) list.getAdapter()).toggleSelection(messageRecord);
-        list.getAdapter().notifyDataSetChanged();
+        viewModel.toggleSelection(getListAdapter().getStableId(messageRecord));
 
         setCorrectMenuVisibility(actionMode.getMenu());
       }
@@ -630,8 +584,7 @@ public class ConversationFragment extends Fragment
     @Override
     public void onItemLongClick(ConversationItem item) {
       if (actionMode == null) {
-        ((ConversationAdapter) list.getAdapter()).toggleSelection(item.getMessageRecord());
-        list.getAdapter().notifyDataSetChanged();
+        viewModel.toggleSelection(getListAdapter().getStableId(item.getMessageRecord()));
 
         actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(actionModeCallback);
       }
@@ -660,8 +613,7 @@ public class ConversationFragment extends Fragment
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-      ((ConversationAdapter)list.getAdapter()).clearSelection();
-      list.getAdapter().notifyDataSetChanged();
+      viewModel.clearSelection();
 
       ((BaseActionBarActivity) requireActivity()).resetSystemBarColors();
 

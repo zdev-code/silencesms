@@ -54,11 +54,18 @@ public class DualSimUtil {
     String identityPublicKey  = IdentityKeyUtil.retrieve(context, originalIdentityPublicPref);
     String identityPrivateKey = IdentityKeyUtil.retrieve(context, originalIdentityPrivatePref);
 
-    IdentityKeyUtil.save(context, identityPublicPref, identityPublicKey);
-    IdentityKeyUtil.save(context, identityPrivatePref, identityPrivateKey);
-
-    IdentityKeyUtil.remove(context, originalIdentityPublicPref);
-    IdentityKeyUtil.remove(context, originalIdentityPrivatePref);
+    if (identityPublicKey != null) {
+      if (IdentityKeyUtil.retrieve(context, identityPublicPref) == null) {
+        IdentityKeyUtil.save(context, identityPublicPref, identityPublicKey);
+      }
+      IdentityKeyUtil.remove(context, originalIdentityPublicPref);
+    }
+    if (identityPrivateKey != null) {
+      if (IdentityKeyUtil.retrieve(context, identityPrivatePref) == null) {
+        IdentityKeyUtil.save(context, identityPrivatePref, identityPrivateKey);
+      }
+      IdentityKeyUtil.remove(context, originalIdentityPrivatePref);
+    }
   }
 
   private static void moveSessionsToSubscriptionId(Context context, int originalSubscriptionId, int subscriptionId) {
@@ -84,14 +91,16 @@ public class DualSimUtil {
             // regex, so the rename silently no-op'd and cross-subscription migration never happened.)
             String originalSuffix = "." + originalSubscriptionId;
             newSessionName = absolutePath.substring(0, absolutePath.length() - originalSuffix.length()) + destinationSuffix;
-          } else if (originalSubscriptionId == -1) {
+          } else if (originalSubscriptionId == -1 && !session.getName().contains(".")) {
             newSessionName = absolutePath + destinationSuffix;
           }
 
           if (newSessionName != null) {
             Log.w(TAG, "Moving session " + absolutePath + " to " + newSessionName);
             File newFile = new File(newSessionName);
-            if (session.renameTo(newFile)) {
+            if (newFile.exists() && session.delete()) {
+              Log.w(TAG, "Destination already exists; removed legacy source.");
+            } else if (session.renameTo(newFile)) {
               Log.w(TAG, "Done!");
             } else {
               Log.w(TAG, "Failed!");

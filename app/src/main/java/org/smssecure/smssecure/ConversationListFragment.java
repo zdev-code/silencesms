@@ -21,13 +21,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -35,18 +33,16 @@ import androidx.annotation.Nullable;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,52 +51,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ProgressBar;
 
-import org.smssecure.smssecure.attachments.Attachment;
-import org.smssecure.smssecure.attachments.UriAttachment;
-import org.smssecure.smssecure.ConversationListAdapter.ItemClickListener;
+import org.smssecure.smssecure.ConversationListModelAdapter.ItemClickListener;
 import org.smssecure.smssecure.components.reminder.DefaultSmsReminder;
 import org.smssecure.smssecure.components.reminder.DeliveryReportsReminder;
-import org.smssecure.smssecure.components.reminder.Reminder;
 import org.smssecure.smssecure.components.reminder.ReminderView;
 import org.smssecure.smssecure.components.reminder.StoreRatingReminder;
 import org.smssecure.smssecure.components.reminder.SystemSmsImportReminder;
-import org.smssecure.smssecure.crypto.MasterCipher;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.crypto.SessionUtil;
-import org.smssecure.smssecure.database.AttachmentDatabase;
-import org.smssecure.smssecure.database.DatabaseFactory;
-import org.smssecure.smssecure.database.DraftDatabase;
-import org.smssecure.smssecure.database.ThreadDatabase;
-import org.smssecure.smssecure.database.loaders.ConversationListLoader;
-import org.smssecure.smssecure.notifications.MessageNotifier;
-import org.smssecure.smssecure.mms.OutgoingMediaMessage;
-import org.smssecure.smssecure.mms.OutgoingSecureMediaMessage;
+import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.domain.conversation.ConversationListReminderPolicy;
+import org.smssecure.smssecure.ui.conversationlist.ConversationListUiState;
+import org.smssecure.smssecure.ui.conversationlist.ConversationListViewModel;
+import org.smssecure.smssecure.ui.conversationlist.ConversationListViewModelFactory;
 import org.smssecure.smssecure.recipients.Recipients;
-import org.smssecure.smssecure.sms.MessageSender;
-import org.smssecure.smssecure.sms.OutgoingEncryptedMessage;
-import org.smssecure.smssecure.sms.OutgoingTextMessage;
-import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
-import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.util.ViewUtil;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
-import org.smssecure.smssecure.util.task.SnackbarAsyncTask;
-import java.util.Optional;
-
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 public class ConversationListFragment extends Fragment
-  implements LoaderManager.LoaderCallbacks<Cursor>, ActionMode.Callback, ItemClickListener
+  implements ActionMode.Callback, ItemClickListener
 {
 
   private static final String TAG = ConversationListFragment.class.getSimpleName();
@@ -116,9 +88,11 @@ public class ConversationListFragment extends Fragment
   private ReminderView         reminderView;
   private FloatingActionButton fab;
   private Locale               locale;
-  private String               queryFilter  = "";
   private boolean              archive;
-  private final List<TaskHandle> callbackTasks = new ArrayList<>();
+  private ConversationListViewModel viewModel;
+  private ConversationListUiState.Mutation renderedMutation = ConversationListUiState.Mutation.NONE;
+  private ConversationListReminderPolicy.Kind renderedReminder = ConversationListReminderPolicy.Kind.NONE;
+  private ConversationListUiState.Error renderedError = ConversationListUiState.Error.NONE;
   private @Nullable AlertDialog progressDialog;
   private boolean              viewDestroyed = true;
 
@@ -134,6 +108,9 @@ public class ConversationListFragment extends Fragment
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
     final View view = inflater.inflate(R.layout.conversation_list_fragment, container, false);
     viewDestroyed = false;
+    renderedMutation = ConversationListUiState.Mutation.NONE;
+    renderedReminder = ConversationListReminderPolicy.Kind.NONE;
+    renderedError = ConversationListUiState.Error.NONE;
     reminderView = ViewUtil.findById(view, R.id.reminder);
     list         = ViewUtil.findById(view, R.id.list);
     fab          = ViewUtil.findById(view, R.id.fab);
@@ -152,15 +129,9 @@ public class ConversationListFragment extends Fragment
   @Override
   public void onDestroyView() {
     viewDestroyed = true;
-    for (TaskHandle task : callbackTasks) task.cancel();
-    callbackTasks.clear();
+    list.setAdapter(null);
     dismissProgressDialog();
     super.onDestroyView();
-  }
-
-  private void trackCallbackTask(TaskHandle task) {
-    if (viewDestroyed) task.cancel();
-    else               callbackTasks.add(task);
   }
 
   private boolean isViewActive() {
@@ -197,7 +168,7 @@ public class ConversationListFragment extends Fragment
         startActivity(new Intent(getActivity(), NewConversationActivity.class));
       }
     });
-    initializeListAdapter();
+    initializeConversationList();
   }
 
   @Override
@@ -208,58 +179,108 @@ public class ConversationListFragment extends Fragment
     list.getAdapter().notifyDataSetChanged();
   }
 
-  public ConversationListAdapter getListAdapter() {
-    return (ConversationListAdapter) list.getAdapter();
+  public ConversationListModelAdapter getListAdapter() {
+    return (ConversationListModelAdapter) list.getAdapter();
   }
 
   public void setQueryFilter(String query) {
-    this.queryFilter = query;
-    LoaderManager.getInstance(this).restartLoader(0, null, this);
+    viewModel.setFilter(query);
   }
 
   public void resetQueryFilter() {
-    if (!TextUtils.isEmpty(this.queryFilter)) {
-      setQueryFilter("");
-    }
+    viewModel.setFilter("");
   }
 
   private void initializeReminders() {
-    reminderView.hide();
-    final Context      context              = requireContext().getApplicationContext();
-    final MasterSecret reminderMasterSecret = masterSecret;
-
-    trackCallbackTask(AppTaskExecutor.getInstance().<Optional<? extends Reminder>>submitSerial(
-      () -> {
-        if (DefaultSmsReminder.isEligible(context)) {
-          return Optional.of(new DefaultSmsReminder(context, defaultSmsRoleRequest));
-        } else if (Util.isDefaultSmsProvider(context) && SystemSmsImportReminder.isEligible(context)) {
-          return Optional.of((new SystemSmsImportReminder(context, reminderMasterSecret)));
-        } else if (DeliveryReportsReminder.isEligible(context)) {
-          return Optional.of((new DeliveryReportsReminder(context)));
-        } else if (StoreRatingReminder.isEligible(context)) {
-          return Optional.of((new StoreRatingReminder(context)));
-        } else {
-          return Optional.empty();
-        }
-      },
-      reminder -> {
-        if (reminder.isPresent() && isViewActive() && !isRemoving()) {
-          reminderView.showReminder(reminder.get());
-        }
-      },
-      exception -> Log.w(TAG, "Unable to initialize reminders", exception)));
+    if (viewModel != null) viewModel.refreshReminder();
   }
 
-  private void initializeListAdapter() {
-    list.setAdapter(new ConversationListAdapter(getActivity(), masterSecret, locale, null, this));
-    LoaderManager.getInstance(this).restartLoader(0, null, this);
+  private void initializeConversationList() {
+    list.setAdapter(new ConversationListModelAdapter(requireContext(), masterSecret, locale, this));
+    ApplicationContext application = (ApplicationContext) requireActivity().getApplication();
+    viewModel = new ViewModelProvider(this,
+        new ConversationListViewModelFactory(application.getAppDependencies(), archive))
+        .get(ConversationListViewModel.class);
+    viewModel.getState().observe(getViewLifecycleOwner(), this::render);
+  }
+
+  private void render(ConversationListUiState state) {
+    getListAdapter().submitList(state.getEntries(), archive ? 0 : state.getArchivedCount(),
+                                state.getSelectedThreadIds());
+    if (actionMode != null) {
+      int count = state.getSelectedThreadIds().size();
+      if (count == 0) {
+        actionMode.finish();
+      } else {
+        actionMode.setSubtitle(getString(R.string.conversation_fragment_cab__batch_selection_amount,
+                                         String.valueOf(count)));
+      }
+    }
+    ConversationListUiState.Mutation mutation = state.getActiveMutation();
+    if (mutation != renderedMutation && mutation == ConversationListUiState.Mutation.SEND_DRAFTS) {
+      showProgressDialog(R.string.ConversationListFragment_sending,
+                         R.string.ConversationListFragment_sending_selected_drafts);
+    } else if (mutation != renderedMutation && mutation == ConversationListUiState.Mutation.DELETE) {
+      showProgressDialog(R.string.ConversationListFragment_deleting,
+                         R.string.ConversationListFragment_deleting_selected_conversations);
+    } else if (mutation != renderedMutation &&
+               (renderedMutation == ConversationListUiState.Mutation.SEND_DRAFTS ||
+                renderedMutation == ConversationListUiState.Mutation.DELETE)) {
+      dismissProgressDialog();
+    }
+    renderedMutation = mutation;
+    renderReminder(state.getReminderKind());
+    renderError(state.getError());
+  }
+
+  private void renderError(ConversationListUiState.Error error) {
+    if (error == ConversationListUiState.Error.NONE) {
+      renderedError = error;
+      return;
+    }
+    if (renderedError == error) return;
+    int message;
+    switch (error) {
+      case LOAD_FAILED: message = R.string.ConversationListFragment_load_failed; break;
+      case DELETE_FAILED: message = R.string.ConversationListFragment_delete_failed; break;
+      case SEND_DRAFTS_FAILED: message = R.string.ConversationListFragment_send_drafts_failed; break;
+      case LOCKED: message = R.string.ConversationListFragment_operation_locked; break;
+      case MUTATION_FAILED: message = R.string.ConversationListFragment_mutation_failed; break;
+      default: return;
+    }
+    renderedError = error;
+    Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show();
+    viewModel.acknowledgeError();
+  }
+
+  private void renderReminder(ConversationListReminderPolicy.Kind reminderKind) {
+    if (renderedReminder == reminderKind) return;
+    reminderView.hide();
+    Context context = requireContext();
+    switch (reminderKind) {
+      case DEFAULT_SMS:
+        reminderView.showReminder(new DefaultSmsReminder(context, defaultSmsRoleRequest));
+        break;
+      case SYSTEM_SMS_IMPORT:
+        if (masterSecret != null) {
+          reminderView.showReminder(new SystemSmsImportReminder(context, masterSecret));
+        }
+        break;
+      case DELIVERY_REPORTS:
+        reminderView.showReminder(new DeliveryReportsReminder(context));
+        break;
+      case STORE_RATING:
+        reminderView.showReminder(new StoreRatingReminder(context));
+        break;
+      case NONE:
+        break;
+    }
+    renderedReminder = reminderKind;
   }
 
   private void handleArchiveAllSelected() {
     final Set<Long> selectedConversations = new HashSet<>(getListAdapter().getBatchSelections());
     final boolean   archive               = this.archive;
-    final Context   context               = requireContext().getApplicationContext();
-
     int snackBarTitleId;
 
     if (archive) snackBarTitleId = R.plurals.ConversationListFragment_moved_conversations_to_inbox;
@@ -268,38 +289,13 @@ public class ConversationListFragment extends Fragment
     int count            = selectedConversations.size();
     String snackBarTitle = getResources().getQuantityString(snackBarTitleId, count, count);
 
-    new SnackbarAsyncTask<Void>(getView(), snackBarTitle,
-                                getString(R.string.ConversationListFragment_undo),
-                                androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500),
-                                Snackbar.LENGTH_LONG, true)
-    {
-
-      @Override
-      protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
-
-        if (isViewActive() && actionMode != null) {
-          actionMode.finish();
-          actionMode = null;
-        }
-      }
-
-      @Override
-      protected void executeAction(@Nullable Void parameter) {
-        for (long threadId : selectedConversations) {
-          if (!archive) DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
-          else          DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
-        }
-      }
-
-      @Override
-      protected void reverseAction(@Nullable Void parameter) {
-        for (long threadId : selectedConversations) {
-          if (!archive) DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
-          else          DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
-        }
-      }
-    }.execute();
+    Snackbar.make(requireView(), snackBarTitle, Snackbar.LENGTH_LONG)
+        .setAction(R.string.ConversationListFragment_undo, view ->
+          viewModel.undoLastArchiveMutation(new ConversationUnlockCapability(masterSecret)))
+        .setActionTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500))
+        .show();
+    if (archive) viewModel.unarchiveSelected();
+    else         viewModel.archiveSelected();
   }
 
   private void handleDeleteAllSelected() {
@@ -315,31 +311,8 @@ public class ConversationListFragment extends Fragment
     alert.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        final Set<Long>    selectedConversations = new HashSet<>(getListAdapter().getBatchSelections());
-        final Context      context               = requireContext().getApplicationContext();
-        final MasterSecret selectedMasterSecret  = masterSecret;
-
-        if (!selectedConversations.isEmpty()) {
-          showProgressDialog(R.string.ConversationListFragment_deleting,
-                             R.string.ConversationListFragment_deleting_selected_conversations);
-          trackCallbackTask(AppTaskExecutor.getInstance().submitSerial(
-            () -> {
-              DatabaseFactory.getThreadDatabase(context).deleteConversations(selectedConversations);
-              MessageNotifier.updateNotification(context, selectedMasterSecret);
-              return null;
-            },
-            ignored -> {
-              dismissProgressDialog();
-              if (isViewActive() && actionMode != null) {
-                actionMode.finish();
-                actionMode = null;
-              }
-            },
-            exception -> {
-              dismissProgressDialog();
-              Log.w(TAG, "Unable to delete selected conversations", exception);
-            }
-          ));
+        if (masterSecret != null) {
+          viewModel.deleteSelected(new ConversationUnlockCapability(masterSecret));
         }
       }
     });
@@ -349,10 +322,7 @@ public class ConversationListFragment extends Fragment
   }
 
   private void handleSelectAllThreads() {
-    getListAdapter().selectAllThreads();
-    int selectedCount = getListAdapter().getBatchSelections().size();
-    actionMode.setSubtitle(getString(R.string.conversation_fragment_cab__batch_selection_amount,
-                                     String.valueOf(selectedCount)));
+    viewModel.selectAll();
   }
 
   private void handleCreateConversation(long threadId, Recipients recipients, int distributionType, long lastSeen) {
@@ -369,72 +339,8 @@ public class ConversationListFragment extends Fragment
     alert.setPositiveButton(R.string.ConversationListFragment_send, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        final List<Long> selectedThreadIds = new ArrayList<>(getListAdapter().getBatchSelections());
-        final Context context = requireContext().getApplicationContext();
-        final MasterSecret selectedMasterSecret = masterSecret;
-        final Map<Long, Recipients> selectedRecipients = new LinkedHashMap<>();
-        for (long threadId : selectedThreadIds) {
-          selectedRecipients.put(threadId, getListAdapter().getRecipientsFromThreadId(threadId));
-        }
-
-        if (!selectedThreadIds.isEmpty() && selectedMasterSecret != null) {
-          final MasterCipher masterCipher = new MasterCipher(selectedMasterSecret);
-
-          showProgressDialog(R.string.ConversationListFragment_sending,
-                             R.string.ConversationListFragment_sending_selected_drafts);
-          trackCallbackTask(AppTaskExecutor.getInstance().submitSerial(
-            () -> {
-              DraftDatabase draftDatabase = DatabaseFactory.getDraftDatabase(context);
-              Map<Long, List<DraftDatabase.Draft>> selectedDrafts = new LinkedHashMap<>();
-
-              for (long threadId : selectedThreadIds) {
-                selectedDrafts.put(threadId, new ArrayList<>(draftDatabase.getDrafts(masterCipher, threadId)));
-              }
-
-              for (long threadId : selectedThreadIds) {
-                List<DraftDatabase.Draft> drafts = selectedDrafts.get(threadId);
-                Recipients recipients = selectedRecipients.get(threadId);
-
-                if (recipients != null) {
-                  int subscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
-                  boolean isSingleConversation = recipients.isSingleRecipient() && !recipients.isGroupRecipient();
-                  boolean isSecureDestination  = isSingleConversation && SessionUtil.hasSession(context, selectedMasterSecret, recipients.getPrimaryRecipient().getNumber(), subscriptionId);
-
-                  Log.w(TAG, "Number of drafts: " + drafts.size());
-                  if (drafts.size() > 1 && !drafts.get(1).getType().equals(DraftDatabase.Draft.TEXT)) {
-                    sendMediaDraft(context, selectedMasterSecret, recipients, isSecureDestination,
-                                   drafts.get(1), threadId, drafts.get(0).getValue());
-                  } else {
-                    for (DraftDatabase.Draft draft : drafts) {
-                      Log.w(TAG, "getType(): " + draft.getType());
-                      if (draft.getType().equals(DraftDatabase.Draft.TEXT)) {
-                        sendTextDraft(context, selectedMasterSecret, recipients, isSecureDestination,
-                                      draft, threadId);
-                      } else {
-                        sendMediaDraft(context, selectedMasterSecret, recipients, isSecureDestination,
-                                       draft, threadId, null);
-                      }
-                    }
-                  }
-                } else {
-                  Log.w(TAG, "null recipients when sending drafts ?!");
-                }
-                draftDatabase.clearDrafts(threadId);
-              }
-              return null;
-            },
-            ignored -> {
-              dismissProgressDialog();
-              if (isViewActive() && actionMode != null) {
-                actionMode.finish();
-                actionMode = null;
-              }
-            },
-            exception -> {
-              dismissProgressDialog();
-              Log.w(TAG, "Unable to send selected drafts", exception);
-            }
-          ));
+        if (masterSecret != null) {
+          viewModel.sendSelectedDrafts(new ConversationUnlockCapability(masterSecret));
         }
       }
     });
@@ -443,72 +349,13 @@ public class ConversationListFragment extends Fragment
     alert.show();
   }
 
-  private void sendTextDraft(Context context, MasterSecret selectedMasterSecret,
-                             Recipients recipients, boolean isSecureDestination,
-                             DraftDatabase.Draft draft, long threadId)
-  {
-    OutgoingTextMessage message;
-    if (isSecureDestination) {
-      message = new OutgoingEncryptedMessage(recipients, draft.getValue(), -1);
-    } else {
-      message = new OutgoingTextMessage(recipients, draft.getValue(), -1);
-    }
-    MessageSender.send(context, selectedMasterSecret, message, threadId, false);
-  }
-
-  private void sendMediaDraft(Context context, MasterSecret selectedMasterSecret,
-                              Recipients recipients, boolean isSecureDestination,
-                              DraftDatabase.Draft draft, long threadId, @Nullable String forcedValue)
-  {
-    List<Attachment> attachment = new LinkedList<Attachment>();
-    attachment.add(new UriAttachment(Uri.parse(draft.getValue()), draft.getType() + "/*", AttachmentDatabase.TRANSFER_PROGRESS_DONE));
-
-    OutgoingMediaMessage message = new OutgoingMediaMessage(recipients,
-                                                            forcedValue != null ? forcedValue : "",
-                                                            attachment,
-                                                            System.currentTimeMillis(),
-                                                            -1,
-                                                            ThreadDatabase.DistributionTypes.BROADCAST);
-
-    if (isSecureDestination) {
-      message = new OutgoingSecureMediaMessage(message);
-    }
-    MessageSender.send(context, selectedMasterSecret, message, threadId, false);
-  }
-
-  @Override
-  public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-    return new ConversationListLoader(getActivity(), queryFilter, archive);
-  }
-
-  @Override
-  public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
-    getListAdapter().changeCursor(cursor);
-  }
-
-  @Override
-  public void onLoaderReset(Loader<Cursor> arg0) {
-    getListAdapter().changeCursor(null);
-  }
-
   @Override
   public void onItemClick(ConversationListItem item) {
     if (actionMode == null) {
       handleCreateConversation(item.getThreadId(), item.getRecipients(),
                                item.getDistributionType(), item.getLastSeen());
     } else {
-      ConversationListAdapter adapter = (ConversationListAdapter)list.getAdapter();
-      adapter.toggleThreadInBatchSet(item.getThreadId());
-      adapter.populateRecipients(item.getThreadId(), item.getRecipients());
-
-      if (adapter.getBatchSelections().size() == 0) {
-        actionMode.finish();
-      } else {
-  actionMode.setSubtitle(getString(R.string.conversation_fragment_cab__batch_selection_amount,
-           String.valueOf(adapter.getBatchSelections().size())));
-      }
-
-      adapter.notifyDataSetChanged();
+      viewModel.toggleSelection(item.getThreadId());
     }
   }
 
@@ -517,9 +364,7 @@ public class ConversationListFragment extends Fragment
     actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(ConversationListFragment.this);
 
     getListAdapter().initializeBatchMode(true);
-    getListAdapter().toggleThreadInBatchSet(item.getThreadId());
-    getListAdapter().populateRecipients(item.getThreadId(), item.getRecipients());
-    getListAdapter().notifyDataSetChanged();
+    viewModel.toggleSelection(item.getThreadId());
   }
 
   @Override
@@ -572,6 +417,7 @@ public class ConversationListFragment extends Fragment
   @Override
   public void onDestroyActionMode(ActionMode mode) {
     getListAdapter().initializeBatchMode(false);
+    viewModel.clearSelection();
 
     ((BaseActionBarActivity) requireActivity()).resetSystemBarColors();
 
@@ -609,54 +455,14 @@ public class ConversationListFragment extends Fragment
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
       final long    threadId = ((ConversationListItem)viewHolder.itemView).getThreadId();
       final boolean read     = ((ConversationListItem)viewHolder.itemView).getRead();
-      final Context context  = requireContext().getApplicationContext();
-      final MasterSecret selectedMasterSecret = masterSecret;
-
-      if (archive) {
-        new SnackbarAsyncTask<Long>(getView(),
-                                    getResources().getQuantityString(R.plurals.ConversationListFragment_moved_conversations_to_inbox, 1, 1),
-                                    getString(R.string.ConversationListFragment_undo),
-                                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500),
-                                    Snackbar.LENGTH_LONG, false)
-        {
-          @Override
-          protected void executeAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
-          }
-
-          @Override
-          protected void reverseAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
-          }
-        }.execute(threadId);
-      } else {
-        new SnackbarAsyncTask<Long>(getView(),
-                                    getResources().getQuantityString(R.plurals.ConversationListFragment_conversations_archived, 1, 1),
-                                    getString(R.string.ConversationListFragment_undo),
-                                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500),
-                                    Snackbar.LENGTH_LONG, false)
-        {
-          @Override
-          protected void executeAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(context).archiveConversation(threadId);
-
-            if (!read) {
-              DatabaseFactory.getThreadDatabase(context).setRead(threadId);
-              MessageNotifier.updateNotification(context, selectedMasterSecret);
-            }
-          }
-
-          @Override
-          protected void reverseAction(@Nullable Long parameter) {
-            DatabaseFactory.getThreadDatabase(context).unarchiveConversation(threadId);
-
-            if (!read) {
-              DatabaseFactory.getThreadDatabase(context).setUnread(threadId);
-              MessageNotifier.updateNotification(context, selectedMasterSecret);
-            }
-          }
-        }.execute(threadId);
-      }
+      int title = archive ? R.plurals.ConversationListFragment_moved_conversations_to_inbox
+                          : R.plurals.ConversationListFragment_conversations_archived;
+      viewModel.archiveFromSwipe(threadId, read, new ConversationUnlockCapability(masterSecret));
+      Snackbar.make(requireView(), getResources().getQuantityString(title, 1, 1), Snackbar.LENGTH_LONG)
+          .setAction(R.string.ConversationListFragment_undo, view ->
+              viewModel.undoLastArchiveMutation(new ConversationUnlockCapability(masterSecret)))
+          .setActionTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500))
+          .show();
     }
 
     @Override

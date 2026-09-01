@@ -35,6 +35,11 @@ public class ConversationListItemAction extends LinearLayout implements Bindable
     this.description = ViewUtil.findById(this, R.id.description);
   }
 
+  public void bindArchivedCount(int archivedCount) {
+    description.setText(getContext().getString(
+        R.string.ConversationListItemAction_archived_conversations_d, archivedCount));
+  }
+
   @Override
   public void bind(@NonNull MasterSecret masterSecret, @NonNull ThreadRecord thread, @NonNull Locale locale, @NonNull Set<Long> selectedThreads, boolean batchMode) {
     this.description.setText(getContext().getString(R.string.ConversationListItemAction_archived_conversations_d, thread.getCount()));

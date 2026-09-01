@@ -97,6 +97,142 @@ abstract class CheckAndroidDeprecationAllowlist : DefaultTask() {
     }
 }
 
+abstract class CheckConversationListArchitecture : DefaultTask() {
+    @get:InputFiles
+    abstract val sources: ConfigurableFileCollection
+
+    @TaskAction
+    fun verify() {
+        val forbidden = linkedMapOf(
+            "DatabaseFactory" to "direct database access",
+            "android.database.Cursor" to "cursor ownership",
+            "androidx.loader" to "Loader ownership",
+            "org.greenrobot.eventbus" to "EventBus coupling"
+        )
+        val violations = mutableListOf<String>()
+        sources.files.sortedBy { it.path }.forEach { sourceFile ->
+            val source = sourceFile.readText()
+            forbidden.forEach { (token, description) ->
+                if (source.contains(token)) violations.add("${sourceFile.name}: $description ($token)")
+            }
+            if (source.contains("SavedStateHandle") &&
+                sourceFile.name != "ConversationListStateStore.java" &&
+                sourceFile.name != "ConversationListViewModelFactory.java") {
+                violations.add("${sourceFile.name}: direct SavedStateHandle ownership")
+            }
+        }
+        if (violations.isNotEmpty()) {
+            throw GradleException(
+                "Conversation-list UI architecture boundary violations:\n  " + violations.joinToString("\n  ")
+            )
+        }
+    }
+}
+
+abstract class CheckEventBusAllowlist : DefaultTask() {
+    @get:InputFile
+    abstract val allowlist: RegularFileProperty
+
+    @get:InputFiles
+    abstract val sources: ConfigurableFileCollection
+
+    @get:Input
+    abstract val repositoryRoot: Property<String>
+
+    @TaskAction
+    fun verify() {
+        val expected = TreeSet<String>()
+        allowlist.get().asFile.readLines().forEachIndexed { index, line ->
+            if (line.isBlank() || line.startsWith("#")) return@forEachIndexed
+            val fields = line.split('\t')
+            if (fields.size != 3 || fields.any { it.isBlank() }) {
+                throw GradleException("Malformed EventBus allowlist row ${index + 1}; expected three non-empty tab-separated fields")
+            }
+            if (!expected.add(fields[0])) throw GradleException("Duplicate EventBus allowlist path: ${fields[0]}")
+        }
+
+        val root = Paths.get(repositoryRoot.get())
+        val actual = TreeSet<String>()
+        sources.files.forEach { sourceFile ->
+            if (sourceFile.readText().contains("org.greenrobot.eventbus")) {
+                actual.add(root.relativize(sourceFile.toPath()).toString().replace('\\', '/'))
+            }
+        }
+        val undocumented = TreeSet(actual).apply { removeAll(expected) }
+        val stale = TreeSet(expected).apply { removeAll(actual) }
+        if (undocumented.isNotEmpty() || stale.isNotEmpty()) {
+            throw GradleException(buildString {
+                append("EventBus allowlist mismatch")
+                if (undocumented.isNotEmpty()) append("\nUndocumented usage:\n  ${undocumented.joinToString("\n  ")}")
+                if (stale.isNotEmpty()) append("\nStale entries:\n  ${stale.joinToString("\n  ")}")
+            })
+        }
+    }
+}
+
+abstract class CheckConversationThreadArchitecture : DefaultTask() {
+    @get:InputFiles
+    abstract val sources: ConfigurableFileCollection
+
+    @TaskAction
+    fun verify() {
+        val forbidden = linkedMapOf(
+            "DatabaseFactory" to "direct database access",
+            "android.database.Cursor" to "cursor ownership",
+            "androidx.loader" to "Loader ownership",
+            "org.greenrobot.eventbus" to "EventBus coupling"
+        )
+        val violations = mutableListOf<String>()
+        sources.files.sortedBy { it.path }.forEach { sourceFile ->
+            val source = sourceFile.readText()
+            forbidden.forEach { (token, description) ->
+                if (source.contains(token)) violations.add("${sourceFile.name}: $description ($token)")
+            }
+            if (source.contains("SavedStateHandle") &&
+                sourceFile.name != "ConversationThreadStateStore.java" &&
+                sourceFile.name != "ConversationThreadViewModelFactory.java") {
+                violations.add("${sourceFile.name}: direct SavedStateHandle ownership")
+            }
+        }
+        if (violations.isNotEmpty()) {
+            throw GradleException(
+                "Conversation-thread UI architecture boundary violations:\n  " + violations.joinToString("\n  ")
+            )
+        }
+    }
+}
+
+abstract class CheckConversationScreenArchitecture : DefaultTask() {
+    @get:InputFiles
+    abstract val stateSources: ConfigurableFileCollection
+
+    @get:InputFile
+    abstract val activitySource: RegularFileProperty
+
+    @TaskAction
+    fun verify() {
+        val violations = mutableListOf<String>()
+        val activity = activitySource.get().asFile.readText()
+        listOf("DatabaseFactory", "android.database.Cursor", "androidx.loader", "org.greenrobot.eventbus")
+            .filter(activity::contains)
+            .forEach { violations.add("ConversationActivity.java: forbidden ownership ($it)") }
+        stateSources.files.sortedBy { it.path }.forEach { sourceFile ->
+            val source = sourceFile.readText()
+            if (source.contains("MasterSecret")) violations.add("${sourceFile.name}: secret in screen state")
+            if (source.contains("SavedStateHandle") &&
+                sourceFile.name != "ConversationScreenStateStore.java" &&
+                sourceFile.name != "ConversationScreenViewModelFactory.java") {
+                violations.add("${sourceFile.name}: direct SavedStateHandle ownership")
+            }
+        }
+        if (violations.isNotEmpty()) {
+            throw GradleException(
+                "Conversation-screen architecture boundary violations:\n  " + violations.joinToString("\n  ")
+            )
+        }
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -114,6 +250,9 @@ dependencies {
     implementation(libs.androidx.interpolator)
     implementation(libs.androidx.loader)
     implementation(libs.androidx.cursoradapter)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.documentfile)
 
@@ -142,6 +281,9 @@ dependencies {
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.robolectric)
 
     androidTestImplementation(libs.androidx.multidex)
     androidTestImplementation(libs.androidx.multidex.instrumentation)
@@ -277,8 +419,42 @@ val checkAndroidDeprecationAllowlist = tasks.register<CheckAndroidDeprecationAll
     repositoryRoot.set(repositoryRootPath)
 }
 
+val checkConversationListArchitecture = tasks.register<CheckConversationListArchitecture>("checkConversationListArchitecture") {
+    group = "verification"
+    description = "Prevents direct data-source and legacy observation coupling in migrated conversation-list UI code."
+    sources.from(fileTree("src/main/java/org/smssecure/smssecure/ui/conversationlist") { include("**/*.java") })
+    sources.from(file("src/main/java/org/smssecure/smssecure/ConversationListFragment.java"))
+    sources.from(file("src/main/java/org/smssecure/smssecure/ConversationListModelAdapter.java"))
+    sources.from(file("src/main/java/org/smssecure/smssecure/ConversationListEntryMapper.java"))
+}
+
+val checkEventBusAllowlist = tasks.register<CheckEventBusAllowlist>("checkEventBusAllowlist") {
+    group = "verification"
+    description = "Prevents new EventBus coupling and verifies documented compatibility consumers."
+    allowlist.set(layout.projectDirectory.file("config/eventbus-allowlist.tsv"))
+    sources.from(appJavaSources)
+    repositoryRoot.set(repositoryRootPath)
+}
+
+val checkConversationThreadArchitecture = tasks.register<CheckConversationThreadArchitecture>("checkConversationThreadArchitecture") {
+    group = "verification"
+    description = "Prevents direct data-source and legacy observation coupling in migrated conversation-thread UI code."
+    sources.from(fileTree("src/main/java/org/smssecure/smssecure/ui/conversationthread") { include("**/*.java") })
+    sources.from(file("src/main/java/org/smssecure/smssecure/ConversationFragment.java"))
+    sources.from(file("src/main/java/org/smssecure/smssecure/ConversationModelAdapter.java"))
+}
+
+val checkConversationScreenArchitecture = tasks.register<CheckConversationScreenArchitecture>("checkConversationScreenArchitecture") {
+    group = "verification"
+    description = "Prevents direct data-source ownership and secret-bearing state in migrated conversation screen code."
+    stateSources.from(fileTree("src/main/java/org/smssecure/smssecure/ui/conversationscreen") { include("**/*.java") })
+    activitySource.set(layout.projectDirectory.file("src/main/java/org/smssecure/smssecure/ConversationActivity.java"))
+}
+
 tasks.withType<JavaCompile>().configureEach {
-    dependsOn(checkNoNewAsyncTaskUsage, checkAndroidDeprecationAllowlist)
+    dependsOn(checkNoNewAsyncTaskUsage, checkAndroidDeprecationAllowlist,
+              checkConversationListArchitecture, checkConversationThreadArchitecture,
+              checkConversationScreenArchitecture, checkEventBusAllowlist)
 }
 
 val signingProperties = Properties()

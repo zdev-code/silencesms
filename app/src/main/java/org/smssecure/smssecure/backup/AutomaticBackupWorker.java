@@ -28,6 +28,9 @@ import java.util.Locale;
 public final class AutomaticBackupWorker extends Worker {
   private static final int RETAINED_BACKUPS = 5;
   private static final int FAILURE_NOTIFICATION_ID = 9051;
+  private static final String BACKUP_PREFIX = "Silence-";
+  private static final String BACKUP_SUFFIX = ".silencebackup";
+  private static final String PARTIAL_SUFFIX = BACKUP_SUFFIX + ".partial";
 
   public AutomaticBackupWorker(@NonNull Context context,
                                @NonNull WorkerParameters parameters) {
@@ -49,10 +52,12 @@ public final class AutomaticBackupWorker extends Worker {
       Uri destination = AutomaticBackupManager.getDestination(context);
       DocumentFile directory = DocumentFile.fromTreeUri(context, destination);
       if (directory == null || !directory.canWrite()) throw new IOException("Backup directory is unavailable");
+      cleanInterruptedBackups(directory);
 
       String timestamp = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(new Date());
+      String finalName = BACKUP_PREFIX + timestamp + BACKUP_SUFFIX;
       backup = directory.createFile("application/octet-stream",
-                                    "Silence-" + timestamp + ".silencebackup");
+                BACKUP_PREFIX + timestamp + PARTIAL_SUFFIX);
       if (backup == null) throw new IOException("Unable to create backup document");
 
       recoveryKey = AutomaticBackupManager.getRecoveryKey(context);
@@ -60,6 +65,7 @@ public final class AutomaticBackupWorker extends Worker {
         if (output == null) throw new IOException("Unable to open backup document");
         EncryptedBackupExporter.exportToStream(context, masterSecret, recoveryKey, output);
       }
+      if (!backup.renameTo(finalName)) throw new IOException("Unable to publish completed backup");
       rotate(directory);
       return Result.success();
     } catch (IOException | GeneralSecurityException error) {
@@ -74,11 +80,19 @@ public final class AutomaticBackupWorker extends Worker {
   private static void rotate(DocumentFile directory) {
     DocumentFile[] backups = Arrays.stream(directory.listFiles())
         .filter(file -> file.isFile() && file.getName() != null &&
-                        file.getName().startsWith("Silence-") &&
-                        file.getName().endsWith(".silencebackup"))
+                        file.getName().startsWith(BACKUP_PREFIX) &&
+                        file.getName().endsWith(BACKUP_SUFFIX))
         .sorted(Comparator.comparingLong(DocumentFile::lastModified).reversed())
         .toArray(DocumentFile[]::new);
     for (int index = RETAINED_BACKUPS; index < backups.length; index++) backups[index].delete();
+  }
+
+  static void cleanInterruptedBackups(DocumentFile directory) {
+    Arrays.stream(directory.listFiles())
+        .filter(file -> file.isFile() && file.getName() != null &&
+                        file.getName().startsWith(BACKUP_PREFIX) &&
+                        file.getName().endsWith(PARTIAL_SUFFIX))
+        .forEach(DocumentFile::delete);
   }
 
   private static void notifyFailure(Context context) {

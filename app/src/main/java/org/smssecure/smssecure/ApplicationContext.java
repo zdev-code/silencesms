@@ -31,6 +31,8 @@ import org.smssecure.smssecure.jobs.persistence.EncryptingJobSerializer;
 import org.smssecure.smssecure.jobs.requirements.MasterSecretRequirementProvider;
 import org.smssecure.smssecure.jobs.requirements.MediaNetworkRequirementProvider;
 import org.smssecure.smssecure.jobs.requirements.ServiceRequirementProvider;
+import org.smssecure.smssecure.injection.AppDependencies;
+import org.smssecure.smssecure.injection.DefaultAppDependencies;
 import org.smssecure.smssecure.notifications.NotificationChannels;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.dualsim.SimChangedReceiver;
@@ -57,6 +59,7 @@ public class ApplicationContext extends Application implements DependencyInjecto
   private static final String TAG = ApplicationContext.class.getSimpleName();
 
   private JobManager jobManager;
+  private AppDependencies appDependencies;
 
   private MediaNetworkRequirementProvider mediaNetworkRequirementProvider = new MediaNetworkRequirementProvider();
 
@@ -71,6 +74,7 @@ public class ApplicationContext extends Application implements DependencyInjecto
     initializeRandomNumberFix();
     initializeLogging();
     initializeJobManager();
+    appDependencies = new DefaultAppDependencies(this);
     checkSimState();
     NotificationChannels.create(this);
   }
@@ -82,6 +86,11 @@ public class ApplicationContext extends Application implements DependencyInjecto
 
   public JobManager getJobManager() {
     return jobManager;
+  }
+
+  public AppDependencies getAppDependencies() {
+    if (appDependencies == null) throw new IllegalStateException("Application dependencies are not initialized");
+    return appDependencies;
   }
 
   private void recoverInterruptedRestore() {

@@ -45,6 +45,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
 import androidx.core.view.WindowCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -84,15 +85,17 @@ import org.smssecure.smssecure.components.emoji.EmojiToggle;
 import org.smssecure.smssecure.contacts.ContactAccessor;
 import org.smssecure.smssecure.contacts.ContactAccessor.ContactData;
 import org.smssecure.smssecure.crypto.KeyExchangeInitiator;
-import org.smssecure.smssecure.crypto.MasterCipher;
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.data.conversationscreen.ConversationScreenRepository;
+import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.ui.conversationscreen.ConversationScreenUiState;
+import org.smssecure.smssecure.ui.conversationscreen.ConversationScreenViewModel;
+import org.smssecure.smssecure.ui.conversationscreen.ConversationScreenViewModelFactory;
 import org.smssecure.smssecure.crypto.SecurityEvent;
 import org.smssecure.smssecure.crypto.SessionUtil;
-import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.DraftDatabase;
 import org.smssecure.smssecure.database.DraftDatabase.Draft;
 import org.smssecure.smssecure.database.DraftDatabase.Drafts;
-import org.smssecure.smssecure.database.MmsSmsColumns.Types;
 import org.smssecure.smssecure.database.RecipientPreferenceDatabase.RecipientsPreferences;
 import org.smssecure.smssecure.database.ThreadDatabase;
 import org.smssecure.smssecure.mms.AttachmentManager;
@@ -140,6 +143,7 @@ import java.util.Optional;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CancellationException;
+import java.util.function.Consumer;
 
 import static org.smssecure.smssecure.TransportOption.Type;
 
@@ -222,6 +226,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private final List<PendingFutureTask> futureTasks = new ArrayList<>();
   private boolean destroyed;
   private int recipientPreferencesGeneration;
+  private ConversationScreenRepository screenRepository;
+  private ConversationScreenViewModel screenViewModel;
 
   private static final class PendingFutureTask {
     private final TaskHandle           task;
@@ -248,6 +254,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   protected void onCreate(Bundle state, @NonNull MasterSecret masterSecret) {
     Log.w(TAG, "onCreate()");
     this.masterSecret = masterSecret;
+    this.screenRepository = ApplicationContext.getInstance(this)
+      .getAppDependencies().conversationScreenRepository();
+    this.screenViewModel = new ViewModelProvider(this, new ConversationScreenViewModelFactory())
+      .get(ConversationScreenViewModel.class);
     this.activeSubscriptions = SubscriptionManagerCompat.from(this).getActiveSubscriptionInfoList();
 
     supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
@@ -369,6 +379,21 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     } else {
       futureTasks.add(new PendingFutureTask(task, future));
     }
+  }
+
+  private <T> ConversationScreenRepository.Callback<T> screenCallback(Consumer<T> success,
+                                                                       String failureMessage) {
+    WeakReference<ConversationActivity> owner = new WeakReference<>(this);
+    return new ConversationScreenRepository.Callback<T>() {
+      @Override public void onSuccess(T result) {
+        ConversationActivity activity = owner.get();
+        if (activity != null && !activity.destroyed) success.accept(result);
+      }
+
+      @Override public void onFailure(Exception exception) {
+        Log.w(TAG, failureMessage, exception);
+      }
+    };
   }
 
   private void handleMediaResult(ActivityResult result, MediaType mediaType) {
@@ -585,16 +610,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       @Override
       public void onMuted(final long until) {
         recipients.setMuted(until);
-        Context context      = getApplicationContext();
-        long[]  recipientIds = recipients.getIds().clone();
-        AppTaskExecutor.getInstance().submitSerial(
-            () -> {
-              Recipients targetRecipients = RecipientFactory.getRecipientsForIds(context, recipientIds, false);
-              DatabaseFactory.getRecipientPreferenceDatabase(context).setMuted(targetRecipients, until);
-              return null;
-            },
-            ignored -> {},
-            exception -> Log.w(TAG, "Unable to mute conversation notifications", exception));
+        trackCallbackTask(screenRepository.setMuted(recipients.getIds(), until,
+            screenCallback(ignored -> {}, "Unable to mute conversation notifications")));
       }
     });
   }
@@ -605,16 +622,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void handleUnmuteNotifications() {
     recipients.setMuted(0);
-    Context context      = getApplicationContext();
-    long[]  recipientIds = recipients.getIds().clone();
-    AppTaskExecutor.getInstance().submitSerial(
-        () -> {
-          Recipients targetRecipients = RecipientFactory.getRecipientsForIds(context, recipientIds, false);
-          DatabaseFactory.getRecipientPreferenceDatabase(context).setMuted(targetRecipients, 0);
-          return null;
-        },
-        ignored -> {},
-        exception -> Log.w(TAG, "Unable to unmute conversation notifications", exception));
+    trackCallbackTask(screenRepository.setMuted(recipients.getIds(), 0,
+        screenCallback(ignored -> {}, "Unable to unmute conversation notifications")));
   }
 
   private void handleUnblock() {
@@ -626,16 +635,9 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
           @Override
           public void onClick(DialogInterface dialog, int which) {
             recipients.setBlocked(false);
-            Context context      = getApplicationContext();
-            long[]  recipientIds = recipients.getIds().clone();
-            AppTaskExecutor.getInstance().submitSerial(
-                () -> {
-                  Recipients targetRecipients = RecipientFactory.getRecipientsForIds(context, recipientIds, false);
-                  DatabaseFactory.getRecipientPreferenceDatabase(context).setBlocked(targetRecipients, false);
-                  return null;
-                },
-                ignored -> {},
-                exception -> Log.w(TAG, "Unable to unblock conversation recipient", exception));
+            screenViewModel.setBlocked(false);
+            trackCallbackTask(screenRepository.setBlocked(recipients.getIds(), false,
+                screenCallback(ignored -> {}, "Unable to unblock conversation recipient")));
           }
         }).show();
   }
@@ -692,14 +694,16 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       @Override
       public void onClick(DialogInterface dialog, int which) {
         KeyExchangeInitiator.initiate(ConversationActivity.this, masterSecret, recipients, true, subscriptionId);
-        long allocatedThreadId;
         if (threadId == -1) {
-          allocatedThreadId = DatabaseFactory.getThreadDatabase(getApplicationContext()).getThreadIdFor(recipients);
+          trackCallbackTask(screenRepository.getOrCreateThread(recipients.getIds(), distributionType,
+              screenCallback(allocatedThreadId -> {
+                Log.w(TAG, "Refreshing thread " + allocatedThreadId + "...");
+                sendComplete(allocatedThreadId);
+              }, "Unable to allocate conversation thread")));
         } else {
-          allocatedThreadId = threadId;
+          Log.w(TAG, "Refreshing thread " + threadId + "...");
+          sendComplete(threadId);
         }
-        Log.w(TAG, "Refreshing thread "+allocatedThreadId+"...");
-        sendComplete(allocatedThreadId);
       }
     });
 
@@ -727,14 +731,16 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
           Recipients recipients = getRecipients();
           KeyExchangeInitiator.abort(ConversationActivity.this, masterSecret, recipients, subscriptionId);
 
-          long allocatedThreadId;
           if (threadId == -1) {
-            allocatedThreadId = DatabaseFactory.getThreadDatabase(getApplicationContext()).getThreadIdFor(recipients);
+            trackCallbackTask(screenRepository.getOrCreateThread(recipients.getIds(), distributionType,
+                screenCallback(allocatedThreadId -> {
+                  Log.w(TAG, "Refreshing thread " + allocatedThreadId + "...");
+                  sendComplete(allocatedThreadId);
+                }, "Unable to allocate conversation thread")));
           } else {
-            allocatedThreadId = threadId;
+            Log.w(TAG, "Refreshing thread " + threadId + "...");
+            sendComplete(threadId);
           }
-          Log.w(TAG, "Refreshing thread "+allocatedThreadId+"...");
-          sendComplete(allocatedThreadId);
         }
       }
     });
@@ -751,37 +757,25 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void handleDistributionBroadcastEnabled(MenuItem item) {
     distributionType = ThreadDatabase.DistributionTypes.BROADCAST;
+    screenViewModel.setDistributionType(distributionType);
     item.setChecked(true);
 
     if (threadId != -1) {
-      Context context        = getApplicationContext();
-      long    targetThreadId = threadId;
-      AppTaskExecutor.getInstance().submitSerial(
-          () -> {
-            DatabaseFactory.getThreadDatabase(context)
-                           .setDistributionType(targetThreadId, ThreadDatabase.DistributionTypes.BROADCAST);
-            return null;
-          },
-          ignored -> {},
-          exception -> Log.w(TAG, "Unable to set broadcast distribution type", exception));
+      trackCallbackTask(screenRepository.setDistributionType(
+          threadId, ThreadDatabase.DistributionTypes.BROADCAST,
+          screenCallback(ignored -> {}, "Unable to set broadcast distribution type")));
     }
   }
 
   private void handleDistributionConversationEnabled(MenuItem item) {
     distributionType = ThreadDatabase.DistributionTypes.CONVERSATION;
+    screenViewModel.setDistributionType(distributionType);
     item.setChecked(true);
 
     if (threadId != -1) {
-      Context context        = getApplicationContext();
-      long    targetThreadId = threadId;
-      AppTaskExecutor.getInstance().submitSerial(
-          () -> {
-            DatabaseFactory.getThreadDatabase(context)
-                           .setDistributionType(targetThreadId, ThreadDatabase.DistributionTypes.CONVERSATION);
-            return null;
-          },
-          ignored -> {},
-          exception -> Log.w(TAG, "Unable to set conversation distribution type", exception));
+      trackCallbackTask(screenRepository.setDistributionType(
+          threadId, ThreadDatabase.DistributionTypes.CONVERSATION,
+          screenCallback(ignored -> {}, "Unable to set conversation distribution type")));
     }
   }
 
@@ -814,11 +808,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       @Override
       public void onClick(DialogInterface dialog, int which) {
         if (threadId > 0) {
-          DatabaseFactory.getThreadDatabase(ConversationActivity.this).deleteConversation(threadId);
+          trackCallbackTask(screenRepository.deleteThread(threadId,
+              screenCallback(ignored -> finishAfterConversationRemoval(),
+                             "Unable to delete conversation")));
+        } else {
+          finishAfterConversationRemoval();
         }
-        composeText.getText().clear();
-        threadId = -1;
-        finish();
       }
     });
 
@@ -828,11 +823,18 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void handleArchiveConversation() {
     if (threadId > 0) {
-      if (!archived) DatabaseFactory.getThreadDatabase(ConversationActivity.this).archiveConversation(threadId);
-      else           DatabaseFactory.getThreadDatabase(ConversationActivity.this).unarchiveConversation(threadId);
+      trackCallbackTask(screenRepository.setArchived(threadId, !archived,
+          screenCallback(ignored -> finishAfterConversationRemoval(),
+                         "Unable to update conversation archive state")));
+    } else {
+      finishAfterConversationRemoval();
     }
+  }
+
+  private void finishAfterConversationRemoval() {
     composeText.getText().clear();
     threadId = -1;
+    screenViewModel.setThreadId(threadId);
     finish();
   }
 
@@ -888,23 +890,9 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void initializeDraftFromDatabase() {
-    Context                             context          = getApplicationContext();
-    MasterSecret                        masterSecret     = this.masterSecret.parcelClone();
-    long                                targetThreadId   = threadId;
-    WeakReference<ConversationActivity> owner            = new WeakReference<>(this);
-    TaskHandle task = AppTaskExecutor.getInstance().submitSerial(
-        () -> {
-          MasterCipher masterCipher   = new MasterCipher(masterSecret);
-          DraftDatabase draftDatabase = DatabaseFactory.getDraftDatabase(context);
-          List<Draft> results         = draftDatabase.getDrafts(masterCipher, targetThreadId);
-          draftDatabase.clearDrafts(targetThreadId);
-          return results;
-        },
-        drafts -> {
-          ConversationActivity activity = owner.get();
-          if (activity != null && !activity.destroyed) activity.restoreDrafts(drafts);
-        },
-        exception -> Log.w(TAG, "Unable to restore conversation drafts", exception));
+    TaskHandle task = screenRepository.restoreDrafts(threadId,
+        new ConversationUnlockCapability(masterSecret),
+        screenCallback(this::restoreDrafts, "Unable to restore conversation drafts"));
     trackCallbackTask(task);
   }
 
@@ -934,6 +922,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     } else {
       this.isEncryptedConversation = false;
     }
+    screenViewModel.setSecurity(isSecureSmsDestination, isEncryptedConversation);
 
     sendButton.resetAvailableTransports(isMediaMessage);
     if (!isSecureSmsDestination      ) sendButton.disableTransport(Type.SECURE_SMS);
@@ -957,22 +946,15 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     if (recipients.getPrimaryRecipient() != null &&
         recipients.getPrimaryRecipient().getContactUri() != null)
     {
-      Context                             context          = getApplicationContext();
-      long[]                              recipientIds     = recipients.getIds().clone();
-      int                                 generation       = ++recipientPreferencesGeneration;
-      WeakReference<ConversationActivity> owner            = new WeakReference<>(this);
-      TaskHandle task = AppTaskExecutor.getInstance().submitSerial(
-          () -> DatabaseFactory.getRecipientPreferenceDatabase(context)
-                               .getRecipientsPreferences(recipientIds)
-                               .orElse(null),
-          preferences -> {
-            ConversationActivity activity = owner.get();
-            if (activity != null && !activity.destroyed && generation == activity.recipientPreferencesGeneration) {
-              activity.updateDefaultSubscriptionId(preferences != null ? preferences.getDefaultSubscriptionId()
-                                                                        : SubscriptionManagerCompat.getDefaultMessagingSubscriptionId());
+      int generation = ++recipientPreferencesGeneration;
+      TaskHandle task = screenRepository.loadDefaultSubscription(recipients.getIds(),
+          screenCallback(subscriptionId -> {
+            if (generation == recipientPreferencesGeneration) {
+              updateDefaultSubscriptionId(subscriptionId.isPresent()
+                  ? subscriptionId
+                  : SubscriptionManagerCompat.getDefaultMessagingSubscriptionId());
             }
-          },
-          exception -> Log.w(TAG, "Unable to load recipient preferences", exception));
+          }, "Unable to load recipient preferences"));
       trackCallbackTask(task);
     }
   }
@@ -1119,10 +1101,16 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private void initializeResources() {
     if (recipients != null) recipients.removeListener(this);
 
-    recipients       = RecipientFactory.getRecipientsForIds(this, getIntent().getLongArrayExtra(RECIPIENTS_EXTRA), true);
-    threadId         = getIntent().getLongExtra(THREAD_ID_EXTRA, -1);
-    archived         = getIntent().getBooleanExtra(IS_ARCHIVED_EXTRA, false);
-    distributionType = getIntent().getIntExtra(DISTRIBUTION_TYPE_EXTRA, ThreadDatabase.DistributionTypes.DEFAULT);
+    screenViewModel.setConversation(
+        getIntent().getLongArrayExtra(RECIPIENTS_EXTRA),
+        getIntent().getLongExtra(THREAD_ID_EXTRA, -1),
+        getIntent().getIntExtra(DISTRIBUTION_TYPE_EXTRA, ThreadDatabase.DistributionTypes.DEFAULT),
+        getIntent().getBooleanExtra(IS_ARCHIVED_EXTRA, false));
+    ConversationScreenUiState screenState = screenViewModel.getState().getValue();
+    recipients = RecipientFactory.getRecipientsForIds(this, screenState.getRecipientIds(), true);
+    threadId = screenState.getThreadId();
+    archived = screenState.isArchived();
+    distributionType = screenState.getDistributionType();
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
       LinearLayout conversationContainer = ViewUtil.findById(this, R.id.conversation_container);
@@ -1251,36 +1239,18 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     final Drafts       drafts               = getDraftsForCurrentState();
     final long         thisThreadId         = this.threadId;
-    final MasterSecret thisMasterSecret     = this.masterSecret.parcelClone();
     final int          thisDistributionType = this.distributionType;
-    final Context      context              = getApplicationContext();
     final long[]       recipientIds         = recipients.getIds().clone();
 
-    TaskHandle task = AppTaskExecutor.getInstance().submitSerial(
-        () -> {
-          ThreadDatabase threadDatabase = DatabaseFactory.getThreadDatabase(context);
-          DraftDatabase  draftDatabase  = DatabaseFactory.getDraftDatabase(context);
-          long           savedThreadId  = thisThreadId;
-
-          if (drafts.size() > 0) {
-            if (savedThreadId == -1) {
-              Recipients targetRecipients = RecipientFactory.getRecipientsForIds(context, recipientIds, false);
-              savedThreadId = threadDatabase.getThreadIdFor(targetRecipients, thisDistributionType);
-            }
-
-            draftDatabase.insertDrafts(new MasterCipher(thisMasterSecret), savedThreadId, drafts);
-            threadDatabase.updateSnippet(savedThreadId, drafts.getSnippet(context), drafts.getUriSnippet(context),
-                                         System.currentTimeMillis(), Types.BASE_DRAFT_TYPE, true);
-          } else if (savedThreadId > 0) {
-            threadDatabase.update(savedThreadId, false);
+    TaskHandle task = screenRepository.saveDrafts(
+        thisThreadId, recipientIds, thisDistributionType, drafts,
+        new ConversationUnlockCapability(masterSecret),
+        new ConversationScreenRepository.Callback<Long>() {
+          @Override public void onSuccess(Long savedThreadId) { future.set(savedThreadId); }
+          @Override public void onFailure(Exception exception) {
+            Log.w(TAG, "Unable to save conversation draft", exception);
+            future.setException(exception);
           }
-
-          return savedThreadId;
-        },
-        future::set,
-        exception -> {
-          Log.w(TAG, "Unable to save conversation draft", exception);
-          future.setException(exception);
         });
     if (trackTask) trackFutureTask(task, future);
 
@@ -1297,6 +1267,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void setBlockedUserState(Recipients recipients) {
+    screenViewModel.setBlocked(recipients.isBlocked());
     if (recipients.isBlocked()) {
       unblockButton.setVisibility(View.VISIBLE);
       composePanel.setVisibility(View.GONE);
@@ -1365,34 +1336,20 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void markThreadAsRead() {
-    Context      context        = getApplicationContext();
-    long         targetThreadId = threadId;
-    MasterSecret masterSecret   = this.masterSecret.parcelClone();
-    AppTaskExecutor.getInstance().submitSerial(
-        () -> {
-          DatabaseFactory.getThreadDatabase(context).setRead(targetThreadId);
-          MessageNotifier.updateNotification(context, masterSecret);
-          return null;
-        },
-        ignored -> {},
-        exception -> Log.w(TAG, "Unable to mark conversation as read", exception));
+    trackCallbackTask(screenRepository.markRead(threadId,
+        new ConversationUnlockCapability(masterSecret),
+        screenCallback(ignored -> {}, "Unable to mark conversation as read")));
   }
 
   private void markLastSeen() {
-    Context context        = getApplicationContext();
-    long    targetThreadId = threadId;
-    AppTaskExecutor.getInstance().submitSerial(
-        () -> {
-          DatabaseFactory.getThreadDatabase(context).setLastSeen(targetThreadId);
-          return null;
-        },
-        ignored -> {},
-        exception -> Log.w(TAG, "Unable to update conversation last-seen time", exception));
+    trackCallbackTask(screenRepository.markLastSeen(threadId,
+        screenCallback(ignored -> {}, "Unable to update conversation last-seen time")));
   }
 
   protected void sendComplete(long threadId) {
     boolean refreshFragment = (threadId != this.threadId);
     this.threadId = threadId;
+    screenViewModel.setThreadId(threadId);
 
     if (fragment == null || !fragment.isVisible() || isFinishing()) {
       return;
@@ -1523,6 +1480,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void updateToggleButtonState() {
+    boolean draftPresent = composeText.getText().length() > 0 || attachmentManager.isAttachmentPresent();
+    screenViewModel.setComposeStatus(draftPresent, draftPresent && !recipients.isBlocked());
     if (composeText.getText().length() == 0 && !attachmentManager.isAttachmentPresent()) {
       buttonToggle.display(attachButton);
     } else {
@@ -1531,18 +1490,9 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void recordSubscriptionIdPreference(final Optional<Integer> subscriptionId) {
-    Context context      = getApplicationContext();
-    long[]  recipientIds = recipients.getIds().clone();
-    int     subscription = subscriptionId.orElse(-1);
-    AppTaskExecutor.getInstance().submitSerial(
-        () -> {
-          Recipients targetRecipients = RecipientFactory.getRecipientsForIds(context, recipientIds, false);
-          DatabaseFactory.getRecipientPreferenceDatabase(context)
-                         .setDefaultSubscriptionId(targetRecipients, subscription);
-          return null;
-        },
-        ignored -> {},
-        exception -> Log.w(TAG, "Unable to record default subscription", exception));
+    trackCallbackTask(screenRepository.setDefaultSubscription(
+        recipients.getIds(), subscriptionId.orElse(-1),
+        screenCallback(ignored -> {}, "Unable to record default subscription")));
   }
 
   private boolean sendIfSimCardNotAsked(boolean fromSendButton) {
