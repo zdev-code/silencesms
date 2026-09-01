@@ -1,0 +1,62 @@
+plugins {
+    id 'com.android.application' version '9.3.1' apply false
+    id 'com.android.library' version '9.3.1' apply false
+}
+
+subprojects {
+    ext.version_number     = '2.4.0'
+    ext.group_info         = 'org.whispersystems'
+    ext.curve25519_version = '0.5.0'
+}
+
+allprojects {
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs.removeAll { it in ['-Xlint:-deprecation', '-Xlint:-unchecked'] }
+        options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
+        options.deprecation = true
+        options.warnings = true
+    }
+}
+
+def libsignalPinnedCoordinate = 'org.signal:libsignal-android:0.72.1'
+def libsignalPinnedSha256     = '9859acc14aab4f4744abbc9ad150829afce090aa143a58a95af7da1767a6761f'
+def libsignalPinConfiguration = configurations.detachedConfiguration(
+    dependencies.create(libsignalPinnedCoordinate))
+libsignalPinConfiguration.transitive = false
+def buildLogger = logger
+
+def verifyLibsignalPin = tasks.register('verifyLibsignalPin') {
+    description = 'Verifies the pinned libsignal-android AAR matches its known-good SHA-256.'
+    group = 'verification'
+    doLast {
+        def artifact = libsignalPinConfiguration.files.find { it.name.endsWith('.aar') }
+        if (artifact == null) {
+            throw new GradleException(
+                "verifyLibsignalPin: could not resolve an AAR for ${libsignalPinnedCoordinate}")
+        }
+        def md = java.security.MessageDigest.getInstance('SHA-256')
+        artifact.withInputStream { input ->
+            byte[] buf = new byte[65536]
+            int n
+            while ((n = input.read(buf)) != -1) {
+                md.update(buf, 0, n)
+            }
+        }
+        def actual = md.digest().encodeHex().toString()
+        if (actual != libsignalPinnedSha256) {
+            throw new GradleException(
+                    "libsignal-android pin verification FAILED — refusing to build.\n" +
+                    "  coordinate:       ${libsignalPinnedCoordinate}\n" +
+                    "  expected SHA-256: ${libsignalPinnedSha256}\n" +
+                    "  actual   SHA-256: ${actual}\n" +
+                    "  artifact:         ${artifact}")
+        }
+        buildLogger.lifecycle("verifyLibsignalPin: ${libsignalPinnedCoordinate} SHA-256 OK")
+    }
+}
+
+project(':app') {
+    tasks.matching { it.name == 'preBuild' }.configureEach {
+        dependsOn rootProject.tasks.named('verifyLibsignalPin')
+    }
+}
