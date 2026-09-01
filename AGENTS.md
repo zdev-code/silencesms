@@ -25,6 +25,14 @@ On Windows PowerShell, use the wrapper as `./gradlew.bat`; on Unix-like shells, 
 
 Run the narrowest relevant test first, then `assembleDebug` for app-source changes. Crypto, storage, backup/restore, or vendored-libsignal changes require their focused tests plus the applicable release-stage check.
 
+### Connected-device data safety
+
+- Treat every connected device as containing irreplaceable user data. Never uninstall the app, clear its data, remove it for a user, or run a command/task that may do so without the user's explicit approval in the current conversation.
+- Ordinary first installs and signature-compatible in-place installs/upgrades are allowed. If installation would require uninstalling the existing package, stop and ask; never resolve `INSTALL_FAILED_UPDATE_INCOMPATIBLE` or a signing mismatch by uninstalling automatically.
+- Before any Gradle/ADB task that deploys an APK or test APK, identify the target device and preflight the installed package and signing compatibility. If a non-destructive deployment cannot be established, use a disposable emulator or ask the user before proceeding.
+- In particular, `connectedAndroidTest` and related connected-test tasks may uninstall an installed app before deploying the test target. Do not run them against a personal device that has the same application ID with a different signature. Compiling the instrumentation APK is safe; executing it on such a device requires explicit approval.
+- Approval to install or upgrade does not imply approval to uninstall or clear data. State the destructive operation and its data-loss consequence when asking.
+
 ## Modernization constraints
 
 - New `android.os.AsyncTask` usage is forbidden by `checkNoNewAsyncTaskUsage`; use the repository's executor, job, or lifecycle-aware patterns.
