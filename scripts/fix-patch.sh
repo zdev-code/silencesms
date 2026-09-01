@@ -37,6 +37,7 @@ for file in "$@"; do
            -e 's/^[Cc]loses #/Closes https:\/\/github.com\/WhisperSystems\/Signal-Android\/pull\//g' \
            -e 's/^SingleRecipientNotificationBuilder_new_textsecure_message/SingleRecipientNotificationBuilder_new_smssecure_message/g' \
            -e 's/src\/org.smssecure.smssecure.util.SilencePreferences.java/src\/org\/smssecure\/smssecure\/util\/SilencePreferences.java/g' \
+           -e 's#src/org/smssecure/smssecure#app/src/main/java/org/smssecure/smssecure#g' \
            -e "0,/^---/s//\nUpstream commit: https:\/\/github.com\/WhisperSystems\/Signal-Android\/commit\/$commit\n---/" \
            "$file"
 done

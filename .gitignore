@@ -7,7 +7,6 @@ gen/
 .idea/
 *.iml
 out
-tests
 lint.xml
 local.properties
 ant.properties
@@ -32,3 +31,4 @@ graphify-out/cost.json
 graphify-out/.graphify_*
 graphify-out/.needs_update
 graphify-out/needs_update
+graphify-out/20*/

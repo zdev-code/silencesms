@@ -7,13 +7,12 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_PACKAGE_NAME := Silence
 
 silence_root  := $(LOCAL_PATH)
-silence_build := $(silence_root)/build
-silence_apk   := build/outputs/apk/Silence-release-unsigned.apk
+silence_build := $(silence_root)/app/build
+silence_apk   := app/build/outputs/apk/release/app-release.apk
 
 $(silence_root)/$(silence_apk):
 	rm -Rf $(silence_build)
-	cd $(silence_root) && git submodule init && git submodule update
-	cd $(silence_root) && ./gradlew assembleRelease
+	cd $(silence_root) && ./gradlew :app:assembleRelease
 
 LOCAL_CERTIFICATE := platform
 LOCAL_SRC_FILES := $(silence_apk)

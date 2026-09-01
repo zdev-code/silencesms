@@ -98,7 +98,7 @@ try:
         print("Successfully gzipped to %s" % gzipped_file)
 
     if not args.quiet:
-        print("\nTo include this in the distribution, copy it to the project's assets/databases/ directory.")
+        print("\nTo include this in the distribution, copy it to the project's app/src/main/assets/databases/ directory.")
         print("If you support API 10 or lower, you must use the gzipped version to avoid corruption.")
 
 except sqlite3.Error as e:

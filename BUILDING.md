@@ -32,28 +32,28 @@ Android Studio can install the Android components through its SDK Manager.
 3. Build the debug APK on Linux or macOS:
 
    ```console
-   ./gradlew assembleDebug
+   ./gradlew :app:assembleDebug
    ```
 
-   On Windows PowerShell, use `./gradlew.bat assembleDebug`.
+   On Windows PowerShell, use `./gradlew.bat :app:assembleDebug`.
 
 ## Release builds
 
 The repository defines two release variants:
 
-* `assembleRelease` builds the standard release with modern local-crypto writes enabled.
-* `assemblePhaseARelease` builds a compatibility release with modern local-crypto writes disabled. It retains modern readers while preserving the legacy write policy for staged deployment or rollback.
+* `:app:assembleRelease` builds the standard release with modern local-crypto writes enabled.
+* `:app:assemblePhaseARelease` builds a compatibility release with modern local-crypto writes disabled. It retains modern readers while preserving the legacy write policy for staged deployment or rollback.
 
 Verify the build-policy flags and build both variants on Linux or macOS with:
 
 ```console
-./gradlew verifyCryptoReleaseStages assemblePhaseARelease assembleRelease
+./gradlew :app:verifyCryptoReleaseStages :app:assemblePhaseARelease :app:assembleRelease
 ```
 
 On Windows PowerShell, use:
 
 ```console
-./gradlew.bat verifyCryptoReleaseStages assemblePhaseARelease assembleRelease
+./gradlew.bat :app:verifyCryptoReleaseStages :app:assemblePhaseARelease :app:assembleRelease
 ```
 
 Both variants retain legacy and modern readers so data remains readable across upgrades and rollbacks. Use the compatibility variant only when that write policy is intentional.
@@ -68,7 +68,7 @@ Both variants retain legacy and modern readers so data remains readable across u
 4. Choose **File > New > Project from Version Control** and clone `https://github.com/zdev-code/silencesms.git`, or open an existing clone.
 5. Allow Android Studio to synchronize the Gradle project.
 
-The project uses a legacy source layout configured in `build.gradle`; do not move source files into a generated modern layout simply to satisfy IDE suggestions.
+The application is the `app` module and uses the standard Android source-set layout under `app/src/`.
 
 ## Contributing code
 

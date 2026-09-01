@@ -33,7 +33,7 @@ Open pull requests from a feature branch against `main`. Describe the behavior c
 Run the narrowest relevant tests while iterating. For app-source changes, run the JVM tests and build the debug APK before submitting:
 
 ```console
-./gradlew test assembleDebug
+./gradlew :app:test :app:assembleDebug
 ```
 
-On Windows PowerShell, use `./gradlew.bat test assembleDebug`. Changes to crypto, persistence, backup/restore, or the vendored libsignal module require their focused tests and the applicable release-stage checks described in [BUILDING.md](BUILDING.md).
+On Windows PowerShell, use `./gradlew.bat :app:test :app:assembleDebug`. Changes to crypto, persistence, backup/restore, or the vendored libsignal module require their focused tests and the applicable release-stage checks described in [BUILDING.md](BUILDING.md).

@@ -7,21 +7,19 @@
 set -eo pipefail
 
 UPSTREAM="https://github.com/signalapp/Signal-Android"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 
 if [ "$#" -lt 1 ]; then
     echo "usage: ./scripts/import-patch.sh <commit SHAs>"
     exit 1
 fi
 
-if [ `basename $(pwd)` = "scripts" ]; then
-    cd ..
-fi
-
-cwd=`pwd`
+cd "$REPO_ROOT"
 
 for sha in "$@"; do
     wget "$UPSTREAM/commit/$sha.patch" 2> /dev/null
-    $cwd/scripts/fix-patch.sh "$cwd/$sha.patch"
+    "$SCRIPT_DIR/fix-patch.sh" "$REPO_ROOT/$sha.patch"
 done
 
 git checkout master > /dev/null 2>&1

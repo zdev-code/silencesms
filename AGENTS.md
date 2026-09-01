@@ -4,12 +4,12 @@
 
 - Use [`BUILDING.md`](BUILDING.md) for SDK setup, normal builds, and the staged crypto release procedure.
 - Use [`CONTRIBUTING.md`](CONTRIBUTING.md) for contribution and diagnostic-log conventions.
-- Treat [`build.gradle`](build.gradle) and [`settings.gradle`](settings.gradle) as the source of truth when documentation and the current toolchain differ.
+- Treat [`build.gradle.kts`](build.gradle.kts) and [`settings.gradle.kts`](settings.gradle.kts) as the source of truth when documentation and the current toolchain differ.
 
 ## Repository shape
 
-- This is a legacy-layout Android application: app Java is under `src/`, resources under `res/`, JVM tests under `test/unitTest/java/`, and device tests under `test/androidTest/java/`.
-- `libs/` contains vendored Gradle modules. Do not casually refactor them as app code; change a vendored fork only when the task explicitly requires it, and validate its module as well as the app.
+- `app/` is the Android application module. It uses standard source sets: app Java and resources are under `app/src/main/`, JVM tests under `app/src/test/java/`, and device tests under `app/src/androidTest/java/`.
+- `third-party/` contains vendored Gradle modules. Do not casually refactor them as app code; change a vendored fork only when the task explicitly requires it, and validate its module as well as the app.
 - Never edit Gradle output under `build/`. Treat `graphify-out/` as generated but committed project knowledge; update it as described below instead of deleting it.
 - The app targets Java 17 and Android API 36 with minSdk 23. Production native packaging is ARM64-only; do not silently broaden or narrow ABI support.
 
@@ -17,13 +17,14 @@
 
 On Windows PowerShell, use the wrapper as `./gradlew.bat`; on Unix-like shells, use `./gradlew`.
 
-- `./gradlew.bat assembleDebug` builds the development APK.
-- `./gradlew.bat test` runs app JVM tests; prefer a targeted `--tests` filter while iterating.
-- `./gradlew.bat connectedAndroidTest` runs device/emulator tests.
+- `./gradlew.bat :app:assembleDebug` builds the development APK.
+- `./gradlew.bat :app:test` runs app JVM tests; prefer a targeted `--tests` filter while iterating.
+- `./gradlew.bat :app:connectedAndroidTest` runs device/emulator tests.
 - `./gradlew.bat :java:test` runs the vendored libsignal JVM suite.
-- `./gradlew.bat verifyCryptoReleaseStages assemblePhaseARelease assembleRelease` validates and builds both crypto rollout artifacts. Do not substitute the normal release for Phase A.
+- `./gradlew.bat :app:verifyCryptoReleaseStages :app:assemblePhaseARelease :app:assembleRelease` validates and builds both crypto rollout artifacts. Do not substitute the normal release for Phase A.
+- `./gradlew.bat :app:lint` checks for findings not recorded in `app/lint-baseline.xml`; do not refresh the baseline to hide newly introduced issues.
 
-Run the narrowest relevant test first, then `assembleDebug` for app-source changes. Crypto, storage, backup/restore, or vendored-libsignal changes require their focused tests plus the applicable release-stage check.
+Run the narrowest relevant test first, then `:app:assembleDebug` for app-source changes. Crypto, storage, backup/restore, or vendored-libsignal changes require their focused tests plus the applicable release-stage check.
 
 ### Connected-device data safety
 
@@ -36,7 +37,7 @@ Run the narrowest relevant test first, then `assembleDebug` for app-source chang
 ## Modernization constraints
 
 - New `android.os.AsyncTask` usage is forbidden by `checkNoNewAsyncTaskUsage`; use the repository's executor, job, or lifecycle-aware patterns.
-- Every app-source `@SuppressWarnings("deprecation")` must have a matching four-column entry in [`config/android-deprecation-allowlist.tsv`](config/android-deprecation-allowlist.tsv). Prefer removing the deprecated API; keep the allowlist exact when compatibility requires suppression.
+- Every app-source `@SuppressWarnings("deprecation")` must have a matching four-column entry in [`app/config/android-deprecation-allowlist.tsv`](app/config/android-deprecation-allowlist.tsv). Prefer removing the deprecated API; keep the allowlist exact when compatibility requires suppression.
 - Jetifier is disabled. New dependencies must be AndroidX-native and must not reintroduce `com.android.support` artifacts.
 - Do not remove code merely because it looks legacy. First trace manifest registration, callers, API-level branches, persistence formats, upgrade/rollback behavior, and tests. Compatibility code is removable only when those paths are demonstrably dead or the task explicitly changes the compatibility contract.
 - System-bar and cutout handling is centralized in `BaseActionBarActivity`; preserve that ownership when changing activities or fragment content.

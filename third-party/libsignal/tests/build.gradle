@@ -1,0 +1,37 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    // JUnit 4 runs these junit.framework.TestCase classes via JUnit38ClassRunner; :java:test already
+    // resolved to 4.13.2, so declare it here rather than leaving a stale 3.8.2 request.
+    testImplementation 'junit:junit:4.13.2'
+
+    implementation project(':java')
+}
+
+configurations {
+    testArtifacts {
+        canBeResolved = false
+        canBeConsumed = true
+        extendsFrom configurations.testImplementation
+    }
+}
+
+tasks.register('testJar', Jar) {
+    archiveClassifier = 'tests'
+    from sourceSets.test.output
+}
+
+// This project only compiles the shared protocol tests; :java:test executes them, because only
+// :java supplies the libsignal-client and curve25519 runtime dependencies they need.
+tasks.named('test') {
+    enabled = false
+}
+
+artifacts {
+    testArtifacts tasks.named('testJar')
+}
