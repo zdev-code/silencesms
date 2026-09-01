@@ -251,6 +251,11 @@
     <string name="ExportFragment_export_encrypted_backup">Export encrypted backup?</string>
     <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">This will export your encrypted keys, settings, and messages to storage.</string>
     <string name="ExportFragment_store_recovery_key">Store this recovery key in your password manager or another secure location. It is required to restore this backup and is not stored inside it.</string>
+    <string name="ExportFragment_choose_recovery_key">Choose recovery key</string>
+    <string name="ExportFragment_choose_recovery_key_message">Use the automatic backup recovery key so one key restores both backup types, or create a separate key for this export.</string>
+    <string name="ExportFragment_use_automatic_key">Use automatic key</string>
+    <string name="ExportFragment_use_new_key">Use new key</string>
+    <string name="ExportFragment_automatic_key_unavailable">The automatic backup recovery key is unavailable.</string>
     <string name="ExportFragment_exporting_keys_settings_and_messages">Exporting encrypted keys, settings, and messages…</string>
 
     <!-- GroupCreateActivity -->
@@ -277,17 +282,18 @@
     <string name="ImportFragment_import">Import</string>
     <string name="ImportFragment_cancel">Cancel</string>
     <string name="ImportFragment_restore_encrypted_backup">Restore encrypted backup?</string>
-    <string name="ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys">Restoring an encrypted backup will completely replace your existing keys, preferences, and messages. You will lose any information that is in your current Silence installation but not in the backup. Silence will stop after the import.</string>
+    <string name="ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys">Restoring an encrypted backup will completely replace your existing keys, preferences, and messages. You will lose any information that is in your current Silence installation but not in the backup. Automatic backups will be disabled and their saved recovery key removed; enabling them afterward creates a new key. Existing backup files still require their original recovery key. Silence will stop after the import.</string>
     <string name="ImportFragment_import_plaintext_backup">Import plaintext backup?</string>
     <string name="ImportFragment_this_will_import_messages_from_a_plaintext_backup">This will import
-        messages from a plaintext backup. If you\'ve previously imported this backup,
-        importing again will result in duplicated messages.
+        messages from a plaintext backup. Messages already present in Silence will be skipped.
+        Automatic encrypted backup settings and recovery keys will not change.
     </string>
     <string name="ImportFragment_importing">Importing</string>
     <string name="ImportFragment_import_plaintext_backup_elipse">Importing plaintext backup…</string>
     <string name="ImportFragment_no_plaintext_backup_found">No plaintext backup found!</string>
     <string name="ImportFragment_error_importing_backup">Error importing backup!</string>
     <string name="ImportFragment_import_complete">Import complete!</string>
+    <string name="ImportFragment_backup_already_imported">No new messages were found. Existing messages were not imported again.</string>
     <string name="ImportFragment_restoring_encrypted_backup">Restoring encrypted backup…</string>
     <string name="ImportFragment_no_encrypted_backup_found">No encrypted backup found!</string>
     <string name="ImportFragment_recovery_key">Recovery key</string>
@@ -298,8 +304,9 @@
     <string name="AutomaticBackup_disable">Disable automatic encrypted backups</string>
     <string name="AutomaticBackup_description">Create a daily backup while charging and keep the five newest copies.</string>
     <string name="AutomaticBackup_store_recovery_key">Store this recovery key in your password manager or another secure location. Automatic backups cannot be restored without it.</string>
+    <string name="AutomaticBackup_reuse_recovery_key">Automatic backups will continue using the recovery key shown below, so it can restore backups from before and after the pause.</string>
     <string name="AutomaticBackup_select_directory">Select backup folder</string>
-    <string name="AutomaticBackup_disable_message">Future automatic backups will stop. Existing backup files will not be deleted.</string>
+    <string name="AutomaticBackup_disable_message">Future automatic backups will stop. Existing backup files will not be deleted, and the recovery key will be retained so re-enabling uses the same key.</string>
     <string name="AutomaticBackup_enable_failed">Unable to enable automatic backups.</string>
     <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">Silence needs the SMS permission in order to import SMS messages, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"SMS\".</string>
     <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">Silence needs the SMS permission in order to import SMS messages</string>
@@ -343,6 +350,7 @@
 
     <!-- PassphrasePromptActivity -->
     <string name="PassphrasePromptActivity_enter_passphrase">Enter passphrase</string>
+    <string name="PassphrasePromptActivity_unlocking">Unlocking</string>
     <string name="PassphrasePromptActivity_watermark_content_description">Silence icon</string>
     <string name="PassphrasePromptActivity_invalid_passphrase_exclamation">Invalid passphrase!</string>
 
@@ -788,6 +796,7 @@
     <string name="preferences__conversation_length_limit">Conversation length limit</string>
     <string name="preferences__trim_all_conversations_now">Trim all conversations now</string>
     <string name="preferences__scan_through_all_conversations_and_enforce_conversation_length_limits">Scan through all conversations and enforce conversation length limits</string>
+    <string name="preferences__system_theme">System default</string>
     <string name="preferences__light_theme">Light</string>
     <string name="preferences__dark_theme">Dark</string>
     <string name="preferences__appearance">Appearance</string>

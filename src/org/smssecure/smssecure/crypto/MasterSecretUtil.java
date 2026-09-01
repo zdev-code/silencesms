@@ -67,6 +67,7 @@ public class MasterSecretUtil {
   static final String MASTER_SECRET_V2_NEXT_ATTEMPT         = "master_secret_v2_next_attempt";
   private static final String DEVICE_WRAPPED_MASTER_SECRET   = "device_wrapped_master_secret_v1";
   private static final String DEVICE_KEY_ALIAS               = "device_key_alias_v1";
+  private static final String AUTOMATIC_BACKUP_RECOVERY_KEY  = "automatic_backup_recovery_key";
   static final String ACTIVE_MASTER_SECRET                  = "active_master_secret";
   static final int ACTIVE_MASTER_SECRET_LEGACY              = 0;
   static final int ACTIVE_MASTER_SECRET_ARGON2              = 2;
@@ -295,7 +296,7 @@ public class MasterSecretUtil {
     byte[] envelope = DeviceKeyEnvelope.encrypt(
         argon2Wrapper, AndroidKeystoreKeyManager.getOrCreate(context, candidateAlias));
     return new RestoredDeviceProtection(activeAlias, candidateAlias, previousEnvelope,
-                      hadPreviousEnvelope, hadPreviousAlias, envelope);
+          hadPreviousEnvelope, hadPreviousAlias, envelope);
   }
 
   public static void activateRestoredDeviceProtection(Context context,
@@ -419,7 +420,10 @@ public class MasterSecretUtil {
       Arrays.fill(argon2Wrapper, (byte) 0);
     }
     boolean removed = context.getSharedPreferences(DEVICE_PREFERENCES_NAME, 0)
-                             .edit().remove(DEVICE_WRAPPED_MASTER_SECRET).commit();
+                             .edit()
+                             .remove(DEVICE_WRAPPED_MASTER_SECRET)
+                             .remove(DEVICE_KEY_ALIAS)
+                             .commit();
     if (!removed) throw new GeneralSecurityException("Unable to remove device protection wrapper");
     AndroidKeystoreKeyManager.delete(AndroidKeystoreKeyManager.ALIAS_A);
     AndroidKeystoreKeyManager.delete(AndroidKeystoreKeyManager.ALIAS_B);
@@ -451,7 +455,8 @@ public class MasterSecretUtil {
       if (!context.getSharedPreferences(DEVICE_PREFERENCES_NAME, 0).edit()
                   .putString(DEVICE_WRAPPED_MASTER_SECRET,
                              Base64.encodeBytes(deviceWrapped))
-                  .putString(DEVICE_KEY_ALIAS, alias).commit()) {
+                  .putString(DEVICE_KEY_ALIAS, alias)
+                  .commit()) {
         throw new GeneralSecurityException("Unable to save device protection wrapper");
       }
     } finally {

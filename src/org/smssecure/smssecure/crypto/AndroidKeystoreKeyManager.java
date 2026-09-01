@@ -1,11 +1,11 @@
 package org.smssecure.smssecure.crypto;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
+import android.security.keystore.KeyInfo;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.security.keystore.StrongBoxUnavailableException;
+import android.util.Log;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -13,6 +13,7 @@ import java.security.KeyStore;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 
 final class AndroidKeystoreKeyManager {
   private static final String KEYSTORE = "AndroidKeyStore";
@@ -28,17 +29,8 @@ final class AndroidKeystoreKeyManager {
   static SecretKey getOrCreate(Context context, String alias) throws GeneralSecurityException {
     KeyStore keyStore = loadKeyStore();
     SecretKey existing = (SecretKey) keyStore.getKey(alias, null);
-    if (existing != null) return existing;
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
-        context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_STRONGBOX_KEYSTORE)) {
-      try {
-        return generate(alias, true);
-      } catch (StrongBoxUnavailableException error) {
-        // Fall through to the ordinary hardware/software-backed Android Keystore.
-      }
-    }
-    return generate(alias, false);
+    if (existing != null) return requireSecureHardware(existing);
+    return requireSecureHardware(generate(alias));
   }
 
   static SecretKey getExisting() throws GeneralSecurityException {
@@ -47,7 +39,8 @@ final class AndroidKeystoreKeyManager {
 
   static SecretKey getExisting(String alias) throws GeneralSecurityException {
     KeyStore keyStore = loadKeyStore();
-    return (SecretKey) keyStore.getKey(alias, null);
+    SecretKey existing = (SecretKey) keyStore.getKey(alias, null);
+    return existing == null ? null : requireSecureHardware(existing);
   }
 
   static void delete() throws GeneralSecurityException {
@@ -69,7 +62,7 @@ final class AndroidKeystoreKeyManager {
     }
   }
 
-  private static SecretKey generate(String alias, boolean strongBox) throws GeneralSecurityException {
+  private static SecretKey generate(String alias) throws GeneralSecurityException {
     KeyGenerator generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEYSTORE);
     KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(
         alias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
@@ -77,8 +70,21 @@ final class AndroidKeystoreKeyManager {
         .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
         .setKeySize(256)
         .setRandomizedEncryptionRequired(true);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.setIsStrongBoxBacked(strongBox);
     generator.init(builder.build());
     return generator.generateKey();
+  }
+
+  private static SecretKey requireSecureHardware(SecretKey key)
+      throws GeneralSecurityException {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return key;
+
+    SecretKeyFactory factory = SecretKeyFactory.getInstance(key.getAlgorithm(), KEYSTORE);
+    KeyInfo keyInfo = (KeyInfo) factory.getKeySpec(key, KeyInfo.class);
+    int securityLevel = keyInfo.getSecurityLevel();
+    if (securityLevel != KeyProperties.SECURITY_LEVEL_TRUSTED_ENVIRONMENT) {
+      throw new GeneralSecurityException("Device protection key is not TEE-backed");
+    }
+    Log.i("AndroidKeystoreKeyManager", "Device key security level: TRUSTED_ENVIRONMENT");
+    return key;
   }
 }

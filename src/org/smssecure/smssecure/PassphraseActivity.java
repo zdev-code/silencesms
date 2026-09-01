@@ -38,6 +38,7 @@ public abstract class PassphraseActivity extends BaseActionBarActivity {
 
   protected void setMasterSecret(MasterSecret masterSecret) {
     this.masterSecret = masterSecret;
+    KeyCachingService.primeMasterSecret(masterSecret);
     Intent bindIntent = new Intent(this, KeyCachingService.class);
     startService(bindIntent);
     bindService(bindIntent, serviceConnection, Context.BIND_AUTO_CREATE);

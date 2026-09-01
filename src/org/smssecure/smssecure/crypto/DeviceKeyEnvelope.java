@@ -2,7 +2,6 @@ package org.smssecure.smssecure.crypto;
 
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
@@ -22,12 +21,13 @@ final class DeviceKeyEnvelope {
     if (plaintext == null || plaintext.length == 0) {
       throw new GeneralSecurityException("Device envelope plaintext is required");
     }
-    byte[] nonce = new byte[NONCE_LENGTH];
-    new SecureRandom().nextBytes(nonce);
-    byte[] header = header(nonce, plaintext.length + TAG_LENGTH_BITS / Byte.SIZE);
-
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-    cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(TAG_LENGTH_BITS, nonce));
+    cipher.init(Cipher.ENCRYPT_MODE, key);
+    byte[] nonce = cipher.getIV();
+    if (nonce == null || nonce.length != NONCE_LENGTH) {
+      throw new GeneralSecurityException("Unsupported device envelope nonce");
+    }
+    byte[] header = header(nonce, plaintext.length + TAG_LENGTH_BITS / Byte.SIZE);
     cipher.updateAAD(header);
     byte[] ciphertext = cipher.doFinal(plaintext);
     return ByteBuffer.allocate(header.length + ciphertext.length)

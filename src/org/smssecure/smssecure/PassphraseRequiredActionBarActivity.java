@@ -41,7 +41,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   protected final void onCreate(Bundle savedInstanceState) {
     Log.w(TAG, "onCreate(" + savedInstanceState + ")");
     onPreCreate();
-    final MasterSecret masterSecret = KeyCachingService.getMasterSecret(this);
+    final MasterSecret masterSecret = KeyCachingService.getCachedMasterSecret();
     routeApplicationState(masterSecret);
     super.onCreate(savedInstanceState);
     if (!isFinishing()) {
@@ -120,9 +120,6 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   }
 
   private void routeApplicationState(MasterSecret masterSecret) {
-    if (masterSecret == null && SilencePreferences.isPasswordDisabled(this)) {
-      masterSecret = KeyCachingService.getMasterSecret(this);
-    }
     Intent intent = getIntentForState(masterSecret, getApplicationState(masterSecret));
     if (intent != null) {
       startActivity(intent);

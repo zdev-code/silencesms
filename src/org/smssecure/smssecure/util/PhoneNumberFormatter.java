@@ -86,13 +86,19 @@ public class PhoneNumberFormatter {
     if (number.charAt(0) == '+')
       return number;
 
+    PhoneNumberUtil util = PhoneNumberUtil.getInstance();
+    String localCountryCode;
+
     try {
-      PhoneNumberUtil util          = PhoneNumberUtil.getInstance();
       PhoneNumber localNumberObject = util.parse(localNumber, null);
-
-      String localCountryCode       = util.getRegionCodeForNumber(localNumberObject);
+      localCountryCode = util.getRegionCodeForNumber(localNumberObject);
       Log.w(TAG, "Got local CC: " + localCountryCode);
+    } catch (NumberParseException e) {
+      Log.w(TAG, "Unable to parse configured local number; preserving destination", e);
+      return number;
+    }
 
+    try {
       PhoneNumber numberObject      = util.parse(number, localCountryCode);
       return util.format(numberObject, PhoneNumberFormat.E164);
     } catch (NumberParseException e) {
@@ -106,6 +112,21 @@ public class PhoneNumberFormatter {
       return formatNumber(number, localNumber);
     } catch (InvalidNumberException exception) {
       Log.w(TAG, "Unable to canonicalize number", exception);
+      return number;
+    }
+  }
+
+  public static String canonicalizeNumberForRegion(String number, String regionCode) {
+    if (number == null || number.contains("@")) return number;
+
+    try {
+      PhoneNumberUtil util     = PhoneNumberUtil.getInstance();
+      PhoneNumber parsedNumber = util.parse(number, regionCode.isEmpty() ? null : regionCode);
+
+      return util.isValidNumber(parsedNumber) ? util.format(parsedNumber, PhoneNumberFormat.E164)
+                       : number;
+    } catch (NumberParseException exception) {
+      Log.w(TAG, "Unable to canonicalize number for region", exception);
       return number;
     }
   }

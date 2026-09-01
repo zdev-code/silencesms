@@ -37,6 +37,7 @@ import org.smssecure.smssecure.util.PhoneNumberFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -143,36 +144,31 @@ public class CanonicalAddressDatabase {
   }
 
   public long getCanonicalAddressId(@NonNull String address) {
-    try {
-      long   canonicalAddressId;
-      String formattedAddress;
+    long   canonicalAddressId;
+    String formattedAddress;
 
-      if ((formattedAddress = formattedAddressCache.get(address)) == null) {
-        String localNumber = SilencePreferences.getLocalNumber(context);
+    if ((formattedAddress = formattedAddressCache.get(address)) == null) {
+      String localNumber = SilencePreferences.getLocalNumber(context);
 
-        if (!isNumberAddress(address)                        ||
-            !SilencePreferences.isPushRegistered(context) ||
-            ShortCodeUtil.isShortCode(localNumber, address))
-        {
-          formattedAddress = address;
-        } else {
-          formattedAddress = PhoneNumberFormatter.formatNumber(address, localNumber);
-        }
-
-        formattedAddressCache.put(address, formattedAddress);
+      if (!isNumberAddress(address)                        ||
+          ShortCodeUtil.isShortCode(localNumber, address))
+      {
+        formattedAddress = address;
+      } else {
+        formattedAddress = PhoneNumberFormatter.canonicalizeNumberForRegion(address, Locale.getDefault().getCountry());
       }
 
-      if ((canonicalAddressId = getCanonicalAddressFromCache(formattedAddress)) == -1) {
-        canonicalAddressId = getCanonicalAddressIdFromDatabase(formattedAddress);
-      }
-
-      idCache.put(canonicalAddressId, formattedAddress);
-      addressCache.put(formattedAddress, canonicalAddressId);
-
-      return canonicalAddressId;
-    } catch (InvalidNumberException e) {
-      throw new AssertionError(e);
+      formattedAddressCache.put(address, formattedAddress);
     }
+
+    if ((canonicalAddressId = getCanonicalAddressFromCache(formattedAddress)) == -1) {
+      canonicalAddressId = getCanonicalAddressIdFromDatabase(formattedAddress);
+    }
+
+    idCache.put(canonicalAddressId, formattedAddress);
+    addressCache.put(formattedAddress, canonicalAddressId);
+
+    return canonicalAddressId;
   }
 
   public @NonNull List<Long> getCanonicalAddressIds(@NonNull List<String> addresses) {

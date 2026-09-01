@@ -53,10 +53,12 @@ public class DatabaseUpgradeActivity extends BaseActivity {
 
   public static final int ASK_FOR_SIM_CARD_VERSION     = 143;
   public static final int MULTI_SIM_MULTI_KEYS_VERSION = 200;
+  public static final int MERGE_EQUIVALENT_PHONE_THREADS_VERSION = 216;
 
   private static final SortedSet<Integer> UPGRADE_VERSIONS = new TreeSet<Integer>() {{
     add(ASK_FOR_SIM_CARD_VERSION);
     add(MULTI_SIM_MULTI_KEYS_VERSION);
+    add(MERGE_EQUIVALENT_PHONE_THREADS_VERSION);
   }};
 
   private ProgressBar       indeterminateProgress;

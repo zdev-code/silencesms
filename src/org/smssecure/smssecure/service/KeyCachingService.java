@@ -84,10 +84,19 @@ public class KeyCachingService extends Service {
 
   public KeyCachingService() {}
 
+  public static synchronized MasterSecret getCachedMasterSecret() {
+    return masterSecret;
+  }
+
+  public static synchronized void primeMasterSecret(MasterSecret masterSecret) {
+    if (masterSecret != null) KeyCachingService.masterSecret = masterSecret;
+  }
+
   public static synchronized MasterSecret getMasterSecret(Context context) {
     if (masterSecret == null && SilencePreferences.isPasswordDisabled(context)) {
       try {
         MasterSecret masterSecret = MasterSecretUtil.getMasterSecret(context, MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
+        primeMasterSecret(masterSecret);
         Intent       intent       = new Intent(context, KeyCachingService.class);
 
         try {
@@ -157,7 +166,10 @@ public class KeyCachingService extends Service {
   this.pending = PendingIntent.getService(this, 0, new Intent(PASSPHRASE_EXPIRED_EVENT, null,
                                 this, KeyCachingService.class), PendingIntent.FLAG_IMMUTABLE);
 
-    if (SilencePreferences.isPasswordDisabled(this)) {
+    MasterSecret cachedMasterSecret = getCachedMasterSecret();
+    if (cachedMasterSecret != null) {
+      setMasterSecret(cachedMasterSecret);
+    } else if (SilencePreferences.isPasswordDisabled(this)) {
       try {
         MasterSecret masterSecret = MasterSecretUtil.getMasterSecret(this, MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
         setMasterSecret(masterSecret);

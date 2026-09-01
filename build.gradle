@@ -115,8 +115,8 @@ android {
 
     defaultConfig {
         applicationId = 'org.smssecure.smssecure'
-        versionCode = 215
-        versionName = "0.16.13-unstable"
+        versionCode = 216
+        versionName = "0.16.14-unstable"
         buildConfigField 'boolean', 'MODERN_CRYPTO_WRITES', 'true'
 
         minSdkVersion = 23

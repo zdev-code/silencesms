@@ -37,6 +37,20 @@ public class PhoneNumberFormatterTest extends BaseUnitTest {
         .isEqualTo("+442079460958");
   }
 
+  @Test public void testCanonicalizeNumberPreservesDestinationWithoutConfiguredLocalNumber() {
+    assertThat(PhoneNumberFormatter.canonicalizeNumber("020 7946 0958", "No Stored Number"))
+        .isEqualTo("02079460958");
+  }
+
+  @Test public void testCanonicalizeNumberForRegion() {
+    assertThat(PhoneNumberFormatter.canonicalizeNumberForRegion("020 7946 0958", "GB"))
+        .isEqualTo("+442079460958");
+    assertThat(PhoneNumberFormatter.canonicalizeNumberForRegion("12345", "GB"))
+        .isEqualTo("12345");
+    assertThat(PhoneNumberFormatter.canonicalizeNumberForRegion("EXAMPLE", "GB"))
+        .isEqualTo("EXAMPLE");
+  }
+
   @Test public void testFormatNumberForDisplay() {
     Locale previous = Locale.getDefault();
     try {

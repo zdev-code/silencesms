@@ -46,6 +46,11 @@ public final class AutomaticBackupManager {
   }
 
   public static void disable(Context context) {
+    preferences(context).edit().remove(DESTINATION).apply();
+    WorkManager.getInstance(context).cancelUniqueWork(UNIQUE_WORK);
+  }
+
+  public static void clear(Context context) {
     preferences(context).edit().remove(DESTINATION).remove(WRAPPED_RECOVERY_KEY).apply();
     WorkManager.getInstance(context).cancelUniqueWork(UNIQUE_WORK);
   }
@@ -55,10 +60,14 @@ public final class AutomaticBackupManager {
     return value.length() == 0 ? null : Uri.parse(value);
   }
 
-  static byte[] getRecoveryKey(Context context) throws GeneralSecurityException, IOException {
+  public static byte[] getRecoveryKey(Context context) throws GeneralSecurityException, IOException {
     String encoded = preferences(context).getString(WRAPPED_RECOVERY_KEY, "");
     if (encoded.length() == 0) throw new GeneralSecurityException("Recovery key is missing");
     return MasterSecretUtil.unwrapWithDeviceKey(context, Base64.decode(encoded));
+  }
+
+  public static boolean hasRecoveryKey(Context context) {
+    return preferences(context).contains(WRAPPED_RECOVERY_KEY);
   }
 
   public static boolean isEnabled(Context context) {

@@ -209,7 +209,7 @@ public class SecureBackupArchiveTest {
     assertFalse(new File(reexportStaging, replica).exists());
     assertTrue(new File(reexportStaging, "shared_prefs/SecureSMS-Preferences.xml").exists());
 
-    SecureBackupArchive.recoverInterruptedRestore(destination);
+    assertFalse(SecureBackupArchive.recoverInterruptedRestore(destination));
     assertFalse(new File(destination, replica).exists());
   }
 
@@ -224,7 +224,7 @@ public class SecureBackupArchiveTest {
 
     SecureBackupArchive.beginStaging(staging, appRoot);
 
-    SecureBackupArchive.recoverInterruptedRestore(appRoot);
+    assertTrue(SecureBackupArchive.recoverInterruptedRestore(appRoot));
 
     assertEquals("original", read(appRoot, "databases/messages.db"));
     assertEquals("original-session", read(appRoot, "files/sessions-v2/1"));
@@ -243,7 +243,7 @@ public class SecureBackupArchiveTest {
         SecureBackupArchive.beginStaging(staging, appRoot);
     transaction.markCommitted();
 
-    SecureBackupArchive.recoverInterruptedRestore(appRoot);
+    assertTrue(SecureBackupArchive.recoverInterruptedRestore(appRoot));
 
     assertEquals("restored", read(appRoot, "databases/messages.db"));
     assertFalse(new File(appRoot, "databases.restore-replaced").exists());

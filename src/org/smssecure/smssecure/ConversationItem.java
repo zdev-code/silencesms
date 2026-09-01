@@ -264,7 +264,7 @@ public class ConversationItem extends LinearLayout
 
   private void setAudioViewTint(MessageRecord messageRecord, Recipients recipients) {
     if (messageRecord.isOutgoing()) {
-      if (DynamicTheme.LIGHT.equals(SilencePreferences.getTheme(context))) {
+      if (!DynamicTheme.isDarkTheme(context)) {
         audioViewStub.get().setTint(recipients.getColor().toConversationColor(context), defaultBubbleColor);
       } else {
         audioViewStub.get().setTint(Color.WHITE, defaultBubbleColor);

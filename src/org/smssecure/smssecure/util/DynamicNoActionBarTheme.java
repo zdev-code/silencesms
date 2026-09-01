@@ -7,9 +7,7 @@ import org.smssecure.smssecure.R;
 public class DynamicNoActionBarTheme extends DynamicTheme {
   @Override
   protected int getSelectedTheme(Activity activity) {
-    String theme = SilencePreferences.getTheme(activity);
-
-    if (theme.equals("dark")) return R.style.Silence_DarkNoActionBar;
+    if (isDarkTheme(activity)) return R.style.Silence_DarkNoActionBar;
 
     return R.style.Silence_LightNoActionBar;
   }

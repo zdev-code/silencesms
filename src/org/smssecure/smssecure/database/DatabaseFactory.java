@@ -43,7 +43,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DatabaseFactory {
   private static final String TAG = DatabaseFactory.class.getSimpleName();
@@ -219,12 +221,22 @@ public class DatabaseFactory {
                                         DatabaseUpgradeActivity.DatabaseUpgradeListener listener)
   {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    Set<Long> updatedThreads = new HashSet<>();
     db.beginTransaction();
 
-    // Do stuff here
+    try {
+      if (fromVersion < DatabaseUpgradeActivity.MERGE_EQUIVALENT_PHONE_THREADS_VERSION) {
+        updatedThreads.addAll(thread.mergeEquivalentOneToOneThreads(db));
+      }
 
-    db.setTransactionSuccessful();
-    db.endTransaction();
+      db.setTransactionSuccessful();
+    } finally {
+      db.endTransaction();
+    }
+
+    for (long threadId : updatedThreads) {
+      thread.update(threadId, false);
+    }
 
 //    DecryptingQueue.schedulePendingDecrypts(context, masterSecret);
     MessageNotifier.updateNotification(context, masterSecret);

@@ -48,6 +48,7 @@ import org.whispersystems.jobqueue.JobManager;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import static org.smssecure.smssecure.util.Util.canonicalizeNumber;
@@ -443,8 +444,8 @@ public class SmsDatabase extends MessagingDatabase {
 
     ContentValues contentValues = new ContentValues(7);
     String address = message.getRecipients().getPrimaryRecipient().getNumber();
-    contentValues.put(ADDRESS, PhoneNumberFormatter.canonicalizeNumber(address,
-                                       SilencePreferences.getLocalNumber(context)));
+    contentValues.put(ADDRESS, PhoneNumberFormatter.canonicalizeNumberForRegion(
+      address, Locale.getDefault().getCountry()));
     contentValues.put(THREAD_ID, threadId);
     contentValues.put(BODY, message.getMessageBody());
     contentValues.put(DATE_RECEIVED, date);

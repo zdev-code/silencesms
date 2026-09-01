@@ -205,17 +205,18 @@ public final class SecureBackupArchive {
     beginStaging(stagingDirectory, appRoot).commit();
   }
 
-  public static void recoverInterruptedRestore(File appRoot) throws IOException {
-    if (appRoot == null || !appRoot.isDirectory()) return;
+  public static boolean recoverInterruptedRestore(File appRoot) throws IOException {
+    if (appRoot == null || !appRoot.isDirectory()) return false;
     File journal = new File(appRoot, SWAP_JOURNAL);
     if (!journal.isFile()) {
       deleteQuietly(new File(appRoot, SWAP_COMMITTED));
       deleteQuietly(new File(appRoot, RESTORED_PREFERENCES));
-      return;
+      return false;
     }
     List<SwapEntry> entries = readJournal(journal);
     if (new File(appRoot, SWAP_COMMITTED).isFile()) cleanCommitted(appRoot, entries, false);
     else rollBack(appRoot, entries);
+    return true;
   }
 
   private static void rollBack(File appRoot, List<SwapEntry> entries) throws IOException {

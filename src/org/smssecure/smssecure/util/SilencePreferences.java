@@ -424,7 +424,7 @@ public class SilencePreferences {
   }
 
   public static String getTheme(Context context) {
-    return getStringPreference(context, THEME_PREF, "light");
+    return getStringPreference(context, THEME_PREF, DynamicTheme.SYSTEM);
   }
 
   public static boolean isVerifying(Context context) {

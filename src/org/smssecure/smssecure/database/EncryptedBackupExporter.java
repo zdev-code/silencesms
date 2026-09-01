@@ -115,7 +115,7 @@ public class EncryptedBackupExporter {
               }
             }
             try {
-              org.smssecure.smssecure.backup.AutomaticBackupManager.disable(context);
+              org.smssecure.smssecure.backup.AutomaticBackupManager.clear(context);
             } catch (RuntimeException error) {
               android.util.Log.w("EncryptedBackupExporter",
                                  "Restore committed; unable to disable prior backup schedule", error);

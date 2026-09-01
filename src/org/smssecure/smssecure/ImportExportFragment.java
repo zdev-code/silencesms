@@ -51,6 +51,7 @@ public class ImportExportFragment extends Fragment {
   private static final int SUCCESS                             = 0;
   private static final int NO_SD_CARD                          = 1;
   private static final int ERROR_IO                            = 2;
+  private static final int ALREADY_IMPORTED                    = 3;
   private static final String[] PLAINTEXT_BACKUP_MIME_TYPES    = new String[] {
       "application/xml",
       "text/xml",
@@ -208,7 +209,41 @@ public class ImportExportFragment extends Fragment {
     Activity activity = getActivity();
     if (!isAdded() || activity == null) return;
 
-    byte[] recoveryKey = BackupRecoveryKey.generate();
+    if (AutomaticBackupManager.hasRecoveryKey(activity)) {
+      new AlertDialog.Builder(activity)
+          .setTitle(R.string.ExportFragment_choose_recovery_key)
+          .setMessage(R.string.ExportFragment_choose_recovery_key_message)
+          .setPositiveButton(R.string.ExportFragment_use_automatic_key,
+                             (dialog, which) -> exportWithAutomaticRecoveryKey())
+          .setNegativeButton(R.string.ExportFragment_use_new_key,
+                             (dialog, which) -> showEncryptedExportRecoveryKey(BackupRecoveryKey.generate()))
+          .setNeutralButton(R.string.ExportFragment_cancel, null)
+          .show();
+      return;
+    }
+
+    showEncryptedExportRecoveryKey(BackupRecoveryKey.generate());
+  }
+
+  private void exportWithAutomaticRecoveryKey() {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) return;
+
+    try {
+      showEncryptedExportRecoveryKey(AutomaticBackupManager.getRecoveryKey(activity));
+    } catch (IOException | java.security.GeneralSecurityException error) {
+      Log.w(TAG, "Unable to read automatic backup recovery key", error);
+      showToast(R.string.ExportFragment_automatic_key_unavailable);
+    }
+  }
+
+  private void showEncryptedExportRecoveryKey(byte[] recoveryKey) {
+    Activity activity = getActivity();
+    if (!isAdded() || activity == null) {
+      Arrays.fill(recoveryKey, (byte) 0);
+      return;
+    }
+
     TextView keyView = new TextView(activity);
     keyView.setTextIsSelectable(true);
     keyView.setPadding(48, 24, 48, 24);
@@ -246,14 +281,26 @@ public class ImportExportFragment extends Fragment {
       return;
     }
 
-    byte[] recoveryKey = BackupRecoveryKey.generate();
+    boolean reusingRecoveryKey = AutomaticBackupManager.hasRecoveryKey(activity);
+    byte[] recoveryKey;
+    try {
+      recoveryKey = reusingRecoveryKey
+          ? AutomaticBackupManager.getRecoveryKey(activity)
+          : BackupRecoveryKey.generate();
+    } catch (IOException | java.security.GeneralSecurityException error) {
+      Log.w(TAG, "Unable to read automatic backup recovery key", error);
+      showToast(R.string.AutomaticBackup_enable_failed);
+      return;
+    }
     TextView keyView = new TextView(activity);
     keyView.setTextIsSelectable(true);
     keyView.setPadding(48, 24, 48, 24);
     keyView.setText(BackupRecoveryKey.encode(recoveryKey));
     new AlertDialog.Builder(activity)
         .setTitle(R.string.AutomaticBackup_enable)
-        .setMessage(R.string.AutomaticBackup_store_recovery_key)
+        .setMessage(reusingRecoveryKey
+              ? R.string.AutomaticBackup_reuse_recovery_key
+              : R.string.AutomaticBackup_store_recovery_key)
         .setView(keyView)
         .setPositiveButton(R.string.AutomaticBackup_select_directory, (dialog, which) -> {
           clearPendingRecoveryKey();
@@ -386,12 +433,13 @@ public class ImportExportFragment extends Fragment {
                    R.string.ImportFragment_import_plaintext_backup_elipse,
                    () -> {
       try {
+        PlaintextBackupImporter.ImportResult result;
         if (importUriSnapshot != null) {
-          PlaintextBackupImporter.importPlaintextFromUri(context, masterSecretSnapshot, importUriSnapshot);
+          result = PlaintextBackupImporter.importPlaintextFromUri(context, masterSecretSnapshot, importUriSnapshot);
         } else {
-          PlaintextBackupImporter.importPlaintextFromSd(context, masterSecretSnapshot);
+          result = PlaintextBackupImporter.importPlaintextFromSd(context, masterSecretSnapshot);
         }
-        return SUCCESS;
+        return result == PlaintextBackupImporter.ImportResult.IMPORTED ? SUCCESS : ALREADY_IMPORTED;
       } catch (NoExternalStorageException e) {
         Log.w(TAG, "No plaintext backup available", e);
         return NO_SD_CARD;
@@ -607,6 +655,9 @@ public class ImportExportFragment extends Fragment {
         break;
       case SUCCESS:
         Toast.makeText(activity, R.string.ImportFragment_import_complete, Toast.LENGTH_LONG).show();
+        break;
+      case ALREADY_IMPORTED:
+        Toast.makeText(activity, R.string.ImportFragment_backup_already_imported, Toast.LENGTH_LONG).show();
         break;
     }
   }

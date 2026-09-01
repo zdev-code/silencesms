@@ -133,11 +133,13 @@
 
     <activity android:name=".ConversationListActivity"
           android:launchMode="singleTask"
+            android:theme="@style/Silence.RoutingTheme"
           android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
           android:exported="true" />
 
     <activity-alias android:name=".RoutingActivity"
                     android:targetActivity=".ConversationListActivity"
+                    android:theme="@style/Silence.RoutingTheme"
                     android:exported="true">
 
         <intent-filter>

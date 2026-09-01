@@ -1,7 +1,9 @@
 package org.smssecure.smssecure.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 
 import org.smssecure.smssecure.R;
@@ -10,6 +12,7 @@ public class DynamicTheme {
 
   public static final String DARK  = "dark";
   public static final String LIGHT = "light";
+  public static final String SYSTEM = "system";
 
   private int currentTheme;
 
@@ -29,11 +32,19 @@ public class DynamicTheme {
   }
 
   protected int getSelectedTheme(Activity activity) {
-    String theme = SilencePreferences.getTheme(activity);
-
-    if (theme.equals(DARK)) return R.style.Silence_DarkTheme;
+    if (isDarkTheme(activity)) return R.style.Silence_DarkTheme;
 
     return R.style.Silence_LightTheme;
+  }
+
+  public static boolean isDarkTheme(Context context) {
+    String theme = SilencePreferences.getTheme(context);
+    if (DARK.equals(theme)) return true;
+    if (LIGHT.equals(theme)) return false;
+
+    int nightMode = context.getResources().getConfiguration().uiMode &
+                    Configuration.UI_MODE_NIGHT_MASK;
+    return nightMode == Configuration.UI_MODE_NIGHT_YES;
   }
 
   private static final class OverridePendingTransition {

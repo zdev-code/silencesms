@@ -34,13 +34,16 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.smssecure.smssecure.crypto.InvalidPassphraseException;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.util.DynamicIntroTheme;
 import org.smssecure.smssecure.util.DynamicLanguage;
+import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 /**
  * Activity that prompts for a user's passphrase.
@@ -49,10 +52,24 @@ import org.smssecure.smssecure.crypto.MasterSecret;
  */
 public class PassphrasePromptActivity extends PassphraseActivity {
 
+  private static final long UNLOCK_PROGRESS_DELAY_MILLIS = 500;
+
   private DynamicIntroTheme dynamicTheme    = new DynamicIntroTheme();
   private DynamicLanguage   dynamicLanguage = new DynamicLanguage();
 
-  private EditText passphraseText;
+  private EditText                   passphraseText;
+  private ImageButton                okButton;
+  private ProgressBar                unlockProgress;
+  private View                       unlockContent;
+  private AppTaskExecutor.TaskHandle unlockTask;
+  private boolean                    automaticUnlock;
+  private boolean                    unlocking;
+  private final Runnable showUnlockProgress = () -> {
+    if (!unlocking) return;
+    getSupportActionBar().show();
+    unlockContent.setVisibility(View.VISIBLE);
+    unlockProgress.setVisibility(View.VISIBLE);
+  };
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +79,14 @@ public class PassphrasePromptActivity extends PassphraseActivity {
 
     setContentView(R.layout.prompt_passphrase_activity);
     initializeResources();
+    automaticUnlock = SilencePreferences.isPasswordDisabled(this);
+    if (automaticUnlock) {
+      getSupportActionBar().hide();
+      passphraseText.setVisibility(View.GONE);
+      okButton.setVisibility(View.GONE);
+      unlockContent.setVisibility(View.INVISIBLE);
+      unlockProgress.post(() -> beginUnlock(MasterSecretUtil.UNENCRYPTED_PASSPHRASE));
+    }
   }
 
   @Override
@@ -102,25 +127,60 @@ public class PassphrasePromptActivity extends PassphraseActivity {
   }
 
   private void handlePassphrase() {
-    try {
-      Editable text             = passphraseText.getText();
-      String passphrase         = (text == null ? "" : text.toString());
-      MasterSecret masterSecret = MasterSecretUtil.getMasterSecret(this, passphrase);
+    if (unlockTask != null) return;
 
-      setMasterSecret(masterSecret);
-    } catch (InvalidPassphraseException ipe) {
-      passphraseText.setText("");
-      passphraseText.setError(
-              getString(R.string.PassphrasePromptActivity_invalid_passphrase_exclamation));
+    Editable text = passphraseText.getText();
+    String passphrase = (text == null ? "" : text.toString());
+    beginUnlock(passphrase);
+  }
+
+  private void beginUnlock(String passphrase) {
+    if (unlockTask != null) return;
+
+    setUnlocking(true);
+    unlockTask = AppTaskExecutor.getInstance().submitSerial(
+        () -> MasterSecretUtil.getMasterSecret(getApplicationContext(), passphrase),
+        masterSecret -> {
+          unlockTask = null;
+          stopUnlockProgress();
+          setMasterSecret(masterSecret);
+        },
+        exception -> {
+          unlockTask = null;
+          setUnlocking(false);
+          if (exception instanceof InvalidPassphraseException) {
+            passphraseText.setText("");
+            passphraseText.setError(
+                getString(R.string.PassphrasePromptActivity_invalid_passphrase_exclamation));
+          }
+        });
+  }
+
+  private void setUnlocking(boolean unlocking) {
+    this.unlocking = unlocking;
+    passphraseText.setEnabled(!unlocking);
+    okButton.setEnabled(!unlocking);
+    unlockProgress.removeCallbacks(showUnlockProgress);
+    unlockProgress.setVisibility(View.GONE);
+    if (unlocking) {
+      unlockProgress.postDelayed(showUnlockProgress, UNLOCK_PROGRESS_DELAY_MILLIS);
     }
+  }
+
+  private void stopUnlockProgress() {
+    unlocking = false;
+    unlockProgress.removeCallbacks(showUnlockProgress);
+    unlockProgress.setVisibility(View.GONE);
   }
 
   private void initializeResources() {
     getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
     getSupportActionBar().setCustomView(R.layout.centered_app_title);
 
-    ImageButton okButton = (ImageButton) findViewById(R.id.ok_button);
-    passphraseText       = (EditText)    findViewById(R.id.passphrase_edit);
+    okButton       = (ImageButton) findViewById(R.id.ok_button);
+    passphraseText = (EditText)    findViewById(R.id.passphrase_edit);
+    unlockProgress = (ProgressBar) findViewById(R.id.unlock_progress);
+    unlockContent  = findViewById(R.id.scroll_parent);
     SpannableString hint = new SpannableString("  " + getString(R.string.PassphrasePromptActivity_enter_passphrase));
     hint.setSpan(new RelativeSizeSpan(0.9f), 0, hint.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
     hint.setSpan(new TypefaceSpan("sans-serif"), 0, hint.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -162,5 +222,13 @@ public class PassphrasePromptActivity extends PassphraseActivity {
   protected void cleanup() {
     this.passphraseText.setText("");
     System.gc();
+  }
+
+  @Override
+  protected void onDestroy() {
+    unlockProgress.removeCallbacks(showUnlockProgress);
+    if (unlockTask != null) unlockTask.cancel();
+    unlockTask = null;
+    super.onDestroy();
   }
 }

@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.smssecure.smssecure.SilenceTestCase;
 
+import java.util.Locale;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -49,6 +51,20 @@ public class CanonicalAddressDatabaseTest extends SilenceTestCase {
     assertThat(db.getCanonicalAddressId(SPECIFIC_NUMBER)).isEqualTo(id);
     assertThat(db.getAddressFromId(id)).isEqualTo(SPECIFIC_NUMBER);
     assertThat(db.getCanonicalAddressId(AMBIGUOUS_NUMBER)).isEqualTo(id);
+  }
+
+  @Test
+  public void testLocalAndInternationalNumbersShareCanonicalAddress() {
+    Locale previous = Locale.getDefault();
+
+    try {
+      Locale.setDefault(Locale.UK);
+      final long id = db.getCanonicalAddressId("020 7946 0958");
+
+      assertThat(db.getCanonicalAddressId("+442079460958")).isEqualTo(id);
+    } finally {
+      Locale.setDefault(previous);
+    }
   }
 
   @Test

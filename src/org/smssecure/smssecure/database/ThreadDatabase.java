@@ -38,13 +38,17 @@ import org.smssecure.smssecure.mms.SlideDeck;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
+import org.smssecure.smssecure.util.PhoneNumberFormatter;
 import org.smssecure.smssecure.util.Util;
 import org.signal.libsignal.protocol.InvalidMessageException;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public class ThreadDatabase extends Database {
@@ -442,7 +446,7 @@ public class ThreadDatabase extends Database {
       if (cursor != null && cursor.moveToFirst())
         return cursor.getLong(cursor.getColumnIndexOrThrow(ID));
       else
-        return -1L;
+        return getEquivalentOneToOneThreadId(recipientIds);
     } finally {
       if (cursor != null)
         cursor.close();
@@ -466,11 +470,105 @@ public class ThreadDatabase extends Database {
 
       if (cursor != null && cursor.moveToFirst())
         return cursor.getLong(cursor.getColumnIndexOrThrow(ID));
-      else
-        return createThreadForRecipients(recipientsList, recipientIds.length, distributionType);
+      else {
+        long equivalentThreadId = getEquivalentOneToOneThreadId(recipientIds);
+        return equivalentThreadId != -1L ? equivalentThreadId
+                                         : createThreadForRecipients(recipientsList, recipientIds.length, distributionType);
+      }
     } finally {
       if (cursor != null)
         cursor.close();
+    }
+  }
+
+  private long getEquivalentOneToOneThreadId(long[] recipientIds) {
+    if (recipientIds.length != 1) return -1L;
+
+    String normalizedAddress = getNormalizedFullNumber(recipientIds[0]);
+    if (normalizedAddress == null) return -1L;
+
+    SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+    try (Cursor cursor = db.query(TABLE_NAME, new String[] {ID, RECIPIENT_IDS}, null, null,
+                                  null, null, ID + " ASC"))
+    {
+      while (cursor.moveToNext()) {
+        Long candidateRecipientId = getSingleRecipientId(cursor.getString(cursor.getColumnIndexOrThrow(RECIPIENT_IDS)));
+
+        if (candidateRecipientId != null && normalizedAddress.equals(getNormalizedFullNumber(candidateRecipientId))) {
+          return cursor.getLong(cursor.getColumnIndexOrThrow(ID));
+        }
+      }
+    }
+
+    return -1L;
+  }
+
+  Set<Long> mergeEquivalentOneToOneThreads(SQLiteDatabase db) {
+    Map<String, Long> survivingThreads = new HashMap<>();
+    Set<Long>         updatedThreads   = new HashSet<>();
+
+    try (Cursor cursor = db.query(TABLE_NAME, new String[] {ID, RECIPIENT_IDS}, null, null,
+                                  null, null, ID + " ASC"))
+    {
+      while (cursor.moveToNext()) {
+        long threadId = cursor.getLong(cursor.getColumnIndexOrThrow(ID));
+        Long recipientId = getSingleRecipientId(cursor.getString(cursor.getColumnIndexOrThrow(RECIPIENT_IDS)));
+
+        if (recipientId == null) continue;
+
+        String normalizedAddress = getNormalizedFullNumber(recipientId);
+        if (normalizedAddress == null) continue;
+
+        Long survivingThreadId = survivingThreads.get(normalizedAddress);
+
+        if (survivingThreadId == null) {
+          survivingThreads.put(normalizedAddress, threadId);
+        } else {
+          mergeThread(db, survivingThreadId, threadId);
+          updatedThreads.add(survivingThreadId);
+        }
+      }
+    }
+
+    return updatedThreads;
+  }
+
+  private void mergeThread(SQLiteDatabase db, long targetThreadId, long sourceThreadId) {
+    String[] mergeArguments = {String.valueOf(targetThreadId), String.valueOf(sourceThreadId)};
+
+    db.execSQL("UPDATE " + SmsDatabase.TABLE_NAME + " SET " + MmsSmsColumns.THREAD_ID + " = ? WHERE " +
+               MmsSmsColumns.THREAD_ID + " = ?", mergeArguments);
+    db.execSQL("UPDATE " + MmsDatabase.TABLE_NAME + " SET " + MmsSmsColumns.THREAD_ID + " = ? WHERE " +
+               MmsSmsColumns.THREAD_ID + " = ?", mergeArguments);
+    db.execSQL("UPDATE " + DraftDatabase.TABLE_NAME + " SET " + DraftDatabase.THREAD_ID + " = ? WHERE " +
+               DraftDatabase.THREAD_ID + " = ?", mergeArguments);
+    db.execSQL("UPDATE " + TABLE_NAME + " SET " + READ + " = MIN(" + READ + ", (SELECT " + READ +
+               " FROM " + TABLE_NAME + " WHERE " + ID + " = ?)), " + ARCHIVED + " = MIN(" + ARCHIVED +
+               ", (SELECT " + ARCHIVED + " FROM " + TABLE_NAME + " WHERE " + ID + " = ?)), " + LAST_SEEN +
+               " = MAX(" + LAST_SEEN + ", (SELECT " + LAST_SEEN + " FROM " + TABLE_NAME + " WHERE " + ID +
+               " = ?)) WHERE " + ID + " = ?",
+               new String[] {String.valueOf(sourceThreadId), String.valueOf(sourceThreadId),
+                             String.valueOf(sourceThreadId), String.valueOf(targetThreadId)});
+    db.delete(TABLE_NAME, ID + " = ?", new String[] {String.valueOf(sourceThreadId)});
+  }
+
+  private @Nullable String getNormalizedFullNumber(long recipientId) {
+    String address = DatabaseFactory.getAddressDatabase(context).getAddressFromId(recipientId);
+    String normalizedAddress = PhoneNumberFormatter.canonicalizeNumberForRegion(address,
+                                                                                 Locale.getDefault().getCountry());
+
+    return PhoneNumberFormatter.isValidNumber(normalizedAddress) ? normalizedAddress : null;
+  }
+
+  private @Nullable Long getSingleRecipientId(String recipientIds) {
+    if (TextUtils.isEmpty(recipientIds) || recipientIds.indexOf(' ') != -1) return null;
+
+    try {
+      return Long.parseLong(recipientIds);
+    } catch (NumberFormatException exception) {
+      Log.w(TAG, "Invalid recipient ID: " + recipientIds, exception);
+      return null;
     }
   }
 
