@@ -34,12 +34,14 @@ import android.widget.RemoteViews;
 
 import org.smssecure.smssecure.ApplicationContext;
 import org.smssecure.smssecure.ConversationListActivity;
-import org.smssecure.smssecure.DatabaseUpgradeActivity;
 import org.smssecure.smssecure.DummyActivity;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.crypto.InvalidPassphraseException;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
+import org.smssecure.smssecure.domain.identity.ConflictIdentityStore;
+import org.smssecure.smssecure.domain.security.UnlockSession;
+import org.smssecure.smssecure.domain.upgrade.DatabaseUpgradePolicy;
 import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.notifications.NotificationChannels;
 import org.smssecure.smssecure.util.DynamicLanguage;
@@ -81,15 +83,44 @@ public class KeyCachingService extends Service {
       new Thread(runnable, "key-caching-service"));
 
   private static MasterSecret masterSecret;
+  private static MasterSecret pendingAuthenticationMasterSecret;
+  private static long masterSecretGeneration;
 
   public KeyCachingService() {}
 
   public static synchronized MasterSecret getCachedMasterSecret() {
+    if (masterSecret == pendingAuthenticationMasterSecret) return null;
     return masterSecret;
   }
 
+  public static synchronized UnlockSession.Snapshot getSecretSnapshot() {
+    return new UnlockSession.Snapshot(masterSecretGeneration, getCachedMasterSecret());
+  }
+
+  public static synchronized void markAuthenticationActivationPending(MasterSecret masterSecret) {
+    pendingAuthenticationMasterSecret = masterSecret;
+  }
+
   public static synchronized void primeMasterSecret(MasterSecret masterSecret) {
-    if (masterSecret != null) KeyCachingService.masterSecret = masterSecret;
+    if (masterSecret != null && KeyCachingService.masterSecret != masterSecret) {
+      KeyCachingService.masterSecret = masterSecret;
+      masterSecretGeneration++;
+    }
+  }
+
+  public static synchronized void discardPrimedMasterSecret(MasterSecret expected) {
+    if (pendingAuthenticationMasterSecret == expected) {
+      pendingAuthenticationMasterSecret = null;
+    }
+    if (expected != null && KeyCachingService.masterSecret == expected) {
+      KeyCachingService.masterSecret = null;
+      masterSecretGeneration++;
+    }
+  }
+
+  public static synchronized boolean isAuthenticationActivationPending(MasterSecret expected) {
+    return expected != null && pendingAuthenticationMasterSecret == expected &&
+        masterSecret == expected;
   }
 
   public static synchronized MasterSecret getMasterSecret(Context context) {
@@ -123,14 +154,20 @@ public class KeyCachingService extends Service {
       return;
     }
     synchronized (KeyCachingService.class) {
-      KeyCachingService.masterSecret = masterSecret;
+      if (pendingAuthenticationMasterSecret == masterSecret) {
+        pendingAuthenticationMasterSecret = null;
+      }
+      if (KeyCachingService.masterSecret != masterSecret) {
+        KeyCachingService.masterSecret = masterSecret;
+        masterSecretGeneration++;
+      }
 
       foregroundService();
       broadcastNewSecret();
       startTimeoutIfAppropriate();
 
       executeInBackground(() -> {
-        if (!DatabaseUpgradeActivity.isUpdate(KeyCachingService.this)) {
+        if (!DatabaseUpgradePolicy.isUpdate(KeyCachingService.this)) {
           ApplicationContext.getInstance(KeyCachingService.this)
                             .getJobManager()
                             .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
@@ -169,7 +206,8 @@ public class KeyCachingService extends Service {
     MasterSecret cachedMasterSecret = getCachedMasterSecret();
     if (cachedMasterSecret != null) {
       setMasterSecret(cachedMasterSecret);
-    } else if (SilencePreferences.isPasswordDisabled(this)) {
+    } else if (SilencePreferences.isPasswordDisabled(this) &&
+           !hasPendingAuthenticationActivation()) {
       try {
         MasterSecret masterSecret = MasterSecretUtil.getMasterSecret(this, MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
         setMasterSecret(masterSecret);
@@ -215,7 +253,12 @@ public class KeyCachingService extends Service {
 
   private void handleClearKey() {
     Log.w("KeyCachingService", "handleClearKey()");
-    KeyCachingService.masterSecret = null;
+    synchronized (KeyCachingService.class) {
+      KeyCachingService.masterSecret = null;
+      pendingAuthenticationMasterSecret = null;
+      masterSecretGeneration++;
+    }
+    ConflictIdentityStore.getInstance().clear();
     ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
 
     Intent intent = new Intent(CLEAR_KEY_EVENT);
@@ -232,6 +275,10 @@ public class KeyCachingService extends Service {
     } catch (RejectedExecutionException exception) {
       Log.w("KeyCachingService", "Ignoring work submitted after service shutdown", exception);
     }
+  }
+
+  private static synchronized boolean hasPendingAuthenticationActivation() {
+    return pendingAuthenticationMasterSecret != null;
   }
 
   private void handleDisableService() {

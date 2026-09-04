@@ -17,8 +17,6 @@
 package org.smssecure.smssecure;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
@@ -29,19 +27,29 @@ import android.view.ViewGroup;
 
 import org.smssecure.smssecure.ImageMediaAdapter.ViewHolder;
 import org.smssecure.smssecure.components.ThumbnailView;
-import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.database.CursorRecyclerViewAdapter;
+import org.smssecure.smssecure.attachments.AttachmentId;
 import org.smssecure.smssecure.database.ImageDatabase.ImageRecord;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.mms.Slide;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.MediaUtil;
 
-public class ImageMediaAdapter extends CursorRecyclerViewAdapter<ViewHolder> {
+import java.util.List;
+
+public class ImageMediaAdapter extends RecyclerView.Adapter<ViewHolder> {
   private static final String TAG = ImageMediaAdapter.class.getSimpleName();
 
-  private final MasterSecret masterSecret;
+  private final UnlockSession unlockSession;
   private final long         threadId;
+  private final Context      context;
+  private final List<ImageRecord> records;
+  private final MediaClickListener clickListener;
+
+  public interface MediaClickListener {
+    void onMediaClick(long partRowId, long partUniqueId, long messageId, long threadId,
+                      long recipientId, long date, long size);
+  }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
     public ThumbnailView imageView;
@@ -52,30 +60,46 @@ public class ImageMediaAdapter extends CursorRecyclerViewAdapter<ViewHolder> {
     }
   }
 
-  public ImageMediaAdapter(Context context, MasterSecret masterSecret, Cursor c, long threadId) {
-    super(context, c);
-    this.masterSecret = masterSecret;
+  public ImageMediaAdapter(Context context, UnlockSession unlockSession, List<ImageRecord> records,
+                           long threadId, MediaClickListener clickListener) {
+    this.context = context;
+    this.unlockSession = unlockSession;
+    this.records = List.copyOf(records);
     this.threadId     = threadId;
+    this.clickListener = clickListener;
   }
 
   @Override
-  public ViewHolder onCreateItemViewHolder(final ViewGroup viewGroup, final int i) {
-    final View view = LayoutInflater.from(getContext()).inflate(R.layout.media_overview_item, viewGroup, false);
+  public ViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int i) {
+    final View view = LayoutInflater.from(context).inflate(R.layout.media_overview_item, viewGroup, false);
     return new ViewHolder(view);
   }
 
   @Override
-  public void onBindItemViewHolder(final ViewHolder viewHolder, final @NonNull Cursor cursor) {
+  public void onBindViewHolder(final ViewHolder viewHolder, int position) {
     final ThumbnailView imageView   = viewHolder.imageView;
-    final ImageRecord imageRecord = ImageRecord.from(cursor);
+    final ImageRecord imageRecord = records.get(position);
 
-    Slide slide = MediaUtil.getSlideForAttachment(getContext(), imageRecord.getAttachment());
+    Slide slide = MediaUtil.getSlideForAttachment(context, imageRecord.getAttachment());
 
     if (slide != null) {
-      imageView.setImageResource(masterSecret, slide, false);
+      try {
+        unlockSession.use(masterSecret -> {
+          imageView.setImageResource(masterSecret, slide, false);
+          return null;
+        });
+      } catch (Exception error) {
+        imageView.clear();
+      }
     }
 
     imageView.setOnClickListener(new OnMediaClickListener(imageRecord));
+  }
+
+  @Override public int getItemCount() { return records.size(); }
+
+  @Override public void onViewRecycled(@NonNull ViewHolder holder) {
+    holder.imageView.clear();
   }
 
   private class OnMediaClickListener implements OnClickListener {
@@ -87,21 +111,18 @@ public class ImageMediaAdapter extends CursorRecyclerViewAdapter<ViewHolder> {
 
     @Override
     public void onClick(View v) {
-      Intent intent = new Intent(getContext(), MediaPreviewActivity.class);
-      intent.putExtra(MediaPreviewActivity.DATE_EXTRA, imageRecord.getDate());
-      intent.putExtra(MediaPreviewActivity.THREAD_ID_EXTRA, threadId);
-
+      long recipientId = -1L;
       if (!TextUtils.isEmpty(imageRecord.getAddress())) {
-        Recipients recipients = RecipientFactory.getRecipientsFromString(getContext(),
+        Recipients recipients = RecipientFactory.getRecipientsFromString(context,
                                                                          imageRecord.getAddress(),
                                                                          true);
         if (recipients != null && recipients.getPrimaryRecipient() != null) {
-          intent.putExtra(MediaPreviewActivity.RECIPIENT_EXTRA, recipients.getPrimaryRecipient().getRecipientId());
+          recipientId = recipients.getPrimaryRecipient().getRecipientId();
         }
       }
-      intent.setDataAndType(imageRecord.getAttachment().getDataUri(), imageRecord.getContentType());
-      getContext().startActivity(intent);
-
+      AttachmentId attachmentId = imageRecord.getAttachmentId();
+      clickListener.onMediaClick(attachmentId.getRowId(), attachmentId.getUniqueId(),
+          imageRecord.getMmsId(), threadId, recipientId, imageRecord.getDate(), imageRecord.getSize());
     }
   }
 }

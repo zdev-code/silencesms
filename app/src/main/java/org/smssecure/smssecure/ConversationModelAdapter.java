@@ -61,7 +61,7 @@ public final class ConversationModelAdapter
   private Set<String> selectedIds = Set.of();
   private @Nullable View footer;
 
-  public interface ItemClickListener {
+  public interface ItemClickListener extends ConversationItem.MediaClickListener {
     void onItemClick(ConversationItem item);
     void onItemLongClick(ConversationItem item);
   }
@@ -175,6 +175,7 @@ public final class ConversationModelAdapter
     if (viewType == FOOTER_TYPE) return new FooterViewHolder(footer);
     ConversationItem item = ViewUtil.inflate(inflater, parent, getLayoutForViewType(viewType));
     if (viewType == MESSAGE_TYPE_INCOMING || viewType == MESSAGE_TYPE_OUTGOING) {
+      if (clickListener != null) item.setMediaClickListener(clickListener);
       item.setOnClickListener(view -> {
         if (clickListener != null) clickListener.onItemClick(item);
       });

@@ -2,9 +2,11 @@ package org.smssecure.smssecure.ui.conversationthread;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.database.Cursor;
+import android.net.Uri;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.SavedStateHandle;
@@ -19,8 +21,11 @@ import org.smssecure.smssecure.data.conversationthread.ConversationThreadReposit
 import org.smssecure.smssecure.data.conversationthread.ConversationThreadSnapshot;
 import org.smssecure.smssecure.database.MmsSmsColumns;
 import org.smssecure.smssecure.database.MmsSmsDatabase;
+import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.util.SaveAttachmentTask;
+import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
 
 import java.util.List;
 import java.util.Set;
@@ -78,6 +83,41 @@ public class ConversationThreadViewModelTest {
     assertThat(viewModel.getState().getValue().getSelectedMessageIds()).isEmpty();
   }
 
+  @Test
+  public void resendAndSavePublishOnlyOperationResults() {
+    MessageRecord message = mock(MessageRecord.class);
+    Attachment attachment = new Attachment(mock(Uri.class), "image/jpeg", 10L);
+
+    viewModel.resend(message, unlockCapability());
+    assertThat(viewModel.getState().getValue().getMutation())
+        .isEqualTo(ConversationThreadUiState.Mutation.RESEND);
+    assertThat(repository.resent).isSameAs(message);
+    repository.succeedResend();
+
+    viewModel.saveAttachment(attachment, unlockCapability());
+    assertThat(viewModel.getState().getValue().getMutation())
+        .isEqualTo(ConversationThreadUiState.Mutation.SAVE_ATTACHMENT);
+    assertThat(repository.savedAttachment).isSameAs(attachment);
+    repository.succeedSave(SaveAttachmentTask.WRITE_ACCESS_FAILURE);
+    assertThat(viewModel.getState().getValue().getAttachmentSaveResult())
+        .isEqualTo(SaveAttachmentTask.WRITE_ACCESS_FAILURE);
+  }
+
+  @Test
+  public void clearingCancelsMutationAndSuppressesLateResult() {
+    repository.emit(new ConversationThreadSnapshot(List.of(message(4L, false)), 0L, false));
+    viewModel.saveAttachment(new Attachment(mock(Uri.class), "image/jpeg", 10L), unlockCapability());
+
+    viewModel.clearSensitiveState();
+    repository.succeedSave(SaveAttachmentTask.SUCCESS);
+
+    verify(repository.task).cancel();
+    assertThat(viewModel.getState().getValue().getMessages()).isEmpty();
+    assertThat(viewModel.getState().getValue().getMutation())
+        .isEqualTo(ConversationThreadUiState.Mutation.NONE);
+    assertThat(viewModel.getState().getValue().getAttachmentSaveResult()).isEqualTo(-1);
+  }
+
   private static ConversationMessageRow message(long id, boolean mms) {
     Cursor cursor = mock(Cursor.class);
     String[] columns = {MmsSmsColumns.ID, MmsSmsColumns.UNIQUE_ROW_ID, MmsSmsDatabase.TRANSPORT};
@@ -107,6 +147,11 @@ public class ConversationThreadViewModelTest {
     private int closedSubscriptions;
     private Set<MessageReference> deleted;
     private MutationCallback mutationCallback;
+    private MessageRecord resent;
+    private OperationCallback operationCallback;
+    private Attachment savedAttachment;
+    private AttachmentCallback attachmentCallback;
+    private final AppTaskExecutor.TaskHandle task = mock(AppTaskExecutor.TaskHandle.class);
 
     @Override
     public Subscription observe(ConversationThreadQuery query, Observer observer) {
@@ -124,10 +169,30 @@ public class ConversationThreadViewModelTest {
                                              MutationCallback callback) {
       this.deleted = messages;
       this.mutationCallback = callback;
-      return mock(AppTaskExecutor.TaskHandle.class);
+      return task;
+    }
+
+    @Override
+    public AppTaskExecutor.TaskHandle resend(MessageRecord message,
+                                             ConversationUnlockCapability unlockCapability,
+                                             OperationCallback callback) {
+      resent = message;
+      operationCallback = callback;
+      return task;
+    }
+
+    @Override
+    public AppTaskExecutor.TaskHandle saveAttachment(Attachment attachment,
+                                                     ConversationUnlockCapability unlockCapability,
+                                                     AttachmentCallback callback) {
+      savedAttachment = attachment;
+      attachmentCallback = callback;
+      return task;
     }
 
     void emit(ConversationThreadSnapshot snapshot) { observer.onSnapshot(snapshot); }
     void succeedDelete(boolean threadDeleted) { mutationCallback.onSuccess(threadDeleted); }
+    void succeedResend() { operationCallback.onSuccess(); }
+    void succeedSave(int result) { attachmentCallback.onSuccess(result); }
   }
 }

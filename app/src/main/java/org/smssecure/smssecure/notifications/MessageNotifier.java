@@ -45,6 +45,7 @@ import android.widget.Toast;
 
 import org.smssecure.smssecure.providers.BadgeWidgetProvider;
 import org.smssecure.smssecure.ConversationActivity;
+import org.smssecure.smssecure.HostNavigationCommand;
 import org.smssecure.smssecure.ConversationListActivity;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.crypto.MasterSecret;
@@ -126,9 +127,9 @@ public class MessageNotifier {
     if (visibleThread == threadId) {
       sendInThreadNotification(context, recipients);
     } else {
-      Intent intent = new Intent(context, ConversationActivity.class);
-      intent.putExtra(ConversationActivity.RECIPIENTS_EXTRA, recipients.getIds());
-      intent.putExtra(ConversationActivity.THREAD_ID_EXTRA, threadId);
+        Intent intent = HostNavigationCommand.createConversationIntent(
+          context, recipients.getIds(), threadId, ThreadDatabase.DistributionTypes.DEFAULT,
+          false, System.currentTimeMillis(), 0L, null);
       intent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
 
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, SilencePreferences.getNotificationPrivacy(context), intent);

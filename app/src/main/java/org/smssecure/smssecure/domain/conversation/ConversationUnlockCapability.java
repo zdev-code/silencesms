@@ -1,6 +1,7 @@
 package org.smssecure.smssecure.domain.conversation;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.service.KeyCachingService;
 
 import java.security.MessageDigest;
@@ -10,6 +11,7 @@ import java.util.Objects;
 public final class ConversationUnlockCapability {
   private final MasterSecret masterSecret;
   private final SecretProvider secretProvider;
+  private final UnlockSession unlockSession;
 
   public ConversationUnlockCapability(MasterSecret masterSecret) {
     this(masterSecret, KeyCachingService::getCachedMasterSecret);
@@ -18,13 +20,25 @@ public final class ConversationUnlockCapability {
   public ConversationUnlockCapability(MasterSecret masterSecret, SecretProvider secretProvider) {
     this.masterSecret = Objects.requireNonNull(masterSecret);
     this.secretProvider = Objects.requireNonNull(secretProvider);
+    this.unlockSession = null;
+  }
+
+  public ConversationUnlockCapability(UnlockSession unlockSession) {
+    this.masterSecret = null;
+    this.secretProvider = null;
+    this.unlockSession = Objects.requireNonNull(unlockSession);
   }
 
   public <T> T use(SecretOperation<T> operation) throws Exception {
-    MasterSecret current = secretProvider.getCurrentSecret();
-    if (current == null || !sameKeyMaterial(masterSecret, current)) {
-      throw new LockedException();
+    if (unlockSession != null) {
+      try {
+        return unlockSession.use(operation::run);
+      } catch (UnlockSession.LockedException exception) {
+        throw new LockedException();
+      }
     }
+    MasterSecret current = secretProvider.getCurrentSecret();
+    if (current == null || !sameKeyMaterial(masterSecret, current)) throw new LockedException();
     return operation.run(current);
   }
 

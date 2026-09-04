@@ -25,12 +25,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.smssecure.smssecure.DatabaseUpgradeActivity;
 import org.smssecure.smssecure.contacts.ContactsDatabase;
 import org.smssecure.smssecure.crypto.DecryptingPartInputStream;
 import org.smssecure.smssecure.crypto.MasterCipher;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
+import org.smssecure.smssecure.domain.upgrade.DatabaseUpgradePolicy;
 import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.util.Base64;
 import org.smssecure.smssecure.util.MediaUtil;
@@ -218,14 +218,14 @@ public class DatabaseFactory {
   }
 
   public void onApplicationLevelUpgrade(Context context, MasterSecret masterSecret, int fromVersion,
-                                        DatabaseUpgradeActivity.DatabaseUpgradeListener listener)
+                                        DatabaseUpgradePolicy.ProgressListener listener)
   {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
     Set<Long> updatedThreads = new HashSet<>();
     db.beginTransaction();
 
     try {
-      if (fromVersion < DatabaseUpgradeActivity.MERGE_EQUIVALENT_PHONE_THREADS_VERSION) {
+      if (fromVersion < DatabaseUpgradePolicy.MERGE_EQUIVALENT_PHONE_THREADS_VERSION) {
         updatedThreads.addAll(thread.mergeEquivalentOneToOneThreads(db));
       }
 

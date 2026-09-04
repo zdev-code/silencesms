@@ -136,6 +136,30 @@ public class Argon2MasterSecretEnvelopeTest {
     assertTrue(isAllZero(derivedKey));
   }
 
+  @Test
+  public void characterPassphraseRoundTripsUnchangedEnvelopeAndWipesDerivedKeys()
+      throws Exception
+  {
+    char[] passphrase = "passphrase".toCharArray();
+    byte[] encryptionKey = filled(Argon2id.OUTPUT_LENGTH, (byte) 7);
+    byte[] encrypted = Argon2MasterSecretEnvelope.encrypt(
+        MASTER_SECRET, passphrase, Argon2MasterSecretEnvelope.MIN_MEMORY_KIB,
+        Argon2MasterSecretEnvelope.MIN_ITERATIONS,
+        Argon2MasterSecretEnvelope.MIN_PARALLELISM, SALT, NONCE,
+        (characters, salt, memoryKiB, iterations, parallelism) -> encryptionKey);
+    assertTrue(isAllZero(encryptionKey));
+
+    byte[] decryptionKey = filled(Argon2id.OUTPUT_LENGTH, (byte) 7);
+    byte[] decrypted = Argon2MasterSecretEnvelope.decrypt(
+        encrypted, passphrase,
+        (characters, salt, memoryKiB, iterations, parallelism) -> decryptionKey);
+
+    assertArrayEquals(MASTER_SECRET, decrypted);
+    assertArrayEquals(Argon2MasterSecretEnvelope.MAGIC,
+                      Arrays.copyOf(encrypted, Argon2MasterSecretEnvelope.MAGIC.length));
+    assertTrue(isAllZero(decryptionKey));
+  }
+
   private static byte[] encrypt(byte[] masterSecret, String passphrase,
                                 Argon2MasterSecretEnvelope.KeyDeriver keyDeriver)
       throws Exception

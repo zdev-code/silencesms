@@ -178,6 +178,8 @@
 
     <!-- ConversationListActivity -->
     <string name="ConversationListActivity_search">Search</string>
+    <string name="country_sort_name" tools:ignore="MissingTranslation">Name</string>
+    <string name="country_sort_code" tools:ignore="MissingTranslation">Calling code</string>
 
     <!-- ConversationListFragment -->
     <plurals name="ConversationListFragment_delete_selected_conversations">

@@ -95,6 +95,18 @@ public class ImageDatabase extends Database {
       return date;
     }
 
+    public AttachmentId getAttachmentId() {
+      return attachmentId;
+    }
+
+    public long getMmsId() {
+      return mmsId;
+    }
+
+    public long getSize() {
+      return size;
+    }
+
   }
 
 

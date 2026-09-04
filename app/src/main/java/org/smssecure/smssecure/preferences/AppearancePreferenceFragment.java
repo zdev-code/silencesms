@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 
-import org.smssecure.smssecure.ApplicationPreferencesActivity;
+import org.smssecure.smssecure.AppearancePreferenceHost;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.SilencePreferences;
 
@@ -17,8 +17,8 @@ public class AppearancePreferenceFragment extends ListSummaryPreferenceFragment 
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
 
-    this.findPreference(SilencePreferences.THEME_PREF).setOnPreferenceChangeListener(new ListSummaryListener());
-    this.findPreference(SilencePreferences.LANGUAGE_PREF).setOnPreferenceChangeListener(new ListSummaryListener());
+    this.findPreference(SilencePreferences.THEME_PREF).setOnPreferenceChangeListener(new AppearanceListener());
+    this.findPreference(SilencePreferences.LANGUAGE_PREF).setOnPreferenceChangeListener(new AppearanceListener());
     initializeListSummary((ListPreference)findPreference(SilencePreferences.THEME_PREF));
     initializeListSummary((ListPreference)findPreference(SilencePreferences.LANGUAGE_PREF));
   }
@@ -26,24 +26,6 @@ public class AppearancePreferenceFragment extends ListSummaryPreferenceFragment 
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
     addPreferencesFromResource(R.xml.preferences_appearance);
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener((ApplicationPreferencesActivity)getActivity());
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__appearance);
-  }
-
-  @Override
-  public void onStop() {
-    super.onStop();
-    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((ApplicationPreferencesActivity) getActivity());
   }
 
   public static CharSequence getSummary(Context context) {
@@ -61,5 +43,16 @@ public class AppearancePreferenceFragment extends ListSummaryPreferenceFragment 
     return context.getString(R.string.ApplicationPreferencesActivity_appearance_summary,
                              themeEntries[themeIndex],
                              languageEntries[langIndex]);
+  }
+
+  private class AppearanceListener extends ListSummaryListener {
+    @Override
+    public boolean onPreferenceChange(androidx.preference.Preference preference, Object value) {
+      boolean accepted = super.onPreferenceChange(preference, value);
+      if (accepted && getActivity() instanceof AppearancePreferenceHost) {
+        ((AppearancePreferenceHost) getActivity()).onAppearancePreferenceChanged(preference.getKey());
+      }
+      return accepted;
+    }
   }
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.smssecure.smssecure.WelcomeActivity;
+import org.smssecure.smssecure.WelcomePermissions;
 
 public class BootReceiver extends BroadcastReceiver {
   private static final String TAG = BootReceiver.class.getSimpleName();
@@ -24,7 +24,7 @@ public class BootReceiver extends BroadcastReceiver {
         Intent.ACTION_MY_PACKAGE_REPLACED.equals(action) ||
         ACTION_RESTART.equals(action)) {
       Log.w(TAG, "onReceive(): " + action);
-      WelcomeActivity.checkForPermissions(context, intent);
+      WelcomePermissions.checkForPermissions(context, intent);
     } else {
       Log.w(TAG, "Ignoring unexpected action: " + action);
     }

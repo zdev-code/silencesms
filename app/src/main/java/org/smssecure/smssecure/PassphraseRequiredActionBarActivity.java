@@ -16,10 +16,12 @@ import android.view.WindowManager;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
+import org.smssecure.smssecure.domain.security.ApplicationAccessPolicy;
+import org.smssecure.smssecure.domain.security.AuthenticationBootstrapController;
+import org.smssecure.smssecure.domain.upgrade.DatabaseUpgradePolicy;
 import org.smssecure.smssecure.service.KeyCachingService;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Util;
-import org.smssecure.smssecure.WelcomeActivity;
 
 import java.util.Locale;
 
@@ -28,17 +30,14 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
 
   public static final String LOCALE_EXTRA = "locale_extra";
 
-  private static final int STATE_NORMAL            = 0;
-  private static final int STATE_CREATE_PASSPHRASE = 1;
-  private static final int STATE_PROMPT_PASSPHRASE = 2;
-  private static final int STATE_UPGRADE_DATABASE  = 3;
-  private static final int STATE_WELCOME           = 4;
+  private final AuthenticationBootstrapController bootstrapController =
+      new AuthenticationBootstrapController();
 
   private BroadcastReceiver clearKeyReceiver;
   private boolean           isVisible;
 
   @Override
-  protected final void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(Bundle savedInstanceState) {
     Log.w(TAG, "onCreate(" + savedInstanceState + ")");
     onPreCreate();
     final MasterSecret masterSecret = KeyCachingService.getCachedMasterSecret();
@@ -83,29 +82,24 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     else           finish();
   }
 
-  protected <T extends Fragment> T initFragment(@IdRes int target,
-                                                @NonNull T fragment,
-                                                @NonNull MasterSecret masterSecret)
+  protected <T extends Fragment> T initFragment(@IdRes int target, @NonNull T fragment)
   {
-    return initFragment(target, fragment, masterSecret, null);
+    return initFragment(target, fragment, null, null);
   }
 
   protected <T extends Fragment> T initFragment(@IdRes int target,
                                                 @NonNull T fragment,
-                                                @NonNull MasterSecret masterSecret,
                                                 @Nullable Locale locale)
   {
-    return initFragment(target, fragment, masterSecret, locale, null);
+    return initFragment(target, fragment, locale, null);
   }
 
   protected <T extends Fragment> T initFragment(@IdRes int target,
                                                 @NonNull T fragment,
-                                                @NonNull MasterSecret masterSecret,
                                                 @Nullable Locale locale,
                                                 @Nullable Bundle extras)
   {
     Bundle args = new Bundle();
-    args.putParcelable("master_secret", masterSecret);
     args.putSerializable(LOCALE_EXTRA, locale);
 
     if (extras != null) {
@@ -127,30 +121,23 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     }
   }
 
-  private Intent getIntentForState(MasterSecret masterSecret, int state) {
+  private Intent getIntentForState(MasterSecret masterSecret, ApplicationAccessPolicy.State state) {
     Log.w(TAG, "routeApplicationState(), state: " + state);
 
     switch (state) {
-    case STATE_CREATE_PASSPHRASE: return getCreatePassphraseIntent();
-    case STATE_PROMPT_PASSPHRASE: return getPromptPassphraseIntent();
-    case STATE_UPGRADE_DATABASE:  return getUpgradeDatabaseIntent(masterSecret);
-    case STATE_WELCOME:           return getWelcomeIntent();
-    default:                      return null;
+    case CREATE_PASSPHRASE: return getCreatePassphraseIntent();
+    case PROMPT_PASSPHRASE: return getPromptPassphraseIntent();
+    case UPGRADE_DATABASE:  return getUpgradeDatabaseIntent();
+    case WELCOME:           return getWelcomeIntent();
+    case READY:             return null;
+    default:                throw new AssertionError("Unknown access state: " + state);
     }
   }
 
-  private int getApplicationState(MasterSecret masterSecret) {
-    if (shouldDisplayWelcomeActivity()) {
-      return STATE_WELCOME;
-    } else if (!MasterSecretUtil.isPassphraseInitialized(this)) {
-      return STATE_CREATE_PASSPHRASE;
-    } else if (masterSecret == null) {
-      return STATE_PROMPT_PASSPHRASE;
-    } else if (DatabaseUpgradeActivity.isUpdate(this)) {
-      return STATE_UPGRADE_DATABASE;
-    } else {
-      return STATE_NORMAL;
-    }
+  private ApplicationAccessPolicy.State getApplicationState(MasterSecret masterSecret) {
+    return bootstrapController.evaluate(new AuthenticationBootstrapController.Snapshot(
+        shouldDisplayWelcomeActivity(), MasterSecretUtil.isPassphraseInitialized(this),
+        masterSecret != null, DatabaseUpgradePolicy.isUpdate(this)));
   }
 
   private boolean shouldDisplayWelcomeActivity() {
@@ -158,30 +145,24 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   }
 
   private Intent getCreatePassphraseIntent() {
-    return getRoutedIntent(PassphraseCreateActivity.class, getIntent(), null);
+    return AuthenticationActivity.createCreatePassphraseIntent(this, getIntent());
   }
 
   private Intent getPromptPassphraseIntent() {
-    return getRoutedIntent(PassphrasePromptActivity.class, getIntent(), null);
+    return AuthenticationActivity.createPromptPassphraseIntent(this, getIntent());
   }
 
-  private Intent getUpgradeDatabaseIntent(MasterSecret masterSecret) {
-    return getRoutedIntent(DatabaseUpgradeActivity.class, getConversationListIntent(), masterSecret);
+  private Intent getUpgradeDatabaseIntent() {
+    return AuthenticationActivity.createUpgradeDatabaseIntent(this, getIntent());
   }
 
-  private Intent getRoutedIntent(Class<?> destination, @Nullable Intent nextIntent, @Nullable MasterSecret masterSecret) {
-    final Intent intent = new Intent(this, destination);
-    if (nextIntent != null)   intent.putExtra("next_intent", nextIntent);
-    if (masterSecret != null) intent.putExtra("master_secret", masterSecret);
-    return intent;
-  }
-
-  private Intent getConversationListIntent() {
-    return new Intent(this, ConversationListActivity.class);
+  private Intent getRoutedIntent(Class<?> destination, Intent target) {
+    return BootstrapContinuationStore.getInstance()
+        .createBootstrapIntent(this, destination, target);
   }
 
   private Intent getWelcomeIntent() {
-    return getRoutedIntent(WelcomeActivity.class, getIntent(), null);
+    return AuthenticationActivity.createWelcomeIntent(this, getIntent());
   }
 
   private void initializeClearKeyReceiver() {

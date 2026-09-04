@@ -25,6 +25,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
 import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.domain.security.ScreenSecurityPolicy;
 
 public abstract class BaseActionBarActivity extends AppCompatActivity {
   private static final String TAG = BaseActionBarActivity.class.getSimpleName();
@@ -37,12 +38,13 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    applyScreenshotSecurity(false);
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    initializeScreenshotSecurity();
+    applyScreenshotSecurity(false);
     // Some activities add a fragment straight into android.R.id.content and never call
     // setContentView(), so onContentChanged() never fires for them. Apply here too; the work is
     // idempotent (absolute padding, create-once scrims).
@@ -308,9 +310,10 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     return super.onKeyUp(keyCode, event);
   }
 
-  private void initializeScreenshotSecurity() {
+  protected final void applyScreenshotSecurity(boolean destinationAlwaysSecure) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH &&
-            SilencePreferences.isScreenSecurityEnabled(this))
+        ScreenSecurityPolicy.shouldSecure(SilencePreferences.isScreenSecurityEnabled(this),
+                                          destinationAlwaysSecure))
     {
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
     } else {

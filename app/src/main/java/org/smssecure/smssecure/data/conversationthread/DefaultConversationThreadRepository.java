@@ -8,7 +8,11 @@ import org.smssecure.smssecure.database.DatabaseContentProviders;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.MmsSmsDatabase;
 import org.smssecure.smssecure.database.ThreadDatabase;
+import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.sms.MessageSender;
+import org.smssecure.smssecure.util.SaveAttachmentTask;
+import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 
@@ -35,22 +39,52 @@ public final class DefaultConversationThreadRepository implements ConversationTh
     void unregister(Runnable listener);
   }
 
+  interface Operations {
+    void resend(org.smssecure.smssecure.crypto.MasterSecret masterSecret, MessageRecord message);
+    int saveAttachment(org.smssecure.smssecure.crypto.MasterSecret masterSecret, Attachment attachment);
+  }
+
   private final AppTaskExecutor executor;
   private final DataSource dataSource;
   private final InvalidationSource invalidationSource;
+  private final Operations operations;
 
   public DefaultConversationThreadRepository(Context context, AppTaskExecutor executor) {
     Context applicationContext = Objects.requireNonNull(context).getApplicationContext();
     this.executor = Objects.requireNonNull(executor);
     this.dataSource = new DatabaseDataSource(applicationContext);
     this.invalidationSource = new ContentResolverInvalidationSource(applicationContext);
+    this.operations = new Operations() {
+      @Override public void resend(org.smssecure.smssecure.crypto.MasterSecret masterSecret,
+                                   MessageRecord message) {
+        MessageSender.resend(applicationContext, masterSecret, message);
+      }
+
+      @Override public int saveAttachment(org.smssecure.smssecure.crypto.MasterSecret masterSecret,
+                                          Attachment attachment) {
+        return SaveAttachmentTask.save(applicationContext, masterSecret, attachment);
+      }
+    };
   }
 
   DefaultConversationThreadRepository(AppTaskExecutor executor, DataSource dataSource,
                                       InvalidationSource invalidationSource) {
+    this(executor, dataSource, invalidationSource, new Operations() {
+      @Override public void resend(org.smssecure.smssecure.crypto.MasterSecret masterSecret,
+                                   MessageRecord message) {}
+      @Override public int saveAttachment(org.smssecure.smssecure.crypto.MasterSecret masterSecret,
+                                          Attachment attachment) {
+        return SaveAttachmentTask.SUCCESS;
+      }
+    });
+  }
+
+  DefaultConversationThreadRepository(AppTaskExecutor executor, DataSource dataSource,
+                                      InvalidationSource invalidationSource, Operations operations) {
     this.executor = Objects.requireNonNull(executor);
     this.dataSource = Objects.requireNonNull(dataSource);
     this.invalidationSource = Objects.requireNonNull(invalidationSource);
+    this.operations = Objects.requireNonNull(operations);
   }
 
   @Override
@@ -74,6 +108,34 @@ public final class DefaultConversationThreadRepository implements ConversationTh
         callback::onSuccess,
         callback::onFailure);
   }
+
+        @Override
+        public TaskHandle resend(MessageRecord message, ConversationUnlockCapability unlockCapability,
+                 OperationCallback callback) {
+          Objects.requireNonNull(message);
+          Objects.requireNonNull(unlockCapability);
+          Objects.requireNonNull(callback);
+          return executor.submitSerial(
+          () -> unlockCapability.use(secret -> {
+            operations.resend(secret, message);
+            return null;
+          }),
+          ignored -> callback.onSuccess(),
+          callback::onFailure);
+        }
+
+        @Override
+        public TaskHandle saveAttachment(Attachment attachment,
+                     ConversationUnlockCapability unlockCapability,
+                     AttachmentCallback callback) {
+          Objects.requireNonNull(attachment);
+          Objects.requireNonNull(unlockCapability);
+          Objects.requireNonNull(callback);
+          return executor.submitSerial(
+          () -> unlockCapability.use(secret -> operations.saveAttachment(secret, attachment)),
+          callback::onSuccess,
+          callback::onFailure);
+        }
 
   private static Set<MessageReference> validatedReferences(Set<MessageReference> messages) {
     Objects.requireNonNull(messages);

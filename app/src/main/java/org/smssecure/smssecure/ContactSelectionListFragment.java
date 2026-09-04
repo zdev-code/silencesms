@@ -17,13 +17,10 @@
 package org.smssecure.smssecure;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -33,22 +30,22 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.smssecure.smssecure.components.RecyclerViewFastScroller;
 import org.smssecure.smssecure.contacts.ContactSelectionListAdapter;
 import org.smssecure.smssecure.contacts.ContactSelectionListItem;
-import org.smssecure.smssecure.contacts.ContactsCursorLoader;
-import org.smssecure.smssecure.database.CursorRecyclerViewAdapter;
 import org.smssecure.smssecure.permissions.Permissions;
-import org.smssecure.smssecure.util.SilencePreferences;
+import org.smssecure.smssecure.ui.LifecycleStateCollector;
+import org.smssecure.smssecure.ui.contact.ContactSelectionUiState;
+import org.smssecure.smssecure.ui.contact.ContactSelectionViewModel;
 import org.smssecure.smssecure.util.StickyHeaderDecoration;
 import org.smssecure.smssecure.util.ViewUtil;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 /**
  * Fragment for selecting a one or more contacts from a list.
@@ -56,9 +53,8 @@ import java.util.Map;
  * @author Moxie Marlinspike
  *
  */
-public class ContactSelectionListFragment extends    Fragment
-                                          implements LoaderManager.LoaderCallbacks<Cursor>
-{
+@AndroidEntryPoint
+public class ContactSelectionListFragment extends Fragment {
   private static final String TAG = ContactSelectionListFragment.class.getSimpleName();
 
   private final Permissions.FragmentPermissionLauncher permissionLauncher = Permissions.registerForResult(this);
@@ -74,11 +70,16 @@ public class ContactSelectionListFragment extends    Fragment
   private RecyclerView              recyclerView;
   private RecyclerViewFastScroller  fastScroller;
 
+  private ContactSelectionListAdapter adapter;
+  private ContactSelectionViewModel viewModel;
   private boolean                   multi = false;
+  private StickyHeaderDecoration    decoration;
 
   @Override
   public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    viewModel = new ViewModelProvider(this).get(ContactSelectionViewModel.class);
+    LifecycleStateCollector.collect(getViewLifecycleOwner(), viewModel.getState(), this::render);
     initializeCursor();
   }
 
@@ -122,17 +123,18 @@ public class ContactSelectionListFragment extends    Fragment
   }
 
   public void setMultiSelect(boolean multi) {
+    if (this.multi == multi) return;
     this.multi = multi;
+    if (recyclerView != null) initializeCursor();
   }
 
   private void initializeCursor() {
-    ContactSelectionListAdapter adapter = new ContactSelectionListAdapter(getActivity(),
-                                                                          null,
-                                                                          new ListClickListener(),
-                                                                          multi);
+    adapter = new ContactSelectionListAdapter(getActivity(), new ListClickListener(), multi);
     selectedContacts = adapter.getSelectedContacts();
     recyclerView.setAdapter(adapter);
-    recyclerView.addItemDecoration(new StickyHeaderDecoration(adapter, true, true));
+    if (decoration != null) recyclerView.removeItemDecoration(decoration);
+    decoration = new StickyHeaderDecoration(adapter, true, true);
+    recyclerView.addItemDecoration(decoration);
   }
 
   private void initializeNoContactsPermission() {
@@ -157,39 +159,30 @@ public class ContactSelectionListFragment extends    Fragment
   }
 
   public void setQueryFilter(String filter) {
-    this.cursorFilter = filter;
-    LoaderManager.getInstance(this).restartLoader(0, null, this);
+    if (viewModel != null) viewModel.setFilter(filter);
   }
 
-  @Override
-  public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-    return new ContactsCursorLoader(getActivity(), true, cursorFilter);
+  public void clearSensitiveState() {
+    if (viewModel != null) viewModel.clearSensitiveState();
+    if (selectedContacts != null) selectedContacts.clear();
+    if (adapter != null) adapter.submitList(List.of());
+    onContactSelectedListener = null;
   }
 
-  @Override
-  public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+  private void render(ContactSelectionUiState state) {
+    if (state.isLoading()) return;
     showContactsLayout.setVisibility(View.GONE);
-
-    ((CursorRecyclerViewAdapter) recyclerView.getAdapter()).changeCursor(data);
+    adapter.submitList(state.getContacts());
     emptyText.setText(R.string.contact_selection_group_activity__no_contacts);
-    if (recyclerView.getAdapter().getItemCount() > 1) emptyText.setVisibility(View.GONE);
-    boolean useFastScroller = (recyclerView.getAdapter().getItemCount() > 20);
+    boolean useFastScroller = adapter.getItemCount() > 20;
+    emptyText.setVisibility(adapter.getItemCount() > 1 ? View.GONE : View.VISIBLE);
     recyclerView.setVerticalScrollBarEnabled(!useFastScroller);
-    if (useFastScroller) {
-      fastScroller.setVisibility(View.VISIBLE);
-      fastScroller.setRecyclerView(recyclerView);
-    }
+    fastScroller.setVisibility(useFastScroller ? View.VISIBLE : View.GONE);
+    if (useFastScroller) fastScroller.setRecyclerView(recyclerView);
   }
 
-  @Override
-  public void onLoaderReset(Loader<Cursor> loader) {
-    ((CursorRecyclerViewAdapter) recyclerView.getAdapter()).changeCursor(null);
-    fastScroller.setVisibility(View.GONE);
-  }
-
-  @SuppressLint("StaticFieldLeak")
   private void handleContactPermissionGranted() {
-    LoaderManager.getInstance(this).initLoader(0, null, this);
+    if (viewModel != null) viewModel.refresh();
     showContactsLayout.setVisibility(View.GONE);
     emptyText.setVisibility(View.GONE);
   }

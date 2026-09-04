@@ -56,6 +56,12 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class MasterSecretUtil {
 
+  public interface PassphraseChangeGuard {
+    void check() throws GeneralSecurityException;
+  }
+
+  private static final PassphraseChangeGuard NO_CHANGE_GUARD = () -> {};
+
   public static final String UNENCRYPTED_PASSPHRASE  = "unencrypted";
   public static final String PREFERENCES_NAME        = "SecureSMS-Preferences";
   public static final String DEVICE_PREFERENCES_NAME = "SecureSMS-Device-Preferences";
@@ -98,15 +104,31 @@ public class MasterSecretUtil {
                                                           String newPassphrase)
       throws MasterSecretStorageException
   {
+    char[] mutablePassphrase = newPassphrase.toCharArray();
+    try {
+      return changeMasterSecretPassphrase(context, masterSecret, mutablePassphrase,
+                                          NO_CHANGE_GUARD);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
+
+  public static MasterSecret changeMasterSecretPassphrase(Context context,
+                                                          MasterSecret masterSecret,
+                                                          char[] newPassphrase,
+                                                          PassphraseChangeGuard guard)
+      throws MasterSecretStorageException
+  {
     byte[] combinedSecrets = null;
     try {
+      guard.check();
       combinedSecrets = combineMasterSecret(masterSecret);
       MasterSecretMigration.LegacyWrapper legacyWrapper =
           createLegacyWrapper(combinedSecrets, newPassphrase);
 
       if (modernCryptoWritesAvailable()) {
-        migrateMasterSecret(context, combinedSecrets, newPassphrase, legacyWrapper);
-      } else if (!saveLegacyWrapper(context, legacyWrapper)) {
+        migrateMasterSecret(context, combinedSecrets, newPassphrase, legacyWrapper, guard);
+      } else if (!saveLegacyWrapper(context, legacyWrapper, guard)) {
         throw new GeneralSecurityException("Unable to save legacy master-secret wrapper");
       }
 
@@ -123,13 +145,39 @@ public class MasterSecretUtil {
                                                           String newPassphrase)
       throws InvalidPassphraseException, MasterSecretStorageException
   {
-    MasterSecret masterSecret = getMasterSecret(context, originalPassphrase, false);
-    changeMasterSecretPassphrase(context, masterSecret, newPassphrase);
+    char[] mutableOriginal = originalPassphrase.toCharArray();
+    char[] mutableReplacement = newPassphrase.toCharArray();
+    try {
+      return changeMasterSecretPassphrase(context, mutableOriginal, mutableReplacement,
+                                          NO_CHANGE_GUARD);
+    } finally {
+      Arrays.fill(mutableOriginal, '\0');
+      Arrays.fill(mutableReplacement, '\0');
+    }
+  }
 
-    return masterSecret;
+  public static MasterSecret changeMasterSecretPassphrase(Context context,
+                                                          char[] originalPassphrase,
+                                                          char[] newPassphrase,
+                                                          PassphraseChangeGuard guard)
+      throws InvalidPassphraseException, MasterSecretStorageException
+  {
+    try {
+      guard.check();
+    } catch (GeneralSecurityException error) {
+      throw new MasterSecretStorageException("Passphrase change is no longer authorized", error);
+    }
+    MasterSecret masterSecret = getMasterSecret(context, originalPassphrase, false);
+    return changeMasterSecretPassphrase(context, masterSecret, newPassphrase, guard);
   }
 
   public static MasterSecret getMasterSecret(Context context, String passphrase)
+      throws InvalidPassphraseException
+  {
+    return getMasterSecret(context, passphrase, true);
+  }
+
+  public static MasterSecret getMasterSecret(Context context, char[] passphrase)
       throws InvalidPassphraseException
   {
     return getMasterSecret(context, passphrase, true);
@@ -141,6 +189,42 @@ public class MasterSecretUtil {
   {
     return getMasterSecret(context, passphrase, Argon2id.isAvailable(),
                            Argon2MasterSecretEnvelope::decrypt, migrateLegacy);
+  }
+
+  private static MasterSecret getMasterSecret(Context context, char[] passphrase,
+                                              boolean migrateLegacy)
+      throws InvalidPassphraseException
+  {
+    SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, 0);
+    int activeMasterSecret = preferences.getInt(ACTIVE_MASTER_SECRET,
+                                                ACTIVE_MASTER_SECRET_LEGACY);
+
+    if (activeMasterSecret == ACTIVE_MASTER_SECRET_ARGON2 && Argon2id.isAvailable()) {
+      return getArgon2MasterSecret(context, passphrase);
+    }
+    if (activeMasterSecret != ACTIVE_MASTER_SECRET_LEGACY &&
+        activeMasterSecret != ACTIVE_MASTER_SECRET_ARGON2) {
+      throw new InvalidPassphraseException("Unsupported active master-secret version");
+    }
+    if (activeMasterSecret == ACTIVE_MASTER_SECRET_ARGON2 &&
+        preferences.getBoolean(LEGACY_WRAPPER_RETIRED, false)) {
+      throw new InvalidPassphraseException(
+          "Argon2 is unavailable and the legacy master-secret wrapper has been retired");
+    }
+
+    MasterSecret masterSecret = getLegacyMasterSecret(context, passphrase);
+    if (migrateLegacy && BuildConfig.MODERN_CRYPTO_WRITES && Argon2id.isAvailable() &&
+        claimAutomaticMigrationAttempt(preferences, System.currentTimeMillis())) {
+      byte[] combinedSecrets = combineMasterSecret(masterSecret);
+      try {
+        migrateMasterSecret(context, combinedSecrets, passphrase, null, NO_CHANGE_GUARD);
+      } catch (GeneralSecurityException | InvalidPassphraseException error) {
+        Log.w("keyutil", "Unable to migrate legacy master-secret wrapper", error);
+      } finally {
+        Arrays.fill(combinedSecrets, (byte) 0);
+      }
+    }
+    return masterSecret;
   }
 
   static MasterSecret getMasterSecret(Context context, String passphrase,
@@ -213,6 +297,27 @@ public class MasterSecretUtil {
         throw new InvalidPassphraseException("Active Argon2 master-secret wrapper is missing");
       }
       combinedSecrets = argon2Decryptor.decrypt(serialized, passphrase);
+      MasterSecret masterSecret = masterSecretFromCombinedBytes(combinedSecrets);
+      noteConfirmedArgon2Unlock(context);
+      return masterSecret;
+    } catch (GeneralSecurityException | IOException error) {
+      Log.w("keyutil", error);
+      throw new InvalidPassphraseException(error);
+    } finally {
+      if (combinedSecrets != null) Arrays.fill(combinedSecrets, (byte) 0);
+    }
+  }
+
+  private static MasterSecret getArgon2MasterSecret(Context context, char[] passphrase)
+      throws InvalidPassphraseException
+  {
+    byte[] combinedSecrets = null;
+    try {
+      byte[] serialized = getArgon2WrapperForUnlock(context);
+      if (serialized == null) {
+        throw new InvalidPassphraseException("Active Argon2 master-secret wrapper is missing");
+      }
+      combinedSecrets = Argon2MasterSecretEnvelope.decrypt(serialized, passphrase);
       MasterSecret masterSecret = masterSecretFromCombinedBytes(combinedSecrets);
       noteConfirmedArgon2Unlock(context);
       return masterSecret;
@@ -510,6 +615,19 @@ public class MasterSecretUtil {
   private static MasterSecret getLegacyMasterSecret(Context context, String passphrase)
       throws InvalidPassphraseException
   {
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return getLegacyMasterSecret(context, mutablePassphrase);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
+
+  private static MasterSecret getLegacyMasterSecret(Context context, char[] passphrase)
+      throws InvalidPassphraseException
+  {
+    byte[] encryptedMasterSecret = null;
+    byte[] combinedSecrets = null;
     try {
       byte[] encryptedAndMacdMasterSecret = retrieve(context, LEGACY_MASTER_SECRET);
       byte[] macSalt                      = retrieve(context, LEGACY_MAC_SALT);
@@ -520,8 +638,9 @@ public class MasterSecretUtil {
         throw new InvalidPassphraseException("Legacy master-secret wrapper is incomplete");
       }
 
-      byte[] encryptedMasterSecret        = verifyMac(macSalt, iterations, encryptedAndMacdMasterSecret, passphrase);
-      byte[] combinedSecrets              = decryptWithPassphrase(encryptionSalt, iterations, encryptedMasterSecret, passphrase);
+      encryptedMasterSecret = verifyMac(macSalt, iterations, encryptedAndMacdMasterSecret, passphrase);
+      combinedSecrets = decryptWithPassphrase(encryptionSalt, iterations, encryptedMasterSecret,
+                                              passphrase);
       return masterSecretFromCombinedBytes(combinedSecrets);
     } catch (GeneralSecurityException e) {
       Log.w("keyutil", e);
@@ -529,6 +648,9 @@ public class MasterSecretUtil {
     } catch (IOException e) {
       Log.w("keyutil", e);
       throw new InvalidPassphraseException(e);
+    } finally {
+      if (encryptedMasterSecret != null) Arrays.fill(encryptedMasterSecret, (byte) 0);
+      if (combinedSecrets != null) Arrays.fill(combinedSecrets, (byte) 0);
     }
   }
 
@@ -550,6 +672,18 @@ public class MasterSecretUtil {
 
   private static MasterSecretMigration.LegacyWrapper createLegacyWrapper(byte[] masterSecret,
                                                                            String passphrase)
+      throws GeneralSecurityException
+  {
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return createLegacyWrapper(masterSecret, mutablePassphrase);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
+
+  private static MasterSecretMigration.LegacyWrapper createLegacyWrapper(byte[] masterSecret,
+                                                                           char[] passphrase)
       throws GeneralSecurityException
   {
     byte[] encryptionSalt = generateSalt();
@@ -631,18 +765,90 @@ public class MasterSecretUtil {
                     encryptor, decryptor);
   }
 
+  private static void migrateMasterSecret(Context context, byte[] masterSecret, char[] passphrase,
+                                          MasterSecretMigration.LegacyWrapper legacyWrapper,
+                                          PassphraseChangeGuard guard)
+      throws GeneralSecurityException, InvalidPassphraseException
+  {
+    SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, 0);
+    MasterSecretMigration.Storage storage = new MasterSecretMigration.Storage() {
+      @Override
+      public boolean writeCandidate(byte[] serialized) {
+        return preferences.edit()
+                          .putString(MASTER_SECRET_V2_PENDING, Base64.encodeBytes(serialized))
+                          .commit();
+      }
+
+      @Override
+      public byte[] readCandidate() throws GeneralSecurityException {
+        String encoded = preferences.getString(MASTER_SECRET_V2_PENDING, "");
+        if (TextUtils.isEmpty(encoded)) return null;
+        try {
+          return Base64.decode(encoded);
+        } catch (IOException error) {
+          throw new GeneralSecurityException(error);
+        }
+      }
+
+      @Override
+      public boolean activate(byte[] serialized,
+                              MasterSecretMigration.LegacyWrapper updatedLegacyWrapper) {
+        boolean deviceProtected = isDeviceProtectionEnabled(context);
+        if (deviceProtected) {
+          try {
+            installDeviceProtection(context, serialized, false);
+          } catch (GeneralSecurityException error) {
+            Log.w("keyutil", "Unable to update device protection wrapper", error);
+            return false;
+          }
+        }
+        SharedPreferences.Editor editor = preferences.edit();
+        if (deviceProtected) {
+          retireLegacyWrapper(editor);
+        } else if (updatedLegacyWrapper != null &&
+                   !preferences.getBoolean(LEGACY_WRAPPER_RETIRED, false)) {
+          putLegacyWrapper(editor, updatedLegacyWrapper);
+        }
+        if (deviceProtected) editor.remove(MASTER_SECRET_V2);
+        else editor.putString(MASTER_SECRET_V2, Base64.encodeBytes(serialized));
+        return editor.putInt(ACTIVE_MASTER_SECRET, ACTIVE_MASTER_SECRET_ARGON2)
+                     .putBoolean("passphrase_initialized", true)
+                     .remove(MASTER_SECRET_V2_PENDING)
+                     .remove(MASTER_SECRET_V2_NEXT_ATTEMPT)
+                     .commit();
+      }
+    };
+
+    MasterSecretMigration.migrate(masterSecret, passphrase, legacyWrapper, storage,
+                                  Argon2MasterSecretEnvelope::encrypt,
+                                  Argon2MasterSecretEnvelope::decrypt, guard::check);
+  }
+
   private static boolean saveLegacyWrapper(Context context,
                                            MasterSecretMigration.LegacyWrapper legacyWrapper) {
+    try {
+      return saveLegacyWrapper(context, legacyWrapper, NO_CHANGE_GUARD);
+    } catch (GeneralSecurityException impossible) {
+      throw new AssertionError(impossible);
+    }
+  }
+
+  private static boolean saveLegacyWrapper(Context context,
+                                           MasterSecretMigration.LegacyWrapper legacyWrapper,
+                                           PassphraseChangeGuard guard)
+      throws GeneralSecurityException
+  {
     SharedPreferences.Editor editor = context.getSharedPreferences(PREFERENCES_NAME, 0).edit();
     putLegacyWrapper(editor, legacyWrapper);
-    return editor.putInt(ACTIVE_MASTER_SECRET, ACTIVE_MASTER_SECRET_LEGACY)
-                 .putBoolean("passphrase_initialized", true)
-                 .putBoolean(LEGACY_WRAPPER_RETIRED, false)
-                 .remove(ARGON2_CONFIRMED_UNLOCKS)
-                 .remove(MASTER_SECRET_V2)
-                 .remove(MASTER_SECRET_V2_PENDING)
-                 .remove(MASTER_SECRET_V2_NEXT_ATTEMPT)
-                 .commit();
+    editor.putInt(ACTIVE_MASTER_SECRET, ACTIVE_MASTER_SECRET_LEGACY)
+          .putBoolean("passphrase_initialized", true)
+          .putBoolean(LEGACY_WRAPPER_RETIRED, false)
+          .remove(ARGON2_CONFIRMED_UNLOCKS)
+          .remove(MASTER_SECRET_V2)
+          .remove(MASTER_SECRET_V2_PENDING)
+          .remove(MASTER_SECRET_V2_NEXT_ATTEMPT);
+    guard.check();
+    return editor.commit();
   }
 
   private static void putLegacyWrapper(SharedPreferences.Editor editor,
@@ -811,12 +1017,22 @@ public class MasterSecretUtil {
   }
 
   private static int generateIterationCount(String passphrase, byte[] salt) {
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return generateIterationCount(mutablePassphrase, salt);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
+
+  private static int generateIterationCount(char[] passphrase, byte[] salt) {
     int TARGET_ITERATION_TIME     = 1000;   //ms
     int MINIMUM_ITERATION_COUNT   = 10000;  //default for low-end devices
     int BENCHMARK_ITERATION_COUNT = 100000; //baseline starting iteration count
 
+    PBEKeySpec keyspec = null;
     try {
-      PBEKeySpec       keyspec = new PBEKeySpec(passphrase.toCharArray(), salt, BENCHMARK_ITERATION_COUNT);
+      keyspec = new PBEKeySpec(passphrase, salt, BENCHMARK_ITERATION_COUNT);
       SecretKeyFactory skf     = SecretKeyFactory.getInstance("PBEWITHSHA1AND128BITAES-CBC-BC");
 
       long startTime = System.currentTimeMillis();
@@ -834,24 +1050,52 @@ public class MasterSecretUtil {
     } catch (InvalidKeySpecException e) {
       Log.w("MasterSecretUtil", e);
       return MINIMUM_ITERATION_COUNT;
+    } finally {
+      if (keyspec != null) keyspec.clearPassword();
     }
   }
 
   private static SecretKey getKeyFromPassphrase(String passphrase, byte[] salt, int iterations)
       throws GeneralSecurityException
   {
-    PBEKeySpec keyspec    = new PBEKeySpec(passphrase.toCharArray(), salt, iterations);
-    SecretKeyFactory skf  = SecretKeyFactory.getInstance("PBEWITHSHA1AND128BITAES-CBC-BC");
-    return skf.generateSecret(keyspec);
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return getKeyFromPassphrase(mutablePassphrase, salt, iterations);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
+
+  private static SecretKey getKeyFromPassphrase(char[] passphrase, byte[] salt, int iterations)
+      throws GeneralSecurityException
+  {
+    PBEKeySpec keyspec = new PBEKeySpec(passphrase, salt, iterations);
+    try {
+      SecretKeyFactory skf = SecretKeyFactory.getInstance("PBEWITHSHA1AND128BITAES-CBC-BC");
+      return skf.generateSecret(keyspec);
+    } finally {
+      keyspec.clearPassword();
+    }
   }
 
   private static Cipher getCipherFromPassphrase(String passphrase, byte[] salt, int iterations, int opMode)
       throws GeneralSecurityException
   {
-    SecretKey key    = getKeyFromPassphrase(passphrase, salt, iterations);
-    Cipher    cipher = Cipher.getInstance(key.getAlgorithm());
-    cipher.init(opMode, key, new PBEParameterSpec(salt, iterations));
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return getCipherFromPassphrase(mutablePassphrase, salt, iterations, opMode);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
 
+  private static Cipher getCipherFromPassphrase(char[] passphrase, byte[] salt, int iterations,
+                                                int opMode)
+      throws GeneralSecurityException
+  {
+    SecretKey key = getKeyFromPassphrase(passphrase, salt, iterations);
+    Cipher cipher = Cipher.getInstance(key.getAlgorithm());
+    cipher.init(opMode, key, new PBEParameterSpec(salt, iterations));
     return cipher;
   }
 
@@ -862,6 +1106,15 @@ public class MasterSecretUtil {
     return cipher.doFinal(data);
   }
 
+  private static byte[] encryptWithPassphrase(byte[] encryptionSalt, int iterations, byte[] data,
+                                              char[] passphrase)
+      throws GeneralSecurityException
+  {
+    Cipher cipher = getCipherFromPassphrase(passphrase, encryptionSalt, iterations,
+                                            Cipher.ENCRYPT_MODE);
+    return cipher.doFinal(data);
+  }
+
   private static byte[] decryptWithPassphrase(byte[] encryptionSalt, int iterations, byte[] data, String passphrase)
       throws GeneralSecurityException, IOException
   {
@@ -869,41 +1122,94 @@ public class MasterSecretUtil {
     return cipher.doFinal(data);
   }
 
+  private static byte[] decryptWithPassphrase(byte[] encryptionSalt, int iterations, byte[] data,
+                                              char[] passphrase)
+      throws GeneralSecurityException, IOException
+  {
+    Cipher cipher = getCipherFromPassphrase(passphrase, encryptionSalt, iterations,
+                                            Cipher.DECRYPT_MODE);
+    return cipher.doFinal(data);
+  }
+
   private static Mac getMacForPassphrase(String passphrase, byte[] salt, int iterations)
       throws GeneralSecurityException
   {
-    SecretKey     key     = getKeyFromPassphrase(passphrase, salt, iterations);
-    byte[]        pbkdf2  = key.getEncoded();
-    SecretKeySpec hmacKey = new SecretKeySpec(pbkdf2, "HmacSHA1");
-    Mac           hmac    = Mac.getInstance("HmacSHA1");
-    hmac.init(hmacKey);
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return getMacForPassphrase(mutablePassphrase, salt, iterations);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
 
-    return hmac;
+  private static Mac getMacForPassphrase(char[] passphrase, byte[] salt, int iterations)
+      throws GeneralSecurityException
+  {
+    SecretKey key = getKeyFromPassphrase(passphrase, salt, iterations);
+    byte[] pbkdf2 = key.getEncoded();
+    try {
+      SecretKeySpec hmacKey = new SecretKeySpec(pbkdf2, "HmacSHA1");
+      Mac hmac = Mac.getInstance("HmacSHA1");
+      hmac.init(hmacKey);
+      return hmac;
+    } finally {
+      if (pbkdf2 != null) Arrays.fill(pbkdf2, (byte) 0);
+    }
   }
 
   private static byte[] verifyMac(byte[] macSalt, int iterations, byte[] encryptedAndMacdData, String passphrase) throws InvalidPassphraseException, GeneralSecurityException, IOException {
-    Mac hmac        = getMacForPassphrase(passphrase, macSalt, iterations);
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return verifyMac(macSalt, iterations, encryptedAndMacdData, mutablePassphrase);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
 
+  private static byte[] verifyMac(byte[] macSalt, int iterations, byte[] encryptedAndMacdData,
+                                  char[] passphrase)
+      throws InvalidPassphraseException, GeneralSecurityException, IOException
+  {
+    Mac hmac = getMacForPassphrase(passphrase, macSalt, iterations);
     byte[] encryptedData = new byte[encryptedAndMacdData.length - hmac.getMacLength()];
+    byte[] givenMac = new byte[hmac.getMacLength()];
+    byte[] localMac = null;
     System.arraycopy(encryptedAndMacdData, 0, encryptedData, 0, encryptedData.length);
-
-    byte[] givenMac      = new byte[hmac.getMacLength()];
-    System.arraycopy(encryptedAndMacdData, encryptedAndMacdData.length-hmac.getMacLength(), givenMac, 0, givenMac.length);
-
-    byte[] localMac      = hmac.doFinal(encryptedData);
-
-    if (Arrays.equals(givenMac, localMac)) return encryptedData;
-    else                                   throw new InvalidPassphraseException("MAC Error");
+    System.arraycopy(encryptedAndMacdData, encryptedAndMacdData.length - hmac.getMacLength(),
+                     givenMac, 0, givenMac.length);
+    try {
+      localMac = hmac.doFinal(encryptedData);
+      if (Arrays.equals(givenMac, localMac)) return encryptedData;
+      Arrays.fill(encryptedData, (byte) 0);
+      throw new InvalidPassphraseException("MAC Error");
+    } finally {
+      Arrays.fill(givenMac, (byte) 0);
+      if (localMac != null) Arrays.fill(localMac, (byte) 0);
+    }
   }
 
   private static byte[] macWithPassphrase(byte[] macSalt, int iterations, byte[] data, String passphrase) throws GeneralSecurityException {
-    Mac hmac       = getMacForPassphrase(passphrase, macSalt, iterations);
-    byte[] mac     = hmac.doFinal(data);
-    byte[] result  = new byte[data.length + mac.length];
+    char[] mutablePassphrase = passphrase.toCharArray();
+    try {
+      return macWithPassphrase(macSalt, iterations, data, mutablePassphrase);
+    } finally {
+      Arrays.fill(mutablePassphrase, '\0');
+    }
+  }
 
-    System.arraycopy(data, 0, result, 0, data.length);
-    System.arraycopy(mac,  0, result, data.length, mac.length);
-
-    return result;
+  private static byte[] macWithPassphrase(byte[] macSalt, int iterations, byte[] data,
+                                          char[] passphrase)
+      throws GeneralSecurityException
+  {
+    Mac hmac = getMacForPassphrase(passphrase, macSalt, iterations);
+    byte[] mac = hmac.doFinal(data);
+    try {
+      byte[] result = new byte[data.length + mac.length];
+      System.arraycopy(data, 0, result, 0, data.length);
+      System.arraycopy(mac, 0, result, data.length, mac.length);
+      return result;
+    } finally {
+      Arrays.fill(mac, (byte) 0);
+    }
   }
 }

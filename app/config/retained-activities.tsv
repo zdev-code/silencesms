@@ -1,0 +1,9 @@
+# component	category	controlling_contract	executable_gate
+.RoutingActivity	ROUTER	exact data-free MAIN launcher shell into the non-exported authenticated host	RoutingActivityTest
+.ShareActivity	EXTERNAL_ENTRY	UI-free bounded ACTION_SEND shell with opaque payload-token dispatch and direct-share task semantics	ExternalConversationIntentParserTest
+.SmsSendtoActivity	EXTERNAL_ENTRY	UI-free bounded SENDTO/VIEW sms smsto mms mmsto shell with opaque payload-token dispatch	ExternalConversationIntentParserTest
+.ConversationPopupActivity	DISTINCT_WINDOW	popup task affinity window sizing and notification reply flow	checkRetainedActivityInventory
+.DummyActivity	DISTINCT_WINDOW	no-display wakeup utility with no-history task semantics	checkRetainedActivityInventory
+.ExitActivity	DISTINCT_WINDOW	no-display task exit utility	checkRetainedActivityInventory
+.AuthenticationActivity	AUTH_GATE	private WELCOME CREATE_PASSPHRASE PROMPT_PASSPHRASE UPGRADE_DATABASE DATABASE_MIGRATION and unlocked CHANGE_PASSPHRASE Fragment host with strict surface-bound opaque continuation routing and no application graph	AuthenticationActivityTest
+.LogSubmitActivity	DISTINCT_WINDOW	intentionally available while encrypted storage is locked	checkRetainedActivityInventory

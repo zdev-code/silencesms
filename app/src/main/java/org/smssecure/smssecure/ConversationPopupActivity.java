@@ -53,13 +53,21 @@ public class ConversationPopupActivity extends ConversationActivity {
 
     super.onCreate(bundle, masterSecret);
 
-    titleView.setOnClickListener(null);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    disableTitleClick();
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    composeText.requestFocus();
+    if (isConversationScreenVisible()) focusCompose();
+  }
+
+  @Override
+  protected void onConversationScreenVisible() {
+    if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    disableTitleClick();
+    focusCompose();
   }
 
   @Override
@@ -70,6 +78,7 @@ public class ConversationPopupActivity extends ConversationActivity {
 
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
+    if (!isConversationScreenVisible()) return super.onPrepareOptionsMenu(menu);
     MenuInflater inflater = this.getMenuInflater();
     menu.clear();
 
@@ -80,14 +89,16 @@ public class ConversationPopupActivity extends ConversationActivity {
   @Override
   @SuppressLint("NonConstantResourceId")
   public boolean onOptionsItemSelected(MenuItem item) {
+    if (!isConversationScreenVisible()) return super.onOptionsItemSelected(item);
     if (item.getItemId() == R.id.menu_expand) {
         saveDraft().addListener(new ListenableFuture.Listener<Long>() {
           @Override
           public void onSuccess(Long result) {
             ActivityOptionsCompat transition = ActivityOptionsCompat.makeScaleUpAnimation(getWindow().getDecorView(), 0, 0, getWindow().getAttributes().width, getWindow().getAttributes().height);
-            Intent intent = new Intent(ConversationPopupActivity.this, ConversationActivity.class);
-            intent.putExtra(ConversationActivity.RECIPIENTS_EXTRA, getRecipients().getIds());
-            intent.putExtra(ConversationActivity.THREAD_ID_EXTRA, result);
+            Intent intent = HostNavigationCommand.createConversationIntent(
+              ConversationPopupActivity.this, getRecipients().getIds(), result,
+              org.smssecure.smssecure.database.ThreadDatabase.DistributionTypes.DEFAULT,
+              false, System.currentTimeMillis(), 0L, null);
 
             if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
               startActivity(intent, transition.toBundle());
@@ -111,14 +122,14 @@ public class ConversationPopupActivity extends ConversationActivity {
   }
 
   @Override
-  protected void initializeActionBar() {
-    super.initializeActionBar();
-    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+  protected void sendComplete(long threadId) {
+    super.sendComplete(threadId);
+    finish();
   }
 
   @Override
-  protected void sendComplete(long threadId) {
-    super.sendComplete(threadId);
+  public void openMediaOverview(long threadId, long recipientId) {
+    super.openMediaOverview(threadId, recipientId);
     finish();
   }
 }

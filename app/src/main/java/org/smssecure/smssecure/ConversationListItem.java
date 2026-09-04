@@ -153,6 +153,22 @@ public class ConversationListItem extends RelativeLayout
     if (this.recipients != null) this.recipients.removeListener(this);
   }
 
+  @Override
+  public void clearSensitiveData() {
+    unbind();
+    recipients = null;
+    subjectView.setText(null);
+    fromView.setText((CharSequence) null);
+    dateView.setText(null);
+    thumbnailView.clear();
+    setVisibility(INVISIBLE);
+  }
+
+  @Override
+  public View asView() {
+    return this;
+  }
+
   private void setBatchState(boolean batch) {
     setSelected(batch && selectedThreads.contains(threadId));
   }

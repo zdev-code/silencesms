@@ -16,7 +16,10 @@
  */
 package org.smssecure.smssecure;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -26,14 +29,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import org.smssecure.smssecure.crypto.InvalidPassphraseException;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretStorageException;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
+import org.smssecure.smssecure.domain.security.UnlockSession;
+import org.smssecure.smssecure.domain.security.WipeablePassphrase;
+import org.smssecure.smssecure.service.KeyCachingService;
+import org.smssecure.smssecure.ui.passphrasechange.PassphraseChangeController;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.DynamicTheme;
 import org.smssecure.smssecure.util.SilencePreferences;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 /**
  * Activity for changing a user's local encryption passphrase.
@@ -52,7 +60,8 @@ public class PassphraseChangeActivity extends PassphraseActivity {
   private EditText repeatPassphrase;
   private Button   okButton;
   private Button   cancelButton;
-  private AppTaskExecutor.TaskHandle changeTask;
+  private PassphraseChangeController controller;
+  private BroadcastReceiver           clearKeyReceiver;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +71,9 @@ public class PassphraseChangeActivity extends PassphraseActivity {
 
     setContentView(R.layout.change_passphrase_activity);
 
+    controller = PassphraseChangeController.create(getApplicationContext());
     initializeResources();
+    initializeClearKeyReceiver();
   }
 
   @Override
@@ -74,8 +85,13 @@ public class PassphraseChangeActivity extends PassphraseActivity {
 
   @Override
   protected void onDestroy() {
-    if (changeTask != null) changeTask.cancel();
-    changeTask = null;
+    if (clearKeyReceiver != null) {
+      unregisterReceiver(clearKeyReceiver);
+      clearKeyReceiver = null;
+    }
+    clearInputs();
+    if (controller != null) controller.close();
+    controller = null;
     super.onDestroy();
   }
 
@@ -98,53 +114,52 @@ public class PassphraseChangeActivity extends PassphraseActivity {
   }
 
   private void verifyAndSavePassphrases() {
-    String original;
-    String passphrase;
-    String passphraseRepeat;
-
-    if (this.originalPassphrase == null) {
-      original = "";
-    } else {
-      Editable originalText = this.originalPassphrase.getText();
-      original = (originalText == null ? "" : originalText.toString());
-    }
-
-    if (this.newPassphrase == null) {
-      passphrase = "";
-    } else {
-      Editable newText = this.newPassphrase.getText();
-      passphrase = (newText == null ? "" : newText.toString());
-    }
-
-    if (this.repeatPassphrase == null) {
-      passphraseRepeat = "";
-    } else {
-      Editable repeatText = this.repeatPassphrase.getText();
-      passphraseRepeat = (repeatText == null ? "" : repeatText.toString());
-    }
-
+    WipeablePassphrase original = readPassphrase(originalPassphrase);
+    WipeablePassphrase replacement = readPassphrase(newPassphrase);
+    WipeablePassphrase repeated = readPassphrase(repeatPassphrase);
     if (SilencePreferences.isPasswordDisabled(this)) {
-      original = MasterSecretUtil.UNENCRYPTED_PASSPHRASE;
+      original.close();
+      original = WipeablePassphrase.takeOwnership(
+          MasterSecretUtil.UNENCRYPTED_PASSPHRASE.toCharArray());
     }
 
-    if (!passphrase.equals(passphraseRepeat)) {
-      this.newPassphrase.setText("");
-      this.repeatPassphrase.setText("");
-      this.newPassphrase.setError(getString(R.string.PassphraseChangeActivity_passphrases_dont_match_exclamation));
-      this.newPassphrase.requestFocus();
-    } else if (passphrase.equals("")) {
-      this.newPassphrase.setError(getString(R.string.PassphraseChangeActivity_enter_new_passphrase_exclamation));
-      this.newPassphrase.requestFocus();
-    } else {
-      originalPassphrase.setText("");
-      newPassphrase.setText("");
-      repeatPassphrase.setText("");
-      changePassphrase(original, passphrase);
-    }
+    UnlockSession unlockSession = UnlockSession.capture();
+    clearInputs();
+    okButton.setEnabled(false);
+    controller.submit(original, replacement, repeated, unlockSession,
+                      new PassphraseChangeCallback());
+  }
+
+  private WipeablePassphrase readPassphrase(EditText editText) {
+    if (editText == null) return WipeablePassphrase.takeOwnership(new char[0]);
+    Editable editable = editText.getText();
+    return editable == null ? WipeablePassphrase.takeOwnership(new char[0])
+                            : WipeablePassphrase.copyOf(editable);
+  }
+
+  private void clearInputs() {
+    if (originalPassphrase != null) originalPassphrase.getText().clear();
+    if (newPassphrase != null) newPassphrase.getText().clear();
+    if (repeatPassphrase != null) repeatPassphrase.getText().clear();
+  }
+
+  private void initializeClearKeyReceiver() {
+    clearKeyReceiver = new BroadcastReceiver() {
+      @Override public void onReceive(Context context, Intent intent) {
+        if (controller != null) controller.close();
+        clearInputs();
+        finish();
+      }
+    };
+    ContextCompat.registerReceiver(this, clearKeyReceiver,
+        new IntentFilter(KeyCachingService.CLEAR_KEY_EVENT), KeyCachingService.KEY_PERMISSION,
+        null, ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   private class CancelButtonClickListener implements OnClickListener {
     public void onClick(View v) {
+      if (controller != null) controller.cancel();
+      clearInputs();
       finish();
     }
   }
@@ -155,35 +170,42 @@ public class PassphraseChangeActivity extends PassphraseActivity {
     }
   }
 
-  private void changePassphrase(String original, String passphrase) {
-      Context context = getApplicationContext();
-      okButton.setEnabled(false);
-      changeTask = AppTaskExecutor.getInstance().submitSerial(
-          () -> {
-        MasterSecret masterSecret = MasterSecretUtil.changeMasterSecretPassphrase(context, original, passphrase);
-        SilencePreferences.setPasswordDisabled(context, false);
-        return masterSecret;
-          },
-          masterSecret -> {
-            okButton.setEnabled(true);
-            setMasterSecret(masterSecret);
-          },
-          exception -> {
-            okButton.setEnabled(true);
-            Log.w(TAG, "Unable to change passphrase", exception);
-            if (exception instanceof InvalidPassphraseException) {
-              originalPassphrase.setError(getString(R.string.PassphraseChangeActivity_incorrect_old_passphrase_exclamation));
-              originalPassphrase.requestFocus();
-            } else if (exception instanceof MasterSecretStorageException) {
-              Toast.makeText(PassphraseChangeActivity.this,
-                             R.string.master_secret_storage_error,
-                             Toast.LENGTH_LONG).show();
-            }
-          });
+  private final class PassphraseChangeCallback implements PassphraseChangeController.Callback {
+    @Override public void onValidationFailure(PassphraseChangeController.ValidationFailure failure) {
+      okButton.setEnabled(true);
+      if (failure == PassphraseChangeController.ValidationFailure.MISMATCH) {
+        newPassphrase.setError(getString(
+            R.string.PassphraseChangeActivity_passphrases_dont_match_exclamation));
+      } else {
+        newPassphrase.setError(getString(
+            R.string.PassphraseChangeActivity_enter_new_passphrase_exclamation));
+      }
+      newPassphrase.requestFocus();
     }
+
+    @Override public void onSuccess(MasterSecret masterSecret) {
+      okButton.setEnabled(true);
+      setMasterSecret(masterSecret);
+    }
+
+    @Override public void onFailure(Exception exception) {
+      okButton.setEnabled(true);
+      Log.w(TAG, "Unable to change passphrase", exception);
+      if (exception instanceof InvalidPassphraseException) {
+        originalPassphrase.setError(getString(
+            R.string.PassphraseChangeActivity_incorrect_old_passphrase_exclamation));
+        originalPassphrase.requestFocus();
+      } else if (exception instanceof MasterSecretStorageException) {
+        Toast.makeText(PassphraseChangeActivity.this, R.string.master_secret_storage_error,
+                       Toast.LENGTH_LONG).show();
+      }
+    }
+  }
 
   @Override
   protected void cleanup() {
+    clearInputs();
+    if (controller != null) controller.close();
     this.originalPassphrase = null;
     this.newPassphrase      = null;
     this.repeatPassphrase   = null;

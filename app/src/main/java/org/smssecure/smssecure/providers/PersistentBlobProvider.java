@@ -125,6 +125,15 @@ public class PersistentBlobProvider {
     }
   }
 
+  public void deleteAll() {
+    cache.clear();
+    File[] files = context.getDir("captures", Context.MODE_PRIVATE).listFiles();
+    if (files == null) return;
+    for (File file : files) {
+      if (!file.delete()) Log.w(TAG, "Unable to delete orphaned capture blob");
+    }
+  }
+
   public @NonNull InputStream getStream(MasterSecret masterSecret, long id) throws IOException {
     final byte[] cached = cache.get(id);
     return cached != null ? new ByteArrayInputStream(cached)

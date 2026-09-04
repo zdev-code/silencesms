@@ -1,6 +1,7 @@
 package org.smssecure.smssecure;
 
 import androidx.annotation.NonNull;
+import android.view.View;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.model.ThreadRecord;
@@ -12,4 +13,8 @@ public interface BindableConversationListItem extends Unbindable {
 
   public void bind(@NonNull MasterSecret masterSecret, @NonNull ThreadRecord thread,
                    @NonNull Locale locale, @NonNull Set<Long> selectedThreads, boolean batchMode);
+
+  void clearSensitiveData();
+
+  View asView();
 }

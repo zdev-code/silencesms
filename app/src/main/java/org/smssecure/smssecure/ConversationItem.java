@@ -51,7 +51,6 @@ import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.AttachmentDatabase;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.MmsDatabase;
-import org.smssecure.smssecure.database.MmsSmsDatabase;
 import org.smssecure.smssecure.database.SmsDatabase;
 import org.smssecure.smssecure.database.model.MediaMmsMessageRecord;
 import org.smssecure.smssecure.database.model.MessageRecord;
@@ -60,6 +59,7 @@ import org.smssecure.smssecure.jobs.MmsDownloadJob;
 import org.smssecure.smssecure.jobs.MmsSendJob;
 import org.smssecure.smssecure.jobs.SmsSendJob;
 import org.smssecure.smssecure.mms.PartAuthority;
+import org.smssecure.smssecure.attachments.DatabaseAttachment;
 import org.smssecure.smssecure.mms.Slide;
 import org.smssecure.smssecure.mms.SlideClickListener;
 import org.smssecure.smssecure.protocol.AutoInitiate;
@@ -129,6 +129,17 @@ public class ConversationItem extends LinearLayout
   private final AttachmentDownloadClickListener downloadClickListener       = new AttachmentDownloadClickListener();
 
   private final Context context;
+  private MediaClickListener mediaClickListener;
+
+  public interface MediaClickListener {
+    void onMediaPreview(long partRowId, long partUniqueId, long messageId, long threadId,
+                        long recipientId, long date, long size);
+    void onExternalMedia(long partRowId, long partUniqueId, String contentType);
+  }
+
+  public void setMediaClickListener(MediaClickListener mediaClickListener) {
+    this.mediaClickListener = mediaClickListener;
+  }
 
   private static final Pattern XMPP_PATTERN    = Pattern.compile("xmpp:[^ \t\n\"\':,<>]+",              Pattern.CASE_INSENSITIVE);
   private static final Pattern GEO_URI_PATTERN = Pattern.compile("geo:[-0-9.]+,[-0-9.]+[^ \t\n\"\':]*", Pattern.CASE_INSENSITIVE);
@@ -234,9 +245,13 @@ public class ConversationItem extends LinearLayout
 
   @Override
   public void unbind() {
-    if (recipient != null) {
-      recipient.removeListener(this);
-    }
+    if (recipient != null) recipient.removeListener(this);
+    if (conversationRecipients != null) conversationRecipients.removeListener(this);
+    masterSecret = null;
+    messageRecord = null;
+    batchSelected = null;
+    conversationRecipients = null;
+    recipient = null;
   }
 
   public MessageRecord getMessageRecord() {
@@ -603,16 +618,14 @@ public class ConversationItem extends LinearLayout
     public void onClick(final View v, final Slide slide) {
       if (shouldInterceptClicks(messageRecord) || !batchSelected.isEmpty()) {
         performClick();
-      } else if (MediaPreviewActivity.isContentTypeSupported(slide.getContentType()) && slide.getUri() != null) {
-        Intent intent = new Intent(context, MediaPreviewActivity.class);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setDataAndType(slide.getUri(), slide.getContentType());
-        if (!messageRecord.isOutgoing()) intent.putExtra(MediaPreviewActivity.RECIPIENT_EXTRA, recipient.getRecipientId());
-        intent.putExtra(MediaPreviewActivity.DATE_EXTRA, messageRecord.getTimestamp());
-        intent.putExtra(MediaPreviewActivity.SIZE_EXTRA, slide.asAttachment().getSize());
-        intent.putExtra(MediaPreviewActivity.THREAD_ID_EXTRA, messageRecord.getThreadId());
-
-        context.startActivity(intent);
+      } else if (MediaPreviewFragment.isContentTypeSupported(slide.getContentType()) &&
+                 slide.asAttachment() instanceof DatabaseAttachment && mediaClickListener != null) {
+        DatabaseAttachment attachment = (DatabaseAttachment) slide.asAttachment();
+        long recipientId = messageRecord.isOutgoing() ? -1L : recipient.getRecipientId();
+        mediaClickListener.onMediaPreview(
+            attachment.getAttachmentId().getRowId(), attachment.getAttachmentId().getUniqueId(),
+            messageRecord.getId(), messageRecord.getThreadId(), recipientId,
+            messageRecord.getTimestamp(), attachment.getSize());
       } else if (slide.getUri() != null) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.ConversationItem_view_secure_media_question);
@@ -621,7 +634,13 @@ public class ConversationItem extends LinearLayout
         builder.setMessage(R.string.ConversationItem_this_media_has_been_stored_in_an_encrypted_database_external_viewer_warning);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int which) {
-            fireIntent(slide);
+            if (slide.asAttachment() instanceof DatabaseAttachment && mediaClickListener != null) {
+              DatabaseAttachment attachment = (DatabaseAttachment) slide.asAttachment();
+              mediaClickListener.onExternalMedia(attachment.getAttachmentId().getRowId(),
+                  attachment.getAttachmentId().getUniqueId(), slide.getContentType());
+            } else {
+              fireIntent(slide);
+            }
           }
         });
         builder.setNegativeButton(R.string.no, null);
@@ -646,11 +665,7 @@ public class ConversationItem extends LinearLayout
 
   private class MmsPreferencesClickListener implements View.OnClickListener {
     public void onClick(View v) {
-      Intent intent = new Intent(context, PromptMmsActivity.class);
-      intent.putExtra("message_id", messageRecord.getId());
-      intent.putExtra("thread_id", messageRecord.getThreadId());
-      intent.putExtra("automatic", true);
-      context.startActivity(intent);
+      PromptMmsDialogFragment.show(v);
     }
   }
 
@@ -678,13 +693,7 @@ public class ConversationItem extends LinearLayout
       if (!shouldInterceptClicks(messageRecord) && parent != null) {
         parent.onClick(v);
       } else if (messageRecord.isFailed()) {
-        Intent intent = new Intent(context, MessageDetailsActivity.class);
-        intent.putExtra(MessageDetailsActivity.MASTER_SECRET_EXTRA, masterSecret);
-        intent.putExtra(MessageDetailsActivity.MESSAGE_ID_EXTRA, messageRecord.getId());
-        intent.putExtra(MessageDetailsActivity.THREAD_ID_EXTRA, messageRecord.getThreadId());
-        intent.putExtra(MessageDetailsActivity.TYPE_EXTRA, messageRecord.isMms() ? MmsSmsDatabase.MMS_TRANSPORT : MmsSmsDatabase.SMS_TRANSPORT);
-        intent.putExtra(MessageDetailsActivity.RECIPIENTS_IDS_EXTRA, conversationRecipients.getIds());
-        context.startActivity(intent);
+        if (parent != null) parent.onClick(v);
       } else if (messageRecord.isKeyExchange()           &&
                  !messageRecord.isOutgoing()             &&
                  !messageRecord.isProcessedKeyExchange() &&

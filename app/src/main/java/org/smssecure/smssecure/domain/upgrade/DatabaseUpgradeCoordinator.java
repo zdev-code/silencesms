@@ -3,7 +3,6 @@ package org.smssecure.smssecure.domain.upgrade;
 import android.content.Context;
 
 import org.smssecure.smssecure.ApplicationContext;
-import org.smssecure.smssecure.DatabaseUpgradeActivity;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
@@ -36,7 +35,7 @@ public final class DatabaseUpgradeCoordinator {
 
   interface Steps {
     void runDatabase(MasterSecret secret, int fromVersion,
-                     DatabaseUpgradeActivity.DatabaseUpgradeListener listener);
+                     DatabaseUpgradePolicy.ProgressListener listener);
     void updateSimPrompt(int fromVersion);
     void migrateMultiSim(MasterSecret secret, int fromVersion);
     void finalizeUpgrade(MasterSecret secret);
@@ -162,12 +161,12 @@ public final class DatabaseUpgradeCoordinator {
 
     @Override
     public void runDatabase(MasterSecret secret, int fromVersion,
-                            DatabaseUpgradeActivity.DatabaseUpgradeListener listener) {
+                            DatabaseUpgradePolicy.ProgressListener listener) {
       DatabaseFactory.getInstance(context).onApplicationLevelUpgrade(context, secret, fromVersion, listener);
     }
 
     @Override public void updateSimPrompt(int fromVersion) {
-      if (fromVersion < DatabaseUpgradeActivity.ASK_FOR_SIM_CARD_VERSION &&
+      if (fromVersion < DatabaseUpgradePolicy.ASK_FOR_SIM_CARD_VERSION &&
           !SilencePreferences.isFirstRun(context) &&
           SubscriptionManagerCompat.from(context).getActiveSubscriptionInfoList().size() > 1) {
         SilencePreferences.setSimCardAsked(context, false);
@@ -175,7 +174,7 @@ public final class DatabaseUpgradeCoordinator {
     }
 
     @Override public void migrateMultiSim(MasterSecret secret, int fromVersion) {
-      if (fromVersion >= DatabaseUpgradeActivity.MULTI_SIM_MULTI_KEYS_VERSION) return;
+      if (fromVersion >= DatabaseUpgradePolicy.MULTI_SIM_MULTI_KEYS_VERSION) return;
       List<SubscriptionInfoCompat> subscriptions =
           SubscriptionManagerCompat.from(context).getActiveSubscriptionInfoList();
       int smallerSlot = -1;

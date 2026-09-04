@@ -95,13 +95,12 @@ public class WelcomeActivity extends BaseActionBarActivity {
   }
 
   private void goToNextIntent() {
-    Intent nextIntent = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class);
-
-    if (nextIntent == null) {
-      throw new IllegalStateException("Was not supplied a next_intent.");
+    try {
+      startActivity(BootstrapContinuationStore.getInstance()
+          .consume(getIntent(), WelcomeActivity.class));
+    } catch (BootstrapContinuationStore.InvalidContinuationException exception) {
+      startActivity(new Intent(this, ConversationListActivity.class));
     }
-
-    startActivity(nextIntent);
     ActivityTransitionCompat.overrideOpen(this, R.anim.slide_from_right, R.anim.fade_scale_out);
     finish();
   }

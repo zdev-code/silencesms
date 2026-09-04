@@ -14,10 +14,29 @@ final class MasterSecretMigration {
         throws GeneralSecurityException, InvalidPassphraseException;
   }
 
+  interface CharacterWrapperEncryptor {
+    byte[] encrypt(byte[] masterSecret, char[] passphrase) throws GeneralSecurityException;
+  }
+
+  interface CharacterWrapperDecryptor {
+    byte[] decrypt(byte[] serialized, char[] passphrase)
+        throws GeneralSecurityException, InvalidPassphraseException;
+  }
+
   interface Storage {
     boolean writeCandidate(byte[] serialized);
     byte[] readCandidate() throws GeneralSecurityException;
     boolean activate(byte[] serialized, LegacyWrapper legacyWrapper);
+  }
+
+  interface ActivationGuard {
+    void check() throws GeneralSecurityException;
+  }
+
+  private interface WrapperOperations {
+    byte[] encrypt(byte[] masterSecret) throws GeneralSecurityException;
+    byte[] decrypt(byte[] serialized)
+        throws GeneralSecurityException, InvalidPassphraseException;
   }
 
   static final class LegacyWrapper {
@@ -42,7 +61,51 @@ final class MasterSecretMigration {
                       WrapperDecryptor decryptor)
       throws GeneralSecurityException, InvalidPassphraseException
   {
-    byte[] serialized = encryptor.encrypt(masterSecret, passphrase);
+    migrate(masterSecret, passphrase, legacyWrapper, storage, encryptor, decryptor, () -> {});
+  }
+
+  static void migrate(byte[] masterSecret, String passphrase, LegacyWrapper legacyWrapper,
+                      Storage storage, WrapperEncryptor encryptor,
+                      WrapperDecryptor decryptor, ActivationGuard activationGuard)
+      throws GeneralSecurityException, InvalidPassphraseException
+  {
+    migrate(masterSecret, legacyWrapper, storage, new WrapperOperations() {
+      @Override public byte[] encrypt(byte[] secret) throws GeneralSecurityException {
+        return encryptor.encrypt(secret, passphrase);
+      }
+
+      @Override public byte[] decrypt(byte[] serialized)
+          throws GeneralSecurityException, InvalidPassphraseException
+      {
+        return decryptor.decrypt(serialized, passphrase);
+      }
+    }, activationGuard);
+  }
+
+  static void migrate(byte[] masterSecret, char[] passphrase, LegacyWrapper legacyWrapper,
+                      Storage storage, CharacterWrapperEncryptor encryptor,
+                      CharacterWrapperDecryptor decryptor, ActivationGuard activationGuard)
+      throws GeneralSecurityException, InvalidPassphraseException
+  {
+    migrate(masterSecret, legacyWrapper, storage, new WrapperOperations() {
+      @Override public byte[] encrypt(byte[] secret) throws GeneralSecurityException {
+        return encryptor.encrypt(secret, passphrase);
+      }
+
+      @Override public byte[] decrypt(byte[] serialized)
+          throws GeneralSecurityException, InvalidPassphraseException
+      {
+        return decryptor.decrypt(serialized, passphrase);
+      }
+    }, activationGuard);
+  }
+
+  private static void migrate(byte[] masterSecret, LegacyWrapper legacyWrapper, Storage storage,
+                              WrapperOperations operations, ActivationGuard activationGuard)
+      throws GeneralSecurityException, InvalidPassphraseException
+  {
+    activationGuard.check();
+    byte[] serialized = operations.encrypt(masterSecret);
     byte[] candidate = null;
     byte[] verifiedSecret = null;
     try {
@@ -54,10 +117,11 @@ final class MasterSecretMigration {
       if (candidate == null) {
         throw new GeneralSecurityException("Staged Argon2 master-secret wrapper is missing");
       }
-      verifiedSecret = decryptor.decrypt(candidate, passphrase);
+      verifiedSecret = operations.decrypt(candidate);
       if (!MessageDigest.isEqual(masterSecret, verifiedSecret)) {
         throw new GeneralSecurityException("Argon2 master-secret verification failed");
       }
+      activationGuard.check();
       if (!storage.activate(candidate, legacyWrapper)) {
         throw new GeneralSecurityException("Unable to activate Argon2 master-secret wrapper");
       }

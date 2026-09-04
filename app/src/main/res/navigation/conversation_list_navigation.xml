@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/conversation_list_navigation"
+    android:label="@string/app_name"
+    app:startDestination="@id/conversation_list_inbox">
+
+    <fragment
+        android:id="@+id/conversation_list_inbox"
+        android:name="org.smssecure.smssecure.ConversationListFragment"
+        android:label="@string/app_name" />
+
+    <fragment
+        android:id="@+id/conversation_list_archive"
+        android:name="org.smssecure.smssecure.ConversationListFragment"
+        android:label="@string/AndroidManifest_archived_conversations" />
+
+    <fragment
+        android:id="@+id/group_create"
+        android:name="org.smssecure.smssecure.GroupCreateFragment"
+        android:label="@string/GroupCreateActivity_actionbar_title" />
+
+    <fragment
+        android:id="@+id/push_contact_selection"
+        android:name="org.smssecure.smssecure.PushContactSelectionFragment"
+        android:label="@string/AndroidManifest__select_contacts" />
+
+    <fragment
+        android:id="@+id/new_conversation"
+        android:name="org.smssecure.smssecure.NewConversationFragment"
+        android:label="@string/contact_selection_activity__enter_name_or_number" />
+
+    <fragment
+        android:id="@+id/conversation_screen"
+        android:name="org.smssecure.smssecure.ConversationScreenFragment"
+        android:label="@string/app_name" />
+
+    <fragment
+        android:id="@+id/message_details"
+        android:name="org.smssecure.smssecure.MessageDetailsFragment"
+        android:label="@string/AndroidManifest__message_details" />
+
+    <fragment
+        android:id="@+id/media_overview"
+        android:name="org.smssecure.smssecure.MediaOverviewFragment"
+        android:label="@string/AndroidManifest__media_overview" />
+
+    <fragment
+        android:id="@+id/media_preview"
+        android:name="org.smssecure.smssecure.MediaPreviewFragment"
+        android:label="@string/AndroidManifest__media_preview" />
+
+    <fragment
+        android:id="@+id/view_identity"
+        android:name="org.smssecure.smssecure.ViewIdentityFragment"
+        android:label="@string/ViewIdentityActivity_your_identity_fingerprint" />
+
+    <fragment
+        android:id="@+id/verify_identity"
+        android:name="org.smssecure.smssecure.VerifyIdentityFragment"
+        android:label="@string/AndroidManifest__verify_identity" />
+
+    <fragment
+        android:id="@+id/recipient_preferences"
+        android:name="org.smssecure.smssecure.RecipientPreferenceFragment"
+        android:label="@string/text_secure_normal__menu_settings" />
+
+    <fragment
+        android:id="@+id/blocked_contacts"
+        android:name="org.smssecure.smssecure.BlockedContactsFragment"
+        android:label="@string/BlockedContactsActivity_blocked_contacts" />
+
+    <fragment
+        android:id="@+id/mms_preferences"
+        android:name="org.smssecure.smssecure.preferences.MmsPreferencesFragment"
+        android:label="@string/preferences__advanced_mms_access_point_names" />
+
+    <fragment
+        android:id="@+id/import_export"
+        android:name="org.smssecure.smssecure.ImportExportFragment"
+        android:label="@string/arrays__import_export" />
+
+    <fragment
+        android:id="@+id/application_preferences"
+        android:name="org.smssecure.smssecure.ApplicationPreferencesFragment"
+        android:label="@string/text_secure_normal__menu_settings" />
+
+    <fragment android:id="@+id/sms_mms_preferences"
+        android:name="org.smssecure.smssecure.preferences.SmsMmsPreferenceFragment"
+        android:label="@string/preferences__sms_mms" />
+    <fragment android:id="@+id/notification_preferences"
+        android:name="org.smssecure.smssecure.preferences.NotificationsPreferenceFragment"
+        android:label="@string/preferences__notifications" />
+    <fragment android:id="@+id/app_protection_preferences"
+        android:name="org.smssecure.smssecure.preferences.AppProtectionPreferenceFragment"
+        android:label="@string/preferences__privacy" />
+    <fragment android:id="@+id/appearance_preferences"
+        android:name="org.smssecure.smssecure.preferences.AppearancePreferenceFragment"
+        android:label="@string/preferences__appearance" />
+    <fragment android:id="@+id/chat_preferences"
+        android:name="org.smssecure.smssecure.preferences.ChatsPreferenceFragment"
+        android:label="@string/preferences__chats" />
+    <fragment android:id="@+id/advanced_preferences"
+        android:name="org.smssecure.smssecure.preferences.AdvancedPreferenceFragment"
+        android:label="@string/preferences__advanced" />
+</navigation>

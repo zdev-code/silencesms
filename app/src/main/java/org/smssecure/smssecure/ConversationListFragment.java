@@ -60,11 +60,12 @@ import org.smssecure.smssecure.components.reminder.ReminderView;
 import org.smssecure.smssecure.components.reminder.StoreRatingReminder;
 import org.smssecure.smssecure.components.reminder.SystemSmsImportReminder;
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
 import org.smssecure.smssecure.domain.conversation.ConversationListReminderPolicy;
 import org.smssecure.smssecure.ui.conversationlist.ConversationListUiState;
 import org.smssecure.smssecure.ui.conversationlist.ConversationListViewModel;
-import org.smssecure.smssecure.ui.conversationlist.ConversationListViewModelFactory;
+import org.smssecure.smssecure.ui.LifecycleStateCollector;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.ViewUtil;
 import java.util.HashSet;
@@ -82,7 +83,7 @@ public class ConversationListFragment extends Fragment
 
   public static final String ARCHIVE = "archive";
 
-  private MasterSecret         masterSecret;
+  private UnlockSession        unlockSession;
   private ActionMode           actionMode;
   private RecyclerView         list;
   private ReminderView         reminderView;
@@ -99,7 +100,7 @@ public class ConversationListFragment extends Fragment
   @Override
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-    masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
+    unlockSession = UnlockSession.capture();
     locale       = androidx.core.os.BundleCompat.getSerializable(getArguments(), PassphraseRequiredActionBarActivity.LOCALE_EXTRA, Locale.class);
     archive      = getArguments().getBoolean(ARCHIVE, false);
   }
@@ -165,7 +166,7 @@ public class ConversationListFragment extends Fragment
     fab.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        startActivity(new Intent(getActivity(), NewConversationActivity.class));
+        ((ConversationSelectedListener) requireActivity()).onCreateNewConversation();
       }
     });
     initializeConversationList();
@@ -183,6 +184,16 @@ public class ConversationListFragment extends Fragment
     return (ConversationListModelAdapter) list.getAdapter();
   }
 
+  public ConversationListViewModel getViewModel() {
+    return viewModel;
+  }
+
+  void clearSensitiveState() {
+    if (list != null) list.setAdapter(null);
+    if (reminderView != null) reminderView.hide();
+    dismissProgressDialog();
+  }
+
   public void setQueryFilter(String query) {
     viewModel.setFilter(query);
   }
@@ -196,12 +207,9 @@ public class ConversationListFragment extends Fragment
   }
 
   private void initializeConversationList() {
-    list.setAdapter(new ConversationListModelAdapter(requireContext(), masterSecret, locale, this));
-    ApplicationContext application = (ApplicationContext) requireActivity().getApplication();
-    viewModel = new ViewModelProvider(this,
-        new ConversationListViewModelFactory(application.getAppDependencies(), archive))
-        .get(ConversationListViewModel.class);
-    viewModel.getState().observe(getViewLifecycleOwner(), this::render);
+    list.setAdapter(new ConversationListModelAdapter(requireContext(), unlockSession, locale, this));
+    viewModel = new ViewModelProvider(this).get(ConversationListViewModel.class);
+    LifecycleStateCollector.collect(getViewLifecycleOwner(), viewModel.getState(), this::render);
   }
 
   private void render(ConversationListUiState state) {
@@ -262,8 +270,13 @@ public class ConversationListFragment extends Fragment
         reminderView.showReminder(new DefaultSmsReminder(context, defaultSmsRoleRequest));
         break;
       case SYSTEM_SMS_IMPORT:
-        if (masterSecret != null) {
-          reminderView.showReminder(new SystemSmsImportReminder(context, masterSecret));
+        try {
+          unlockSession.use(masterSecret -> {
+            reminderView.showReminder(new SystemSmsImportReminder(context));
+            return null;
+          });
+        } catch (Exception exception) {
+          reminderView.hide();
         }
         break;
       case DELIVERY_REPORTS:
@@ -291,7 +304,7 @@ public class ConversationListFragment extends Fragment
 
     Snackbar.make(requireView(), snackBarTitle, Snackbar.LENGTH_LONG)
         .setAction(R.string.ConversationListFragment_undo, view ->
-          viewModel.undoLastArchiveMutation(new ConversationUnlockCapability(masterSecret)))
+          viewModel.undoLastArchiveMutation(new ConversationUnlockCapability(unlockSession)))
         .setActionTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500))
         .show();
     if (archive) viewModel.unarchiveSelected();
@@ -311,9 +324,7 @@ public class ConversationListFragment extends Fragment
     alert.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        if (masterSecret != null) {
-          viewModel.deleteSelected(new ConversationUnlockCapability(masterSecret));
-        }
+        viewModel.deleteSelected(new ConversationUnlockCapability(unlockSession));
       }
     });
 
@@ -339,9 +350,7 @@ public class ConversationListFragment extends Fragment
     alert.setPositiveButton(R.string.ConversationListFragment_send, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        if (masterSecret != null) {
-          viewModel.sendSelectedDrafts(new ConversationUnlockCapability(masterSecret));
-        }
+        viewModel.sendSelectedDrafts(new ConversationUnlockCapability(unlockSession));
       }
     });
 
@@ -374,6 +383,7 @@ public class ConversationListFragment extends Fragment
 
   public interface ConversationSelectedListener {
     void onCreateConversation(long threadId, Recipients recipients, int distributionType, long lastSeen);
+    void onCreateNewConversation();
     void onSwitchToArchive();
   }
 
@@ -457,10 +467,10 @@ public class ConversationListFragment extends Fragment
       final boolean read     = ((ConversationListItem)viewHolder.itemView).getRead();
       int title = archive ? R.plurals.ConversationListFragment_moved_conversations_to_inbox
                           : R.plurals.ConversationListFragment_conversations_archived;
-      viewModel.archiveFromSwipe(threadId, read, new ConversationUnlockCapability(masterSecret));
+      viewModel.archiveFromSwipe(threadId, read, new ConversationUnlockCapability(unlockSession));
       Snackbar.make(requireView(), getResources().getQuantityString(title, 1, 1), Snackbar.LENGTH_LONG)
           .setAction(R.string.ConversationListFragment_undo, view ->
-              viewModel.undoLastArchiveMutation(new ConversationUnlockCapability(masterSecret)))
+              viewModel.undoLastArchiveMutation(new ConversationUnlockCapability(unlockSession)))
           .setActionTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.amber_500))
           .show();
     }

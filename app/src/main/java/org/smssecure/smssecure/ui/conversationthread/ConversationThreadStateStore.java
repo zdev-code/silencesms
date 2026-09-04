@@ -2,6 +2,8 @@ package org.smssecure.smssecure.ui.conversationthread;
 
 import androidx.lifecycle.SavedStateHandle;
 
+import javax.inject.Inject;
+
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -14,12 +16,28 @@ final class ConversationThreadStateStore {
 
   private final SavedStateHandle handle;
 
+  @Inject
+  ConversationThreadStateStore(SavedStateHandle handle) {
+    this(handle, requiredThreadId(handle), lastSeen(handle));
+  }
+
   ConversationThreadStateStore(SavedStateHandle handle, long threadId, long lastSeen) {
     if (threadId <= 0) throw new IllegalArgumentException("Thread ID must be positive");
     if (lastSeen < -1) throw new IllegalArgumentException("Last seen cannot be less than -1");
     this.handle = handle;
     if (!handle.contains(KEY_THREAD_ID)) handle.set(KEY_THREAD_ID, threadId);
     if (!handle.contains(KEY_LAST_SEEN)) handle.set(KEY_LAST_SEEN, lastSeen);
+  }
+
+  private static long requiredThreadId(SavedStateHandle handle) {
+    Long value = handle.get("thread_id");
+    if (value == null || value <= 0) throw new IllegalStateException("Missing thread ID");
+    return value;
+  }
+
+  private static long lastSeen(SavedStateHandle handle) {
+    Long value = handle.get("last_seen");
+    return value == null ? -1 : value;
   }
 
   long getThreadId() {

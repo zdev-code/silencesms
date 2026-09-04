@@ -29,6 +29,7 @@ import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.SmsMigrator;
 import org.smssecure.smssecure.database.SmsMigrator.ProgressDescription;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.notifications.NotificationChannels;
 
 import java.lang.ref.WeakReference;
@@ -46,6 +47,8 @@ public class ApplicationMigrationService extends Service
   public  static final String COMPLETED_ACTION  = "org.smssecure.smssecure.ApplicationMigrationService.COMPLETED";
   private static final String PREFERENCES_NAME  = "SecureSMS";
   private static final String DATABASE_MIGRATED = "migrated";
+  private static final String UNLOCK_GENERATION =
+      "org.smssecure.smssecure.ApplicationMigration.UNLOCK_GENERATION";
 
   private final BroadcastReceiver completedReceiver = new CompletedReceiver();
   private final Binder binder                       = new ApplicationMigrationBinder();
@@ -54,6 +57,12 @@ public class ApplicationMigrationService extends Service
   private WeakReference<Handler>     handler      = null;
   private NotificationCompat.Builder notification = null;
   private ImportState                state        = new ImportState(ImportState.STATE_IDLE, null);
+
+  public static Intent createMigrationIntent(Context context, UnlockSession unlockSession) {
+    return new Intent(context, ApplicationMigrationService.class)
+        .setAction(MIGRATE_DATABASE)
+        .putExtra(UNLOCK_GENERATION, unlockSession.getGeneration());
+  }
 
   @Override
   public void onCreate() {
@@ -170,11 +179,11 @@ public class ApplicationMigrationService extends Service
   }
 
   private class ImportRunnable implements Runnable {
-    private final MasterSecret masterSecret;
+    private final UnlockSession unlockSession;
 
     public ImportRunnable(Intent intent) {
-      this.masterSecret = androidx.core.content.IntentCompat.getParcelableExtra(intent, "master_secret", MasterSecret.class);
-      Log.w(TAG, "Service got mastersecret: " + masterSecret);
+      this.unlockSession = new UnlockSession(intent.getLongExtra(UNLOCK_GENERATION, -1L),
+                                             KeyCachingService::getSecretSnapshot);
     }
 
     @Override
@@ -188,15 +197,21 @@ public class ApplicationMigrationService extends Service
 
         setState(new ImportState(ImportState.STATE_MIGRATING_BEGIN, null));
 
-        SmsMigrator.migrateDatabase(ApplicationMigrationService.this,
-                                    masterSecret,
-                                    ApplicationMigrationService.this);
+        unlockSession.use(masterSecret -> {
+          SmsMigrator.migrateDatabase(ApplicationMigrationService.this,
+                                      masterSecret,
+                                      ApplicationMigrationService.this);
+          return null;
+        });
 
         setState(new ImportState(ImportState.STATE_MIGRATING_COMPLETE, null));
 
         setDatabaseImported(ApplicationMigrationService.this);
         ServiceCompat.stopForeground(ApplicationMigrationService.this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         notifyImportComplete();
+        stopSelf();
+      } catch (Exception exception) {
+        Log.w(TAG, "SMS import rejected after unlock generation changed", exception);
         stopSelf();
       } finally {
         wakeLock.release();

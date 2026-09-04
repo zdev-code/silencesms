@@ -109,6 +109,18 @@ public class DefaultConversationRepositoryTest {
   }
 
   @Test
+  public void markAllReadRefreshesNotificationsAfterDatabaseMutation() throws Exception {
+    runSubmittedWorkImmediately();
+
+    repository.markAllRead(unlockCapability(), callback);
+
+    InOrder order = inOrder(dataSource, notificationUpdater);
+    order.verify(dataSource).markAllRead();
+    order.verify(notificationUpdater).update(any());
+    verify(callback).onSuccess();
+  }
+
+  @Test
   public void swipeArchiveUpdatesReadBeforeNotifications() throws Exception {
     runSubmittedWorkImmediately();
 

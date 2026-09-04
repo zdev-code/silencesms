@@ -2,7 +2,6 @@ package org.smssecure.smssecure.preferences;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -15,13 +14,12 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import org.smssecure.smssecure.ApplicationPreferencesActivity;
-import org.smssecure.smssecure.BlockedContactsActivity;
-import org.smssecure.smssecure.PassphraseChangeActivity;
+import org.smssecure.smssecure.AuthenticationActivity;
+import org.smssecure.smssecure.HostNavigationCommand;
 import org.smssecure.smssecure.R;
-import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.MasterSecretStorageException;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.service.KeyCachingService;
 import org.smssecure.smssecure.util.SilencePreferences;
 
@@ -31,14 +29,12 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
 
   private static final String PREFERENCE_CATEGORY_BLOCKED = "preference_category_blocked";
 
-  private MasterSecret       masterSecret;
   private CheckBoxPreference disablePassphrase;
 
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
 
-    masterSecret      = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
     disablePassphrase = (CheckBoxPreference) this.findPreference("pref_enable_passphrase_temporary");
 
     this.findPreference(SilencePreferences.CHANGE_PASSPHRASE_PREF)
@@ -59,8 +55,6 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   @Override
   public void onResume() {
     super.onResume();
-    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__privacy);
-
     initializePlatformSpecificOptions();
     initializeTimeoutSummary();
 
@@ -86,8 +80,8 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   private class BlockedContactsClickListener implements Preference.OnPreferenceClickListener {
     @Override
     public boolean onPreferenceClick(Preference preference) {
-      Intent intent = new Intent(getActivity(), BlockedContactsActivity.class);
-      startActivity(intent);
+      startActivity(HostNavigationCommand.createIntent(
+          requireContext(), HostNavigationCommand.Destination.BLOCKED_CONTACTS));
       return true;
     }
   }
@@ -96,7 +90,7 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
     @Override
     public boolean onPreferenceClick(Preference preference) {
       if (MasterSecretUtil.isPassphraseInitialized(getActivity())) {
-        startActivity(new Intent(getActivity(), PassphraseChangeActivity.class));
+        startPassphraseChange();
       } else {
         Toast.makeText(getActivity(),
           R.string.ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet,
@@ -156,19 +150,26 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
           @Override
           public void onClick(DialogInterface dialog, int which) {
             try {
-              MasterSecretUtil.changeMasterSecretPassphrase(getActivity(),
-                                                            masterSecret,
-                                                            MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
+              UnlockSession.capture().use(masterSecret -> {
+                MasterSecretUtil.changeMasterSecretPassphrase(
+                    requireContext(), masterSecret, MasterSecretUtil.UNENCRYPTED_PASSPHRASE);
+                return null;
+              });
+            } catch (UnlockSession.LockedException error) {
+              return;
             } catch (MasterSecretStorageException error) {
               Toast.makeText(getActivity(), R.string.master_secret_storage_error,
                              Toast.LENGTH_LONG).show();
               return;
+            } catch (Exception error) {
+              throw new AssertionError(error);
             }
 
             SilencePreferences.setPasswordDisabled(getActivity(), true);
             ((CheckBoxPreference)preference).setChecked(false);
 
-            Intent intent = new Intent(getActivity(), KeyCachingService.class);
+            android.content.Intent intent =
+              new android.content.Intent(getActivity(), KeyCachingService.class);
             intent.setAction(KeyCachingService.DISABLE_ACTION);
             getActivity().startService(intent);
           }
@@ -176,11 +177,19 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
       } else {
-        Intent intent = new Intent(getActivity(), PassphraseChangeActivity.class);
-        startActivity(intent);
+        startPassphraseChange();
       }
 
       return false;
+    }
+  }
+
+  private void startPassphraseChange() {
+    try {
+      startActivity(AuthenticationActivity.createChangePassphraseIntent(requireContext()));
+    } catch (SecurityException relocked) {
+      startActivity(new android.content.Intent(requireContext(),
+                                               org.smssecure.smssecure.ConversationListActivity.class));
     }
   }
 

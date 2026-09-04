@@ -66,9 +66,14 @@ public class ShareListItem extends RelativeLayout
   }
 
   public void set(ThreadRecord thread) {
-    this.recipients       = thread.getRecipients();
-    this.threadId         = thread.getThreadId();
-    this.distributionType = thread.getDistributionType();
+    set(thread.getThreadId(), thread.getRecipients(), thread.getDistributionType());
+  }
+
+  public void set(long threadId, Recipients recipients, int distributionType) {
+    unbind();
+    this.recipients       = recipients;
+    this.threadId         = threadId;
+    this.distributionType = distributionType;
 
     this.recipients.addListener(this);
     this.fromView.setText(recipients);

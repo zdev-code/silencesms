@@ -55,6 +55,7 @@ public class MessageRecipientListItem extends RelativeLayout
   private Button          conflictButton;
   private Button          resendButton;
   private AvatarImageView contactPhotoImage;
+  private ReceiveKeyDialog conflictDialog;
 
   private final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -104,7 +105,8 @@ public class MessageRecipientListItem extends RelativeLayout
       conflictButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          new ReceiveKeyDialog(getContext(), masterSecret, record).show();
+          conflictDialog = new ReceiveKeyDialog(getContext(), masterSecret, record);
+          conflictDialog.show();
         }
       });
     } else if (networkFailure != null || record.isFailed()) {
@@ -156,7 +158,16 @@ public class MessageRecipientListItem extends RelativeLayout
   }
 
   public void unbind() {
-    if (this.recipient != null) this.recipient.removeListener(this);
+    handler.removeCallbacksAndMessages(null);
+    if (conflictDialog != null) conflictDialog.dismiss();
+    conflictDialog = null;
+    if (recipient != null) recipient.removeListener(this);
+    conflictButton.setOnClickListener(null);
+    resendButton.setOnClickListener(null);
+    fromView.setText((CharSequence) null);
+    errorDescription.setText(null);
+    contactPhotoImage.setImageDrawable(null);
+    recipient = null;
   }
 
   @Override

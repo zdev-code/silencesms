@@ -1,8 +1,12 @@
 package org.smssecure.smssecure.ui.conversationlist;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+import kotlinx.coroutines.flow.MutableStateFlow;
+import kotlinx.coroutines.flow.StateFlow;
+import kotlinx.coroutines.flow.StateFlowKt;
 
 import org.smssecure.smssecure.data.conversation.ConversationListEntry;
 import org.smssecure.smssecure.data.conversation.ConversationListQuery;
@@ -19,12 +23,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.inject.Inject;
+
+@HiltViewModel
 public final class ConversationListViewModel extends ViewModel {
   private final ConversationRepository repository;
   private final SendSelectedDrafts      sendSelectedDrafts;
   private final ConversationListStateStore stateStore;
   private final ConversationListReminderPolicy reminderPolicy;
-  private final MutableLiveData<ConversationListUiState> state = new MutableLiveData<>();
+  private final MutableStateFlow<ConversationListUiState> state;
   private final boolean archived;
 
   private ConversationRepository.Subscription subscription;
@@ -40,6 +47,7 @@ public final class ConversationListViewModel extends ViewModel {
   private ConversationListReminderPolicy.Kind reminderKind = ConversationListReminderPolicy.Kind.NONE;
   private long reminderGeneration;
 
+  @Inject
   ConversationListViewModel(ConversationRepository repository, SendSelectedDrafts sendSelectedDrafts,
                             ConversationListReminderPolicy reminderPolicy,
                             ConversationListStateStore stateStore) {
@@ -50,12 +58,13 @@ public final class ConversationListViewModel extends ViewModel {
     this.archived   = stateStore.isArchived();
     this.filter     = stateStore.getFilter();
     this.selectedThreadIds.addAll(stateStore.getSelectedThreadIds());
-    publish(true);
+    stateStore.save(filter, selectedThreadIds);
+    state = StateFlowKt.MutableStateFlow(createState(true));
     observeCurrentQuery();
     refreshReminder();
   }
 
-  public LiveData<ConversationListUiState> getState() {
+  public StateFlow<ConversationListUiState> getState() {
     return state;
   }
 
@@ -92,6 +101,12 @@ public final class ConversationListViewModel extends ViewModel {
     if (error == ConversationListUiState.Error.NONE) return;
     error = ConversationListUiState.Error.NONE;
     publish(false);
+  }
+
+  public void markAllRead(ConversationUnlockCapability unlockCapability,
+                          ConversationRepository.MutationCallback callback) {
+    Objects.requireNonNull(unlockCapability);
+    activeTask = repository.markAllRead(unlockCapability, callback);
   }
 
   public void archiveSelected() {
@@ -283,8 +298,12 @@ public final class ConversationListViewModel extends ViewModel {
 
   private void publish(boolean loading) {
     stateStore.save(filter, selectedThreadIds);
-    state.setValue(new ConversationListUiState(archived, filter, entries, archivedCount,
-      selectedThreadIds, loading, activeMutation, pendingUndo != null, error, reminderKind));
+    state.setValue(createState(loading));
+  }
+
+  private ConversationListUiState createState(boolean loading) {
+    return new ConversationListUiState(archived, filter, entries, archivedCount, selectedThreadIds,
+        loading, activeMutation, pendingUndo != null, error, reminderKind);
   }
 
   private static ConversationListUiState.Error operationError(

@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.domain.upgrade.DatabaseUpgradeCoordinator;
 import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.util.ParcelUtil;
@@ -38,6 +39,11 @@ import org.whispersystems.jobqueue.EncryptionKeys;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class DatabaseUpgradeActivity extends BaseActivity {
   private static final String TAG = DatabaseUpgradeActivity.class.getSimpleName();
   public static final int ASK_FOR_SIM_CARD_VERSION     = 143;
@@ -52,18 +58,16 @@ public class DatabaseUpgradeActivity extends BaseActivity {
 
   private ProgressBar       indeterminateProgress;
   private ProgressBar       determinateProgress;
-  private DatabaseUpgradeCoordinator upgradeCoordinator;
+  @Inject DatabaseUpgradeCoordinator upgradeCoordinator;
   private DatabaseUpgradeCoordinator.Subscription upgradeSubscription;
   private boolean navigationClaimed;
   private boolean upgradeRequired;
+  private UnlockSession unlockSession;
 
   @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
-    MasterSecret masterSecret = androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "master_secret", MasterSecret.class);
-    upgradeCoordinator = ApplicationContext.getInstance(this)
-        .getAppDependencies().databaseUpgradeCoordinator();
-
+    unlockSession = UnlockSession.capture();
     upgradeRequired = needsUpgradeTask();
     if (upgradeRequired) {
       Log.w(TAG, "Upgrading...");
@@ -74,16 +78,23 @@ public class DatabaseUpgradeActivity extends BaseActivity {
 
       upgradeCoordinator.start(VersionTracker.getLastSeenVersion(this),
           Util.getCurrentApkReleaseVersion(this),
-          new ConversationUnlockCapability(masterSecret));
+          new ConversationUnlockCapability(unlockSession));
     } else {
-      upgradeCoordinator.clearCompletedRecord();
-      VersionTracker.updateLastSeenVersion(this);
-      ApplicationContext.getInstance(this)
-                        .getJobManager()
-                        .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
-//      DecryptingQueue.schedulePendingDecrypts(DatabaseUpgradeActivity.this, masterSecret);
-      updateNotifications(this, masterSecret);
-      startActivity(androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class));
+      try {
+        unlockSession.use(masterSecret -> {
+          upgradeCoordinator.clearCompletedRecord();
+          VersionTracker.updateLastSeenVersion(this);
+          ApplicationContext.getInstance(this)
+                            .getJobManager()
+                            .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
+          updateNotifications(this, masterSecret);
+          return null;
+        });
+        startContinuationOrInbox();
+      } catch (Exception exception) {
+        Log.w(TAG, "Unlock changed before database upgrade finalization", exception);
+        startFreshPolicyEvaluation();
+      }
       finish();
     }
   }
@@ -165,8 +176,21 @@ public class DatabaseUpgradeActivity extends BaseActivity {
     navigationClaimed = true;
     upgradeCoordinator.clearCompletedRecord();
 
-    startActivity(androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class));
+    startContinuationOrInbox();
     finish();
+  }
+
+  private void startContinuationOrInbox() {
+    try {
+      startActivity(BootstrapContinuationStore.getInstance()
+          .consume(getIntent(), DatabaseUpgradeActivity.class));
+    } catch (BootstrapContinuationStore.InvalidContinuationException exception) {
+      startFreshPolicyEvaluation();
+    }
+  }
+
+  private void startFreshPolicyEvaluation() {
+    startActivity(new Intent(this, ConversationListActivity.class));
   }
 
 }

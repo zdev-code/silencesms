@@ -18,7 +18,6 @@ package org.smssecure.smssecure;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import android.text.SpannableString;
@@ -29,13 +28,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import org.smssecure.smssecure.crypto.IdentityKeyParcelable;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.crypto.storage.VendoredIdentityKeyStore;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.EncryptingSmsDatabase;
 import org.smssecure.smssecure.database.IdentityDatabase;
 import org.smssecure.smssecure.database.model.MessageRecord;
+import org.smssecure.smssecure.domain.identity.ConflictIdentityStore;
 import org.smssecure.smssecure.jobs.SmsDecryptJob;
 import org.smssecure.smssecure.protocol.KeyExchangeMessage;
 import org.smssecure.smssecure.recipients.Recipient;
@@ -111,10 +110,17 @@ public class ReceiveKeyDialog extends AlertDialog {
     spannableString.setSpan(new ClickableSpan() {
                               @Override
                               public void onClick(View widget) {
-                                Intent intent = new Intent(getContext(), VerifyIdentityActivity.class);
-                                intent.putExtra("recipient", messageRecord.getIndividualRecipient().getRecipientId());
-                                intent.putExtra("remote_identity", new IdentityKeyParcelable(toNew(identityKey)));
-                                getContext().startActivity(intent);
+                                try {
+                                  String token = ConflictIdentityStore.getInstance().put(
+                                      VerifyIdentityFragment.CONFLICT_OWNER,
+                                      messageRecord.getIndividualRecipient().getRecipientId(),
+                                      messageRecord.getSubscriptionId(), toNew(identityKey));
+                                  getContext().startActivity(
+                                      HostNavigationCommand.createConflictVerifyIdentityIntent(
+                                          getContext(), token));
+                                } catch (ConflictIdentityStore.InvalidPayloadException error) {
+                                  Log.w(TAG, "Unable to open conflict identity verification");
+                                }
                               }
                             }, introText.length() + 1,
             spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -165,7 +171,7 @@ public class ReceiveKeyDialog extends AlertDialog {
   }
 
   // ReceiveKeyDialog is part of the vendored Key-Exchange trust UI, so it works in vendored
-  // IdentityKey; the app's IdentityDatabase / IdentityKeyParcelable are now maintained-library typed,
+  // IdentityKey; the app's IdentityDatabase and conflict handoff are maintained-library typed,
   // so convert at those seams (serialization is byte-identical across the two libraries).
   private static org.signal.libsignal.protocol.IdentityKey toNew(IdentityKey vendored) {
     try {

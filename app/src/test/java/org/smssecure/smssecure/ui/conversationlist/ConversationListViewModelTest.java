@@ -15,14 +15,10 @@ import org.smssecure.smssecure.data.conversation.ConversationListEntry;
 import org.smssecure.smssecure.data.conversation.ConversationListQuery;
 import org.smssecure.smssecure.data.conversation.ConversationListSnapshot;
 import org.smssecure.smssecure.data.conversation.ConversationRepository;
-import org.smssecure.smssecure.data.conversationthread.ConversationThreadRepository;
-import org.smssecure.smssecure.data.conversationscreen.ConversationScreenRepository;
 import org.smssecure.smssecure.domain.conversation.SendSelectedDrafts;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
 import org.smssecure.smssecure.domain.conversation.ConversationListReminderPolicy;
-import org.smssecure.smssecure.domain.upgrade.DatabaseUpgradeCoordinator;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.injection.AppDependencies;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
 import java.util.ArrayList;
@@ -75,17 +71,18 @@ public class ConversationListViewModelTest {
   }
 
   @Test
-  public void restoresApprovedFilterModeAndSelection() {
+  public void restoresModeAndSelectionButPurgesSensitiveFilter() {
     SavedStateHandle handle = new SavedStateHandle();
     handle.set(ConversationListStateStore.KEY_ARCHIVED, true);
-    handle.set(ConversationListStateStore.KEY_FILTER, "Alice");
+    handle.set(ConversationListStateStore.LEGACY_KEY_FILTER, "+15551234567");
     handle.set(ConversationListStateStore.KEY_SELECTED_THREAD_IDS, new long[] {2L});
 
     viewModel = new ConversationListViewModel(repository, sendSelectedDrafts, reminderPolicy,
         new ConversationListStateStore(handle, false));
 
-    assertThat(repository.queries).last().isEqualTo(new ConversationListQuery(true, "Alice"));
+    assertThat(repository.queries).last().isEqualTo(new ConversationListQuery(true, ""));
     assertThat(state().getSelectedThreadIds()).containsExactly(2L);
+    assertThat(handle.keys()).doesNotContain(ConversationListStateStore.LEGACY_KEY_FILTER);
   }
 
   @Test
@@ -213,26 +210,10 @@ public class ConversationListViewModelTest {
   }
 
   @Test
-  public void factoryUsesInjectedRepository() {
-    AppDependencies dependencies = new AppDependencies() {
-      @Override public ConversationRepository conversationRepository() { return repository; }
-      @Override public ConversationThreadRepository conversationThreadRepository() {
-        return mock(ConversationThreadRepository.class);
-      }
-      @Override public ConversationScreenRepository conversationScreenRepository() {
-        return mock(ConversationScreenRepository.class);
-      }
-      @Override public DatabaseUpgradeCoordinator databaseUpgradeCoordinator() {
-        return mock(DatabaseUpgradeCoordinator.class);
-      }
-      @Override public SendSelectedDrafts sendSelectedDrafts() { return mock(SendSelectedDrafts.class); }
-      @Override public ConversationListReminderPolicy conversationListReminderPolicy() {
-        return reminderPolicy;
-      }
-    };
-
-    ConversationListViewModel created = new ConversationListViewModelFactory(dependencies, true)
-        .create(ConversationListViewModel.class);
+  public void injectedDependenciesSelectArchivedRepositoryQuery() {
+    ConversationListViewModel created = new ConversationListViewModel(repository,
+        mock(SendSelectedDrafts.class), reminderPolicy,
+        new ConversationListStateStore(new SavedStateHandle(), true));
 
     assertThat(repository.queries).last().isEqualTo(new ConversationListQuery(true, ""));
     assertThat(created.getState().getValue().isArchived()).isTrue();
@@ -286,6 +267,13 @@ public class ConversationListViewModelTest {
     @Override
     public AppTaskExecutor.TaskHandle delete(Set<Long> threadIds,
         ConversationUnlockCapability unlockCapability, MutationCallback callback) {
+      mutationCallback = callback;
+      return mock(AppTaskExecutor.TaskHandle.class);
+    }
+
+    @Override
+    public AppTaskExecutor.TaskHandle markAllRead(ConversationUnlockCapability unlockCapability,
+        MutationCallback callback) {
       mutationCallback = callback;
       return mock(AppTaskExecutor.TaskHandle.class);
     }

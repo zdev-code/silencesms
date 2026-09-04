@@ -17,55 +17,51 @@
 package org.smssecure.smssecure;
 
 import android.content.Context;
-import android.database.Cursor;
-import androidx.cursoradapter.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 
-import org.smssecure.smssecure.database.DatabaseFactory;
-import org.smssecure.smssecure.database.ThreadDatabase;
-import org.smssecure.smssecure.database.model.ThreadRecord;
-import org.smssecure.smssecure.crypto.MasterCipher;
-import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.recipients.RecipientFactory;
+import org.smssecure.smssecure.recipients.Recipients;
+import org.smssecure.smssecure.ui.share.ShareTarget;
+
+import java.util.List;
 
 /**
  * A CursorAdapter for building a list of open conversations
  *
  * @author Jake McGinty
  */
-public class ShareListAdapter extends CursorAdapter implements AbsListView.RecyclerListener {
+public class ShareListAdapter extends BaseAdapter implements AbsListView.RecyclerListener {
 
-  private final ThreadDatabase threadDatabase;
-  private final MasterCipher   masterCipher;
   private final Context        context;
   private final LayoutInflater inflater;
+  private List<ShareTarget> targets = List.of();
 
-  public ShareListAdapter(Context context, Cursor cursor, MasterSecret masterSecret) {
-    super(context, cursor, 0);
-
-    if (masterSecret != null) this.masterCipher = new MasterCipher(masterSecret);
-    else                      this.masterCipher = null;
-
+  public ShareListAdapter(Context context) {
     this.context        = context;
-    this.threadDatabase = DatabaseFactory.getThreadDatabase(context);
     this.inflater       = LayoutInflater.from(context);
   }
 
-  @Override
-  public View newView(Context context, Cursor cursor, ViewGroup parent) {
-    return inflater.inflate(R.layout.share_list_item_view, parent, false);
+  public void submitList(List<ShareTarget> targets) {
+    this.targets = List.copyOf(targets);
+    notifyDataSetChanged();
   }
 
-  @Override
-  public void bindView(View view, Context context, Cursor cursor) {
-    if (masterCipher != null) {
-      ThreadDatabase.Reader reader = threadDatabase.readerFor(cursor, masterCipher);
-      ThreadRecord          record = reader.getCurrent();
+  @Override public int getCount() { return targets.size(); }
+  @Override public ShareTarget getItem(int position) { return targets.get(position); }
+  @Override public long getItemId(int position) { return getItem(position).getThreadId(); }
 
-      ((ShareListItem)view).set(record);
-    }
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    ShareListItem view = (ShareListItem) (convertView != null ? convertView :
+        inflater.inflate(R.layout.share_list_item_view, parent, false));
+    ShareTarget target = getItem(position);
+    Recipients recipients = RecipientFactory.getRecipientsForIds(context, target.getRecipientIds(), true);
+    view.set(target.getThreadId(), recipients, target.getDistributionType());
+    return view;
   }
 
   @Override

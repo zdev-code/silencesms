@@ -4,28 +4,38 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.smssecure.smssecure.R;
-import org.smssecure.smssecure.recipients.Recipient;
+import org.smssecure.smssecure.ui.groupcreate.GroupMember;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class SelectedRecipientsAdapter extends ArrayAdapter<SelectedRecipientsAdapter.RecipientWrapper> {
+public class SelectedRecipientsAdapter extends BaseAdapter {
 
-  private ArrayList<RecipientWrapper> recipients;
+  private final Context context;
+  private List<GroupMember> members = List.of();
   private OnRecipientDeletedListener onRecipientDeletedListener;
 
-  public SelectedRecipientsAdapter(Context context, int textViewResourceId) {
-    super(context, textViewResourceId);
+  public SelectedRecipientsAdapter(Context context) {
+    this.context = context;
   }
 
-  public SelectedRecipientsAdapter(Context context, int resource, ArrayList<RecipientWrapper> recipients) {
-    super(context, resource, recipients);
-    this.recipients = recipients;
+  public void submitList(List<GroupMember> members) {
+    this.members = List.copyOf(members);
+    notifyDataSetChanged();
   }
+
+  @Override
+  public int getCount() { return members.size(); }
+
+  @Override
+  public GroupMember getItem(int position) { return members.get(position); }
+
+  @Override
+  public long getItemId(int position) { return getItem(position).getRecipientId(); }
 
   @Override
   public View getView(final int position, final View convertView, final ViewGroup parent) {
@@ -35,44 +45,35 @@ public class SelectedRecipientsAdapter extends ArrayAdapter<SelectedRecipientsAd
     if (v == null) {
 
       LayoutInflater vi;
-      vi = LayoutInflater.from(getContext());
+      vi = LayoutInflater.from(context);
       v = vi.inflate(R.layout.selected_recipient_list_item, parent, false);
 
     }
 
-    final RecipientWrapper rw = getItem(position);
-    final Recipient p = rw.getRecipient();
-    final boolean modifiable = rw.isModifiable();
+    final GroupMember member = getItem(position);
 
-    if (p != null) {
+    if (member != null) {
 
       TextView name = (TextView) v.findViewById(R.id.name);
       TextView phone = (TextView) v.findViewById(R.id.phone);
       ImageButton delete = (ImageButton) v.findViewById(R.id.delete);
 
       if (name != null) {
-        name.setText(p.getName());
+        name.setText(member.getName());
       }
       if (phone != null) {
-        phone.setText(p.getNumber());
+        phone.setText(member.getNumber());
       }
       if (delete != null) {
-        if (modifiable) {
-          delete.setVisibility(View.VISIBLE);
-          delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              if (onRecipientDeletedListener != null) {
-                onRecipientDeletedListener.onRecipientDeleted(recipients.get(position).getRecipient());
-              }
-              recipients.remove(position);
-              SelectedRecipientsAdapter.this.notifyDataSetChanged();
+        delete.setVisibility(View.VISIBLE);
+        delete.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            if (onRecipientDeletedListener != null) {
+              onRecipientDeletedListener.onRecipientDeleted(member.getRecipientId());
             }
-          });
-        } else {
-          delete.setVisibility(View.INVISIBLE);
-          delete.setOnClickListener(null);
-        }
+          }
+        });
       }
     }
 
@@ -84,24 +85,6 @@ public class SelectedRecipientsAdapter extends ArrayAdapter<SelectedRecipientsAd
   }
 
   public interface OnRecipientDeletedListener {
-    public void onRecipientDeleted(Recipient recipient);
-  }
-
-  public static class RecipientWrapper {
-    private final Recipient recipient;
-    private final boolean modifiable;
-
-    public RecipientWrapper(final Recipient recipient, final boolean modifiable) {
-      this.recipient = recipient;
-      this.modifiable = modifiable;
-    }
-
-    public Recipient getRecipient() {
-      return recipient;
-    }
-
-    public boolean isModifiable() {
-      return modifiable;
-    }
+    void onRecipientDeleted(long recipientId);
   }
 }

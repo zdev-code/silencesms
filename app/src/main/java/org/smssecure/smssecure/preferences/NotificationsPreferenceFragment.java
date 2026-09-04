@@ -1,7 +1,6 @@
 package org.smssecure.smssecure.preferences;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -9,28 +8,32 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceManager;
-import android.text.TextUtils;
+import androidx.lifecycle.ViewModelProvider;
 import android.util.Log;
 
-import org.smssecure.smssecure.ApplicationPreferencesActivity;
 import org.smssecure.smssecure.R;
-import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.notifications.MessageNotifier;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.preferences.widgets.AdvancedRingtonePreference;
 import org.smssecure.smssecure.util.SilencePreferences;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.ui.LifecycleStateCollector;
+import org.smssecure.smssecure.ui.notificationpreferences.NotificationPreferencesUiState;
+import org.smssecure.smssecure.ui.notificationpreferences.NotificationPreferencesViewModel;
+import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragment {
 
   private static final String TAG = NotificationsPreferenceFragment.class.getSimpleName();
 
-  private MasterSecret masterSecret;
+  private NotificationPreferencesViewModel viewModel;
 
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
-    masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
+    viewModel = new ViewModelProvider(this).get(NotificationPreferencesViewModel.class);
+    LifecycleStateCollector.collect(this, viewModel.getState(), this::render);
 
     this.findPreference(SilencePreferences.LED_COLOR_PREF)
         .setOnPreferenceChangeListener(new ListSummaryListener());
@@ -58,7 +61,6 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
   @Override
   public void onResume() {
     super.onResume();
-    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__notifications);
   }
 
   private class RingtoneSummaryListener implements Preference.OnPreferenceChangeListener {
@@ -80,10 +82,9 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
   }
 
   private void initializeRingtoneSummary(AdvancedRingtonePreference pref) {
-    RingtoneSummaryListener listener          = (RingtoneSummaryListener) pref.getOnPreferenceChangeListener();
-    SharedPreferences       sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    String                  encodedUri        = sharedPreferences.getString(pref.getKey(), null);
-    Uri                     uri               = !TextUtils.isEmpty(encodedUri) ? Uri.parse(encodedUri) : null;
+    RingtoneSummaryListener listener   = (RingtoneSummaryListener) pref.getOnPreferenceChangeListener();
+    String                  encodedUri = SilencePreferences.getNotificationRingtone(requireContext());
+    Uri                     uri        = encodedUri == null || encodedUri.isEmpty() ? null : Uri.parse(encodedUri);
 
     listener.onPreferenceChange(pref, uri);
   }
@@ -95,22 +96,17 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
     return context.getString(SilencePreferences.isNotificationsEnabled(context) ? onCapsResId : offCapsResId);
   }
 
+  private void render(NotificationPreferencesUiState state) {
+    if (state.isFailed()) {
+      Log.w(TAG, "Unable to refresh notification privacy");
+      viewModel.acknowledgeFailure();
+    }
+  }
+
   private class NotificationPrivacyListener extends ListSummaryListener {
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
-      Context context = getContext();
-      if (context != null) {
-        Context appContext = context.getApplicationContext();
-        MasterSecret currentMasterSecret = masterSecret;
-
-        AppTaskExecutor.getInstance().submitSerial(
-            () -> {
-              MessageNotifier.updateNotification(appContext, currentMasterSecret);
-              return null;
-            },
-            ignored -> {},
-            exception -> Log.w(TAG, "Unable to refresh notification privacy", exception));
-      }
+      viewModel.refresh(new ConversationUnlockCapability(UnlockSession.capture()));
 
       return super.onPreferenceChange(preference, value);
     }

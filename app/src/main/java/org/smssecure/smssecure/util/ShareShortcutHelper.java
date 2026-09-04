@@ -85,7 +85,7 @@ public final class ShareShortcutHelper {
         }
 
         Intent intent = new Intent(context, ShareActivity.class)
-            .setAction(Intent.ACTION_DEFAULT)
+          .setAction(Intent.ACTION_SEND)
             .putExtra(ShareActivity.EXTRA_THREAD_ID, record.getThreadId())
             .putExtra(ShareActivity.EXTRA_RECIPIENT_IDS, recipients.getIds())
             .putExtra(ShareActivity.EXTRA_DISTRIBUTION_TYPE, record.getDistributionType())

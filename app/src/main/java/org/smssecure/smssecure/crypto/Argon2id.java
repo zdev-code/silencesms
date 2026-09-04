@@ -1,6 +1,7 @@
 package org.smssecure.smssecure.crypto;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.CharBuffer;
 import java.text.Normalizer;
 import java.util.Arrays;
 
@@ -28,6 +29,23 @@ public final class Argon2id {
 
     byte[] passwordBytes = Normalizer.normalize(password, Normalizer.Form.NFC)
                                      .getBytes(StandardCharsets.UTF_8);
+    try {
+      return derive(passwordBytes, salt, memoryKiB, iterations, parallelism);
+    } finally {
+      Arrays.fill(passwordBytes, (byte) 0);
+    }
+  }
+
+  public static byte[] derive(char[] password, byte[] salt, int memoryKiB,
+                              int iterations, int parallelism)
+      throws Argon2Exception
+  {
+    if (password == null) throw new Argon2Exception("Argon2 password is required");
+
+    // Normalizer exposes only an immutable String result. Keep that unavoidable value local and
+    // wipe the mutable UTF-8 copy passed to native code.
+    String normalized = Normalizer.normalize(CharBuffer.wrap(password), Normalizer.Form.NFC);
+    byte[] passwordBytes = normalized.getBytes(StandardCharsets.UTF_8);
     try {
       return derive(passwordBytes, salt, memoryKiB, iterations, parallelism);
     } finally {

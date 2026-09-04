@@ -79,6 +79,40 @@ public class DatabaseUpgradeCoordinatorTest {
   }
 
   @Test
+  public void relockAtFinalizationLeavesFinalizationCheckpointForResume() {
+    storage.record = new UpgradeOperationStore.Record(
+        100, 216, UpgradeOperationStore.Stage.FINALIZE);
+    RecordingSteps steps = new RecordingSteps();
+    MasterSecret original = secret((byte) 1);
+    MasterSecret replacement = secret((byte) 2);
+    DatabaseUpgradeCoordinator coordinator = new DatabaseUpgradeCoordinator(executor, storage, steps);
+    DatabaseUpgradeCoordinator.Observer observer = mock(DatabaseUpgradeCoordinator.Observer.class);
+    coordinator.observe(observer);
+
+    coordinator.start(100, 216, new ConversationUnlockCapability(original, () -> replacement));
+
+    assertThat(storage.record.getStage()).isEqualTo(UpgradeOperationStore.Stage.FINALIZE);
+    assertThat(steps.databaseRuns).isZero();
+    assertThat(steps.simPromptRuns).isZero();
+    assertThat(steps.multiSimRuns).isZero();
+    assertThat(steps.finalizeRuns).isZero();
+    verify(observer).onFailure(any(ConversationUnlockCapability.LockedException.class));
+  }
+
+  @Test
+  public void observerReattachReceivesLatestProgressAndCompletion() {
+    RecordingSteps steps = new RecordingSteps();
+    DatabaseUpgradeCoordinator coordinator = new DatabaseUpgradeCoordinator(executor, storage, steps);
+
+    coordinator.start(100, 216, unlockCapability());
+    DatabaseUpgradeCoordinator.Observer observer = mock(DatabaseUpgradeCoordinator.Observer.class);
+    coordinator.observe(observer);
+
+    verify(observer).onProgress(1, 2);
+    verify(observer).onComplete();
+  }
+
+  @Test
   public void restartRunsOnlyThePersistedStageAndThoseAfterIt() {
     UpgradeOperationStore.Stage[] stages = UpgradeOperationStore.Stage.values();
     int[][] expectedRuns = {
@@ -132,7 +166,7 @@ public class DatabaseUpgradeCoordinatorTest {
     private boolean failSimPrompt;
 
     @Override public void runDatabase(MasterSecret secret, int fromVersion,
-                                      org.smssecure.smssecure.DatabaseUpgradeActivity.DatabaseUpgradeListener listener) {
+                                      DatabaseUpgradePolicy.ProgressListener listener) {
       databaseRuns++;
       listener.setProgress(1, 2);
     }

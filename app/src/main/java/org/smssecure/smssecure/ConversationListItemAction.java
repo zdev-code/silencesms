@@ -3,6 +3,7 @@ package org.smssecure.smssecure;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -48,5 +49,16 @@ public class ConversationListItemAction extends LinearLayout implements Bindable
   @Override
   public void unbind() {
 
+  }
+
+  @Override
+  public void clearSensitiveData() {
+    description.setText(null);
+    setVisibility(INVISIBLE);
+  }
+
+  @Override
+  public View asView() {
+    return this;
   }
 }

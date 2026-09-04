@@ -10,6 +10,7 @@ import org.smssecure.smssecure.BaseUnitTest;
 
 import java.util.Arrays;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -18,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
@@ -301,6 +303,25 @@ public class MasterSecretUtilArgon2Test extends BaseUnitTest {
     try (MockedStatic<Argon2id> argon2 = mockStatic(Argon2id.class)) {
       argon2.when(Argon2id::isAvailable).thenReturn(false);
       MasterSecretUtil.changeMasterSecretPassphrase(context, masterSecret, "passphrase");
+    }
+  }
+
+  @Test(expected = MasterSecretStorageException.class)
+  public void staleGenerationRejectsCharacterPassphraseBeforeDerivationOrStorage() throws Exception {
+    char[] replacement = "passphrase".toCharArray();
+    AtomicInteger checks = new AtomicInteger();
+    clearInvocations(sharedPreferences);
+
+    try {
+      MasterSecretUtil.changeMasterSecretPassphrase(context, masterSecret, replacement, () -> {
+        checks.incrementAndGet();
+        throw new GeneralSecurityException("stale generation");
+      });
+    } finally {
+      assertEquals(1, checks.get());
+      verify(sharedPreferences, never()).edit();
+      assertArrayEquals("passphrase".toCharArray(), replacement);
+      Arrays.fill(replacement, '\0');
     }
   }
 

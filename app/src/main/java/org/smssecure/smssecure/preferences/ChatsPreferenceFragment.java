@@ -11,7 +11,6 @@ import androidx.preference.Preference;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.smssecure.smssecure.ApplicationPreferencesActivity;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.Trimmer;
@@ -42,7 +41,6 @@ public class ChatsPreferenceFragment extends CorrectedPreferenceFragment {
   @Override
   public void onResume() {
     super.onResume();
-    ((ApplicationPreferencesActivity)getActivity()).getSupportActionBar().setTitle(R.string.preferences__chats);
   }
 
   private class TrimNowClickListener implements Preference.OnPreferenceClickListener {

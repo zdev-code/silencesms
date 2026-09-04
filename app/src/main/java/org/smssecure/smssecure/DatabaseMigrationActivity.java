@@ -96,10 +96,8 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
     this.importButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(DatabaseMigrationActivity.this, ApplicationMigrationService.class);
-        intent.setAction(ApplicationMigrationService.MIGRATE_DATABASE);
-        intent.putExtra("master_secret", androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "master_secret", MasterSecret.class));
-        startService(intent);
+        startService(ApplicationMigrationService.createMigrationIntent(
+            DatabaseMigrationActivity.this, org.smssecure.smssecure.domain.security.UnlockSession.capture()));
 
         promptLayout.setVisibility(View.GONE);
         progressLayout.setVisibility(View.VISIBLE);
@@ -153,9 +151,10 @@ public class DatabaseMigrationActivity extends PassphraseRequiredActionBarActivi
 
   private void handleImportComplete() {
     if (isVisible) {
-      if (getIntent().hasExtra("next_intent")) {
-        startActivity(androidx.core.content.IntentCompat.getParcelableExtra(getIntent(), "next_intent", Intent.class));
-      } else {
+      try {
+        startActivity(BootstrapContinuationStore.getInstance()
+            .consume(getIntent(), DatabaseMigrationActivity.class));
+      } catch (BootstrapContinuationStore.InvalidContinuationException exception) {
         startActivity(new Intent(this, ConversationListActivity.class));
       }
     }

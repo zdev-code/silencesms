@@ -16,15 +16,13 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.signal.libsignal.protocol.InvalidMessageException;
 
 final class ConversationListEntryMapper {
-  private final Context      context;
-  private final MasterCipher masterCipher;
+  private final Context context;
 
-  ConversationListEntryMapper(Context context, MasterSecret masterSecret) {
-    this.context      = context.getApplicationContext();
-    this.masterCipher = new MasterCipher(masterSecret);
+  ConversationListEntryMapper(Context context) {
+    this.context = context.getApplicationContext();
   }
 
-  ThreadRecord map(ConversationListEntry entry) {
+  ThreadRecord map(ConversationListEntry entry, MasterSecret masterSecret) {
     Recipients recipients = RecipientFactory.getRecipientsForIds(context, entry.getRecipientIds(), true);
     Uri snippetUri = null;
     if (!TextUtils.isEmpty(entry.getSnippetUri())) {
@@ -34,16 +32,16 @@ final class ConversationListEntryMapper {
         Log.w("ConversationListEntryMapper", error);
       }
     }
-    return new ThreadRecord(context, plaintextBody(entry), snippetUri, recipients, entry.getDate(),
+    return new ThreadRecord(context, plaintextBody(entry, masterSecret), snippetUri, recipients, entry.getDate(),
         entry.getMessageCount(), entry.isRead(), entry.getThreadId(), entry.getStatus(),
         entry.getSnippetType(), entry.getDistributionType(), entry.isArchived(), entry.getLastSeen());
   }
 
-  private DisplayRecord.Body plaintextBody(ConversationListEntry entry) {
+  private DisplayRecord.Body plaintextBody(ConversationListEntry entry, MasterSecret masterSecret) {
     String snippet = entry.getSnippet();
     try {
       if (!TextUtils.isEmpty(snippet) && MmsSmsColumns.Types.isSymmetricEncryption(entry.getSnippetType())) {
-        return new DisplayRecord.Body(masterCipher.decryptBody(snippet), true);
+        return new DisplayRecord.Body(new MasterCipher(masterSecret).decryptBody(snippet), true);
       }
       return new DisplayRecord.Body(snippet, true);
     } catch (InvalidMessageException error) {

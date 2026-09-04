@@ -1,14 +1,20 @@
 package org.smssecure.smssecure.ui.conversationthread;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+import kotlinx.coroutines.flow.MutableStateFlow;
+import kotlinx.coroutines.flow.StateFlow;
+import kotlinx.coroutines.flow.StateFlowKt;
 
 import org.smssecure.smssecure.data.conversationthread.ConversationMessageRow;
 import org.smssecure.smssecure.data.conversationthread.ConversationThreadQuery;
 import org.smssecure.smssecure.data.conversationthread.ConversationThreadRepository;
 import org.smssecure.smssecure.data.conversationthread.ConversationThreadSnapshot;
+import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 
 import java.util.LinkedHashSet;
@@ -16,12 +22,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.inject.Inject;
+
+@HiltViewModel
 public final class ConversationThreadViewModel extends ViewModel {
   public static final long PARTIAL_CONVERSATION_LIMIT = 500L;
 
   private final ConversationThreadRepository repository;
   private final ConversationThreadStateStore stateStore;
-  private final MutableLiveData<ConversationThreadUiState> state = new MutableLiveData<>();
+  private final MutableStateFlow<ConversationThreadUiState> state;
   private final long threadId;
   private final LinkedHashSet<String> selectedMessageIds = new LinkedHashSet<>();
 
@@ -32,10 +41,13 @@ public final class ConversationThreadViewModel extends ViewModel {
   private boolean limited;
   private boolean loading = true;
   private boolean threadDeleted;
+  private int attachmentSaveResult = -1;
   private ConversationThreadUiState.Mutation mutation = ConversationThreadUiState.Mutation.NONE;
   private ConversationThreadUiState.Error error = ConversationThreadUiState.Error.NONE;
   private TaskHandle activeTask;
+  private int mutationGeneration;
 
+  @Inject
   ConversationThreadViewModel(ConversationThreadRepository repository,
                               ConversationThreadStateStore stateStore) {
     this.repository = Objects.requireNonNull(repository);
@@ -44,11 +56,12 @@ public final class ConversationThreadViewModel extends ViewModel {
     this.lastSeen = stateStore.getLastSeen();
     this.fullHistory = stateStore.isFullHistory();
     this.selectedMessageIds.addAll(stateStore.getSelectedMessageIds());
-    publish();
+    stateStore.save(lastSeen, fullHistory, selectedMessageIds);
+    state = StateFlowKt.MutableStateFlow(createState());
     observe();
   }
 
-  public LiveData<ConversationThreadUiState> getState() { return state; }
+  public StateFlow<ConversationThreadUiState> getState() { return state; }
 
   public void loadMore() {
     if (fullHistory) return;
@@ -89,10 +102,12 @@ public final class ConversationThreadViewModel extends ViewModel {
     mutation = ConversationThreadUiState.Mutation.DELETE;
     error = ConversationThreadUiState.Error.NONE;
     publish();
+    int requestGeneration = ++mutationGeneration;
     activeTask = repository.delete(references, unlockCapability,
         new ConversationThreadRepository.MutationCallback() {
           @Override
           public void onSuccess(boolean deleted) {
+            if (requestGeneration != mutationGeneration) return;
             activeTask = null;
             mutation = ConversationThreadUiState.Mutation.NONE;
             selectedMessageIds.clear();
@@ -102,6 +117,7 @@ public final class ConversationThreadViewModel extends ViewModel {
 
           @Override
           public void onFailure(Exception exception) {
+            if (requestGeneration != mutationGeneration) return;
             activeTask = null;
             mutation = ConversationThreadUiState.Mutation.NONE;
             error = exception instanceof ConversationUnlockCapability.LockedException
@@ -110,6 +126,74 @@ public final class ConversationThreadViewModel extends ViewModel {
             publish();
           }
         });
+  }
+
+  public void resend(MessageRecord message, ConversationUnlockCapability unlockCapability) {
+    Objects.requireNonNull(message);
+    Objects.requireNonNull(unlockCapability);
+    if (mutation != ConversationThreadUiState.Mutation.NONE) return;
+    mutation = ConversationThreadUiState.Mutation.RESEND;
+    error = ConversationThreadUiState.Error.NONE;
+    publish();
+    int requestGeneration = ++mutationGeneration;
+    activeTask = repository.resend(message, unlockCapability,
+        new ConversationThreadRepository.OperationCallback() {
+          @Override public void onSuccess() {
+            if (requestGeneration != mutationGeneration) return;
+            activeTask = null;
+            mutation = ConversationThreadUiState.Mutation.NONE;
+            publish();
+          }
+
+          @Override public void onFailure(Exception exception) {
+            if (requestGeneration != mutationGeneration) return;
+            activeTask = null;
+            mutation = ConversationThreadUiState.Mutation.NONE;
+            error = operationError(exception, ConversationThreadUiState.Error.RESEND_FAILED);
+            publish();
+          }
+        });
+  }
+
+  public void saveAttachment(Attachment attachment, ConversationUnlockCapability unlockCapability) {
+    Objects.requireNonNull(attachment);
+    Objects.requireNonNull(unlockCapability);
+    if (mutation != ConversationThreadUiState.Mutation.NONE) return;
+    mutation = ConversationThreadUiState.Mutation.SAVE_ATTACHMENT;
+    error = ConversationThreadUiState.Error.NONE;
+    attachmentSaveResult = -1;
+    publish();
+    int requestGeneration = ++mutationGeneration;
+    activeTask = repository.saveAttachment(attachment, unlockCapability,
+        new ConversationThreadRepository.AttachmentCallback() {
+          @Override public void onSuccess(int result) {
+            if (requestGeneration != mutationGeneration) return;
+            activeTask = null;
+            mutation = ConversationThreadUiState.Mutation.NONE;
+            attachmentSaveResult = result;
+            publish();
+          }
+
+          @Override public void onFailure(Exception exception) {
+            if (requestGeneration != mutationGeneration) return;
+            activeTask = null;
+            mutation = ConversationThreadUiState.Mutation.NONE;
+            error = operationError(exception, ConversationThreadUiState.Error.SAVE_ATTACHMENT_FAILED);
+            publish();
+          }
+        });
+  }
+
+  public void acknowledgeAttachmentSaveResult() {
+    if (attachmentSaveResult == -1) return;
+    attachmentSaveResult = -1;
+    publish();
+  }
+
+  private ConversationThreadUiState.Error operationError(
+      Exception exception, ConversationThreadUiState.Error fallback) {
+    return exception instanceof ConversationUnlockCapability.LockedException
+        ? ConversationThreadUiState.Error.LOCKED : fallback;
   }
 
   public void acknowledgeError() {
@@ -151,13 +235,32 @@ public final class ConversationThreadViewModel extends ViewModel {
 
   private void publish() {
     stateStore.save(lastSeen, fullHistory, selectedMessageIds);
-    state.setValue(new ConversationThreadUiState(threadId, messages, selectedMessageIds, lastSeen,
-        loading, limited, mutation, error, threadDeleted));
+    state.setValue(createState());
+  }
+
+  private ConversationThreadUiState createState() {
+    return new ConversationThreadUiState(threadId, messages, selectedMessageIds, lastSeen, loading,
+      limited, mutation, error, threadDeleted, attachmentSaveResult);
+  }
+
+  public void clearSensitiveState() {
+    mutationGeneration++;
+    if (subscription != null) subscription.close();
+    subscription = null;
+    if (activeTask != null) activeTask.cancel();
+    activeTask = null;
+    messages = List.of();
+    selectedMessageIds.clear();
+    mutation = ConversationThreadUiState.Mutation.NONE;
+    error = ConversationThreadUiState.Error.NONE;
+    threadDeleted = false;
+    attachmentSaveResult = -1;
+    loading = false;
+    publish();
   }
 
   @Override
   protected void onCleared() {
-    if (subscription != null) subscription.close();
-    if (activeTask != null) activeTask.cancel();
+    clearSensitiveState();
   }
 }

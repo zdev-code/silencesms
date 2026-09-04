@@ -18,6 +18,7 @@ dependencyResolutionManagement {
 }
 
 include(":app")
+include(":core-models")
 
 include(":org.whispersystems.jobmanager")
 project(":org.whispersystems.jobmanager").projectDir = file("third-party/jobmanager")

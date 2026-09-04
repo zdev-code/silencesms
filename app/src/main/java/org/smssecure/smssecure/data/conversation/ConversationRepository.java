@@ -11,6 +11,7 @@ public interface ConversationRepository {
   TaskHandle unarchive(Set<Long> threadIds, MutationCallback callback);
   TaskHandle delete(Set<Long> threadIds, ConversationUnlockCapability unlockCapability,
                     MutationCallback callback);
+  TaskHandle markAllRead(ConversationUnlockCapability unlockCapability, MutationCallback callback);
   TaskHandle setArchivedFromSwipe(long threadId, boolean archived, boolean updateReadState,
                                   ConversationUnlockCapability unlockCapability,
                                   MutationCallback callback);

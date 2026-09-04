@@ -5,15 +5,15 @@ import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import org.smssecure.smssecure.AuthenticationActivity;
 import org.smssecure.smssecure.ConversationListActivity;
-import org.smssecure.smssecure.DatabaseMigrationActivity;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.service.ApplicationMigrationService;
-import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 
 public class SystemSmsImportReminder extends Reminder {
 
-  public SystemSmsImportReminder(final Context context, final MasterSecret masterSecret) {
+  public SystemSmsImportReminder(final Context context) {
     super(context.getString(R.string.reminder_header_sms_import_title),
           context.getString(R.string.reminder_header_sms_import_text),
           context.getString(R.string.reminder_header_sms_import_button));
@@ -21,17 +21,12 @@ public class SystemSmsImportReminder extends Reminder {
     final OnClickListener okListener = new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(context, ApplicationMigrationService.class);
-        intent.setAction(ApplicationMigrationService.MIGRATE_DATABASE);
-        intent.putExtra("master_secret", masterSecret);
-        context.startService(intent);
+        UnlockSession unlockSession = UnlockSession.capture();
+        context.startService(ApplicationMigrationService.createMigrationIntent(context, unlockSession));
 
         Intent nextIntent = new Intent(context, ConversationListActivity.class);
-        intent.putExtra("master_secret", masterSecret);
-
-        Intent activityIntent = new Intent(context, DatabaseMigrationActivity.class);
-        activityIntent.putExtra("master_secret", masterSecret);
-        activityIntent.putExtra("next_intent", nextIntent);
+        Intent activityIntent = AuthenticationActivity.createDatabaseMigrationIntent(
+          context, nextIntent);
         context.startActivity(activityIntent);
       }
     };

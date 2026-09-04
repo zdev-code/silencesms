@@ -14,14 +14,13 @@ public class ConversationListStateStoreTest {
     SavedStateHandle handle = new SavedStateHandle();
     ConversationListStateStore store = new ConversationListStateStore(handle, true);
 
-    store.save("Alice", Set.of(4L, 9L));
+    store.save("+15551234567", Set.of(4L, 9L));
 
     assertThat(handle.keys()).containsExactlyInAnyOrder(
         ConversationListStateStore.KEY_ARCHIVED,
-        ConversationListStateStore.KEY_FILTER,
         ConversationListStateStore.KEY_SELECTED_THREAD_IDS);
     assertThat((Boolean) handle.get(ConversationListStateStore.KEY_ARCHIVED)).isTrue();
-    assertThat((String) handle.get(ConversationListStateStore.KEY_FILTER)).isEqualTo("Alice");
+    assertThat(store.getFilter()).isEmpty();
     assertThat((long[]) handle.get(ConversationListStateStore.KEY_SELECTED_THREAD_IDS))
         .containsExactlyInAnyOrder(4L, 9L);
   }

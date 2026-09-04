@@ -53,25 +53,23 @@ import android.widget.Toast;
 
 import org.smssecure.smssecure.ConversationModelAdapter.HeaderViewHolder;
 import org.smssecure.smssecure.ConversationModelAdapter.ItemClickListener;
-import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.database.MmsSmsDatabase;
 import org.smssecure.smssecure.database.model.MediaMmsMessageRecord;
 import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.mms.Slide;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
-import org.smssecure.smssecure.sms.MessageSender;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.SaveAttachmentTask;
 import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
 import org.smssecure.smssecure.util.StickyHeaderDecoration;
 import org.smssecure.smssecure.util.ViewUtil;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 import org.smssecure.smssecure.ui.conversationthread.ConversationThreadUiState;
 import org.smssecure.smssecure.ui.conversationthread.ConversationThreadViewModel;
-import org.smssecure.smssecure.ui.conversationthread.ConversationThreadViewModelFactory;
+import org.smssecure.smssecure.ui.LifecycleStateCollector;
+
+import kotlinx.coroutines.Job;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -88,7 +86,7 @@ public class ConversationFragment extends Fragment {
 
   private ConversationFragmentListener listener;
 
-  private MasterSecret                masterSecret;
+  private UnlockSession               unlockSession;
   private Recipients                  recipients;
   private long                        threadId;
   private long                        lastSeen;
@@ -101,18 +99,17 @@ public class ConversationFragment extends Fragment {
   private View                        composeDivider;
   private View                        scrollToBottomButton;
   private TextView                    scrollDateHeader;
-  private TaskHandle                  deleteTask;
-  private TaskHandle                  saveAttachmentTask;
   private AlertDialog                 deleteProgressDialog;
   private AlertDialog                 saveProgressDialog;
   private boolean                     viewDestroyed;
   private ConversationThreadViewModel viewModel;
   private ConversationMessageMapper   messageMapper;
+  private Job                         stateCollectionJob;
 
   @Override
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
-    this.masterSecret = androidx.core.os.BundleCompat.getParcelable(getArguments(), "master_secret", MasterSecret.class);
+    this.unlockSession = UnlockSession.capture();
     this.locale       = androidx.core.os.BundleCompat.getSerializable(getArguments(), PassphraseRequiredActionBarActivity.LOCALE_EXTRA, Locale.class);
   }
 
@@ -146,16 +143,14 @@ public class ConversationFragment extends Fragment {
   @Override
   public void onDestroyView() {
     viewDestroyed = true;
-    if (deleteTask != null) deleteTask.cancel();
-    if (saveAttachmentTask != null) saveAttachmentTask.cancel();
-    deleteTask = null;
-    saveAttachmentTask = null;
     dismissDialog(deleteProgressDialog);
     dismissDialog(saveProgressDialog);
     deleteProgressDialog = null;
     saveProgressDialog = null;
     if (messageMapper != null) messageMapper.clear();
     messageMapper = null;
+    if (stateCollectionJob != null) stateCollectionJob.cancel(null);
+    stateCollectionJob = null;
     if (list != null) list.setAdapter(null);
     super.onDestroyView();
   }
@@ -198,7 +193,10 @@ public class ConversationFragment extends Fragment {
   @Override
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
-    this.listener = (ConversationFragmentListener) context;
+    Fragment parent = getParentFragment();
+    this.listener = parent instanceof ConversationFragmentListener
+        ? (ConversationFragmentListener) parent
+        : (ConversationFragmentListener) context;
   }
 
   @Override
@@ -220,14 +218,34 @@ public class ConversationFragment extends Fragment {
 
   }
 
+  public void updateArguments(@NonNull long[] recipientIds, long threadId, long lastSeen) {
+    Bundle arguments = requireArguments();
+    arguments.putLongArray(ConversationScreenFragment.RECIPIENTS_ARGUMENT, recipientIds.clone());
+    arguments.putLong(ConversationScreenFragment.THREAD_ID_ARGUMENT, threadId);
+    arguments.putLong(ConversationScreenFragment.LAST_SEEN_ARGUMENT, lastSeen);
+    onNewIntent();
+  }
+
   public void reloadList() {
     if (viewModel != null) viewModel.refresh();
   }
 
+  public void clearSensitiveState() {
+    if (viewModel != null) viewModel.clearSensitiveState();
+    if (messageMapper != null) messageMapper.clear();
+    messageMapper = null;
+    if (list != null) list.setAdapter(null);
+    if (actionMode != null) actionMode.finish();
+    dismissDialog(deleteProgressDialog);
+    dismissDialog(saveProgressDialog);
+  }
+
   private void initializeResources() {
-    this.recipients     = RecipientFactory.getRecipientsForIds(getActivity(), getActivity().getIntent().getLongArrayExtra("recipients"), true);
-    this.threadId       = this.getActivity().getIntent().getLongExtra("thread_id", -1);
-    this.lastSeen       = this.getActivity().getIntent().getLongExtra(ConversationActivity.LAST_SEEN_EXTRA, -1);
+    Bundle arguments    = requireArguments();
+    this.recipients     = RecipientFactory.getRecipientsForIds(
+        requireContext(), arguments.getLongArray(ConversationScreenFragment.RECIPIENTS_ARGUMENT), true);
+    this.threadId       = arguments.getLong(ConversationScreenFragment.THREAD_ID_ARGUMENT, -1L);
+    this.lastSeen       = arguments.getLong(ConversationScreenFragment.LAST_SEEN_ARGUMENT, -1L);
     this.firstLoad      = true;
 
     OnScrollListener scrollListener = new ConversationScrollListener(getActivity());
@@ -236,20 +254,28 @@ public class ConversationFragment extends Fragment {
 
   private void initializeListAdapter() {
     if (this.recipients != null && this.threadId != -1) {
-      if (viewModel != null) viewModel.getState().removeObservers(getViewLifecycleOwner());
-      messageMapper = new ConversationMessageMapper(requireContext(), masterSecret);
-      ConversationModelAdapter adapter = new ConversationModelAdapter(
-        requireContext(), masterSecret, locale, selectionClickListener, recipients, messageMapper);
+      ConversationModelAdapter adapter;
+      try {
+        adapter = unlockSession.use(masterSecret -> {
+          messageMapper = new ConversationMessageMapper(requireContext(), masterSecret);
+          return new ConversationModelAdapter(requireContext(), masterSecret, locale,
+                                              selectionClickListener, recipients, messageMapper);
+        });
+      } catch (UnlockSession.LockedException error) {
+        list.setAdapter(null);
+        return;
+      } catch (Exception error) {
+        throw new AssertionError(error);
+      }
       list.setAdapter(adapter);
       list.addItemDecoration(new StickyHeaderDecoration(adapter, false, false));
 
       setLastSeen(lastSeen);
-      ConversationThreadViewModelFactory factory = new ConversationThreadViewModelFactory(
-        ApplicationContext.getInstance(requireContext()).getAppDependencies().conversationThreadRepository(),
-        threadId, lastSeen);
-      viewModel = new ViewModelProvider(this, factory)
+      viewModel = new ViewModelProvider(requireActivity())
         .get("conversation-thread-" + threadId, ConversationThreadViewModel.class);
-      viewModel.getState().observe(getViewLifecycleOwner(), this::renderState);
+      if (stateCollectionJob != null) stateCollectionJob.cancel(null);
+      stateCollectionJob = LifecycleStateCollector.collect(
+        getViewLifecycleOwner(), viewModel.getState(), this::renderState);
       list.getItemAnimator().setMoveDuration(120);
     }
   }
@@ -361,7 +387,7 @@ public class ConversationFragment extends Fragment {
     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
       @Override
       public void onClick(DialogInterface dialog, int which) {
-        viewModel.deleteSelected(new ConversationUnlockCapability(masterSecret));
+        viewModel.deleteSelected(new ConversationUnlockCapability(unlockSession));
       }
     });
 
@@ -370,17 +396,13 @@ public class ConversationFragment extends Fragment {
   }
 
   private void handleDisplayDetails(MessageRecord message) {
-    Intent intent = new Intent(getActivity(), MessageDetailsActivity.class);
-    intent.putExtra(MessageDetailsActivity.MASTER_SECRET_EXTRA, masterSecret);
-    intent.putExtra(MessageDetailsActivity.MESSAGE_ID_EXTRA, message.getId());
-    intent.putExtra(MessageDetailsActivity.THREAD_ID_EXTRA, threadId);
-    intent.putExtra(MessageDetailsActivity.TYPE_EXTRA, message.isMms() ? MmsSmsDatabase.MMS_TRANSPORT : MmsSmsDatabase.SMS_TRANSPORT);
-    intent.putExtra(MessageDetailsActivity.RECIPIENTS_IDS_EXTRA, recipients.getIds());
-    startActivity(intent);
+    listener.displayMessageDetails(message.getId(), threadId,
+        MessageDetailsFragment.transportOf(message.isMms()), recipients.getIds());
   }
 
   private void handleForwardMessage(MessageRecord message) {
-    Intent composeIntent = new Intent(getActivity(), ShareActivity.class);
+    Intent composeIntent = new Intent(getActivity(), ShareActivity.class)
+        .setAction(Intent.ACTION_SEND);
     composeIntent.putExtra(Intent.EXTRA_TEXT, message.getDisplayBody().toString());
     if (message.isMms()) {
       MediaMmsMessageRecord mediaMessage = (MediaMmsMessageRecord) message;
@@ -394,15 +416,7 @@ public class ConversationFragment extends Fragment {
   }
 
   private void handleResendMessage(final MessageRecord message) {
-    final Context context = getActivity().getApplicationContext();
-    final MasterSecret taskMasterSecret = masterSecret;
-    AppTaskExecutor.getInstance().submitSerial(
-        () -> {
-          MessageSender.resend(context, taskMasterSecret, message);
-          return null;
-        },
-        ignored -> {},
-        exception -> Log.w(TAG, "Unable to resend message", exception));
+    viewModel.resend(message, new ConversationUnlockCapability(unlockSession));
   }
 
   private void handleSaveAttachment(final MediaMmsMessageRecord message) {
@@ -410,29 +424,8 @@ public class ConversationFragment extends Fragment {
       public void onClick(DialogInterface dialog, int which) {
         for (Slide slide : message.getSlideDeck().getSlides()) {
           if (slide.hasImage() || slide.hasVideo() || slide.hasAudio()) {
-            final Context context = requireContext().getApplicationContext();
             final Attachment attachment = new Attachment(slide.getUri(), slide.getContentType(), message.getDateReceived());
-            saveProgressDialog = showProgressDialog(
-                getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments, 1, 1),
-                getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments_to_sd_card, 1, 1));
-            saveAttachmentTask = AppTaskExecutor.getInstance().submitSerial(
-                () -> SaveAttachmentTask.save(context, masterSecret, attachment),
-                result -> {
-                  if (!isViewActive()) return;
-                  dismissDialog(saveProgressDialog);
-                  saveProgressDialog = null;
-                  saveAttachmentTask = null;
-                  if (result != SaveAttachmentTask.SUCCESS) Log.w(TAG, "Unable to save attachment, result: " + result);
-                  SaveAttachmentTask.showResultToast(context, result, 1);
-                },
-                exception -> {
-                  Log.w(TAG, "Unable to save attachment", exception);
-                  if (!isViewActive()) return;
-                  dismissDialog(saveProgressDialog);
-                  saveProgressDialog = null;
-                  saveAttachmentTask = null;
-                  SaveAttachmentTask.showResultToast(context, SaveAttachmentTask.FAILURE, 1);
-                });
+            viewModel.saveAttachment(attachment, new ConversationUnlockCapability(unlockSession));
             return;
           }
         }
@@ -473,6 +466,30 @@ public class ConversationFragment extends Fragment {
       listener.setThreadId(threadId);
       viewModel.acknowledgeThreadDeleted();
     }
+    if (state.getMutation() == ConversationThreadUiState.Mutation.SAVE_ATTACHMENT &&
+        saveProgressDialog == null) {
+      saveProgressDialog = showProgressDialog(
+          getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments, 1, 1),
+          getResources().getQuantityString(R.plurals.ConversationFragment_saving_n_attachments_to_sd_card, 1, 1));
+    } else if (state.getMutation() != ConversationThreadUiState.Mutation.SAVE_ATTACHMENT &&
+               saveProgressDialog != null) {
+      dismissDialog(saveProgressDialog);
+      saveProgressDialog = null;
+    }
+    if (state.getAttachmentSaveResult() != -1) {
+      int result = state.getAttachmentSaveResult();
+      if (result != SaveAttachmentTask.SUCCESS) Log.w(TAG, "Unable to save attachment, result: " + result);
+      SaveAttachmentTask.showResultToast(requireContext().getApplicationContext(), result, 1);
+      viewModel.acknowledgeAttachmentSaveResult();
+    }
+    if (state.getError() == ConversationThreadUiState.Error.RESEND_FAILED) {
+      Log.w(TAG, "Unable to resend message");
+      viewModel.acknowledgeError();
+    } else if (state.getError() == ConversationThreadUiState.Error.SAVE_ATTACHMENT_FAILED) {
+      Log.w(TAG, "Unable to save attachment");
+      SaveAttachmentTask.showResultToast(requireContext().getApplicationContext(), SaveAttachmentTask.FAILURE, 1);
+      viewModel.acknowledgeError();
+    }
   }
 
   private void scrollToLastSeenPosition(final int lastSeenPosition) {
@@ -488,6 +505,10 @@ public class ConversationFragment extends Fragment {
 
   public interface ConversationFragmentListener {
     void setThreadId(long threadId);
+    void displayMessageDetails(long messageId, long threadId, int transport, long[] recipientIds);
+    void displayMediaPreview(long partRowId, long partUniqueId, long messageId, long threadId,
+                             long recipientId, long date, long size);
+    void displayExternalMedia(long partRowId, long partUniqueId, String contentType);
   }
 
   private class ConversationScrollListener extends OnScrollListener {
@@ -578,6 +599,8 @@ public class ConversationFragment extends Fragment {
         viewModel.toggleSelection(getListAdapter().getStableId(messageRecord));
 
         setCorrectMenuVisibility(actionMode.getMenu());
+      } else if (item.getMessageRecord().isFailed()) {
+        handleDisplayDetails(item.getMessageRecord());
       }
     }
 
@@ -588,6 +611,18 @@ public class ConversationFragment extends Fragment {
 
         actionMode = ((AppCompatActivity)getActivity()).startSupportActionMode(actionModeCallback);
       }
+    }
+
+    @Override
+    public void onMediaPreview(long partRowId, long partUniqueId, long messageId, long mediaThreadId,
+                               long recipientId, long date, long size) {
+      listener.displayMediaPreview(partRowId, partUniqueId, messageId, mediaThreadId,
+                                   recipientId, date, size);
+    }
+
+    @Override
+    public void onExternalMedia(long partRowId, long partUniqueId, String contentType) {
+      listener.displayExternalMedia(partRowId, partUniqueId, contentType);
     }
   }
 

@@ -1,7 +1,6 @@
 package org.smssecure.smssecure;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -97,11 +96,8 @@ public class ConversationUpdateItem extends LinearLayout
   @Override
   public void onClick(View v) {
     if (messageRecord.isIdentityUpdate()) {
-      Intent intent = new Intent(getContext(), RecipientPreferenceActivity.class);
-      intent.putExtra(RecipientPreferenceActivity.RECIPIENTS_EXTRA,
-                      new long[] {messageRecord.getIndividualRecipient().getRecipientId()});
-
-      getContext().startActivity(intent);
+      getContext().startActivity(HostNavigationCommand.createRecipientPreferencesIntent(
+          getContext(), new long[] {messageRecord.getIndividualRecipient().getRecipientId()}));
     }
   }
 

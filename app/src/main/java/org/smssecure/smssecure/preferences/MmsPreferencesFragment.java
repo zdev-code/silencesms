@@ -16,25 +16,28 @@
  */
 package org.smssecure.smssecure.preferences;
 
-import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import android.util.Log;
 
 import org.smssecure.smssecure.PassphraseRequiredActionBarActivity;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.components.CustomDefaultPreference;
-import org.smssecure.smssecure.database.ApnDatabase;
 import org.smssecure.smssecure.mms.LegacyMmsConnection;
-import org.smssecure.smssecure.util.TelephonyUtil;
 import org.smssecure.smssecure.util.SilencePreferences;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.ui.LifecycleStateCollector;
+import org.smssecure.smssecure.ui.mmspreferences.MmsPreferencesUiState;
+import org.smssecure.smssecure.ui.mmspreferences.MmsPreferencesViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MmsPreferencesFragment extends CorrectedPreferenceFragment {
 
   private static final String TAG = MmsPreferencesFragment.class.getSimpleName();
 
-  private AppTaskExecutor.TaskHandle loadApnDefaultsTask;
+  private MmsPreferencesViewModel viewModel;
 
   @Override
   public void onCreate(Bundle paramBundle) {
@@ -44,6 +47,8 @@ public class MmsPreferencesFragment extends CorrectedPreferenceFragment {
         .setTitle(R.string.preferences__advanced_mms_access_point_names);
 
     SilencePreferences.setManualMmsSettingsAsSeen(getActivity());
+    viewModel = new ViewModelProvider(this).get(MmsPreferencesViewModel.class);
+    LifecycleStateCollector.collect(this, viewModel.getState(), this::render);
   }
 
   @Override
@@ -54,29 +59,12 @@ public class MmsPreferencesFragment extends CorrectedPreferenceFragment {
   @Override
   public void onResume() {
     super.onResume();
-    loadApnDefaults();
+    viewModel.load();
   }
 
-  @Override
-  public void onDestroyView() {
-    if (loadApnDefaultsTask != null) loadApnDefaultsTask.cancel();
-    loadApnDefaultsTask = null;
-    super.onDestroyView();
-  }
-
-  private void loadApnDefaults() {
-    Context context = getContext();
-    if (context == null) return;
-
-    if (loadApnDefaultsTask != null) loadApnDefaultsTask.cancel();
-    Context appContext = context.getApplicationContext();
-
-    loadApnDefaultsTask = AppTaskExecutor.getInstance().submitSerial(
-        () -> ApnDatabase.getInstance(appContext)
-                        .getDefaultApnParameters(TelephonyUtil.getMccMnc(appContext),
-                                                 TelephonyUtil.getApn(appContext)),
-        this::applyApnDefaults,
-        exception -> Log.w(TAG, "Unable to load default APN settings", exception));
+  private void render(MmsPreferencesUiState state) {
+    if (state.isFailed()) Log.w(TAG, "Unable to load default APN settings");
+    applyApnDefaults(state.getDefaults());
   }
 
   private void applyApnDefaults(LegacyMmsConnection.Apn apnDefaults) {

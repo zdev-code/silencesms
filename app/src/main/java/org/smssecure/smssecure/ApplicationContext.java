@@ -23,6 +23,8 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
+import androidx.hilt.work.HiltWorkerFactory;
+import androidx.work.Configuration;
 
 import org.smssecure.smssecure.backup.SecureBackupArchive;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
@@ -31,9 +33,8 @@ import org.smssecure.smssecure.jobs.persistence.EncryptingJobSerializer;
 import org.smssecure.smssecure.jobs.requirements.MasterSecretRequirementProvider;
 import org.smssecure.smssecure.jobs.requirements.MediaNetworkRequirementProvider;
 import org.smssecure.smssecure.jobs.requirements.ServiceRequirementProvider;
-import org.smssecure.smssecure.injection.AppDependencies;
-import org.smssecure.smssecure.injection.DefaultAppDependencies;
 import org.smssecure.smssecure.notifications.NotificationChannels;
+import org.smssecure.smssecure.providers.PersistentBlobProvider;
 import org.smssecure.smssecure.util.SilencePreferences;
 import org.smssecure.smssecure.util.dualsim.SimChangedReceiver;
 import org.whispersystems.jobqueue.JobManager;
@@ -46,6 +47,10 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Security;
 
+import dagger.hilt.android.HiltAndroidApp;
+
+import javax.inject.Inject;
+
 
 /**
  * Will be called once when the Silence process is created.
@@ -55,11 +60,12 @@ import java.security.Security;
  *
  * @author Moxie Marlinspike
  */
-public class ApplicationContext extends Application implements DependencyInjector {
+@HiltAndroidApp
+public class ApplicationContext extends Application implements DependencyInjector, Configuration.Provider {
   private static final String TAG = ApplicationContext.class.getSimpleName();
 
   private JobManager jobManager;
-  private AppDependencies appDependencies;
+  @Inject HiltWorkerFactory workerFactory;
 
   private MediaNetworkRequirementProvider mediaNetworkRequirementProvider = new MediaNetworkRequirementProvider();
 
@@ -70,11 +76,11 @@ public class ApplicationContext extends Application implements DependencyInjecto
   @Override
   public void onCreate() {
     super.onCreate();
+    PersistentBlobProvider.getInstance(this).deleteAll();
     recoverInterruptedRestore();
     initializeRandomNumberFix();
     initializeLogging();
     initializeJobManager();
-    appDependencies = new DefaultAppDependencies(this);
     checkSimState();
     NotificationChannels.create(this);
   }
@@ -88,9 +94,9 @@ public class ApplicationContext extends Application implements DependencyInjecto
     return jobManager;
   }
 
-  public AppDependencies getAppDependencies() {
-    if (appDependencies == null) throw new IllegalStateException("Application dependencies are not initialized");
-    return appDependencies;
+  @Override
+  public Configuration getWorkManagerConfiguration() {
+    return new Configuration.Builder().setWorkerFactory(workerFactory).build();
   }
 
   private void recoverInterruptedRestore() {

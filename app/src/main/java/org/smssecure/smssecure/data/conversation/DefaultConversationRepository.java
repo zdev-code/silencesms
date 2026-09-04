@@ -31,6 +31,7 @@ public final class DefaultConversationRepository implements ConversationReposito
     void archive(long threadId);
     void unarchive(long threadId);
     void delete(Set<Long> threadIds);
+    void markAllRead();
     void setRead(long threadId);
     void setUnread(long threadId);
   }
@@ -114,6 +115,21 @@ public final class DefaultConversationRepository implements ConversationReposito
             notificationUpdater.update(secret);
             return null;
           }),
+        ignored -> callback.onSuccess(),
+        callback::onFailure);
+  }
+
+  @Override
+  public TaskHandle markAllRead(ConversationUnlockCapability unlockCapability,
+                                MutationCallback callback) {
+    Objects.requireNonNull(unlockCapability);
+    Objects.requireNonNull(callback);
+    return executor.submitSerial(
+        () -> unlockCapability.use(secret -> {
+          dataSource.markAllRead();
+          notificationUpdater.update(secret);
+          return null;
+        }),
         ignored -> callback.onSuccess(),
         callback::onFailure);
   }
@@ -269,6 +285,7 @@ public final class DefaultConversationRepository implements ConversationReposito
       threadDatabase.deleteConversations(threadIds);
     }
 
+    @Override public void markAllRead() { threadDatabase.setAllThreadsRead(); }
     @Override public void setRead(long threadId) { threadDatabase.setRead(threadId); }
     @Override public void setUnread(long threadId) { threadDatabase.setUnread(threadId); }
   }

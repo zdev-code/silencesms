@@ -21,7 +21,6 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceScreen;
 import android.text.TextUtils;
 
-import org.smssecure.smssecure.ApplicationPreferencesActivity;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.components.OutgoingSmsPreference;
 import org.smssecure.smssecure.util.SilencePreferences;
@@ -62,7 +61,6 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
   @Override
   public void onResume() {
     super.onResume();
-    ((ApplicationPreferencesActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences__sms_mms);
 
     initializePlatformSpecificOptions();
   }

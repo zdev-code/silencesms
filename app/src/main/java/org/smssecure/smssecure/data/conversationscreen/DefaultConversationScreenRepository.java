@@ -9,9 +9,15 @@ import org.smssecure.smssecure.database.DraftDatabase.Drafts;
 import org.smssecure.smssecure.database.RecipientPreferenceDatabase;
 import org.smssecure.smssecure.database.ThreadDatabase;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.mms.OutgoingMediaMessage;
+import org.smssecure.smssecure.mms.OutgoingSecureMediaMessage;
 import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
+import org.smssecure.smssecure.sms.MessageSender;
+import org.smssecure.smssecure.sms.OutgoingEncryptedMessage;
+import org.smssecure.smssecure.sms.OutgoingTextMessage;
+import org.smssecure.smssecure.util.Util;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 
@@ -24,6 +30,7 @@ public final class DefaultConversationScreenRepository implements ConversationSc
     Recipients recipients(long[] recipientIds);
     void setMuted(Recipients recipients, long until);
     void setBlocked(Recipients recipients, boolean blocked);
+    long findExistingThread(Recipients recipients);
     long getOrCreateThread(Recipients recipients, int distributionType);
     void setDistributionType(long threadId, int distributionType);
     void deleteThread(long threadId);
@@ -36,6 +43,9 @@ public final class DefaultConversationScreenRepository implements ConversationSc
     void markLastSeen(long threadId);
     void setDefaultSubscription(Recipients recipients, int subscriptionId);
     void updateNotification(org.smssecure.smssecure.crypto.MasterSecret masterSecret);
+    boolean isMmsCapable();
+    long sendText(org.smssecure.smssecure.crypto.MasterSecret masterSecret, TextSendRequest request);
+    long sendMedia(org.smssecure.smssecure.crypto.MasterSecret masterSecret, MediaSendRequest request);
   }
 
   private final AppTaskExecutor executor;
@@ -60,6 +70,11 @@ public final class DefaultConversationScreenRepository implements ConversationSc
   @Override public TaskHandle setBlocked(long[] ids, boolean blocked, Callback<Void> callback) {
     long[] copy = copyIds(ids);
     return submit(() -> { dataSource.setBlocked(dataSource.recipients(copy), blocked); return null; }, callback);
+  }
+
+  @Override public TaskHandle findExistingThread(long[] ids, Callback<Long> callback) {
+    long[] copy = copyIds(ids);
+    return submit(() -> dataSource.findExistingThread(dataSource.recipients(copy)), callback);
   }
 
   @Override public TaskHandle getOrCreateThread(long[] ids, int distributionType, Callback<Long> callback) {
@@ -134,9 +149,34 @@ public final class DefaultConversationScreenRepository implements ConversationSc
     }, callback);
   }
 
+  @Override public TaskHandle loadMmsCapability(Callback<Boolean> callback) {
+    return submit(dataSource::isMmsCapable, callback);
+  }
+
+  @Override
+  public TaskHandle sendText(TextSendRequest request, ConversationUnlockCapability capability,
+                             Callback<Long> callback) {
+    Objects.requireNonNull(request);
+    Objects.requireNonNull(capability);
+    return submitParallel(() -> capability.use(secret -> dataSource.sendText(secret, request)), callback);
+  }
+
+  @Override
+  public TaskHandle sendMedia(MediaSendRequest request, ConversationUnlockCapability capability,
+                              Callback<Long> callback) {
+    Objects.requireNonNull(request);
+    Objects.requireNonNull(capability);
+    return submitParallel(() -> capability.use(secret -> dataSource.sendMedia(secret, request)), callback);
+  }
+
   private <T> TaskHandle submit(java.util.concurrent.Callable<T> work, Callback<T> callback) {
     Objects.requireNonNull(callback);
     return executor.submitSerial(work, callback::onSuccess, callback::onFailure);
+  }
+
+  private <T> TaskHandle submitParallel(java.util.concurrent.Callable<T> work, Callback<T> callback) {
+    Objects.requireNonNull(callback);
+    return executor.submitParallel(work, callback::onSuccess, callback::onFailure);
   }
 
   private TaskHandle completed(Callback<Void> callback) {
@@ -179,6 +219,10 @@ public final class DefaultConversationScreenRepository implements ConversationSc
     @Override public void setBlocked(Recipients recipients, boolean blocked) {
       preferenceDatabase.setBlocked(recipients, blocked);
     }
+    @Override public long findExistingThread(Recipients recipients) {
+      return threadDatabase.getThreadIdIfExistsFor(recipients);
+    }
+
     @Override public long getOrCreateThread(Recipients recipients, int type) {
       return threadDatabase.getThreadIdFor(recipients, type);
     }
@@ -219,6 +263,24 @@ public final class DefaultConversationScreenRepository implements ConversationSc
     }
     @Override public void updateNotification(org.smssecure.smssecure.crypto.MasterSecret secret) {
       MessageNotifier.updateNotification(context, secret);
+    }
+    @Override public boolean isMmsCapable() { return Util.isMmsCapable(context); }
+    @Override public long sendText(org.smssecure.smssecure.crypto.MasterSecret secret,
+                                   TextSendRequest request) {
+      Recipients recipients = recipients(request.getRecipientIds());
+      OutgoingTextMessage message = request.isSecure()
+          ? new OutgoingEncryptedMessage(recipients, request.getBody(), request.getSubscriptionId())
+          : new OutgoingTextMessage(recipients, request.getBody(), request.getSubscriptionId());
+      return MessageSender.send(context, secret, message, request.getThreadId(), true);
+    }
+    @Override public long sendMedia(org.smssecure.smssecure.crypto.MasterSecret secret,
+                                    MediaSendRequest request) {
+      Recipients recipients = recipients(request.getRecipientIds());
+      OutgoingMediaMessage message = new OutgoingMediaMessage(
+          recipients, request.getSlideDeck(), request.getBody(), request.getSentTimeMillis(),
+          request.getSubscriptionId(), request.getDistributionType());
+      if (request.isSecure()) message = new OutgoingSecureMediaMessage(message);
+      return MessageSender.send(context, secret, message, request.getThreadId(), true);
     }
   }
 }

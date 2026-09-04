@@ -17,265 +17,83 @@
 
 package org.smssecure.smssecure;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import androidx.activity.ComponentActivity;
 
-import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.mms.PartAuthority;
-import org.smssecure.smssecure.providers.PersistentBlobProvider;
-import org.smssecure.smssecure.recipients.RecipientFactory;
-import org.smssecure.smssecure.recipients.Recipients;
-import org.smssecure.smssecure.util.DynamicLanguage;
-import org.smssecure.smssecure.util.DynamicTheme;
-import org.smssecure.smssecure.util.MediaUtil;
-import org.smssecure.smssecure.util.ShareShortcutHelper;
-import org.smssecure.smssecure.util.ViewUtil;
-import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
+import org.smssecure.smssecure.domain.conversation.ConversationPayloadStore;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import dagger.hilt.android.AndroidEntryPoint;
+import javax.inject.Inject;
 
 /**
  * An activity to quickly share content with contacts
  *
  * @author Jake McGinty
  */
-public class ShareActivity extends PassphraseRequiredActionBarActivity
-    implements ShareFragment.ConversationSelectedListener
-{
-  private static final String TAG = ShareActivity.class.getSimpleName();
-
+@AndroidEntryPoint
+public class ShareActivity extends ComponentActivity {
   public static final String EXTRA_THREAD_ID         = "thread_id";
   public static final String EXTRA_RECIPIENT_IDS     = "recipient_ids";
   public static final String EXTRA_DISTRIBUTION_TYPE = "distribution_type";
 
-  private final DynamicTheme    dynamicTheme    = new DynamicTheme   ();
-  private final DynamicLanguage dynamicLanguage = new DynamicLanguage();
-
-  private MasterSecret masterSecret;
-  private ViewGroup    fragmentContainer;
-  private View         progressWheel;
-  private Uri          resolvedExtra;
-  private String       mimeType;
-  private boolean      isPassingAlongMedia;
-  private final AtomicBoolean activityActive = new AtomicBoolean(true);
-  private final AtomicInteger mediaGeneration = new AtomicInteger();
-  private AppTaskExecutor.TaskHandle resolveMediaTask;
+  private final ExternalRouterDispatchGuard dispatchGuard = new ExternalRouterDispatchGuard();
+  @Inject ConversationPayloadStore conversationPayloadStore;
 
   @Override
-  protected void onPreCreate() {
-    dynamicTheme.onCreate(this);
-    dynamicLanguage.onCreate(this);
-  }
-
-  @Override
-  protected void onCreate(Bundle icicle, @NonNull MasterSecret masterSecret) {
-    this.masterSecret = masterSecret;
-    setContentView(R.layout.share_activity);
-
-    fragmentContainer = ViewUtil.findById(this, R.id.drawer_layout);
-    progressWheel     = ViewUtil.findById(this, R.id.progress_wheel);
-
-    initFragment(R.id.drawer_layout, new ShareFragment(), masterSecret);
-    initializeMedia();
-    ShareShortcutHelper.publishShareShortcuts(this, masterSecret);
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    routeOnce(getIntent(), savedInstanceState != null);
   }
 
   @Override
   protected void onNewIntent(Intent intent) {
     super.onNewIntent(intent);
-    setIntent(intent);
-    initializeMedia();
+    routeOnce(intent, false);
   }
 
-  @Override
-  protected void onDestroy() {
-    activityActive.set(false);
-    mediaGeneration.incrementAndGet();
-    if (resolveMediaTask != null) resolveMediaTask.cancel();
-    resolveMediaTask = null;
-    super.onDestroy();
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    dynamicTheme.onResume(this);
-    dynamicLanguage.onResume(this);
-    getSupportActionBar().setTitle(R.string.ShareActivity_share_with);
-  }
-
-  @Override
-  public void onPause() {
-    super.onPause();
-    if (!isPassingAlongMedia && resolvedExtra != null) {
-      PersistentBlobProvider.getInstance(this).delete(resolvedExtra);
-    }
-    if (!isFinishing()) {
+  private void routeOnce(Intent source, boolean restored) {
+    if (!dispatchGuard.claim(restored)) {
+      clearSourceIntent(source);
       finish();
-    }
-  }
-
-  private void initializeMedia() {
-    if (resolveMediaTask != null) resolveMediaTask.cancel();
-
-    int generation = mediaGeneration.incrementAndGet();
-    Context appContext = getApplicationContext();
-    Intent shareIntent = getIntent();
-    isPassingAlongMedia = false;
-
-    Uri streamExtra = androidx.core.content.IntentCompat.getParcelableExtra(shareIntent, Intent.EXTRA_STREAM, Uri.class);
-    mimeType        = getMimeType(streamExtra);
-
-    if (streamExtra != null && PartAuthority.isLocalUri(streamExtra)) {
-      isPassingAlongMedia = true;
-      resolvedExtra       = streamExtra;
-      handleResolvedMedia(getIntent(), false);
-    } else {
-      fragmentContainer.setVisibility(View.GONE);
-      progressWheel.setVisibility(View.VISIBLE);
-      MasterSecret currentMasterSecret = masterSecret;
-      String currentMimeType = mimeType;
-
-      resolveMediaTask = AppTaskExecutor.getInstance().submitSerial(
-          () -> resolveMedia(appContext, currentMasterSecret, streamExtra, currentMimeType,
-                             mediaGeneration, generation, activityActive),
-          uri -> handleResolvedMediaResult(uri, shareIntent, generation),
-          exception -> Log.w(TAG, "Unable to resolve shared media", exception));
-    }
-  }
-
-  @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    MenuInflater inflater = this.getMenuInflater();
-    menu.clear();
-
-    inflater.inflate(R.menu.share, menu);
-    super.onPrepareOptionsMenu(menu);
-    return true;
-  }
-
-  @Override
-  @SuppressLint("NonConstantResourceId")
-  public boolean onOptionsItemSelected(MenuItem item) {
-    super.onOptionsItemSelected(item);
-    int itemId = item.getItemId();
-    if      (itemId == R.id.menu_new_message) { handleNewConversation(); return true; }
-    else if (itemId == android.R.id.home)     { finish();                return true; }
-    return false;
-  }
-
-  private void handleNewConversation() {
-    Intent intent = getBaseShareIntent(NewConversationActivity.class);
-    isPassingAlongMedia = true;
-    startActivity(intent);
-  }
-
-  @Override
-  public void onCreateConversation(long threadId, Recipients recipients, int distributionType) {
-    createConversation(threadId, recipients, distributionType);
-  }
-
-  private void handleResolvedMedia(Intent intent, boolean animate) {
-    long   threadId         = intent.getLongExtra(EXTRA_THREAD_ID, -1);
-    long[] recipientIds     = intent.getLongArrayExtra(EXTRA_RECIPIENT_IDS);
-    int    distributionType = intent.getIntExtra(EXTRA_DISTRIBUTION_TYPE, -1);
-
-    boolean hasResolvedDestination = threadId != -1 && recipientIds != null && distributionType != -1;
-
-    if (!hasResolvedDestination && animate) {
-      ViewUtil.fadeIn(fragmentContainer, 300);
-      ViewUtil.fadeOut(progressWheel, 300);
-    } else if (!hasResolvedDestination) {
-      fragmentContainer.setVisibility(View.VISIBLE);
-      progressWheel.setVisibility(View.GONE);
-    } else {
-      createConversation(threadId, RecipientFactory.getRecipientsForIds(this, recipientIds, true), distributionType);
-    }
-  }
-
-  private void createConversation(long threadId, Recipients recipients, int distributionType) {
-    final Intent intent = getBaseShareIntent(ConversationActivity.class);
-    intent.putExtra(ConversationActivity.RECIPIENTS_EXTRA, recipients.getIds());
-    intent.putExtra(ConversationActivity.THREAD_ID_EXTRA, threadId);
-    intent.putExtra(ConversationActivity.DISTRIBUTION_TYPE_EXTRA, distributionType);
-
-    isPassingAlongMedia = true;
-    startActivity(intent);
-  }
-
-  private Intent getBaseShareIntent(final @NonNull Class<?> target) {
-    final Intent intent      = new Intent(this, target);
-    final String textExtra   = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-    intent.putExtra(ConversationActivity.TEXT_EXTRA, textExtra);
-    if (resolvedExtra != null) intent.setDataAndType(resolvedExtra, mimeType);
-
-    return intent;
-  }
-
-  private String getMimeType(@Nullable Uri uri) {
-    if (uri != null) {
-      final String mimeType = MediaUtil.getMimeType(getApplicationContext(), uri);
-      if (mimeType != null) return mimeType;
-    }
-    return MediaUtil.getCorrectedMimeType(getIntent().getType());
-  }
-
-  private static Uri resolveMedia(Context context,
-                                  MasterSecret masterSecret,
-                                  Uri source,
-                                  String mimeType,
-                                  AtomicInteger mediaGeneration,
-                                  int generation,
-                                  AtomicBoolean activityActive)
-      throws IOException
-  {
-    if (source == null || !isCurrentResolution(mediaGeneration, generation, activityActive)) {
-      return null;
-    }
-
-    Uri resolved;
-    try (InputStream input = context.getContentResolver().openInputStream(source)) {
-      if (input == null) return null;
-      resolved = PersistentBlobProvider.getInstance(context).create(masterSecret, input, mimeType);
-    }
-
-    if (!isCurrentResolution(mediaGeneration, generation, activityActive)) {
-      if (resolved != null) PersistentBlobProvider.getInstance(context).delete(resolved);
-      return null;
-    }
-
-    return resolved;
-  }
-
-  private static boolean isCurrentResolution(AtomicInteger mediaGeneration,
-                                             int generation,
-                                             AtomicBoolean activityActive)
-  {
-    return activityActive.get() && mediaGeneration.get() == generation &&
-           !Thread.currentThread().isInterrupted();
-  }
-
-  private void handleResolvedMediaResult(Uri uri, Intent shareIntent, int generation) {
-    if (mediaGeneration.get() != generation || isFinishing() || isDestroyed()) {
-      if (uri != null) PersistentBlobProvider.getInstance(getApplicationContext()).delete(uri);
       return;
     }
+    String token = null;
+    Uri grantedMedia = null;
+    try {
+      ExternalConversationIntentParser.ShareInput input =
+          ExternalConversationIntentParser.parseShare(source);
+      Uri media = input.getPayload().getMedia();
+      Runnable cleanup = () -> {};
+      if (input.hasExternalMedia()) {
+        grantUriPermission(getPackageName(), media, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        grantedMedia = media;
+        cleanup = () -> revokeUriPermission(media, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      }
+      token = conversationPayloadStore.put(
+          NewConversationFragment.PAYLOAD_OWNER, input.getPayload(), cleanup);
+      Intent nextIntent = HostNavigationCommand.createNewConversationIntent(this, token);
+      clearSourceIntent(source);
+      startActivity(nextIntent);
+    } catch (ExternalConversationIntentParser.InvalidIntentException | RuntimeException error) {
+      if (token != null) conversationPayloadStore.discard(token);
+      else if (grantedMedia != null) {
+        revokeUriPermission(grantedMedia, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      }
+      clearSourceIntent(source);
+    }
+    finish();
+  }
 
-    resolvedExtra = uri;
-    handleResolvedMedia(shareIntent, true);
+  private void clearSourceIntent(Intent source) {
+    if (source != null) source.replaceExtras((Bundle) null);
+    if (source != null) {
+      source.setData(null);
+      source.setClipData(null);
+      source.setAction(null);
+      source.setType(null);
+    }
+    setIntent(new Intent());
   }
 }

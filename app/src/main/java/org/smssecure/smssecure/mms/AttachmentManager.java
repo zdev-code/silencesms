@@ -33,7 +33,7 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 
-import org.smssecure.smssecure.MediaPreviewActivity;
+import org.smssecure.smssecure.MediaPreviewFragment;
 import org.smssecure.smssecure.R;
 import org.smssecure.smssecure.components.AudioView;
 import org.smssecure.smssecure.components.RemovableMediaView;
@@ -329,13 +329,9 @@ public class AttachmentManager {
   }
 
   private void previewImageDraft(final @NonNull Slide slide) {
-    if (MediaPreviewActivity.isContentTypeSupported(slide.getContentType()) && slide.getThumbnailUri() != null) {
-      Intent intent = new Intent(context, MediaPreviewActivity.class);
-      intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      intent.putExtra(MediaPreviewActivity.SIZE_EXTRA, slide.asAttachment().getSize());
-        intent.setDataAndType(slide.getUri(), slide.getContentType());
-
-      context.startActivity(intent);
+    if (MediaPreviewFragment.isContentTypeSupported(slide.getContentType()) && slide.getThumbnailUri() != null) {
+      attachmentListener.onMediaPreviewRequested(
+          slide.getUri(), slide.getContentType(), slide.asAttachment().getSize());
     }
   }
 
@@ -356,6 +352,7 @@ public class AttachmentManager {
 
   public interface AttachmentListener {
     void onAttachmentChanged();
+    void onMediaPreviewRequested(@NonNull Uri uri, @NonNull String contentType, long size);
   }
 
   public enum MediaType {

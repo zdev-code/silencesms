@@ -1,6 +1,8 @@
 package org.smssecure.smssecure.data.conversationthread;
 
+import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.domain.conversation.ConversationUnlockCapability;
+import org.smssecure.smssecure.util.SaveAttachmentTask.Attachment;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
 
 import java.util.Set;
@@ -9,6 +11,10 @@ public interface ConversationThreadRepository {
   Subscription observe(ConversationThreadQuery query, Observer observer);
   TaskHandle delete(Set<MessageReference> messages, ConversationUnlockCapability unlockCapability,
                     MutationCallback callback);
+  TaskHandle resend(MessageRecord message, ConversationUnlockCapability unlockCapability,
+                    OperationCallback callback);
+  TaskHandle saveAttachment(Attachment attachment, ConversationUnlockCapability unlockCapability,
+                            AttachmentCallback callback);
 
   interface Subscription extends AutoCloseable {
     void refresh();
@@ -22,6 +28,16 @@ public interface ConversationThreadRepository {
 
   interface MutationCallback {
     void onSuccess(boolean threadDeleted);
+    void onFailure(Exception exception);
+  }
+
+  interface OperationCallback {
+    void onSuccess();
+    void onFailure(Exception exception);
+  }
+
+  interface AttachmentCallback {
+    void onSuccess(int result);
     void onFailure(Exception exception);
   }
 

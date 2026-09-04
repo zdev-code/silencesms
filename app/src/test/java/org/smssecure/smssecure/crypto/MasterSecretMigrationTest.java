@@ -4,8 +4,10 @@ import org.junit.Test;
 
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -85,6 +87,30 @@ public class MasterSecretMigrationTest {
           (secret, passphrase) -> Arrays.copyOf(serialized, serialized.length),
           (wrapper, passphrase) -> { throw new InvalidPassphraseException("tampered"); });
     } finally {
+      assertFalse(storage.activated);
+    }
+  }
+
+  @Test(expected = GeneralSecurityException.class)
+  public void generationChangeBetweenStagingAndActivationLeavesPreviousStateAuthoritative()
+      throws Exception
+  {
+    RecordingStorage storage = new RecordingStorage();
+    AtomicInteger checks = new AtomicInteger();
+
+    try {
+      MasterSecretMigration.migrate(masterSecret, "passphrase", legacyWrapper, storage,
+          (secret, passphrase) -> Arrays.copyOf(serialized, serialized.length),
+          (wrapper, passphrase) -> Arrays.copyOf(masterSecret, masterSecret.length),
+          () -> {
+            if (checks.incrementAndGet() > 1) {
+              throw new GeneralSecurityException("Unlock generation changed");
+            }
+          });
+    } finally {
+      assertEquals(2, checks.get());
+      assertTrue(storage.candidateWritten);
+      assertTrue(storage.candidateRead);
       assertFalse(storage.activated);
     }
   }

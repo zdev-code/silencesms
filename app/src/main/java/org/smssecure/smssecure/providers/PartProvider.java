@@ -29,12 +29,10 @@ import android.util.Log;
 import org.smssecure.smssecure.attachments.AttachmentId;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.database.DatabaseFactory;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.mms.PartUriParser;
-import org.smssecure.smssecure.service.KeyCachingService;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -63,54 +61,44 @@ public class PartProvider extends ContentProvider {
     return ContentUris.withAppendedId(uri, attachmentId.getRowId());
   }
 
-  @SuppressWarnings("ConstantConditions")
-  private File copyPartToTemporaryFile(MasterSecret masterSecret, AttachmentId attachmentId) throws IOException {
-    InputStream in        = DatabaseFactory.getAttachmentDatabase(getContext()).getAttachmentStream(masterSecret, attachmentId);
-    File tmpDir           = getContext().getDir("tmp", 0);
-    File tmpFile          = File.createTempFile("test", ".jpg", tmpDir);
-    FileOutputStream fout = new FileOutputStream(tmpFile);
-
-    byte[] buffer         = new byte[512];
-    int read;
-
-    while ((read = in.read(buffer)) != -1)
-      fout.write(buffer, 0, read);
-
-    in.close();
-
-    return tmpFile;
-  }
-
   @Override
   public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode) throws FileNotFoundException {
-    MasterSecret masterSecret = KeyCachingService.getMasterSecret(getContext());
-    Log.w(TAG, "openFile() called!");
-
-    if (masterSecret == null) {
-      Log.w(TAG, "masterSecret was null, abandoning.");
-      return null;
-    }
+    if (!"r".equals(mode)) throw new FileNotFoundException("Part provider is read-only");
 
     switch (uriMatcher.match(uri)) {
     case SINGLE_ROW:
-      Log.w(TAG, "Parting out a single row...");
       try {
-        PartUriParser        partUri = new PartUriParser(uri);
-        File                 tmpFile = copyPartToTemporaryFile(masterSecret, partUri.getPartId());
-        ParcelFileDescriptor pdf     = ParcelFileDescriptor.open(tmpFile, ParcelFileDescriptor.MODE_READ_ONLY);
-
-        if (!tmpFile.delete()) {
-          Log.w(TAG, "Failed to delete temp file.");
-        }
-
-        return pdf;
-      } catch (IOException ioe) {
-        Log.w(TAG, ioe);
-        throw new FileNotFoundException("Error opening file");
+        AttachmentId attachmentId = new PartUriParser(uri).getPartId();
+        UnlockSession session = UnlockSession.capture();
+        session.use(ignored -> null);
+        return openPipeHelper(uri, null, null, attachmentId,
+            (output, ignoredUri, ignoredType, ignoredOptions, id) ->
+                streamAttachment(session, id, output));
+      } catch (Exception error) {
+        Log.w(TAG, "Unable to open attachment for the current unlock generation", error);
+        throw new FileNotFoundException("Attachment is unavailable");
       }
     }
 
     throw new FileNotFoundException("Request for bad part.");
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  private void streamAttachment(UnlockSession session, AttachmentId attachmentId,
+                                ParcelFileDescriptor outputDescriptor) {
+    try (ParcelFileDescriptor.AutoCloseOutputStream output =
+             new ParcelFileDescriptor.AutoCloseOutputStream(outputDescriptor);
+         InputStream input = session.use(secret -> DatabaseFactory.getAttachmentDatabase(getContext())
+             .getAttachmentStream(secret, attachmentId))) {
+      byte[] buffer = new byte[8192];
+      while (session.use(secret -> {
+        int read = input.read(buffer);
+        if (read > 0) output.write(buffer, 0, read);
+        return read;
+      }) != -1) {}
+    } catch (Exception error) {
+      Log.w(TAG, "Attachment stream closed", error);
+    }
   }
 
   @Override

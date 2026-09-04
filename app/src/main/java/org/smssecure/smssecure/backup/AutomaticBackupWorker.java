@@ -7,6 +7,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.hilt.work.HiltWorker;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -25,6 +26,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
+import dagger.assisted.Assisted;
+import dagger.assisted.AssistedInject;
+
+@HiltWorker
 public final class AutomaticBackupWorker extends Worker {
   private static final int RETAINED_BACKUPS = 5;
   private static final int FAILURE_NOTIFICATION_ID = 9051;
@@ -32,8 +37,9 @@ public final class AutomaticBackupWorker extends Worker {
   private static final String BACKUP_SUFFIX = ".silencebackup";
   private static final String PARTIAL_SUFFIX = BACKUP_SUFFIX + ".partial";
 
-  public AutomaticBackupWorker(@NonNull Context context,
-                               @NonNull WorkerParameters parameters) {
+  @AssistedInject
+  public AutomaticBackupWorker(@Assisted @NonNull Context context,
+                               @Assisted @NonNull WorkerParameters parameters) {
     super(context, parameters);
   }
 

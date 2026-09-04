@@ -37,6 +37,11 @@ final class Argon2MasterSecretEnvelope {
                   int iterations, int parallelism) throws GeneralSecurityException;
   }
 
+  interface CharacterKeyDeriver {
+    byte[] derive(char[] passphrase, byte[] salt, int memoryKiB,
+                  int iterations, int parallelism) throws GeneralSecurityException;
+  }
+
   private Argon2MasterSecretEnvelope() {}
 
   static byte[] encrypt(byte[] masterSecret, String passphrase) throws GeneralSecurityException {
@@ -50,6 +55,24 @@ final class Argon2MasterSecretEnvelope {
   }
 
   static byte[] decrypt(byte[] serialized, String passphrase)
+      throws GeneralSecurityException, InvalidPassphraseException
+  {
+    return decrypt(serialized, passphrase, Argon2id::derive);
+  }
+
+  static byte[] encrypt(byte[] masterSecret, char[] passphrase)
+      throws GeneralSecurityException
+  {
+    byte[] salt = new byte[Argon2id.SALT_LENGTH];
+    byte[] nonce = new byte[NONCE_LENGTH];
+    SecureRandom random = new SecureRandom();
+    random.nextBytes(salt);
+    random.nextBytes(nonce);
+    return encrypt(masterSecret, passphrase, DEFAULT_MEMORY_KIB, DEFAULT_ITERATIONS,
+                   DEFAULT_PARALLELISM, salt, nonce, Argon2id::derive);
+  }
+
+  static byte[] decrypt(byte[] serialized, char[] passphrase)
       throws GeneralSecurityException, InvalidPassphraseException
   {
     return decrypt(serialized, passphrase, Argon2id::derive);
@@ -87,6 +110,66 @@ final class Argon2MasterSecretEnvelope {
   }
 
   static byte[] decrypt(byte[] serialized, String passphrase, KeyDeriver keyDeriver)
+      throws GeneralSecurityException, InvalidPassphraseException
+  {
+    Parsed parsed = parse(serialized);
+    byte[] key = keyDeriver.derive(passphrase, parsed.salt, parsed.memoryKiB,
+                                   parsed.iterations, parsed.parallelism);
+    try {
+      if (key == null || key.length != Argon2id.OUTPUT_LENGTH) {
+        throw new GeneralSecurityException("Invalid Argon2id key length");
+      }
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+      cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"),
+                  new GCMParameterSpec(TAG_LENGTH_BITS, parsed.nonce));
+      cipher.updateAAD(parsed.header);
+      byte[] masterSecret = cipher.doFinal(parsed.ciphertext);
+      if (masterSecret.length != MASTER_SECRET_LENGTH) {
+        Arrays.fill(masterSecret, (byte) 0);
+        throw new GeneralSecurityException("Invalid decrypted master secret length");
+      }
+      return masterSecret;
+    } catch (AEADBadTagException error) {
+      throw new InvalidPassphraseException(error);
+    } finally {
+      if (key != null) Arrays.fill(key, (byte) 0);
+    }
+  }
+
+  static byte[] encrypt(byte[] masterSecret, char[] passphrase, int memoryKiB, int iterations,
+                        int parallelism, byte[] salt, byte[] nonce,
+                        CharacterKeyDeriver keyDeriver)
+      throws GeneralSecurityException
+  {
+    if (masterSecret == null || masterSecret.length != MASTER_SECRET_LENGTH) {
+      throw new GeneralSecurityException("Invalid master secret length");
+    }
+    validateParameters(memoryKiB, iterations, parallelism, salt, nonce);
+
+    int ciphertextLength = masterSecret.length + TAG_LENGTH_BITS / Byte.SIZE;
+    byte[] header = serializeHeader(memoryKiB, iterations, parallelism, salt, nonce,
+                                    ciphertextLength);
+    byte[] key = keyDeriver.derive(passphrase, salt, memoryKiB, iterations, parallelism);
+    try {
+      if (key == null || key.length != Argon2id.OUTPUT_LENGTH) {
+        throw new GeneralSecurityException("Invalid Argon2id key length");
+      }
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+      cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"),
+                  new GCMParameterSpec(TAG_LENGTH_BITS, nonce));
+      cipher.updateAAD(header);
+      byte[] ciphertext = cipher.doFinal(masterSecret);
+      return ByteBuffer.allocate(header.length + ciphertext.length)
+                       .put(header)
+                       .put(ciphertext)
+                       .array();
+    } finally {
+      if (key != null) Arrays.fill(key, (byte) 0);
+    }
+  }
+
+  static byte[] decrypt(byte[] serialized, char[] passphrase,
+                        CharacterKeyDeriver keyDeriver)
       throws GeneralSecurityException, InvalidPassphraseException
   {
     Parsed parsed = parse(serialized);

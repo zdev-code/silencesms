@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.smssecure.smssecure.crypto.MasterSecret;
 import org.smssecure.smssecure.data.conversation.ConversationListEntry;
 import org.smssecure.smssecure.database.model.ThreadRecord;
+import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.util.Conversions;
 
@@ -28,7 +29,7 @@ public final class ConversationListModelAdapter extends RecyclerView.Adapter<Con
   private static final int MESSAGE_TYPE_THREAD = 2;
 
   private final ConversationListEntryMapper mapper;
-  private final MasterSecret                 masterSecret;
+  private final UnlockSession                unlockSession;
   private final Locale                       locale;
   private final LayoutInflater               inflater;
   private final ItemClickListener                         clickListener;
@@ -38,11 +39,11 @@ public final class ConversationListModelAdapter extends RecyclerView.Adapter<Con
   private int                                archivedCount;
   private boolean                            batchMode;
 
-  public ConversationListModelAdapter(@NonNull Context context, @NonNull MasterSecret masterSecret,
+  public ConversationListModelAdapter(@NonNull Context context, @NonNull UnlockSession unlockSession,
                                       @NonNull Locale locale,
                                       @Nullable ItemClickListener clickListener) {
-    this.mapper        = new ConversationListEntryMapper(context, masterSecret);
-    this.masterSecret  = masterSecret;
+    this.mapper        = new ConversationListEntryMapper(context);
+    this.unlockSession = unlockSession;
     this.locale        = locale;
     this.inflater      = LayoutInflater.from(context);
     this.clickListener = clickListener;
@@ -72,9 +73,9 @@ public final class ConversationListModelAdapter extends RecyclerView.Adapter<Con
   @Override
   public long getItemId(int position) {
     if (position >= entries.size()) return -1L;
-    ThreadRecord record = mapper.map(entries.get(position));
-    StringBuilder builder = new StringBuilder(String.valueOf(record.getThreadId()));
-    for (long recipientId : record.getRecipients().getIds()) builder.append("::").append(recipientId);
+    ConversationListEntry entry = entries.get(position);
+    StringBuilder builder = new StringBuilder(String.valueOf(entry.getThreadId()));
+    builder.append("::").append(entry.getRecipientIds());
     return Conversions.byteArrayToLong(digest.digest(builder.toString().getBytes()));
   }
 
@@ -103,19 +104,35 @@ public final class ConversationListModelAdapter extends RecyclerView.Adapter<Con
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     if (position < entries.size()) {
-      holder.getItem().bind(masterSecret, mapper.map(entries.get(position)), locale, batchSet, batchMode);
+      try {
+        unlockSession.use(masterSecret -> {
+          holder.getItem().asView().setVisibility(View.VISIBLE);
+          holder.getItem().bind(masterSecret, mapper.map(entries.get(position), masterSecret),
+                                locale, batchSet, batchMode);
+          return null;
+        });
+      } catch (Exception exception) {
+        holder.getItem().clearSensitiveData();
+      }
     } else {
+      holder.getItem().asView().setVisibility(View.VISIBLE);
       ((ConversationListItemAction) holder.itemView).bindArchivedCount(archivedCount);
     }
   }
 
-  @Override public void onViewRecycled(@NonNull ViewHolder holder) { holder.getItem().unbind(); }
+  @Override public void onViewRecycled(@NonNull ViewHolder holder) { holder.getItem().clearSensitiveData(); }
 
   public Set<Long> getBatchSelections() { return batchSet; }
 
   public @Nullable Recipients getRecipientsFromThreadId(long threadId) {
     for (ConversationListEntry entry : entries) {
-      if (entry.getThreadId() == threadId) return mapper.map(entry).getRecipients();
+      if (entry.getThreadId() == threadId) {
+        try {
+          return unlockSession.use(secret -> mapper.map(entry, secret).getRecipients());
+        } catch (Exception exception) {
+          return null;
+        }
+      }
     }
     return null;
   }

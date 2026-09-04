@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
 
 import org.smssecure.smssecure.ConversationActivity;
+import org.smssecure.smssecure.HostNavigationCommand;
+import org.smssecure.smssecure.database.ThreadDatabase;
 import org.smssecure.smssecure.mms.SlideDeck;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.Recipients;
@@ -81,11 +83,11 @@ public class NotificationItem {
   }
 
   public PendingIntent getPendingIntent(Context context) {
-    Intent     intent           = new Intent(context, ConversationActivity.class);
     Recipients notifyRecipients = threadRecipients != null ? threadRecipients : recipients;
-    if (notifyRecipients != null) intent.putExtra("recipients", notifyRecipients.getIds());
-
-    intent.putExtra("thread_id", threadId);
+    if (notifyRecipients == null) throw new IllegalStateException("Notification has no recipients");
+    Intent intent = HostNavigationCommand.createConversationIntent(
+      context, notifyRecipients.getIds(), threadId, ThreadDatabase.DistributionTypes.DEFAULT,
+      false, System.currentTimeMillis(), 0L, null);
     intent.setData(Uri.parse(NotificationActionIdentity.data("content", threadId)));
 
     return TaskStackBuilder.create(context)
