@@ -8,10 +8,12 @@ import android.os.SystemClock;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.os.BundleCompat;
 
 import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.service.KeyCachingService;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -323,7 +325,8 @@ public final class BootstrapContinuationStore {
     unexpected.removeAll(allowed);
     if (!unexpected.isEmpty()) throw new SecurityException("Unexpected continuation fields: " + unexpected);
     for (String key : extras.keySet()) {
-      Object value = extras.get(key);
+      Serializable value = BundleCompat.getSerializable(extras, key, Serializable.class);
+      if (value == null) throw new SecurityException("Non-primitive continuation field: " + key);
       if (value instanceof String) {
         if (((String) value).isEmpty() || ((String) value).length() > MAX_TOKEN_LENGTH) {
           throw new SecurityException("Invalid continuation string");

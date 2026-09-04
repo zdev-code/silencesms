@@ -6,7 +6,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.os.BundleCompat;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 public final class HostNavigationCommand {
@@ -125,8 +127,10 @@ public final class HostNavigationCommand {
 
   private static void copyAndRemove(Intent intent, Bundle arguments, String key) {
     if (!intent.hasExtra(key)) return;
-    Object value = intent.getExtras().get(key);
+    Serializable value = BundleCompat.getSerializable(
+        intent.getExtras(), key, Serializable.class);
     intent.removeExtra(key);
+    if (value == null) throw new SecurityException("Invalid host command field: " + key);
     if (value instanceof long[]) arguments.putLongArray(key, ((long[]) value).clone());
     else if (value instanceof Long) arguments.putLong(key, (Long) value);
     else if (value instanceof Integer) arguments.putInt(key, (Integer) value);

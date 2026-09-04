@@ -1,8 +1,10 @@
 import java.security.MessageDigest
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.compile.JavaCompile
 
@@ -15,6 +17,9 @@ abstract class VerifyArtifactHash : DefaultTask() {
 
     @get:Input
     abstract val expectedSha256: Property<String>
+
+    @get:OutputFile
+    abstract val verificationMarker: RegularFileProperty
 
     @TaskAction
     fun verify() {
@@ -42,6 +47,9 @@ abstract class VerifyArtifactHash : DefaultTask() {
                 """.trimMargin()
             )
         }
+        val marker = verificationMarker.get().asFile
+        marker.parentFile.mkdirs()
+        marker.writeText("verified\n")
         logger.lifecycle("verifyLibsignalPin: ${coordinate.get()} SHA-256 OK")
     }
 }
@@ -83,9 +91,22 @@ val verifyLibsignalPin = tasks.register<VerifyArtifactHash>("verifyLibsignalPin"
     artifacts.from(libsignalPinConfiguration)
     coordinate.set(libsignalPinnedCoordinate)
     expectedSha256.set(libsignalPinnedSha256)
+    verificationMarker.set(layout.buildDirectory.file("verification-results/verifyLibsignalPin.verified"))
 }
 
 project(":app") {
+    afterEvaluate {
+        tasks.withType<JavaCompile>().configureEach {
+            if (name.startsWith("compile") && name.endsWith("JavaWithJavac")) {
+                doFirst {
+                    options.compilerArgumentProviders.removeAll {
+                        it.javaClass.name.contains("HiltCommandLineArgumentProvider")
+                    }
+                }
+            }
+        }
+    }
+
     tasks.matching { it.name == "preBuild" }.configureEach {
         dependsOn(verifyLibsignalPin)
     }

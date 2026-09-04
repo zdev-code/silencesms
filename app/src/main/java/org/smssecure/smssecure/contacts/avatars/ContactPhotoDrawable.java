@@ -53,6 +53,7 @@ final class ContactPhotoDrawable extends Drawable {
   }
 
   @Override
+  @SuppressWarnings("deprecation") // Drawable.getOpacity() remains an abstract base-class contract.
   public int getOpacity() {
     return PixelFormat.TRANSLUCENT;
   }

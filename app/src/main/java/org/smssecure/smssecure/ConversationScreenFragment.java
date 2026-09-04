@@ -47,7 +47,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
+import androidx.core.view.MenuProvider;
 import androidx.core.view.WindowCompat;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
@@ -168,7 +170,8 @@ import static org.smssecure.smssecure.TransportOption.Type;
  */
 @AndroidEntryPoint
 public class ConversationScreenFragment extends Fragment
-    implements ConversationFragment.ConversationFragmentListener,
+  implements MenuProvider,
+         ConversationFragment.ConversationFragmentListener,
                AttachmentManager.AttachmentListener,
                RecipientsModifiedListener,
                OnKeyboardShownListener,
@@ -360,6 +363,8 @@ public class ConversationScreenFragment extends Fragment
         }
         clearExternalMediaGrant();
       });
+  private final Permissions.FragmentPermissionLauncher permissionLauncher =
+      Permissions.registerForResult(this);
 
   private   Stub<EmojiDrawer>             emojiDrawerStub;
   private   EmojiToggle                   emojiToggle;
@@ -397,7 +402,7 @@ public class ConversationScreenFragment extends Fragment
   @Override
   public void onCreate(@Nullable Bundle state) {
     super.onCreate(state);
-    setHasOptionsMenu(true);
+    requireActivity().addMenuProvider(this, this, Lifecycle.State.RESUMED);
     this.unlockSession = UnlockSession.capture();
     this.screenViewModel = new ViewModelProvider(this).get(ConversationScreenViewModel.class);
     this.activeSubscriptions = SubscriptionManagerCompat.from(requireContext()).getActiveSubscriptionInfoList();
@@ -630,7 +635,11 @@ public class ConversationScreenFragment extends Fragment
   }
 
   @Override
-  public void onPrepareOptionsMenu(@NonNull Menu menu) {
+  public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+  }
+
+  @Override
+  public void onPrepareMenu(@NonNull Menu menu) {
     MenuInflater inflater = getMenuInflater();
     menu.clear();
 
@@ -682,13 +691,11 @@ public class ConversationScreenFragment extends Fragment
     if (archived) menu.findItem(R.id.menu_archive_conversation)
                       .setTitle(R.string.conversation__menu_unarchive_conversation);
 
-    super.onPrepareOptionsMenu(menu);
   }
 
   @Override
   @SuppressLint("NonConstantResourceId")
-  public boolean onOptionsItemSelected(MenuItem item) {
-    super.onOptionsItemSelected(item);
+  public boolean onMenuItemSelected(@NonNull MenuItem item) {
     int itemId = item.getItemId();
     if      (itemId == R.id.menu_call)                          { handleDial(getRecipients().getPrimaryRecipient()); return true; }
     else if (itemId == R.id.menu_delete_conversation)           { handleDeleteConversation();                        return true; }
@@ -798,12 +805,6 @@ public class ConversationScreenFragment extends Fragment
 
   private void handleReturnToConversationList() {
     finish();
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    Permissions.onRequestPermissionsResult(requireActivity(), requestCode, permissions, grantResults);
   }
 
   private void handleMuteNotifications() {
@@ -1682,7 +1683,7 @@ public class ConversationScreenFragment extends Fragment
     final int       distributionType = this.distributionType;
     final boolean   secureMessage    = isEncryptedConversation && !forcePlaintext;
 
-    Permissions.with(requireActivity())
+    Permissions.with(this, permissionLauncher)
                .request(Manifest.permission.SEND_SMS)
                .ifNecessary()
                .withPermanentDenialDialog(getString(R.string.ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms))
@@ -1705,7 +1706,7 @@ public class ConversationScreenFragment extends Fragment
     final String  messageBody   = getMessage();
     final boolean secureMessage = isEncryptedConversation && !forcePlaintext;
 
-    Permissions.with(requireActivity())
+    Permissions.with(this, permissionLauncher)
                .request(Manifest.permission.SEND_SMS)
                .ifNecessary()
                .withPermanentDenialDialog(getString(R.string.ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms))

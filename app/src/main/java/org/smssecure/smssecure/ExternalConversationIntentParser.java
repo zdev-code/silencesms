@@ -143,8 +143,8 @@ final class ExternalConversationIntentParser {
 
   private static String boundedText(Bundle extras, String key) throws InvalidIntentException {
     if (!extras.containsKey(key)) return null;
-    Object value = extras.get(key);
-    if (!(value instanceof CharSequence)) throw new InvalidIntentException();
+    CharSequence value = extras.getCharSequence(key);
+    if (value == null) throw new InvalidIntentException();
     return bounded(value.toString());
   }
 

@@ -7,10 +7,28 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.compile.JavaCompile
 
-abstract class VerifyCryptoPolicy : DefaultTask() {
+abstract class InputTrackedVerificationTask : DefaultTask() {
+    @get:OutputFile
+    abstract val verificationMarker: RegularFileProperty
+
+    init {
+        verificationMarker.convention(
+            project.layout.buildDirectory.file("verification-results/$name.verified")
+        )
+    }
+
+    protected fun markVerified() {
+        val marker = verificationMarker.get().asFile
+        marker.parentFile.mkdirs()
+        marker.writeText("verified\n")
+    }
+}
+
+abstract class VerifyCryptoPolicy : InputTrackedVerificationTask() {
     @get:InputFile
     abstract val debugBuildConfig: RegularFileProperty
 
@@ -25,10 +43,11 @@ abstract class VerifyCryptoPolicy : DefaultTask() {
         if (!phaseABuildConfig.get().asFile.readText().contains("MODERN_CRYPTO_WRITES = false")) {
             throw GradleException("Phase A release must disable modern crypto writes")
         }
+        markVerified()
     }
 }
 
-abstract class CheckNoAsyncTaskUsage : DefaultTask() {
+abstract class CheckNoAsyncTaskUsage : InputTrackedVerificationTask() {
     @get:InputFiles
     abstract val sources: ConfigurableFileCollection
 
@@ -50,10 +69,11 @@ abstract class CheckNoAsyncTaskUsage : DefaultTask() {
         if (actual.isNotEmpty()) {
             throw GradleException("android.os.AsyncTask usage is forbidden:\n  " + actual.joinToString("\n  "))
         }
+        markVerified()
     }
 }
 
-abstract class CheckAndroidDeprecationAllowlist : DefaultTask() {
+abstract class CheckAndroidDeprecationAllowlist : InputTrackedVerificationTask() {
     @get:InputFile
     abstract val allowlist: RegularFileProperty
 
@@ -94,10 +114,11 @@ abstract class CheckAndroidDeprecationAllowlist : DefaultTask() {
                 if (stale.isNotEmpty()) append("\nStale allowlist entries:\n  ${stale.joinToString("\n  ")}")
             })
         }
+        markVerified()
     }
 }
 
-abstract class CheckConversationListArchitecture : DefaultTask() {
+abstract class CheckConversationListArchitecture : InputTrackedVerificationTask() {
     @get:InputFiles
     abstract val sources: ConfigurableFileCollection
 
@@ -129,10 +150,11 @@ abstract class CheckConversationListArchitecture : DefaultTask() {
                 "Conversation-list UI architecture boundary violations:\n  " + violations.joinToString("\n  ")
             )
         }
+        markVerified()
     }
 }
 
-abstract class CheckEventBusAllowlist : DefaultTask() {
+abstract class CheckEventBusAllowlist : InputTrackedVerificationTask() {
     @get:InputFile
     abstract val allowlist: RegularFileProperty
 
@@ -170,10 +192,11 @@ abstract class CheckEventBusAllowlist : DefaultTask() {
                 if (stale.isNotEmpty()) append("\nStale entries:\n  ${stale.joinToString("\n  ")}")
             })
         }
+        markVerified()
     }
 }
 
-abstract class CheckConversationThreadArchitecture : DefaultTask() {
+abstract class CheckConversationThreadArchitecture : InputTrackedVerificationTask() {
     @get:InputFiles
     abstract val sources: ConfigurableFileCollection
 
@@ -202,10 +225,11 @@ abstract class CheckConversationThreadArchitecture : DefaultTask() {
                 "Conversation-thread UI architecture boundary violations:\n  " + violations.joinToString("\n  ")
             )
         }
+        markVerified()
     }
 }
 
-abstract class CheckConversationScreenArchitecture : DefaultTask() {
+abstract class CheckConversationScreenArchitecture : InputTrackedVerificationTask() {
     @get:InputFiles
     abstract val stateSources: ConfigurableFileCollection
 
@@ -234,10 +258,11 @@ abstract class CheckConversationScreenArchitecture : DefaultTask() {
                 "Conversation-screen architecture boundary violations:\n  " + violations.joinToString("\n  ")
             )
         }
+        markVerified()
     }
 }
 
-abstract class CheckModernArchitectureBoundaries : DefaultTask() {
+abstract class CheckModernArchitectureBoundaries : InputTrackedVerificationTask() {
     @get:InputFiles
     abstract val sources: ConfigurableFileCollection
 
@@ -319,10 +344,11 @@ abstract class CheckModernArchitectureBoundaries : DefaultTask() {
         if (violations.isNotEmpty()) {
             throw GradleException("Modern architecture boundary violations:\n  " + violations.joinToString("\n  "))
         }
+        markVerified()
     }
 }
 
-abstract class CheckUiDataAccessAllowlist : DefaultTask() {
+abstract class CheckUiDataAccessAllowlist : InputTrackedVerificationTask() {
     @get:InputFile
     abstract val allowlist: RegularFileProperty
 
@@ -361,10 +387,11 @@ abstract class CheckUiDataAccessAllowlist : DefaultTask() {
                 if (stale.isNotEmpty()) append("\nStale entries:\n  ${stale.joinToString("\n  ")}")
             })
         }
+        markVerified()
     }
 }
 
-abstract class CheckRetainedActivityInventory : DefaultTask() {
+abstract class CheckRetainedActivityInventory : InputTrackedVerificationTask() {
     @get:InputFile
     abstract val inventory: RegularFileProperty
 
@@ -418,10 +445,11 @@ abstract class CheckRetainedActivityInventory : DefaultTask() {
         val taskNames = knownTaskGates.get().split(',').toSet()
         expected.values.filter { it[3] !in testNames && it[3] !in taskNames }
             .forEach { throw GradleException("Unknown executable gate ${it[3]} for ${it[0]}") }
+        markVerified()
     }
 }
 
-abstract class CheckHostDestinationSecurityPolicy : DefaultTask() {
+    abstract class CheckHostDestinationSecurityPolicy : InputTrackedVerificationTask() {
     @get:InputFile
     abstract val policy: RegularFileProperty
 
@@ -491,6 +519,7 @@ abstract class CheckHostDestinationSecurityPolicy : DefaultTask() {
         if (violations.isNotEmpty()) {
             throw GradleException("Host destination security violations:\n  " + violations.joinToString("\n  "))
         }
+        markVerified()
     }
 }
 

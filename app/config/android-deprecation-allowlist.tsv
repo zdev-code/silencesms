@@ -6,6 +6,7 @@ app/src/main/java/org/smssecure/smssecure/components/emoji/EmojiProvider.java	Dr
 app/src/main/java/org/smssecure/smssecure/components/reminder/StoreRatingReminder.java	PackageManager.getInstallerPackageName()	API 23-29	Remove when minSdk is 30.
 app/src/main/java/org/smssecure/smssecure/components/subsampling/AttachmentRegionDecoder.java	BitmapRegionDecoder.newInstance(InputStream, boolean)	API 23-30	Remove when minSdk is 31.
 app/src/main/java/org/smssecure/smssecure/contacts/ContactAccessor.java	Contacts.TIMES_CONTACTED	API 23+	Remove when legacy contact-sort parity is intentionally dropped.
+app/src/main/java/org/smssecure/smssecure/contacts/avatars/ContactPhotoDrawable.java	Drawable.getOpacity()	API 23+	Remove when the Drawable base contract no longer requires this override.
 app/src/main/java/org/smssecure/smssecure/database/MmsSmsDatabase.java	Cursor legacy movement/access compatibility	API 23+	Remove when the database cursor abstraction is replaced.
 app/src/main/java/org/smssecure/smssecure/jobs/requirements/ServiceRequirementProvider.java	PhoneStateListener	API 23-30	Remove when minSdk is 31.
 app/src/main/java/org/smssecure/smssecure/mms/IncomingLegacyMmsConnection.java	Legacy carrier MMS network APIs	API 23-28	Remove after the real-carrier matrix permits dropping the legacy MMS path.
