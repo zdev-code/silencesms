@@ -122,7 +122,7 @@ public class DecryptingPartInputStream extends FileInputStream {
       byte[] theirMac = new byte[mac.getMacLength()];
       readFully(theirMac);
 
-      if (!Arrays.equals(ourMac, theirMac))
+      if (!java.security.MessageDigest.isEqual(ourMac, theirMac))
         throw new IOException("MAC doesn't match! Potential tampering?");
 
       done = true;

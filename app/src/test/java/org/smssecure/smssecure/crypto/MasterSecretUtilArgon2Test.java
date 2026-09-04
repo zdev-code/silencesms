@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockedStatic;
-import org.smssecure.smssecure.BuildConfig;
 import org.smssecure.smssecure.BaseUnitTest;
 
 import java.util.Arrays;
@@ -41,9 +40,8 @@ public class MasterSecretUtilArgon2Test extends BaseUnitTest {
   }
 
   @Test
-  public void modernWrapperWritesMatchReleaseStage() {
-    assertEquals(BuildConfig.MODERN_CRYPTO_WRITES,
-                 MasterSecretUtil.modernCryptoWritesAvailable(true));
+  public void modernWrapperWritesWhenArgon2IsAvailable() {
+    assertTrue(MasterSecretUtil.modernCryptoWritesAvailable(true));
     assertFalse(MasterSecretUtil.modernCryptoWritesAvailable(false));
   }
 

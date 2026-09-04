@@ -1,10 +1,5 @@
 apply plugin: 'java'
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
     // JUnit 4 runs these junit.framework.TestCase classes via JUnit38ClassRunner; :java:test already
     // resolved to 4.13.2, so declare it here rather than leaving a stale 3.8.2 request.

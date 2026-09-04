@@ -20,7 +20,6 @@ package org.smssecure.smssecure.crypto;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
-import org.smssecure.smssecure.BuildConfig;
 import org.smssecure.smssecure.util.Base64;
 import org.signal.libsignal.protocol.InvalidMessageException;
 import org.signal.libsignal.protocol.ecc.Curve;
@@ -69,7 +68,7 @@ public class MasterCipher {
   private final Mac hmac;
 
   public MasterCipher(MasterSecret masterSecret) {
-    this(masterSecret, BuildConfig.MODERN_CRYPTO_WRITES);
+    this(masterSecret, true);
   }
 
   MasterCipher(MasterSecret masterSecret, boolean writeVersionTwo) {

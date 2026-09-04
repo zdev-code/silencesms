@@ -28,25 +28,6 @@ abstract class InputTrackedVerificationTask : DefaultTask() {
     }
 }
 
-abstract class VerifyCryptoPolicy : InputTrackedVerificationTask() {
-    @get:InputFile
-    abstract val debugBuildConfig: RegularFileProperty
-
-    @get:InputFile
-    abstract val phaseABuildConfig: RegularFileProperty
-
-    @TaskAction
-    fun verify() {
-        if (!debugBuildConfig.get().asFile.readText().contains("MODERN_CRYPTO_WRITES = true")) {
-            throw GradleException("Debug must enable modern crypto writes")
-        }
-        if (!phaseABuildConfig.get().asFile.readText().contains("MODERN_CRYPTO_WRITES = false")) {
-            throw GradleException("Phase A release must disable modern crypto writes")
-        }
-        markVerified()
-    }
-}
-
 abstract class CheckNoAsyncTaskUsage : InputTrackedVerificationTask() {
     @get:InputFiles
     abstract val sources: ConfigurableFileCollection
@@ -319,6 +300,27 @@ abstract class CheckModernArchitectureBoundaries : InputTrackedVerificationTask(
             }
         }
         val passphraseSource = passphraseActivity.get().asFile.readText()
+        val javaSources = sources.files.filter { it.extension == "java" }
+        val classPattern = Regex("""\bclass\s+(\w+)\s+extends\s+(\w+)""")
+        val sourceClasses = javaSources.flatMap { sourceFile ->
+            classPattern.findAll(sourceFile.readText()).map { match ->
+                Triple(match.groupValues[1], match.groupValues[2], sourceFile)
+            }.toList()
+        }
+        val gatedClasses = mutableSetOf("PassphraseRequiredActionBarActivity")
+        do {
+            val added = sourceClasses
+                .filter { (_, parent, _) -> parent in gatedClasses }
+                .map { (name, _, _) -> name }
+                .filter(gatedClasses::add)
+        } while (added.isNotEmpty())
+        val onCreatePattern = Regex("""\b(?:public|protected)\s+void\s+onCreate\s*\(\s*Bundle\s+savedInstanceState\s*\)""")
+        sourceClasses
+            .filter { (name, _, _) -> name != "PassphraseRequiredActionBarActivity" && name in gatedClasses }
+            .filter { (_, _, sourceFile) -> onCreatePattern.containsMatchIn(sourceFile.readText()) }
+            .forEach { (name, _, _) ->
+                violations.add("$name: must use the passphrase-gated onCreate(Bundle, MasterSecret) template")
+        }
         listOf("onPreCreate();", "routeApplicationState(masterSecret);", "super.onCreate(savedInstanceState);")
             .filterNot(passphraseSource::contains)
             .forEach { violations.add("PassphraseRequiredActionBarActivity.java: missing gate step $it") }
@@ -622,7 +624,6 @@ android {
         applicationId = "org.smssecure.smssecure"
         versionCode = 216
         versionName = "0.16.14-unstable"
-        buildConfigField("boolean", "MODERN_CRYPTO_WRITES", "true")
         minSdk = 23
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -700,22 +701,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             testProguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        create("phaseARelease") {
-            initWith(getByName("release"))
-            buildConfigField("boolean", "MODERN_CRYPTO_WRITES", "false")
-            versionNameSuffix = "-phase-a"
-            matchingFallbacks += "release"
-        }
     }
-}
-
-val generatedBuildConfig = layout.buildDirectory.dir("generated/source/buildConfig")
-val verifyCryptoReleaseStages = tasks.register<VerifyCryptoPolicy>("verifyCryptoReleaseStages") {
-    group = "verification"
-    description = "Verifies normal builds enable modern crypto writes and Phase A builds disable them."
-    dependsOn("generateDebugBuildConfig", "generatePhaseAReleaseBuildConfig")
-    debugBuildConfig.set(generatedBuildConfig.map { it.file("debug/org/smssecure/smssecure/BuildConfig.java") })
-    phaseABuildConfig.set(generatedBuildConfig.map { it.file("phaseARelease/org/smssecure/smssecure/BuildConfig.java") })
 }
 
 val appJavaSources = fileTree("src/main/java") { include("**/*.java") }

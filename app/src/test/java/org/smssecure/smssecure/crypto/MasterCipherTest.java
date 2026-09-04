@@ -2,7 +2,6 @@ package org.smssecure.smssecure.crypto;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.smssecure.smssecure.BuildConfig;
 import org.smssecure.smssecure.BaseUnitTest;
 import org.smssecure.smssecure.util.Hex;
 import org.signal.libsignal.protocol.InvalidMessageException;
@@ -33,13 +32,11 @@ public class MasterCipherTest extends BaseUnitTest {
   }
 
   @Test
-  public void testDefaultWriteAlgorithmMatchesReleaseStage() throws Exception {
+  public void testDefaultWriteAlgorithmIsAes256Gcm() throws Exception {
     byte[] encrypted = new MasterCipher(masterSecret).encryptBytes(new byte[] {1});
-    int expectedAlgorithm = BuildConfig.MODERN_CRYPTO_WRITES
-        ? MasterCipherEnvelope.ALGORITHM_AES_256_GCM
-        : MasterCipherEnvelope.ALGORITHM_LEGACY_CBC_HMAC_SHA1;
 
-    assertEquals(expectedAlgorithm, MasterCipherEnvelope.getAlgorithm(encrypted));
+    assertEquals(MasterCipherEnvelope.ALGORITHM_AES_256_GCM,
+                 MasterCipherEnvelope.getAlgorithm(encrypted));
   }
 
   @Test(expected = InvalidMessageException.class)

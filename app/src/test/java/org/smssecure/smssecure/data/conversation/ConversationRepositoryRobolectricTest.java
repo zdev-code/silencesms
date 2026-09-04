@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.smssecure.smssecure.ApplicationContext;
 import org.smssecure.smssecure.database.DatabaseContentProviders;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 
@@ -21,8 +22,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 35)
+@Config(application = ConversationRepositoryRobolectricTest.TestApplication.class, sdk = 35)
 public class ConversationRepositoryRobolectricTest {
+  public static final class TestApplication extends ApplicationContext {
+    @Override public void onCreate() {}
+  }
+
   private Context context;
   private DefaultConversationRepository repository;
   private ConversationRepository.Subscription subscription;

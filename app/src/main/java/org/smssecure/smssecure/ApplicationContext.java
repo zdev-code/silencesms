@@ -103,10 +103,13 @@ public class ApplicationContext extends Application implements DependencyInjecto
     File filesDirectory = getFilesDir();
     File root = filesDirectory == null ? null : filesDirectory.getParentFile();
     if (root == null) return;
+    recoverInterruptedRestore(this, root);
+  }
+
+  static void recoverInterruptedRestore(Context context, File root) {
     try {
-      if (SecureBackupArchive.recoverInterruptedRestore(root)) {
-        MasterSecretUtil.reconcileDeviceProtection(this);
-      }
+      SecureBackupArchive.recoverInterruptedRestore(root);
+      MasterSecretUtil.reconcileDeviceProtection(context);
     } catch (IOException | java.security.GeneralSecurityException error) {
       throw new IllegalStateException("Unable to recover interrupted secure backup restore", error);
     }

@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.smssecure.smssecure.BuildConfig;
 import org.smssecure.smssecure.util.Base64;
 import org.smssecure.smssecure.util.Util;
 import org.signal.libsignal.protocol.InvalidKeyException;
@@ -213,7 +212,7 @@ public class MasterSecretUtil {
     }
 
     MasterSecret masterSecret = getLegacyMasterSecret(context, passphrase);
-    if (migrateLegacy && BuildConfig.MODERN_CRYPTO_WRITES && Argon2id.isAvailable() &&
+    if (migrateLegacy && Argon2id.isAvailable() &&
         claimAutomaticMigrationAttempt(preferences, System.currentTimeMillis())) {
       byte[] combinedSecrets = combineMasterSecret(masterSecret);
       try {
@@ -259,7 +258,7 @@ public class MasterSecretUtil {
     }
 
     MasterSecret masterSecret = getLegacyMasterSecret(context, passphrase);
-    if (migrateLegacy && BuildConfig.MODERN_CRYPTO_WRITES && argon2Available &&
+    if (migrateLegacy && argon2Available &&
       claimAutomaticMigrationAttempt(preferences, System.currentTimeMillis()))
     {
       byte[] combinedSecrets = combineMasterSecret(masterSecret);
@@ -934,7 +933,7 @@ public class MasterSecretUtil {
   }
 
   static boolean modernCryptoWritesAvailable(boolean argon2Available) {
-    return BuildConfig.MODERN_CRYPTO_WRITES && argon2Available;
+    return argon2Available;
   }
 
   public static boolean isPassphraseInitialized(Context context) {
@@ -1179,7 +1178,7 @@ public class MasterSecretUtil {
                      givenMac, 0, givenMac.length);
     try {
       localMac = hmac.doFinal(encryptedData);
-      if (Arrays.equals(givenMac, localMac)) return encryptedData;
+      if (java.security.MessageDigest.isEqual(givenMac, localMac)) return encryptedData;
       Arrays.fill(encryptedData, (byte) 0);
       throw new InvalidPassphraseException("MAC Error");
     } finally {

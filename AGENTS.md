@@ -2,7 +2,7 @@
 
 ## Start here
 
-- Use [`BUILDING.md`](BUILDING.md) for SDK setup, normal builds, and the staged crypto release procedure.
+- Use [`BUILDING.md`](BUILDING.md) for SDK setup and normal builds.
 - Use [`CONTRIBUTING.md`](CONTRIBUTING.md) for contribution and diagnostic-log conventions.
 - Treat [`build.gradle.kts`](build.gradle.kts) and [`settings.gradle.kts`](settings.gradle.kts) as the source of truth when documentation and the current toolchain differ.
 
@@ -21,10 +21,10 @@ On Windows PowerShell, use the wrapper as `./gradlew.bat`; on Unix-like shells, 
 - `./gradlew.bat :app:test` runs app JVM tests; prefer a targeted `--tests` filter while iterating.
 - `./gradlew.bat :app:connectedAndroidTest` runs device/emulator tests.
 - `./gradlew.bat :java:test` runs the vendored libsignal JVM suite.
-- `./gradlew.bat :app:verifyCryptoReleaseStages :app:assemblePhaseARelease :app:assembleRelease` validates and builds both crypto rollout artifacts. Do not substitute the normal release for Phase A.
+- `./gradlew.bat :app:assembleRelease` builds the production release artifact.
 - `./gradlew.bat :app:lint` checks for findings not recorded in `app/lint-baseline.xml`; do not refresh the baseline to hide newly introduced issues.
 
-Run the narrowest relevant test first, then `:app:assembleDebug` for app-source changes. Crypto, storage, backup/restore, or vendored-libsignal changes require their focused tests plus the applicable release-stage check.
+Run the narrowest relevant test first, then `:app:assembleDebug` for app-source changes. Crypto, storage, backup/restore, or vendored-libsignal changes require their focused tests plus `:app:assembleRelease`.
 
 ### Connected-device data safety
 
@@ -44,7 +44,7 @@ Run the narrowest relevant test first, then `:app:assembleDebug` for app-source 
 
 ## Crypto and persistence
 
-- The app deliberately supports staged crypto writes and backward-compatible reads. Preserve readable legacy data and rollback behavior unless the task explicitly changes that contract.
+- The app writes modern crypto formats and deliberately retains backward-compatible readers. Preserve readable legacy data and migration behavior unless the task explicitly changes that contract.
 - Message crypto uses the current Signal client while key-exchange compatibility still involves the vendored `org.whispersystems.libsignal` fork. Keep adapters in app source unless the task genuinely requires changing the fork.
 - Treat key material, session stores, preference migration, and backup/restore as atomic migration paths. Validate both success and interruption/rollback cases; never infer safety from a fresh-install test alone.
 

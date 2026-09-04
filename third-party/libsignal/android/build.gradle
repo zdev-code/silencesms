@@ -20,12 +20,6 @@ android {
     }
 }
 
-repositories {
-    google()
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
     api(project(':java'))
     // The vendored protocol tests in :tests are pure JVM and run in :java:test, which has the

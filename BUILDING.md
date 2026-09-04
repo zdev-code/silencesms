@@ -39,24 +39,23 @@ Android Studio can install the Android components through its SDK Manager.
 
 ## Release builds
 
-The repository defines two release variants:
+Build the production release with:
 
-* `:app:assembleRelease` builds the standard release with modern local-crypto writes enabled.
-* `:app:assemblePhaseARelease` builds a compatibility release with modern local-crypto writes disabled. It retains modern readers while preserving the legacy write policy for staged deployment or rollback.
-
-Verify the build-policy flags and build both variants on Linux or macOS with:
+On Linux or macOS:
 
 ```console
-./gradlew :app:verifyCryptoReleaseStages :app:assemblePhaseARelease :app:assembleRelease
+./gradlew :app:assembleRelease
 ```
 
 On Windows PowerShell, use:
 
 ```console
-./gradlew.bat :app:verifyCryptoReleaseStages :app:assemblePhaseARelease :app:assembleRelease
+./gradlew.bat :app:assembleRelease
 ```
 
-Both variants retain legacy and modern readers so data remains readable across upgrades and rollbacks. Use the compatibility variant only when that write policy is intentional.
+The production release writes modern local-crypto formats and retains legacy readers so direct upgrades
+from older installations remain supported. The Phase A compatibility artifact has already shipped and
+is retained as a signed release artifact rather than rebuilt from current source.
 
 ## Setting up a development environment
 

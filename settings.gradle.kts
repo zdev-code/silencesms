@@ -7,13 +7,10 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven("https://repo1.maven.org/maven2/")
         google()
         mavenCentral()
-        mavenLocal()
-        maven("https://jitpack.io")
-        maven("https://guardianproject.info/maven")
     }
 }
 

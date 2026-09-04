@@ -12,21 +12,13 @@ java {
 version          = version_number
 group            = group_info
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    // Pin target is org.signal:libsignal-client:0.72.1, which is hosted on Maven Central
-    // (immutable, GPG-signed). We deliberately do NOT add Signal's own build-artifacts repo:
-    // it can prune old releases, and everything we need (<= 0.86.5) is on Central.
-}
-
 dependencies {
     // The vendored ecc.Curve now delegates to the maintained Rust core. It is compiled against the
     // maintained API here (compileOnly, so the maintained classes are NOT bundled/duplicated by this
     // module); at runtime they are provided by the app's libsignal-android (and, for this module's own
     // JVM tests, by the testImplementation libsignal-client below).
     compileOnly 'org.signal:libsignal-client:0.72.1'
-    api 'com.google.protobuf:protobuf-java:3.25.3'
+    api 'com.google.protobuf:protobuf-java:4.36.1'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation(project(path: ':tests', configuration: 'testArtifacts'))

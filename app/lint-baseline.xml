@@ -243,38 +243,8 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="InvalidManifestAttribute"
-        message="Attribute `theme` on `&lt;activity-alias>` `.RoutingActivity` is invalid, and will be silently ignored. This attribute is always ignored on `&lt;activity-alias>`."
-        errorLine1="                    android:theme=&quot;@style/Silence.RoutingTheme&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="142"
-            column="21"/>
-    </issue>
 
-    <issue
-        id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.application than 9.3.1 is available: 9.4.0. (There is also a newer version of 9.3.𝑥 available, if upgrading to 9.4.0 is difficult: 9.3.2)"
-        errorLine1="agp = &quot;9.3.1&quot;"
-        errorLine2="      ~~~~~~~">
-        <location
-            file="$HOME/vscode/silencesms/gradle/libs.versions.toml"
-            line="2"
-            column="7"/>
-    </issue>
 
-    <issue
-        id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.library than 9.3.1 is available: 9.4.0. (There is also a newer version of 9.3.𝑥 available, if upgrading to 9.4.0 is difficult: 9.3.2)"
-        errorLine1="agp = &quot;9.3.1&quot;"
-        errorLine2="      ~~~~~~~">
-        <location
-            file="$HOME/vscode/silencesms/gradle/libs.versions.toml"
-            line="2"
-            column="7"/>
-    </issue>
 
     <issue
         id="GradleDependency"
@@ -342,16 +312,6 @@
             column="20"/>
     </issue>
 
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.loader:loader than 1.1.0 is available: 1.2.0"
-        errorLine1="loader = &quot;1.1.0&quot;"
-        errorLine2="         ~~~~~~~">
-        <location
-            file="$HOME/vscode/silencesms/gradle/libs.versions.toml"
-            line="13"
-            column="10"/>
-    </issue>
 
     <issue
         id="GradleDependency"
@@ -9461,38 +9421,8 @@
             column="7"/>
     </issue>
 
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="        list.getAdapter().notifyDataSetChanged();"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationFragment.java"
-            line="624"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="        list.getAdapter().notifyDataSetChanged();"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationFragment.java"
-            line="634"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="      list.getAdapter().notifyDataSetChanged();"
-        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationFragment.java"
-            line="664"
-            column="7"/>
-    </issue>
 
     <issue
         id="NotifyDataSetChanged"
@@ -9505,27 +9435,7 @@
             column="13"/>
     </issue>
 
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="    this.notifyDataSetChanged();"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationListAdapter.java"
-            line="207"
-            column="5"/>
-    </issue>
 
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="    this.notifyDataSetChanged();"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationListAdapter.java"
-            line="215"
-            column="5"/>
-    </issue>
 
     <issue
         id="NotifyDataSetChanged"
@@ -9538,27 +9448,7 @@
             column="5"/>
     </issue>
 
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="      adapter.notifyDataSetChanged();"
-        errorLine2="      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationListFragment.java"
-            line="511"
-            column="7"/>
-    </issue>
 
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="    getListAdapter().notifyDataSetChanged();"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationListFragment.java"
-            line="522"
-            column="5"/>
-    </issue>
 
     <issue
         id="NotifyDataSetChanged"
@@ -9593,27 +9483,7 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="      if (VERSION.SDK_INT >= 11) recreate();"
-        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ApplicationPreferencesActivity.java"
-            line="121"
-            column="11"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="      if (VERSION.SDK_INT >= 11) recreate();"
-        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ApplicationPreferencesActivity.java"
-            line="124"
-            column="11"/>
-    </issue>
 
     <issue
         id="ObsoleteSdkInt"
@@ -9824,71 +9694,11 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="    if (Build.VERSION.SDK_INT >= 22 &amp;&amp; activeSubscriptions.size() > 1) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationActivity.java"
-            line="496"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="    if (Build.VERSION.SDK_INT >= 22 &amp;&amp; activeSubscriptions.size() > 1) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationActivity.java"
-            line="517"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="    if (Build.VERSION.SDK_INT >= 22 &amp;&amp; activeSubscriptions.size() > 1) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationActivity.java"
-            line="542"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="    if (Build.VERSION.SDK_INT >= 22) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationActivity.java"
-            line="942"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is never &lt; 23"
-        errorLine1="    if (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.JELLY_BEAN) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationActivity.java"
-            line="1127"
-            column="9"/>
-    </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationActivity.java"
-            line="1294"
-            column="9"/>
-    </issue>
 
     <issue
         id="ObsoleteSdkInt"
@@ -9978,16 +9788,6 @@
             column="17"/>
     </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="        if (Build.VERSION.SDK_INT >= 22) {"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/DatabaseUpgradeActivity.java"
-            line="220"
-            column="13"/>
-    </issue>
 
     <issue
         id="ObsoleteSdkInt"
@@ -10143,16 +9943,6 @@
             column="16"/>
     </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/MessageDetailsActivity.java"
-            line="144"
-            column="9"/>
-    </issue>
 
     <issue
         id="ObsoleteSdkInt"
@@ -10264,16 +10054,6 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="      if (Build.VERSION.SDK_INT >= 22) {"
-        errorLine2="          ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/PassphraseCreateActivity.java"
-            line="79"
-            column="11"/>
-    </issue>
 
     <issue
         id="ObsoleteSdkInt"
@@ -10308,16 +10088,6 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 23"
-        errorLine1="    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/RecipientPreferenceActivity.java"
-            line="123"
-            column="9"/>
-    </issue>
 
     <issue
         id="ObsoleteSdkInt"
@@ -10861,38 +10631,8 @@
             column="2"/>
     </issue>
 
-    <issue
-        id="HandlerLeak"
-        message="This `Handler` class should be static or leaks might occur (org.smssecure.smssecure.DatabaseMigrationActivity.ImportStateHandler)"
-        errorLine1="  private class ImportStateHandler extends Handler {"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/DatabaseMigrationActivity.java"
-            line="166"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="MergeRootFrame"
-        message="This `&lt;FrameLayout>` can be replaced with a `&lt;merge>` tag"
-        errorLine1="&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/layout/country_selection.xml"
-            line="2"
-            column="1"/>
-    </issue>
 
-    <issue
-        id="MergeRootFrame"
-        message="This `&lt;FrameLayout>` can be replaced with a `&lt;merge>` tag"
-        errorLine1="&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/layout/share_activity.xml"
-            line="3"
-            column="1"/>
-    </issue>
 
     <issue
         id="InefficientWeight"
@@ -10905,16 +10645,6 @@
             column="15"/>
     </issue>
 
-    <issue
-        id="InefficientWeight"
-        message="Use a `layout_width` of `0dp` instead of `wrap_content` for better performance"
-        errorLine1="              android:layout_width=&quot;wrap_content&quot;"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_list_item.xml"
-            line="10"
-            column="15"/>
-    </issue>
 
     <issue
         id="InefficientWeight"
@@ -10949,49 +10679,9 @@
             column="14"/>
     </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `#ffffff` with a theme that also paints a background (inferred theme is `@style/Silence.LightTheme`)"
-        errorLine1="              android:background=&quot;#ffffff&quot;>"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_selection_fragment.xml"
-            line="6"
-            column="15"/>
-    </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@drawable/background_pattern_repeat` with a theme that also paints a background (inferred theme is `@style/Silence_LightIntroTheme`)"
-        errorLine1="            android:background=&quot;@drawable/background_pattern_repeat&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/create_passphrase_activity.xml"
-            line="8"
-            column="13"/>
-    </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@drawable/background_pattern_repeat` with a theme that also paints a background (inferred theme is `@style/NoAnimation_Theme_AppCompat_Light_DarkActionBar`)"
-        errorLine1="            android:background=&quot;@drawable/background_pattern_repeat&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/database_migration_activity.xml"
-            line="7"
-            column="13"/>
-    </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@drawable/background_pattern_repeat` with a theme that also paints a background (inferred theme is `@style/NoAnimation_Theme_AppCompat_Light_DarkActionBar`)"
-        errorLine1="            android:background=&quot;@drawable/background_pattern_repeat&quot;>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/database_upgrade_activity.xml"
-            line="7"
-            column="13"/>
-    </issue>
 
     <issue
         id="Overdraw"
@@ -11004,27 +10694,7 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/gray95` with a theme that also paints a background (inferred theme is `@style/Silence_DarkTheme`)"
-        errorLine1="                android:background=&quot;@color/gray95&quot;>"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_overview_activity.xml"
-            line="7"
-            column="17"/>
-    </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/gray95` with a theme that also paints a background (inferred theme is `@style/Silence_DarkTheme`)"
-        errorLine1="                android:background=&quot;@color/gray95&quot;>"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/media_preview_activity.xml"
-            line="6"
-            column="17"/>
-    </issue>
 
     <issue
         id="Overdraw"
@@ -11037,27 +10707,7 @@
             column="13"/>
     </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `#FF7568ae` with a theme that also paints a background (inferred theme is `@style/Silence_WelcomeTheme`)"
-        errorLine1="    android:background=&quot;#FF7568ae&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/welcome_activity.xml"
-            line="7"
-            column="5"/>
-    </issue>
 
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `#FF7568ae` with a theme that also paints a background (inferred theme is `@style/Silence_WelcomeTheme`)"
-        errorLine1="    android:background=&quot;#FF7568ae&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/welcome_activity_missing_perms.xml"
-            line="7"
-            column="5"/>
-    </issue>
 
     <issue
         id="UnusedResources"
@@ -19046,16 +18696,6 @@
             column="18"/>
     </issue>
 
-    <issue
-        id="TextFields"
-        message="This text field does not specify an `inputType`"
-        errorLine1="    &lt;EditText android:id=&quot;@+id/country_search&quot;"
-        errorLine2="     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_selection_fragment.xml"
-            line="8"
-            column="6"/>
-    </issue>
 
     <issue
         id="TextFields"
@@ -19656,16 +19296,6 @@
             column="15"/>
     </issue>
 
-    <issue
-        id="LabelFor"
-        message="Empty `android:hint` attribute"
-        errorLine1="              android:hint=&quot;&quot; />"
-        errorLine2="              ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_selection_fragment.xml"
-            line="12"
-            column="15"/>
-    </issue>
 
     <issue
         id="LabelFor"
@@ -19700,16 +19330,6 @@
             column="14"/>
     </issue>
 
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="      charactersLeft.setText(characterState.charactersRemaining + &quot;/&quot; + characterState.maxMessageSize"
-        errorLine2="                             ^">
-        <location
-            file="src/main/java/org/smssecure/smssecure/ConversationActivity.java"
-            line="1315"
-            column="30"/>
-    </issue>
 
     <issue
         id="SetTextI18n"
@@ -19722,16 +19342,6 @@
             column="22"/>
     </issue>
 
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="    this.progressLabel.setText(update.primaryComplete + &quot;/&quot; + update.primaryTotal);"
-        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/smssecure/smssecure/DatabaseMigrationActivity.java"
-            line="142"
-            column="32"/>
-    </issue>
 
     <issue
         id="SetTextI18n"
@@ -20954,60 +20564,10 @@
             column="19"/>
     </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="              android:gravity=&quot;right|center&quot;"
-        errorLine2="                               ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_list_item.xml"
-            line="22"
-            column="32"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_marginLeft` with `android:layout_marginStart=&quot;4dip&quot;` to better support right-to-left layouts"
-        errorLine1="              android:layout_marginLeft=&quot;4dip&quot;"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_list_item.xml"
-            line="23"
-            column="15"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_marginRight` with `android:layout_marginEnd=&quot;5dip&quot;` to better support right-to-left layouts"
-        errorLine1="              android:layout_marginRight=&quot;5dip&quot;"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_list_item.xml"
-            line="24"
-            column="15"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Use &quot;`end`&quot; instead of &quot;`right`&quot; to ensure correct behavior in right-to-left locales"
-        errorLine1="              android:layout_gravity=&quot;right|center&quot;/>"
-        errorLine2="                                      ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_list_item.xml"
-            line="25"
-            column="39"/>
-    </issue>
 
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:drawableLeft` with `android:drawableStart=&quot;@drawable/ic_menu_search_holo_light&quot;` to better support right-to-left layouts"
-        errorLine1="              android:drawableLeft=&quot;@drawable/ic_menu_search_holo_light&quot;"
-        errorLine2="              ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/country_selection_fragment.xml"
-            line="11"
-            column="15"/>
-    </issue>
 
     <issue
         id="RtlHardcoded"
