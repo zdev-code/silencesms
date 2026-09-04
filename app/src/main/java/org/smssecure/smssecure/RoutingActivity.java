@@ -19,7 +19,6 @@ public final class RoutingActivity extends Activity {
   private static boolean isLauncherIntent(Intent intent) {
     return intent != null && Intent.ACTION_MAIN.equals(intent.getAction()) &&
         intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intent.getCategories().size() == 1 &&
-        intent.getData() == null && intent.getClipData() == null &&
-        (intent.getExtras() == null || intent.getExtras().isEmpty());
+        intent.getData() == null && intent.getClipData() == null;
   }
 }

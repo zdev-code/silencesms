@@ -9,6 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 final class ConversationThreadStateStore {
+  static final String ARG_THREAD_ID = "conversation.thread_id";
+  static final String ARG_LAST_SEEN = "conversation.last_seen";
   static final String KEY_THREAD_ID = "conversation_thread.thread_id";
   static final String KEY_LAST_SEEN = "conversation_thread.last_seen";
   static final String KEY_SELECTED_MESSAGE_IDS = "conversation_thread.selected_message_ids";
@@ -30,13 +32,15 @@ final class ConversationThreadStateStore {
   }
 
   private static long requiredThreadId(SavedStateHandle handle) {
-    Long value = handle.get("thread_id");
+    Long value = handle.get(KEY_THREAD_ID);
+    if (value == null) value = handle.get(ARG_THREAD_ID);
     if (value == null || value <= 0) throw new IllegalStateException("Missing thread ID");
     return value;
   }
 
   private static long lastSeen(SavedStateHandle handle) {
-    Long value = handle.get("last_seen");
+    Long value = handle.get(KEY_LAST_SEEN);
+    if (value == null) value = handle.get(ARG_LAST_SEEN);
     return value == null ? -1 : value;
   }
 

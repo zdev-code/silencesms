@@ -19,7 +19,9 @@ public class RoutingActivityTest {
   @Test
   public void launcherForwardsOnlyToAuthenticatedApplicationHost() {
     Intent launcher = new Intent(Intent.ACTION_MAIN)
-        .addCategory(Intent.CATEGORY_LAUNCHER);
+        .addCategory(Intent.CATEGORY_LAUNCHER)
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+        .putExtra("launcher_metadata", "must not be forwarded");
     RoutingActivity activity = Robolectric.buildActivity(RoutingActivity.class, launcher).create().get();
 
     Intent forwarded = Shadows.shadowOf(activity).getNextStartedActivity();
@@ -43,8 +45,6 @@ public class RoutingActivityTest {
             .addCategory(Intent.CATEGORY_DEFAULT),
         new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
             .setData(Uri.parse("sms:+15551234567")),
-        new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-            .putExtra("unexpected", "plaintext"),
         launcherWithClipData()
     }) {
       RoutingActivity activity = Robolectric.buildActivity(RoutingActivity.class, malformed).create().get();

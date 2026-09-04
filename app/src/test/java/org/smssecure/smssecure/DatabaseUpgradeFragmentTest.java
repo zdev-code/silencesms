@@ -149,7 +149,7 @@ public class DatabaseUpgradeFragmentTest {
     operation.emitFailure(new ConversationUnlockCapability.LockedException());
     Shadows.shadowOf(Looper.getMainLooper()).idle();
 
-    assertFreshInbox(activity);
+    assertTerminatedWithoutRelaunch(activity);
     assertThat(operation.clearCount).isZero();
   }
 
@@ -161,7 +161,7 @@ public class DatabaseUpgradeFragmentTest {
     operation.emitComplete();
     Shadows.shadowOf(Looper.getMainLooper()).idle();
 
-    assertFreshInbox(activity);
+    assertTerminatedWithoutRelaunch(activity);
     assertThat(operation.clearCount).isZero();
   }
 
@@ -198,6 +198,11 @@ public class DatabaseUpgradeFragmentTest {
         .isEqualTo(ConversationListActivity.class.getName());
     assertThat(HostNavigationCommand.consume(launched))
         .isEqualTo(HostNavigationCommand.Destination.INBOX);
+  }
+
+  private static void assertTerminatedWithoutRelaunch(AuthenticationActivity activity) {
+    assertThat(activity.isFinishing()).isTrue();
+    assertThat(Shadows.shadowOf(activity).getNextStartedActivity()).isNull();
   }
 
   private static void assertContainsNoSensitiveState(Bundle bundle) {

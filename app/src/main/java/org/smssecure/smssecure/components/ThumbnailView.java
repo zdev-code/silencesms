@@ -2,6 +2,7 @@ package org.smssecure.smssecure.components;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -157,9 +158,24 @@ public class ThumbnailView extends FrameLayout {
   }
 
   private boolean isContextValid() {
-    return !(getContext() instanceof Activity)            ||
-           VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN_MR1 ||
-           !((Activity)getContext()).isDestroyed();
+    return isContextValid(getContext());
+  }
+
+  static boolean isContextValid(Context context) {
+    Activity activity = findActivity(context);
+    return activity == null || VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN_MR1 ||
+           !activity.isDestroyed();
+  }
+
+  private static Activity findActivity(Context context) {
+    Context current = context;
+    while (current instanceof ContextWrapper) {
+      if (current instanceof Activity) return (Activity) current;
+      Context base = ((ContextWrapper) current).getBaseContext();
+      if (base == current) break;
+      current = base;
+    }
+    return current instanceof Activity ? (Activity) current : null;
   }
 
   private RequestBuilder<Drawable> buildThumbnailGlideRequest(@NonNull Slide slide, @NonNull MasterSecret masterSecret) {

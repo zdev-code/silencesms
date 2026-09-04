@@ -111,10 +111,24 @@ public class RetainedActivityContractTest {
   }
 
   @Test
+  public void conversationListRetainsHiltViewModelFactoryBoundary() throws Exception {
+    assertThat(source("ConversationListFragment.java"))
+        .contains("@AndroidEntryPoint")
+        .contains("new ViewModelProvider(this).get(ConversationListViewModel.class)");
+  }
+
+  @Test
   public void popupWindowRetainsConversationActivityControllerContract() {
     assertThat(ConversationPopupActivity.class.getSuperclass()).isEqualTo(ConversationActivity.class);
     assertThat(androidx.fragment.app.Fragment.class.isAssignableFrom(ConversationScreenFragment.class))
         .isTrue();
+  }
+
+  @Test
+  public void conversationScreenInitializesLanguageBeforeResume() throws Exception {
+    assertThat(source("ConversationScreenFragment.java"))
+        .contains("dynamicLanguage.onCreate(requireActivity())")
+        .contains("dynamicLanguage.onResume(requireActivity())");
   }
 
   @Test

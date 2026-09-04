@@ -402,6 +402,7 @@ public class ConversationScreenFragment extends Fragment
   @Override
   public void onCreate(@Nullable Bundle state) {
     super.onCreate(state);
+    dynamicLanguage.onCreate(requireActivity());
     requireActivity().addMenuProvider(this, this, Lifecycle.State.RESUMED);
     this.unlockSession = UnlockSession.capture();
     this.screenViewModel = new ViewModelProvider(this).get(ConversationScreenViewModel.class);

@@ -141,6 +141,10 @@ public class AuthenticationActivityTest {
     assertThat(intent.getCategories()).isNull();
     assertThat(intent.getFlags()).isZero();
     assertThat(AuthenticationActivity.isAllowedPromptPassphraseIntent(intent)).isTrue();
+    assertThat(AuthenticationActivity.isAllowedPromptPassphraseIntent(
+        new Intent(intent).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))).isTrue();
+    assertThat(AuthenticationActivity.isAllowedPromptPassphraseIntent(
+        new Intent(intent).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION))).isFalse();
     assertThat(AuthenticationActivity.isAllowedWelcomeIntent(intent)).isFalse();
     assertThat(AuthenticationActivity.isAllowedCreatePassphraseIntent(intent)).isFalse();
 
@@ -294,11 +298,7 @@ public class AuthenticationActivityTest {
         AuthenticationActivity.class, prompt).create().get();
 
     assertThat(activity.isFinishing()).isTrue();
-    Intent launched = Shadows.shadowOf(activity).getNextStartedActivity();
-    assertThat(launched.getComponent().getClassName())
-        .isEqualTo(ConversationListActivity.class.getName());
-    assertThat(HostNavigationCommand.consume(launched))
-        .isEqualTo(HostNavigationCommand.Destination.INBOX);
+    assertThat(Shadows.shadowOf(activity).getNextStartedActivity()).isNull();
   }
 
   @Test
@@ -363,8 +363,7 @@ public class AuthenticationActivityTest {
         new Intent(context, AuthenticationActivity.class)
             .putExtra(AuthenticationActivity.EXTRA_SURFACE, "READY"))
         .create().get();
-    assertThat(Shadows.shadowOf(malformed).getNextStartedActivity().getComponent().getClassName())
-        .isEqualTo(ConversationListActivity.class.getName());
+    assertThat(Shadows.shadowOf(malformed).getNextStartedActivity()).isNull();
     assertThat(malformed.getIntent().getExtras()).isNull();
     assertThat(malformed.isFinishing()).isTrue();
 

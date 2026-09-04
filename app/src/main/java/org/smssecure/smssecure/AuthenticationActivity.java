@@ -281,7 +281,8 @@ public final class AuthenticationActivity extends BaseActionBarActivity
         !AuthenticationActivity.class.getName().equals(intent.getComponent().getClassName()) ||
         intent.getAction() != null || intent.getData() != null || intent.getType() != null ||
         intent.getClipData() != null || intent.getSelector() != null ||
-        intent.getCategories() != null || intent.getFlags() != 0) {
+        intent.getCategories() != null ||
+        (intent.getFlags() & ~Intent.FLAG_ACTIVITY_NEW_TASK) != 0) {
       return null;
     }
 
@@ -384,7 +385,6 @@ public final class AuthenticationActivity extends BaseActionBarActivity
   private void failClosed() {
     BootstrapContinuationStore.getInstance().discard(getIntent());
     setIntent(new Intent(this, AuthenticationActivity.class));
-    startActivity(new Intent(this, ConversationListActivity.class));
     finish();
   }
 }

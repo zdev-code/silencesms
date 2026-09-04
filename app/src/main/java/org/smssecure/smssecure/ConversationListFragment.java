@@ -72,6 +72,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class ConversationListFragment extends Fragment
   implements ActionMode.Callback, ItemClickListener
 {

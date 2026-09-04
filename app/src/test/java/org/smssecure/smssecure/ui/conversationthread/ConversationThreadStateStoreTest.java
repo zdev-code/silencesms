@@ -11,6 +11,18 @@ import java.util.Set;
 
 public class ConversationThreadStateStoreTest {
   @Test
+  public void seedsStateFromCanonicalConversationArguments() {
+    SavedStateHandle handle = new SavedStateHandle(Map.of(
+        ConversationThreadStateStore.ARG_THREAD_ID, 7L,
+        ConversationThreadStateStore.ARG_LAST_SEEN, 41L));
+
+    ConversationThreadStateStore store = new ConversationThreadStateStore(handle);
+
+    assertThat(store.getThreadId()).isEqualTo(7L);
+    assertThat(store.getLastSeen()).isEqualTo(41L);
+  }
+
+  @Test
   public void storesOnlyTypedNavigationSelectionAndPagingState() {
     SavedStateHandle handle = new SavedStateHandle();
     ConversationThreadStateStore store = new ConversationThreadStateStore(handle, 8L, -1L);

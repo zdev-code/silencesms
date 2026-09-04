@@ -271,7 +271,7 @@ public class ConversationFragment extends Fragment {
       list.addItemDecoration(new StickyHeaderDecoration(adapter, false, false));
 
       setLastSeen(lastSeen);
-      viewModel = new ViewModelProvider(requireActivity())
+      viewModel = new ViewModelProvider(requireParentFragment())
         .get("conversation-thread-" + threadId, ConversationThreadViewModel.class);
       if (stateCollectionJob != null) stateCollectionJob.cancel(null);
       stateCollectionJob = LifecycleStateCollector.collect(

@@ -240,9 +240,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationFragment.java": {
-    "mtime": 1788518710.2396412,
-    "seen": 1788520873.2665532,
-    "ast_hash": "cb1d09155607c64f5891dafa18d6230b",
+    "mtime": 1788542559.8626263,
+    "seen": 1788542905.0791533,
+    "ast_hash": "47d1f86e313d46c3bc7f43bbeffc491d",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationItem.java": {
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationListFragment.java": {
-    "mtime": 1788518710.237139,
-    "seen": 1788520873.2665582,
-    "ast_hash": "5206e69c1674cb36083874db1a121066",
+    "mtime": 1788541824.279755,
+    "seen": 1788542027.5603497,
+    "ast_hash": "b33aaf006558bd5971b067885d463bbb",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationListItem.java": {
@@ -666,9 +666,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/components/ThumbnailView.java": {
-    "mtime": 1785765988.5135934,
-    "seen": 1788370476.5557258,
-    "ast_hash": "7fe68e1ff6801939efedaafeae3ff672",
+    "mtime": 1788542529.683821,
+    "seen": 1788542905.0792584,
+    "ast_hash": "250977c063f2d661ba5c8656af917955",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/components/TransferControlView.java": {
@@ -4110,9 +4110,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ui/conversationthread/ConversationThreadStateStore.java": {
-    "mtime": 1788420811.0861814,
-    "seen": 1788421585.9820206,
-    "ast_hash": "32f5ce6aeb87bdd6e074c0d9eb86bc30",
+    "mtime": 1788542559.868827,
+    "seen": 1788542905.0797517,
+    "ast_hash": "8c44a99b7f7a3060be89667b1aa4465e",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ui/conversationthread/ConversationThreadUiState.java": {
@@ -4170,9 +4170,9 @@
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/ui/conversationthread/ConversationThreadStateStoreTest.java": {
-    "mtime": 1788298510.473138,
-    "seen": 1788370476.5560129,
-    "ast_hash": "505008deea72c37776be17e451eeda58",
+    "mtime": 1788542559.868827,
+    "seen": 1788542905.0799973,
+    "ast_hash": "0fdb11ff492b2a23ec0fad82e2d8aeb4",
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/ui/conversationthread/ConversationThreadViewModelTest.java": {
@@ -4212,9 +4212,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/RoutingActivity.java": {
-    "mtime": 1788518710.2466407,
-    "seen": 1788520873.2666152,
-    "ast_hash": "3a0a2817a575b4e9566fa659d7bcc63b",
+    "mtime": 1788542226.4366288,
+    "seen": 1788542408.2497647,
+    "ast_hash": "81049f517a3dd7fa95bfbceb0f80392b",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/data/contact/ContactRepository.java": {
@@ -4290,9 +4290,9 @@
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/RoutingActivityTest.java": {
-    "mtime": 1788518710.2466407,
-    "seen": 1788520873.2670486,
-    "ast_hash": "c2c4a4c46745fdba4ee8fcc79001bafc",
+    "mtime": 1788542226.4517052,
+    "seen": 1788542408.2502832,
+    "ast_hash": "1b8715711f857b8c4446f408a4b7ca5b",
     "semantic_hash": ""
   },
   "core-models/build.gradle.kts": {
@@ -4524,9 +4524,9 @@
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/RetainedActivityContractTest.java": {
-    "mtime": 1788518710.2579043,
-    "seen": 1788520873.2670476,
-    "ast_hash": "b609f1fa5aca401b017da342e7f221b7",
+    "mtime": 1788542716.4005768,
+    "seen": 1788542905.0799174,
+    "ast_hash": "655993d1998ae100ed1e088bf4847fb7",
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/ui/importexport/ImportExportViewModelTest.java": {
@@ -4668,9 +4668,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationScreenFragment.java": {
-    "mtime": 1788521626.6955078,
-    "seen": 1788535991.2693424,
-    "ast_hash": "bea798b4ef7d971ded83088777afb338",
+    "mtime": 1788542716.3797753,
+    "seen": 1788542905.0791664,
+    "ast_hash": "07ec4c7c358cdc4b4f65e8acdfaa7566",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationScreenHost.java": {
@@ -4974,9 +4974,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/AuthenticationActivity.java": {
-    "mtime": 1788518710.3178823,
-    "seen": 1788520873.2665431,
-    "ast_hash": "231d087b581a1c7f84e4c7b400e976b7",
+    "mtime": 1788541577.0763328,
+    "seen": 1788542027.5603337,
+    "ast_hash": "ba2448114dae70f8045376131ef3a525",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/WelcomeFragment.java": {
@@ -4992,9 +4992,9 @@
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/AuthenticationActivityTest.java": {
-    "mtime": 1788518710.320915,
-    "seen": 1788520873.2670388,
-    "ast_hash": "afb59cb6d35b4164e88aab13ae8817d9",
+    "mtime": 1788541577.083421,
+    "seen": 1788542027.5609202,
+    "ast_hash": "2b4d406a68e0c19143d93a69b6e076ed",
     "semantic_hash": ""
   },
   ".github/modernize/rearchitecture/artifacts/authentication-welcome-host-frontend.md": {
@@ -5106,9 +5106,9 @@
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/DatabaseUpgradeFragmentTest.java": {
-    "mtime": 1788518710.3234227,
-    "seen": 1788520873.2670426,
-    "ast_hash": "bdd1ae5b205684d2da25c06b2b084aa9",
+    "mtime": 1788541642.111317,
+    "seen": 1788542027.5609262,
+    "ast_hash": "25884117c90fc5ab9f4fdc418e668b9b",
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/domain/upgrade/DatabaseUpgradePolicyTest.java": {
@@ -5178,9 +5178,9 @@
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/PassphraseChangeFragmentTest.java": {
-    "mtime": 1788518710.3244505,
-    "seen": 1788520873.267046,
-    "ast_hash": "1d2739bad26771ffd7d5830c470048d2",
+    "mtime": 1788541642.1225214,
+    "seen": 1788542027.56093,
+    "ast_hash": "27a2e5b8cc6936cfdd2ccfcabb6bfcb3",
     "semantic_hash": ""
   },
   ".github/modernize/rearchitecture/artifacts/authentication-change-passphrase-host-frontend.md": {
@@ -5243,10 +5243,10 @@
     "ast_hash": "500164b0f7468abf1293d34fe3821c09",
     "semantic_hash": ""
   },
-  "LINT_REMEDIATION_PLAN.md": {
-    "mtime": 1788540757.8007007,
-    "seen": 1788540802.0053546,
-    "ast_hash": "ba46036788441c43b27c4219eadc028d",
+  "app/src/test/java/org/smssecure/smssecure/components/ThumbnailViewTest.java": {
+    "mtime": 1788542529.7285492,
+    "seen": 1788542905.0799322,
+    "ast_hash": "600eb6f53aa26f37238832996cac9ba2",
     "semantic_hash": ""
   }
 }

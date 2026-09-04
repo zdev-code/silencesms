@@ -178,8 +178,7 @@ public class PassphraseChangeFragmentTest {
 
     AuthenticationActivity recreated = controller.get();
     assertThat(recreated.isFinishing()).isTrue();
-    assertThat(Shadows.shadowOf(recreated).getNextStartedActivity().getComponent().getClassName())
-        .isEqualTo(ConversationListActivity.class.getName());
+    assertThat(Shadows.shadowOf(recreated).getNextStartedActivity()).isNull();
   }
 
   private ActivityController<AuthenticationActivity> launchController() {
