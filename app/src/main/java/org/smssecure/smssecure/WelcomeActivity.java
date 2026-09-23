@@ -106,9 +106,7 @@ public class WelcomeActivity extends BaseActionBarActivity {
   }
 
   private void setStatusBarColor() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      setStatusBarColorCompat(backgroundColor);
-    }
+    setStatusBarColorCompat(backgroundColor);
   }
 
   private static String[] withNotificationPermissionIfRequired(String... basePermissions) {

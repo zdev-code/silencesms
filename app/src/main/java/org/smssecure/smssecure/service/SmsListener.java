@@ -109,17 +109,10 @@ public class SmsListener extends BroadcastReceiver {
     if (!ApplicationMigrationService.isDatabaseImported(context))
       return false;
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
-        SMS_RECEIVED_ACTION.equals(intent.getAction()) &&
+    if (SMS_RECEIVED_ACTION.equals(intent.getAction()) &&
         Util.isDefaultSmsProvider(context))
     {
       return false;
-    }
-
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT &&
-        SilencePreferences.isInterceptAllSmsEnabled(context))
-    {
-      return true;
     }
 
     return WirePrefix.isPrefixedMessage(messageBody);

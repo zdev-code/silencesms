@@ -2,8 +2,6 @@ package org.smssecure.smssecure.preferences.widgets;
 
 
 import android.content.Context;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -15,7 +13,6 @@ public class SilenceRingtonePreference extends AdvancedRingtonePreference {
   private TextView rightSummary;
   private CharSequence summary;
 
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   public SilenceRingtonePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     initialize();

@@ -60,6 +60,8 @@ public final class ConversationListModelAdapter extends RecyclerView.Adapter<Con
     this.archivedCount = archivedCount;
     batchSet.clear();
     batchSet.addAll(selectedThreadIds);
+    // This replaces the complete ordered snapshot and selection state.
+    //noinspection NotifyDataSetChanged
     notifyDataSetChanged();
   }
 
@@ -140,6 +142,8 @@ public final class ConversationListModelAdapter extends RecyclerView.Adapter<Con
   public void initializeBatchMode(boolean enabled) {
     batchMode = enabled;
     if (!enabled) batchSet.clear();
+    // Batch mode changes the presentation of every row.
+    //noinspection NotifyDataSetChanged
     notifyDataSetChanged();
   }
 

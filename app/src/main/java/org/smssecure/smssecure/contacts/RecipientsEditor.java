@@ -17,6 +17,7 @@
 
 package org.smssecure.smssecure.contacts;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView;
 import android.telephony.PhoneNumberUtils;
@@ -237,6 +238,7 @@ public class RecipientsEditor extends AppCompatMultiAutoCompleteTextView {
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility") // The superclass dispatches clicks; duplicating ACTION_UP would click twice.
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
         final int x = (int) ev.getX();
@@ -247,6 +249,11 @@ public class RecipientsEditor extends AppCompatMultiAutoCompleteTextView {
         }
 
         return super.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 
     private static String getNumberAt(Spanned sp, int start, int end, Context context) {

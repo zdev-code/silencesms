@@ -16,6 +16,7 @@
  */
 package org.smssecure.smssecure.database;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -71,6 +72,7 @@ public class ApnDatabase {
 
   private static final String BASE_SELECTION = MCC_MNC_COLUMN + " = ?";
 
+  @SuppressLint("StaticFieldLeak") // The constructor receives only context.getApplicationContext().
   private static ApnDatabase instance = null;
 
   public synchronized static ApnDatabase getInstance(Context context) throws IOException {

@@ -2,7 +2,7 @@ package org.smssecure.smssecure.util;
 
 import org.junit.Test;
 import java.io.IOException;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class HexTest {
     private byte[] testBytes = new byte[16];//Just bytes

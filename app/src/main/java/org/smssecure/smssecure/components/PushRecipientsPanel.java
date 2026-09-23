@@ -112,8 +112,7 @@ public class PushRecipientsPanel extends RelativeLayout implements RecipientsMod
 
     View imageButton = findViewById(R.id.contacts_button);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-      ((MarginLayoutParams) imageButton.getLayoutParams()).topMargin = 0;
+    ((MarginLayoutParams) imageButton.getLayoutParams()).topMargin = 0;
 
     panel = findViewById(R.id.recipients_panel);
     initRecipientsEditor();

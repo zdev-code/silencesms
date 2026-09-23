@@ -124,20 +124,16 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
           // itself sticks. Give it the top inset so its own content clears the status bar.
           content.setPadding(bars.left, bars.top, bars.right, contentBottom);
         } else {
-          // Non-overlay theme action bar: ActionBarOverlayLayout manages the content view's own
-          // padding (and would overwrite ours), and it lays the content frame out full-screen with
-          // the action bar drawn over the content's top. Pad the content's children (the fragment /
-          // root views, which AOL does not touch) so they clear the whole padded action bar at the
-          // top and the navigation bar at the bottom. Pad every child so fragments that are being
-          // swapped in/out during a transition are all handled.
-          int childTop = bars.top + resolveActionBarSize();
+          // Non-overlay theme action bar: ActionBarOverlayLayout already positions the content
+          // frame below the padded action bar. Only side and bottom insets belong on its children.
+          // Pad every child so fragments being swapped during a transition are all handled.
           if (content instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) content;
             for (int i = 0; i < group.getChildCount(); i++) {
-              group.getChildAt(i).setPadding(bars.left, childTop, bars.right, contentBottom);
+              group.getChildAt(i).setPadding(bars.left, 0, bars.right, contentBottom);
             }
           } else {
-            content.setPadding(bars.left, childTop, bars.right, contentBottom);
+            content.setPadding(bars.left, 0, bars.right, contentBottom);
           }
         }
       } else {
@@ -287,15 +283,6 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     return fallback;
   }
 
-  /** Resolves the theme's action-bar height in pixels (e.g. {@code ?attr/actionBarSize}). */
-  private int resolveActionBarSize() {
-    TypedValue value = new TypedValue();
-    if (getTheme().resolveAttribute(androidx.appcompat.R.attr.actionBarSize, value, true)) {
-      return TypedValue.complexToDimensionPixelSize(value.data, getResources().getDisplayMetrics());
-    }
-    return 0;
-  }
-
   @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     return (keyCode == KeyEvent.KEYCODE_MENU && BaseActivity.isMenuWorkaroundRequired()) || super.onKeyDown(keyCode, event);
@@ -311,8 +298,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   }
 
   protected final void applyScreenshotSecurity(boolean destinationAlwaysSecure) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH &&
-        ScreenSecurityPolicy.shouldSecure(SilencePreferences.isScreenSecurityEnabled(this),
+    if (ScreenSecurityPolicy.shouldSecure(SilencePreferences.isScreenSecurityEnabled(this),
                                           destinationAlwaysSecure))
     {
       getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);

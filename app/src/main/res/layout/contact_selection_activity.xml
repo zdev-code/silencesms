@@ -20,11 +20,13 @@
                       android:orientation="horizontal">
 
             <ImageView android:id="@+id/action_icon"
+                       android:contentDescription="@string/accessibility__search"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:layout_gravity="center_vertical"
                        android:gravity="center_vertical"
                        android:clickable="true"
+                       android:focusable="true"
                        android:background="@drawable/circle_touch_highlight_background"
                        android:src="@drawable/ic_search_white_24dp" />
 
@@ -37,7 +39,7 @@
                           android:layout_height="wrap_content"
                           android:layout_width="0px"
                           android:layout_weight="1"
-                          android:layout_marginLeft="5dp"
+                          android:layout_marginStart="5dp"
                           android:hint="@string/contact_selection_activity__enter_name_or_number"
                           android:inputType="textPersonName"
                           style="@style/Silence.TitleTextStyle"
@@ -53,30 +55,36 @@
                         android:gravity="center">
 
                     <ImageView android:id="@+id/search_dialpad"
+                               android:contentDescription="@string/accessibility__switch_to_dialpad"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
                                android:layout_gravity="center_vertical"
                                android:gravity="center_vertical"
                                android:clickable="true"
+                               android:focusable="true"
                                android:background="@drawable/circle_touch_highlight_background"
                                android:src="@drawable/ic_dialpad_white_24dp" />
 
                     <ImageView android:id="@+id/search_keyboard"
+                               android:contentDescription="@string/accessibility__switch_to_keyboard"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
                                android:layout_gravity="center_vertical"
                                android:gravity="center_vertical"
                                android:clickable="true"
+                               android:focusable="true"
                                android:visibility="gone"
                                android:background="@drawable/circle_touch_highlight_background"
                                android:src="@drawable/ic_keyboard_white_24dp" />
 
                     <ImageView android:id="@+id/search_clear"
+                               android:contentDescription="@string/accessibility__clear_search"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
                                android:layout_gravity="center_vertical"
                                android:gravity="center_vertical"
                                android:clickable="true"
+                               android:focusable="true"
                                android:visibility="gone"
                                android:background="@drawable/circle_touch_highlight_background"
                                android:src="@drawable/ic_clear_white_24dp" />

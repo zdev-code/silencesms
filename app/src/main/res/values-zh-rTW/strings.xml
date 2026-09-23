@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">是</string>
   <string name="no">否</string>
@@ -43,13 +43,11 @@
   <string name="ConversationActivity_message_is_empty_exclamation">訊息內容是空的！</string>
   <string name="ConversationActivity_group_conversation">群組聊天</string>
   <string name="ConversationActivity_unnamed_group">未命名的群組</string>
-  <string name="ConversationActivity_saved_draft">草稿已存</string>
   <string name="ConversationActivity_invalid_recipient">無效的連絡人！</string>
   <string name="ConversationActivity_calls_not_supported">不支援的通話</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">您使用的裝置看來不支援撥號通話功能。</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">訊息細節</string>
   <string name="ConversationFragment_save_to_sd_card">儲存到儲存裝置？</string>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">無法寫入儲存裝置！</string>
   <!--ConversationListActivity-->
@@ -61,24 +59,19 @@
   <!--DateUtils-->
   <!--DualSimUtil-->
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">分享給</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">匯出</string>
   <string name="ExportFragment_cancel">取消</string>
-  <string name="ExportFragment_exporting">正在匯出...</string>
+  <string name="ExportFragment_exporting">正在匯出…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">新增群組</string>
-  <string name="GroupCreateActivity_actionbar_update_title">更新群組</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">新的 MMS 群組</string>
   <string name="GroupCreateActivity_contacts_mms_exception">擲茭？ 無法成功建立群組。</string>
   <string name="GroupCreateActivity_contacts_no_members">建立群組至少需要加入一個連絡人！</string>
   <string name="GroupCreateActivity_menu_create_title">建立群組</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">我</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">匯入</string>
-  <string name="ImportExportActivity_export">匯出</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">匯入目前裝置上的手機簡訊？</string>
   <string name="ImportFragment_import">匯入</string>
@@ -97,7 +90,6 @@
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">找不到任何金鑰！</string>
   <!--MessageDetailsRecipient-->
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">儲存 MMS 多媒體簡訊時有誤！</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">多媒體訊息</string>
   <!--MessageRecord-->
@@ -112,8 +104,6 @@
         金鑰確認所用的數位簽名已被成功驗證。但您目前將「自動金鑰交換」的功能
         給取消了。
     </string>
-  <string name="ReceiveKeyActivity_processing">處理中</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">金鑰交換處理中...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">您想要對這名連絡人
 進行認證嗎？</string>
   <!--RecipientPreferencesActivity-->
@@ -156,7 +146,6 @@
   <!--KeyCachingService-->
   <string name="KeyCachingService_lock">以『自訂密碼』進行鎖定</string>
   <!--MessageNotifier-->
-  <string name="MessageNotifier_no_subject">(在此輸入主題)</string>
   <string name="MessageNotifier_message_delivery_failed">訊息傳送失敗。</string>
   <string name="MessageNotifier_failed_to_deliver_message">無法傳送訊息。</string>
   <string name="MessageNotifier_error_delivering_message">傳送訊息發生失誤。</string>
@@ -168,22 +157,18 @@
   <!--contact_selection_activity-->
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">沒有連絡人。</string>
-  <string name="contact_selection_group_activity__finding_contacts">載入連絡人中...</string>
+  <string name="contact_selection_group_activity__finding_contacts">載入連絡人中…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">連絡人的相片</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">相片</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">沒有最近通話。</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">傳送加密的手機簡訊</string>
   <string name="conversation_activity__type_message_mms_secure">傳送加密的 MMS多媒體簡訊</string>
   <string name="conversation_activity__send">送出</string>
-  <string name="conversation_activity__remove">移除</string>
-  <string name="conversation_activity__window_description">與 %1$s 聊天</string>
   <string name="conversation_activity__compose_description">編輯簡訊</string>
   <string name="conversation_activity__emoji_toggle_description">叫出「表情符號」列表</string>
   <!--conversation_item-->
@@ -198,7 +183,7 @@
   <!--conversation_item_received-->
   <string name="conversation_item_received__download">下載</string>
   <string name="conversation_item_received__contact_photo_description">連絡人的相片</string>
-  <string name="conversation_item_received__downloading">下載中...</string>
+  <string name="conversation_item_received__downloading">下載中…</string>
   <!--audio_view-->
   <!--conversation_fragment_cab-->
   <string name="conversation_fragment_cab__batch_selection_mode">批次選擇模式</string>
@@ -207,7 +192,6 @@
   <!--import_export_fragment-->
   <!--log_submit_activity-->
   <string name="log_submit_activity__thanks">感謝您的協助！</string>
-  <string name="log_submit_activity__submitting">上傳中</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">裝置上預設的資料庫將不會被做任何修改或變更。</string>
   <string name="database_migration_activity__skip">略過</string>
@@ -235,22 +219,15 @@
   <string name="verify_identity_activity__your_identity_you_read">你的驗證碼 (你自己唸出)</string>
   <!--message_details_header-->
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">新增『自訂密碼』</string>
-  <string name="AndroidManifest__enter_passphrase">輸入「自訂密碼」</string>
   <string name="AndroidManifest__select_contacts">選擇多個連絡人</string>
-  <string name="AndroidManifest__public_identity_key">公鑰／公開金鑰</string>
   <string name="AndroidManifest__change_passphrase">變更『自訂密碼』</string>
   <string name="AndroidManifest__verify_identity">驗證身分</string>
-  <string name="AndroidManifest__complete_key_exchange">金鑰交換完成</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">匯入／匯出</string>
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__general">一般</string>
   <string name="preferences__pref_all_sms_title">接收所有手機簡訊</string>
   <string name="preferences__pref_all_mms_title">接收所有MMS多媒體簡訊</string>
-  <string name="preferences__display_settings">顯示設定</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">從您的連絡人清單中選擇連絡人。</string>
   <string name="preferences__change_passphrase">變更『自訂密碼』</string>
   <string name="preferences__complete_key_exchanges">金鑰交換完成</string>
   <string name="preferences__screen_security">螢幕安全設定</string>
@@ -258,23 +235,14 @@
   <string name="preferences__disable_screen_security_to_allow_screen_shots">停用畫面擷取功能，在對話清單或APP內</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">若閒置太久沒用，讓『自訂密碼』自動幫 SMSSecure上鎖</string>
   <string name="preferences__timeout_passphrase">『自訂密碼』上鎖倒數</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">選擇『自訂密碼』上鎖倒數的區間</string>
   <string name="preferences__pref_timeout_interval_title">倒數時間</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">等候『自訂密碼』幫 SMSSecure 上鎖的等候時間</string>
   <string name="preferences__notifications">通知</string>
   <string name="preferences__led_color">LED燈號顏色</string>
   <string name="preferences__pref_led_blink_title">LED 閃爍模式</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">自訂 LED 閃爍模式</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">開啟，當:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">關閉，當:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">自訂 LED 閃爍模式設定完成！</string>
   <string name="preferences__sound">提示音效</string>
   <string name="preferences__change_notification_sound">變更通知音效</string>
   <string name="preferences__play_inthread_notifications">當進行聊天時，收到新通知所要播放的音效。</string>
   <string name="preferences__vibrate">震動</string>
-  <string name="preferences__also_vibrate_when_notified">通知時一併啟用震動</string>
-  <string name="preferences__minutes">分</string>
-  <string name="preferences__hours">小時</string>
   <string name="preferences__green">綠色</string>
   <string name="preferences__red">紅色</string>
   <string name="preferences__blue">藍色</string>
@@ -286,9 +254,7 @@
   <string name="preferences__fast">快速</string>
   <string name="preferences__normal">正常</string>
   <string name="preferences__slow">緩慢</string>
-  <string name="preferences__custom">自訂</string>
   <string name="preferences__advanced">進階</string>
-  <string name="preferences__override_system_mms_settings">您可自訂 MMS多媒體簡訊設定，並覆蓋過系統的預設值。</string>
   <string name="preferences__sms_delivery_reports">手機簡訊傳送狀態報告</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">針對每則手機簡訊都要求回覆傳送報告</string>
   <string name="preferences__delete_old_messages">刪除舊的簡訊</string>
@@ -303,15 +269,9 @@
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">全選</string>
-  <string name="contact_selection_list__menu_unselect_all">取消全選</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">完成</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">更新連絡人清單</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">傳送加密的手機簡訊</string>
-  <string name="conversation_button_context__send_secure_mms">傳送加密的 MMS多媒體簡訊</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">撥出</string>
   <!--conversation_context-->
@@ -351,7 +311,6 @@
   <!--key_scanning-->
   <string name="key_scanning__menu_compare">比對</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">新訊息</string>
   <string name="text_secure_normal__menu_new_group">新增群組</string>
   <string name="text_secure_normal__menu_settings">設定</string>
   <string name="text_secure_normal__menu_clear_passphrase">鎖定</string>

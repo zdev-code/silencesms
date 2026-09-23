@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Ya</string>
   <string name="no">Ket</string>
   <string name="delete">Dilemel</string>
-  <string name="please_wait">Gortozit...</string>
+  <string name="please_wait">Gortozit…</string>
   <!--AbstractNotificationBuilder-->
   <string name="AbstractNotificationBuilder_new_message">Kemennadenn nevez</string>
   <!--ApplicationPreferencesActivity-->
@@ -57,7 +57,6 @@
   <string name="DraftDatabase_Draft_video_snippet">(video)</string>
   <!--AttchmentManager-->
   <string name="AttachmentManager_cant_open_media_selection">N\'haller ket kavout un arload evit diuzañ ar media</string>
-  <string name="AttachmentManager_silence_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">Ezhomm en deus Silence eus an aotre Kadaviñ Diavaez evit stagañ skeudennoù, videoioù pe son, met nac\'het e bet. Kit e arventennoù an arload, dibabit \"Aotreoù\" ha gweredekait \"Kadaviñ\".</string>
   <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Ezhomm en deus Silence eus an aotre Darempredoù evit stagañ titouroù un darempred met nac\'het eo bet. Kit e arventennoù an arload, dibabit \"Aotreoù\" ha gweredekait \"Darempredoù\".</string>
   <!--AttachmentTypeSelectorAdapter-->
   <string name="AttachmentTypeSelectorAdapter_camera">Benveg skeudennoù</string>
@@ -93,9 +92,6 @@
   <string name="ConversationActivity_select_contact_info">Diuzañ titouroù an darempred-mañ</string>
   <string name="ConversationActivity_compose_message">Skrivañ ur gemennadenn</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">Digarezit, degouezhet ez eus bet ur gudenn en ur ouzhpennañ ho stagadenn.</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">Re vras eo ar GIF diuzet ganeoc\'h!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Digarezit, ar video diuzet ganeoc\'h az a dreist d\'ar bevennoù ment evit ar c\'hemennadennoù (%1$s Ke)</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Digarezit, ar restr son diuzet az a dreist d\'ar bevennoù ment evit ar c\'hemennadennoù (%1$s Ke)</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">An degemerer n\'eo ket un niverenn pe ur chomlec\'h postel talvoudek!</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Goulo eo ar gemennadenn a glaskit kas!</string>
   <string name="ConversationActivity_group_members">Izili ar strollad</string>
@@ -108,7 +104,6 @@
     <item quantity="many">%d a izli</item>
     <item quantity="other">%d ezel</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Brouilhed enrollet</string>
   <string name="ConversationActivity_invalid_recipient">Degemerer didalvoudek!</string>
   <string name="ConversationActivity_calls_not_supported">N\'eo ket skoret ar galvoù</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">War a-seblant n\'eo ket skoret an oberoù niverenniñ gant an trevnad-mañ.</string>
@@ -119,9 +114,6 @@
   <string name="ConversationActivity_transport_secure_mms">MMS enrineget</string>
   <string name="ConversationActivity_install_smssecure">Ha ma vefe kaozeet en un doare diogel? %s</string>
   <string name="ConversationActivity_recipient_self">N\'hallit ket kregiñ gant estezioù enrineget ganeoc\'h hoc\'h-unan!</string>
-  <string name="ConversationActivity_mms_not_supported_title">N\'eo ket skoret an MMSoù</string>
-  <string name="ConversationActivity_mms_not_supported_message">N\'haller ket kas ar gemennadenn-mañ dre ma n\'eo ket skoret an MMSoù gant ar pourchaser.</string>
-  <string name="ConversationActivity_specify_recipient">Diuzit un darempred</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">Re vras eo ar stagadenn.</string>
   <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Ezhomm en deus Silence eus an aotre SMS evit kas SMSoù met nac\'het eo bet. Kit e arventennoù an arload, dibabit \"Aotreoù\" ha gweredekait \"SMS\".</string>
   <!--ConversationAdapter-->
@@ -133,7 +125,6 @@
     <item quantity="other">%d kemennadenn amlennet</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Munudoù ar gemennadenn</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">Dilemel ar c\'hemennadennoù diuzet?</item>
     <item quantity="two">Dilemel ar c\'hemennadennoù diuzet?</item>
@@ -179,18 +170,18 @@
     <item quantity="other">Oc\'h enrollañ %1$d stagadenn</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">Oc\'h enrollañ ar stagadenn er memor...</item>
-    <item quantity="two">Oc\'h enrollañ %1$d stagadenn er memor...</item>
-    <item quantity="few">Oc\'h enrollañ %1$d stagadenn er memor...</item>
-    <item quantity="many">Oc\'h enrollañ %1$d a stagadennoù er memor...</item>
-    <item quantity="other">Oc\'h enrollañ %1$d stagadenn er memor...</item>
+    <item quantity="one">Oc\'h enrollañ ar stagadenn er memor…</item>
+    <item quantity="two">Oc\'h enrollañ %1$d stagadenn er memor…</item>
+    <item quantity="few">Oc\'h enrollañ %1$d stagadenn er memor…</item>
+    <item quantity="many">Oc\'h enrollañ %1$d a stagadennoù er memor…</item>
+    <item quantity="other">Oc\'h enrollañ %1$d stagadenn er memor…</item>
   </plurals>
-  <string name="ConversationFragment_collecting_attahments">O kerc\'hat ar stagadennoù...</string>
-  <string name="ConversationFragment_pending">O c\'hortoz...</string>
+  <string name="ConversationFragment_collecting_attahments">O kerc\'hat ar stagadennoù…</string>
+  <string name="ConversationFragment_pending">O c\'hortoz…</string>
   <string name="ConversationFragment_mms">MMS</string>
   <string name="ConversationFragment_sms">SMS</string>
-  <string name="ConversationFragment_deleting">O tilemel...</string>
-  <string name="ConversationFragment_deleting_messages">O tilemel kemennadennoù...</string>
+  <string name="ConversationFragment_deleting">O tilemel…</string>
+  <string name="ConversationFragment_deleting_messages">O tilemel kemennadennoù…</string>
   <!--ConversationListActivity-->
   <string name="ConversationListActivity_search">Klask</string>
   <!--ConversationListFragment-->
@@ -209,7 +200,7 @@
     <item quantity="other">Dilemel a raio %1$d kaozeadenn.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">O tilemel</string>
-  <string name="ConversationListFragment_deleting_selected_conversations">O tilemel ar c\'haozeadennoù diuzet...</string>
+  <string name="ConversationListFragment_deleting_selected_conversations">O tilemel ar c\'haozeadennoù diuzet…</string>
   <plurals name="ConversationListFragment_conversations_archived">
     <item quantity="one">Kaozeadenn diellaouet</item>
     <item quantity="two">%d gaozeadenn diellaouet</item>
@@ -229,7 +220,7 @@
   <string name="ConversationListFragment_this_will_send_drafts_of_selected_conversations">Kas a raio brouilhedoù ar c\'haozeadennoù diuzet.</string>
   <string name="ConversationListFragment_send">Kas</string>
   <string name="ConversationListFragment_sending">O kas</string>
-  <string name="ConversationListFragment_sending_selected_drafts">O kas ar brouilhedoù diuzet...</string>
+  <string name="ConversationListFragment_sending_selected_drafts">O kas ar brouilhedoù diuzet…</string>
   <!--ConversationListItemAction-->
   <string name="ConversationListItemAction_archived_conversations_d">Kaozeadennoù diellaouet (%d)</string>
   <!--CustomDefaultPreference-->
@@ -246,7 +237,6 @@
   <string name="DualSimUtil__a_new_key_has_been_generated">Ganet ez eus bet un alc\'hwez nevez</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">Ganet ez eus bet un alc\'hwez nevez evit ar gartenn SIM-mañ</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Rannañ gant</string>
   <!--WelcomeActivity-->
   <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">Gwellait ho puhez prevez, komzit gant an holl</string>
   <string name="WelcomeActivity_encrypt_your_messages">Enrinegit ho kemennadennoù gant implijerien Silence gant SMSoù hag MMSoù ordinal. </string>
@@ -262,25 +252,20 @@
   <string name="ExportFragment_warning_this_will_export_the_contents_of_your_messages_to_storage_in_plaintext">Diwallit, ezporzhiañ a raio endalc\'had ho kemennadennoù Silence er memor e testenn blaen.</string>
   <string name="ExportFragment_cancel">Nullañ</string>
   <string name="ExportFragment_exporting">Oc\'h ezporzhiañ</string>
-  <string name="ExportFragment_exporting_plaintext_to_storage">Oc\'h ezporzhiañ e testenn blaen war ar memor...</string>
+  <string name="ExportFragment_exporting_plaintext_to_storage">Oc\'h ezporzhiañ e testenn blaen war ar memor…</string>
   <string name="ExportFragment_error_unable_to_write_to_storage">Fazi, n\'haller ket skrivañ war ar memor</string>
   <string name="ExportFragment_error_while_writing_to_storage">Fazi en ur skrivañ er memor</string>
   <string name="ExportFragment_export_successful">Ezporzhiet gant berzh.</string>
   <string name="ExportFragment_export_encrypted_backup">Ezporzhiañ un enrolladenn enrineget?</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">Ezporzhiañ a raio hoc\'h alc\'hwezioù, arventennoù ha kemennadennoù enrineget er memor.</string>
-  <string name="ExportFragment_exporting_keys_settings_and_messages">Oc\'h ezporzhiañ hoc\'h alc\'hwezioù, arventennoù ha kemennadennoù enrineget...</string>
+  <string name="ExportFragment_exporting_keys_settings_and_messages">Oc\'h ezporzhiañ hoc\'h alc\'hwezioù, arventennoù ha kemennadennoù enrineget…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Strollad nevez</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Hizivaat ar strollad</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Strollad MMS nevez</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Degouezhet ez eus bet ur fazi dic\'hortoz ha n\'eo ket bet krouet ar strollad.</string>
   <string name="GroupCreateActivity_contacts_no_members">Rankout a rit kaout un den d\'an nebeutañ er strollad!</string>
   <string name="GroupCreateActivity_menu_create_title">Krouiñ ur strollad</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">Me</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Enporzhiañ</string>
-  <string name="ImportExportActivity_export">Ezporzhiañ</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Enporzhiañ stlennvon SMS ar reizhiad?</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">Enporzhiañ a raio ar c\'hemennadennoù adalek stlennvon SMS dre ziouer ar reizhiad etrezek Silence. M\'ho peus enporzhiet ar stlennvon SMS a-raok e vo ouzhpennet an SMS e div wech.</string>

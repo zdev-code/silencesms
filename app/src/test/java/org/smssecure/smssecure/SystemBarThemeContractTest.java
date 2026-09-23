@@ -41,11 +41,11 @@ public class SystemBarThemeContractTest {
   }
 
   @Test
-  public void lightWelcomeThemeUsesDarkIconsOverLightStatusBar() throws Exception {
-    Document themes = parse("res/values-v23/themes.xml");
+  public void welcomeThemeInheritsLightNoActionBar() throws Exception {
+    Document themes = parse("res/values/themes.xml");
 
-    assertThat(itemValue(themes, "Silence.LightWelcomeTheme", "android:windowLightStatusBar"))
-        .isEqualTo("true");
+    assertThat(styleAttribute(themes, "Silence.WelcomeTheme", "parent"))
+        .isEqualTo("Silence.LightNoActionBar");
   }
 
   @Test
@@ -104,6 +104,15 @@ public class SystemBarThemeContractTest {
 
   private static Document parse(String path) throws Exception {
     return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(APP_SOURCE.resolve(path).toFile());
+  }
+
+  private static String styleAttribute(Document document, String styleName, String attributeName) {
+    NodeList styles = document.getElementsByTagName("style");
+    for (int styleIndex = 0; styleIndex < styles.getLength(); styleIndex++) {
+      Element style = (Element) styles.item(styleIndex);
+      if (styleName.equals(style.getAttribute("name"))) return style.getAttribute(attributeName);
+    }
+    return null;
   }
 
   private static String itemValue(Document document, String styleName, String itemName) {

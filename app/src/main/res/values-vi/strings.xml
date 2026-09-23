@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Có</string>
   <string name="no">Không</string>
@@ -45,13 +45,11 @@ Cảnh báo, điều này tắt mã hóa lưu trữ cho tất cả tin nhắn v�
   <plurals name="ConversationActivity_d_recipients_in_group">
     <item quantity="other">%d thành viên</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Lưu bản nháp</string>
   <string name="ConversationActivity_invalid_recipient">Người nhận không đúng!</string>
   <string name="ConversationActivity_calls_not_supported">Không hỗ trợ tính năng gọi điệ</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Thiết bị này không hỗ trợ thao tác gọi.</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Chi tiết tin nhắn</string>
   <!--ConversationListActivity-->
   <!--ConversationListFragment-->
   <string name="ConversationListFragment_deleting">Đang xóa</string>
@@ -61,7 +59,6 @@ Cảnh báo, điều này tắt mã hóa lưu trữ cho tất cả tin nhắn v�
   <!--DateUtils-->
   <!--DualSimUtil-->
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Chia sẻ với</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">Xuất</string>
@@ -69,15 +66,11 @@ Cảnh báo, điều này tắt mã hóa lưu trữ cho tất cả tin nhắn v�
   <string name="ExportFragment_exporting">Đang xuất</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Tạo nhóm mới</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Cập nhật nhóm</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Tạo nhóm MMS mới</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Có lỗi bất ngờ xảy ra do đó không lập nhóm được.</string>
   <string name="GroupCreateActivity_contacts_no_members">Cần có ít nhất một người trong nhóm!</string>
   <string name="GroupCreateActivity_menu_create_title">Tạo nhóm</string>
   <!--GroupMembersDialog-->
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Nhập</string>
-  <string name="ImportExportActivity_export">Xuất</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Nhập dữ liệu từ SMS?</string>
   <string name="ImportFragment_import">Nhập</string>
@@ -93,7 +86,6 @@ Cảnh báo, điều này tắt mã hóa lưu trữ cho tất cả tin nhắn v�
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Không dò tìm thấy chìa khóa nào!</string>
   <!--MessageDetailsRecipient-->
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Có lỗi lưu trữ MMS!</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Tin nhắn đa phương tiện</string>
   <!--MessageRecord-->
@@ -105,8 +97,6 @@ Cảnh báo, điều này tắt mã hóa lưu trữ cho tất cả tin nhắn v�
   <string name="PassphrasePromptActivity_invalid_passphrase_exclamation">Cụm từ mã hóa không hợp lệ!</string>
   <!--ReceiveKeyActivity-->
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">Chữ ký của việc trao đổi chìa khóa này thì tin cẩn, nhưng bạn để tắt thiết đặt \'tự động hoàn tất trao đổi chìa khóa\'.</string>
-  <string name="ReceiveKeyActivity_processing">Đang xử lý</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Xử lý trao đổi chìa khóa...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Bạn có thể muốn kiểm chứng
 địa chỉ liên lạc này.
     </string>
@@ -157,19 +147,16 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <!--contact_selection_activity-->
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">Không có địa chỉ liên lạc.</string>
-  <string name="contact_selection_group_activity__finding_contacts">Nạp danh sách liên hệ...</string>
+  <string name="contact_selection_group_activity__finding_contacts">Nạp danh sách liên hệ…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Hình Liên Hệ</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Chọn cho</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Không cú gọi gần đây</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
   <string name="conversation_activity__send">Gửi</string>
-  <string name="conversation_activity__remove">Bỏ</string>
   <!--conversation_item-->
   <!--conversation_item_sent-->
   <string name="conversation_item_sent__download">Tải xuống</string>
@@ -184,7 +171,6 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <!--import_export_fragment-->
   <!--log_submit_activity-->
   <string name="log_submit_activity__thanks">Cám ơn sự trợ giúp của bạn!</string>
-  <string name="log_submit_activity__submitting">Đang nộp</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">Cơ sở dữ liệu mặc định của hệ thống sẽ không bị sửa hay bị thay đổi gì cả.</string>
   <string name="database_migration_activity__skip">Bỏ qua</string>
@@ -209,15 +195,12 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <string name="verify_identity_activity__your_identity_you_read">Tên nhận diện của bạn (bạn đọc):</string>
   <!--message_details_header-->
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__enter_passphrase">Điền vào cụm từ mã hóa</string>
   <string name="AndroidManifest__change_passphrase">Đổi mật khẩu</string>
   <!--arrays.xml-->
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__general">Tổng quát</string>
   <string name="preferences__pref_all_sms_title">Nhận tất cả SMS</string>
   <string name="preferences__pref_all_mms_title">Nhận tất cả MMS</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Chọn khoản mục liên lạc của bạn trong danh sách liên lạc.</string>
   <string name="preferences__change_passphrase">Đổi mật khẩu</string>
   <string name="preferences__complete_key_exchanges">Hoàn tất trao đổi chìa khóa</string>
   <string name="preferences__screen_security">An ninh màn hình</string>
@@ -225,18 +208,13 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Quên mật khẩu trong bộ nhớ sau một khoảng thời gian</string>
   <string name="preferences__timeout_passphrase">Hết hạn nhớ mật khẩu</string>
   <string name="preferences__pref_timeout_interval_title">Thời gian hết hạn</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Khoảng thời gian chờ trước khi quên đi mật khẩu trong bộ nhớ</string>
   <string name="preferences__notifications">Thông báo</string>
   <string name="preferences__led_color">Màu LED</string>
   <string name="preferences__pref_led_blink_title">Mô hình chớp nháy LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Mô hình chớp nháy LED tùy biến thiết lập xong!</string>
   <string name="preferences__sound">Âm thanh</string>
   <string name="preferences__change_notification_sound">Đổi âm thanh thông báo</string>
   <string name="preferences__play_inthread_notifications">Phát âm thanh thông báo khi xem một cuộc chuyện trò đang diễn ra.</string>
   <string name="preferences__vibrate">Rung</string>
-  <string name="preferences__also_vibrate_when_notified">Cũng rung khi thông báo</string>
-  <string name="preferences__minutes">phút</string>
-  <string name="preferences__hours">giờ</string>
   <string name="preferences__green">Xanh lá cây</string>
   <string name="preferences__red">Đỏ</string>
   <string name="preferences__blue">Xanh dương</string>
@@ -248,9 +226,7 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <string name="preferences__fast">Nhanh</string>
   <string name="preferences__normal">Bình thường</string>
   <string name="preferences__slow">Chậm</string>
-  <string name="preferences__custom">Tùy biến</string>
   <string name="preferences__advanced">Cao cấp</string>
-  <string name="preferences__override_system_mms_settings">Thay các thiết đặt MMS của hệ thống bằng dữ liệu dưới đây.</string>
   <string name="preferences__sms_delivery_reports">Báo cáo phân phối SMS</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">Yêu cầu có báo cáo phân phối cho từng tin nhắn SMS gửi đi</string>
   <string name="preferences__delete_old_messages">Xóa tin nhắn cũ</string>
@@ -266,7 +242,6 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <!--****************************************-->
   <!--contact_selection_list-->
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Xong</string>
   <!--refreshing push directory from menu-->
   <!--conversation_button_context-->
   <!--conversation_callable-->

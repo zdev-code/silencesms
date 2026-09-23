@@ -107,6 +107,8 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     }
 
     valid = cursor != null;
+  // A cursor replacement can reorder and mutate the complete result set.
+  //noinspection NotifyDataSetChanged
     notifyDataSetChanged();
     return oldCursor;
   }

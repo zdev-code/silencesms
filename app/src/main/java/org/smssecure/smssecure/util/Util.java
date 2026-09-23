@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -144,6 +145,14 @@ public class Util {
   public static byte[] toUtf8Bytes(String utf8String) {
     try {
       return utf8String.getBytes(CharacterSets.MIMENAME_UTF_8);
+    } catch (UnsupportedEncodingException e) {
+      throw new AssertionError("UTF_8 must be supported!");
+    }
+  }
+
+  public static String decodeUrlEncoded(String encoded) {
+    try {
+      return URLDecoder.decode(encoded, CharacterSets.MIMENAME_UTF_8);
     } catch (UnsupportedEncodingException e) {
       throw new AssertionError("UTF_8 must be supported!");
     }
@@ -294,10 +303,8 @@ public class Util {
     return (int)value;
   }
 
-  @SuppressLint("NewApi")
   public static boolean isDefaultSmsProvider(Context context){
-    return (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) ||
-      (context.getPackageName().equals(Telephony.Sms.getDefaultSmsPackage(context)));
+    return context.getPackageName().equals(Telephony.Sms.getDefaultSmsPackage(context));
   }
 
   public static int getCurrentApkReleaseVersion(Context context) {
@@ -329,7 +336,7 @@ public class Util {
   }
 
   public static boolean isMmsCapable(Context context) {
-    return (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) || OutgoingLegacyMmsConnection.isConnectionPossible(context);
+    return true;
   }
 
   public static boolean isMainThread() {
@@ -358,7 +365,7 @@ public class Util {
   public static boolean isLowMemory(Context context) {
     ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
-    return (VERSION.SDK_INT >= VERSION_CODES.KITKAT && activityManager.isLowRamDevice()) ||
+    return activityManager.isLowRamDevice() ||
            activityManager.getMemoryClass() <= 64;
   }
 

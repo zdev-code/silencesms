@@ -175,13 +175,7 @@ public class StickyHeaderDecoration extends RecyclerView.ItemDecoration {
   }
 
   private int getChildY(RecyclerView parent, View child) {
-    if (VERSION.SDK_INT < 11) {
-      Rect rect = new Rect();
-      parent.getChildVisibleRect(child, rect, null);
-      return rect.top;
-    } else {
-      return (int)child.getY();
-    }
+    return (int)child.getY();
   }
 
   protected int getHeaderHeightForLayout(View header) {

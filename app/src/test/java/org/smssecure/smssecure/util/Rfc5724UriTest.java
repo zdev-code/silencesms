@@ -82,6 +82,12 @@ public class Rfc5724UriTest extends BaseUnitTest {
     }
   }
 
+  @Test public void testQueryParamsUseFormDecoding() throws Exception {
+    Rfc5724Uri uri = new Rfc5724Uri("sms:+15555555555?number=%2B123+456");
+
+    assertTrue(uri.getQueryParams().get("number").equals("+123 456"));
+  }
+
   @Test
   public void testGetQueryParams() throws Exception {
     final String[][] uriTestPairs = {

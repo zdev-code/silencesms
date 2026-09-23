@@ -100,6 +100,8 @@ public class ContactSelectionListAdapter extends RecyclerView.Adapter<ViewHolder
 
   public void submitList(List<ContactEntry> contacts) {
     this.contacts = List.copyOf(contacts);
+    // Complete sorted snapshots can change every section and row.
+    //noinspection NotifyDataSetChanged
     notifyDataSetChanged();
   }
 

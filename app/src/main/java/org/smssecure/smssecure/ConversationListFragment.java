@@ -180,6 +180,8 @@ public class ConversationListFragment extends Fragment
     super.onResume();
 
     initializeReminders();
+    // The active cursor can reorder, insert, remove, or update every conversation.
+    //noinspection NotifyDataSetChanged
     list.getAdapter().notifyDataSetChanged();
   }
 
@@ -506,11 +508,9 @@ public class ConversationListFragment extends Fragment
                        p);
         }
 
-        if (Build.VERSION.SDK_INT >= 11) {
-          float alpha = 1.0f - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
-          viewHolder.itemView.setAlpha(alpha);
-          viewHolder.itemView.setTranslationX(dX);
-        }
+        float alpha = 1.0f - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+        viewHolder.itemView.setAlpha(alpha);
+        viewHolder.itemView.setTranslationX(dX);
 
       } else {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

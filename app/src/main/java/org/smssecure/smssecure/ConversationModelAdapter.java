@@ -110,11 +110,15 @@ public final class ConversationModelAdapter
     this.rows = List.copyOf(rows);
     this.selectedIds = Set.copyOf(selectedIds);
     cache.keySet().retainAll(this.rows.stream().map(ConversationMessageRow::getStableId).toList());
+    // This replaces the complete ordered snapshot and selection state.
+    //noinspection NotifyDataSetChanged
     notifyDataSetChanged();
   }
 
   public void setFooterView(@Nullable View footer) {
     this.footer = footer;
+    // Adding or removing the footer changes adapter structure after the full message snapshot.
+    //noinspection NotifyDataSetChanged
     notifyDataSetChanged();
   }
 

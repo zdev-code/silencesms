@@ -44,17 +44,10 @@ public class MmsListener extends BroadcastReceiver {
       return false;
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
-        Telephony.Sms.Intents.WAP_PUSH_RECEIVED_ACTION.equals(intent.getAction()) &&
+    if (Telephony.Sms.Intents.WAP_PUSH_RECEIVED_ACTION.equals(intent.getAction()) &&
         Util.isDefaultSmsProvider(context))
     {
       return false;
-    }
-
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT &&
-        SilencePreferences.isInterceptAllMmsEnabled(context))
-    {
-      return true;
     }
 
     byte[] mmsData   = intent.getByteArrayExtra("data");

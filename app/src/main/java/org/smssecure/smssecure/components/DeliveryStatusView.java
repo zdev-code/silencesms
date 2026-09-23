@@ -49,15 +49,9 @@ public class DeliveryStatusView extends FrameLayout {
     deliveredIndicator.setColorFilter(iconColor, android.graphics.PorterDuff.Mode.MULTIPLY);
     sentIndicator.setColorFilter(iconColor, android.graphics.PorterDuff.Mode.MULTIPLY);
 
-    if (Build.VERSION.SDK_INT >= 11) {
-      inflate(context, R.layout.conversation_item_pending_v11, pendingIndicatorStub);
-      AnimatedDotsView pendingIndicator = (AnimatedDotsView) findViewById(R.id.pending_indicator);
-      pendingIndicator.setDotsColor(iconColor);
-    } else {
-      inflate(context, R.layout.conversation_item_pending, pendingIndicatorStub);
-      TextView pendingIndicator = (TextView) findViewById(R.id.pending_indicator);
-      pendingIndicator.setTextColor(iconColor);
-    }
+    inflate(context, R.layout.conversation_item_pending_v11, pendingIndicatorStub);
+    AnimatedDotsView pendingIndicator = (AnimatedDotsView) findViewById(R.id.pending_indicator);
+    pendingIndicator.setDotsColor(iconColor);
   }
 
   public void setNone() {

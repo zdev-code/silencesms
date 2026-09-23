@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.preference.PreferenceManager;
 
 import org.junit.After;
 import org.junit.Before;

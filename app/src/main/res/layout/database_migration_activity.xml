@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- This fragment owns its patterned background independently of the host activity theme. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:fillViewport="true"
-            android:background="@drawable/background_pattern_repeat">
+            android:background="@drawable/background_pattern_repeat"
+            tools:ignore="Overdraw">
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -27,6 +30,7 @@
                       android:text="@string/database_migration_activity__would_you_like_to_import_your_existing_text_messages"/>
             
             <ImageView android:layout_width="wrap_content"
+                       android:importantForAccessibility="no"
                        android:layout_height="wrap_content"
                        android:layout_gravity="center"
                        android:src="@drawable/import_database"/>
@@ -44,14 +48,16 @@
                           android:layout_marginTop="20dip">
 
                 <Button android:id="@+id/skip_button"
+                    style="?android:attr/buttonBarButtonStyle"
                         android:text="@string/database_migration_activity__skip"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="7dip"
+                        android:layout_marginEnd="7dip"
                         android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <Button android:id="@+id/import_button"
+                    style="?android:attr/buttonBarButtonStyle"
                         android:text="@string/database_migration_activity__import"
                         android:layout_weight="1"
                         android:layout_width="0dp"
@@ -71,6 +77,7 @@
                       android:orientation="vertical">
     
             <ImageView android:layout_width="wrap_content"
+                       android:importantForAccessibility="no"
                        android:layout_height="wrap_content"
                        android:layout_gravity="center"
                        android:src="@drawable/import_database"/>
@@ -84,7 +91,7 @@
             
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="15dip"
                 android:layout_weight="1.0" >
 
@@ -93,15 +100,17 @@
                     style="@style/Registration.Constant"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="0/100"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/database_migration_activity__progress_default"
                     android:textSize="12.0sp" />
 
                 <TextView
+                    android:id="@+id/import_label"
                     style="@style/Registration.Constant"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/import_status"
                     android:text="@string/database_migration_activity__importing"
                     android:textAllCaps="true"
                     android:textSize="12.0sp"

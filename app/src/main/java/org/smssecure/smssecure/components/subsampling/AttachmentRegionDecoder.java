@@ -8,8 +8,6 @@ import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.Log;
 
 import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder;
@@ -29,7 +27,6 @@ public class AttachmentRegionDecoder implements ImageRegionDecoder {
 
   private BitmapRegionDecoder bitmapRegionDecoder;
 
-  @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
   @Override
   @SuppressWarnings("deprecation") // BitmapRegionDecoder.newInstance(InputStream) is API 31; deprecated overload kept for minSdk 23
   public Point init(Context context, Uri uri) throws Exception {
@@ -53,7 +50,6 @@ public class AttachmentRegionDecoder implements ImageRegionDecoder {
     return new Point(bitmapRegionDecoder.getWidth(), bitmapRegionDecoder.getHeight());
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
   @Override
   public Bitmap decodeRegion(Rect rect, int sampleSize) {
     Log.w(TAG, "Decode region: " + rect);
@@ -77,14 +73,12 @@ public class AttachmentRegionDecoder implements ImageRegionDecoder {
     }
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
   public boolean isReady() {
     Log.w(TAG, "isReady");
     return (passthrough != null && passthrough.isReady()) ||
            (bitmapRegionDecoder != null && !bitmapRegionDecoder.isRecycled());
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
   public void recycle() {
     if (passthrough != null) {
       passthrough.recycle();

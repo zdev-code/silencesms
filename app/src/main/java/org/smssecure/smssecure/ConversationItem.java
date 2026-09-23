@@ -482,14 +482,14 @@ public class ConversationItem extends LinearLayout
   }
 
   private void setNotificationMmsAttributes(NotificationMmsMessageRecord messageRecord) {
-    String messageSize = String.format(context.getString(R.string.ConversationItem_message_size_d_kb),
-                                       messageRecord.getMessageSize());
-    String expires     = String.format(context.getString(R.string.ConversationItem_expires_s),
-                                       DateUtils.getRelativeTimeSpanString(getContext(),
-                                                                           messageRecord.getExpiration(),
-                                                                           false));
+    String messageSize = context.getString(R.string.ConversationItem_message_size_d_kb,
+                                           messageRecord.getMessageSize());
+    String expires     = context.getString(R.string.ConversationItem_expires_s,
+                                           DateUtils.getRelativeTimeSpanString(getContext(),
+                                                                               messageRecord.getExpiration(),
+                                                                               false));
 
-    dateText.setText(messageSize + "\n" + expires);
+    dateText.setText(context.getString(R.string.conversation_item__mms_metadata, messageSize, expires));
 
     if (MmsDatabase.Status.isDisplayDownloadButton(context, messageRecord.getStatus())) {
       mmsDownloadButton.setVisibility(View.VISIBLE);

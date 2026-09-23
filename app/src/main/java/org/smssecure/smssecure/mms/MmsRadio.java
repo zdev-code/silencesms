@@ -1,5 +1,6 @@
 package org.smssecure.smssecure.mms;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.core.content.ContextCompat;
+import androidx.annotation.RequiresApi;
 
 import org.smssecure.smssecure.util.Util;
 
@@ -26,6 +28,7 @@ public class MmsRadio {
   private static final String TAG = MmsRadio.class.getSimpleName();
   private static final long WAKE_LOCK_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(5);
 
+  @SuppressLint("StaticFieldLeak") // The constructor stores only context.getApplicationContext().
   private static MmsRadio instance;
 
   public static synchronized MmsRadio getInstance(Context context) {
@@ -111,6 +114,7 @@ public class MmsRadio {
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.Q)
   private void connectModern() throws MmsRadioException {
     if (mmsNetwork != null) {
       wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS);

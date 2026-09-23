@@ -55,20 +55,9 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
   @Override
   public void onResume() {
     super.onResume();
-    initializePlatformSpecificOptions();
     initializeTimeoutSummary();
 
     disablePassphrase.setChecked(!SilencePreferences.isPasswordDisabled(getActivity()));
-  }
-
-  private void initializePlatformSpecificOptions() {
-    PreferenceScreen preferenceScreen         = getPreferenceScreen();
-    Preference       screenSecurityPreference = findPreference(SilencePreferences.SCREEN_SECURITY_PREF);
-
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH &&
-        screenSecurityPreference != null) {
-      preferenceScreen.removePreference(screenSecurityPreference);
-    }
   }
 
   private void initializeTimeoutSummary() {

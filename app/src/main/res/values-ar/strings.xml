@@ -66,13 +66,10 @@
     <string name="ConversationActivity_select_contact_info">أختر بيانات جهة الاتصال</string>
     <string name="ConversationActivity_compose_message">إنشاء رسالة</string>
     <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">عذراً، حصل خطأ أثناء إضافة مرفقك.</string>
-    <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">عذرا، حجم الفيديو يتجاوز الحد المسموح (%1$skB).</string>
-    <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">عذرا، حجم ملف الصوت يتجاوز الحد المسموح (%1$skB).</string>
     <string name="ConversationActivity_message_is_empty_exclamation">الرسالة فارغة!</string>
     <string name="ConversationActivity_group_members">أعضاء المجموعة</string>
     <string name="ConversationActivity_group_conversation">دردشة جماعية</string>
     <string name="ConversationActivity_unnamed_group">مجموعة غير مسماة</string>
-    <string name="ConversationActivity_saved_draft">مسودة محفوظة</string>
     <string name="ConversationActivity_invalid_recipient">جهة اتصال غير صحيحة!</string>
     <string name="ConversationActivity_calls_not_supported">المكالمات غير مدعمة</string>
     <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">هذا الجهاز لا يدعم خاصية الاتصال.</string>
@@ -83,12 +80,9 @@
     <string name="ConversationActivity_transport_secure_mms">رسالة وسائط متعددة آمنة</string>
     <string name="ConversationActivity_install_smssecure">هيا نتحدث بشكلٍ آمن : %s</string>
     <string name="ConversationActivity_recipient_self">لا يمكن ربط الجلسات الآمنة إلا مع أشخاص آخَرين.</string>
-    <string name="ConversationActivity_mms_not_supported_title">الرسائل المتعددة الوسائط غير مدعومة</string>
-    <string name="ConversationActivity_specify_recipient">إختر مراسلاً من فضلك</string>
     <string name="ConversationActivity_attachment_exceeds_size_limits">لقد فاق حجم المرفق حد الحجم الأقصى.</string>
     <!--ConversationAdapter-->
     <!--ConversationFragment-->
-    <string name="ConversationFragment_message_details">تفاصيل الرسالة</string>
     <string name="ConversationFragment_save_to_sd_card">أحفظ في الذاكرة؟</string>
     <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">تعذر الإضافة إلى الذاكرة!</string>
     <string name="ConversationFragment_collecting_attahments">جارٍ تجميع المرفقات…</string>
@@ -122,7 +116,6 @@
     <string name="DualSimUtil__a_new_key_has_been_generated">لقد تم توليد مفتاح جديد.</string>
     <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">لقد تم توليد مفتاح جديد خاص بالشريحة الهاتفية تلك.</string>
     <!--ShareActivity-->
-    <string name="ShareActivity_share_with">شارك مع</string>
     <!--WelcomeActivity-->
     <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">حسّنوا خصوصيتكم، تحدّثوا مع الجميع</string>
     <string name="WelcomeActivity_encrypt_your_messages">شفّروا رسائلكم مع مستخدِمي سايلنس Silence في حين تستخدمون الرسائل النصية القصيرة والمتعددة الوسائط SMS/MMS مع الآخَرين.</string>
@@ -143,16 +136,12 @@
     <string name="ExportFragment_exporting_keys_settings_and_messages">جار تصدير مفاتيح التشفير والإعدادات والرسائل…</string>
     <!--GroupCreateActivity-->
     <string name="GroupCreateActivity_actionbar_title">مجموعة جديدة</string>
-    <string name="GroupCreateActivity_actionbar_update_title">تحديث المجموعة</string>
-    <string name="GroupCreateActivity_actionbar_mms_title">مجموعة وسائط متعددة جديدة</string>
     <string name="GroupCreateActivity_contacts_mms_exception">خطأ غير متوقع تسبب في تعذر إنشاء المجموعة.</string>
     <string name="GroupCreateActivity_contacts_no_members">تحتاج إلى شخص واحد على الأقل في المجموعة!</string>
     <string name="GroupCreateActivity_menu_create_title">إنشاء مجموعة</string>
     <!--GroupMembersDialog-->
     <string name="GroupMembersDialog_me">أنا</string>
     <!--ImportExportActivity-->
-    <string name="ImportExportActivity_import">استيراد</string>
-    <string name="ImportExportActivity_export">تصدير</string>
     <!--ImportFragment-->
     <string name="ImportFragment_import_system_sms_database">استيراد قاعدة بيانات الرسائل من النظام؟</string>
     <string name="ImportFragment_import">استيراد</string>
@@ -168,14 +157,10 @@
     <string name="ImportFragment_no_encrypted_backup_found">لم يتم العثور على نسخة احتياطية مشفرة!</string>
     <!--KeyScanningActivity-->
     <string name="KeyScanningActivity_no_scanned_key_found_exclamation">لم يتم العثور على مفتاح!</string>
-    <string name="KeyScanningActivity_install_barcode_Scanner">تثبيت ماسح Barcode؟</string>
-    <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">يحتاج سايلنس إلى ماسح رموز الاستجابة السريعة.</string>
     <!--MessageDetailsRecipient-->
     <string name="MessageDetailsRecipient_failed_to_send">فشل الإرسال</string>
     <string name="MessageDetailsRecipient_new_identity">هوية جديدة</string>
     <!--MmsDownloader-->
-    <string name="MmsDownloader_error_storing_mms">خطأ بتخزين رسالة الوسائط المتعددة!</string>
-    <string name="MmsDownloader_error_connecting_to_mms_provider">خطأ في الاتصال مع مزود خدمة إرسال الوسائط المتعددة</string>
     <string name="MmsDownloader_error_reading_mms_settings">خطأ في قراءة إعدادات المزود اللاسلكي لخدمة الرسائل المتعددة الوسائط</string>
     <!--NotificationMmsMessageRecord-->
     <string name="NotificationMmsMessageRecord_multimedia_message">رسالة وسائط متعددة</string>
@@ -194,8 +179,6 @@
     <string name="PassphrasePromptActivity_invalid_passphrase_exclamation">عبارة سرية غير صحيحة!</string>
     <!--ReceiveKeyActivity-->
     <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">يمكنك الوثوق في توقيع تبادل المفتاح هذا، ولكنك قمت بتعطيل خاصية إكمال تبادل المفاتيح أوتوماتيكياً في الإعدادات.</string>
-    <string name="ReceiveKeyActivity_processing">جاري العمل</string>
-    <string name="ReceiveKeyActivity_processing_key_exchange">جاري تبادل المفاتيح…</string>
     <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">ربما تود التحقق من جهة الاتصال هذه.</string>
     <!--RecipientPreferencesActivity-->
     <string name="RecipientPreferenceActivity_block_this_contact_question">هل تود حبس جهة الإتصال ؟</string>
@@ -274,7 +257,6 @@
     <string name="MessageNotifier_most_recent_from_s">آخر رسالة من : %1$s</string>
     <string name="MessageNotifier_encrypted_message">رسالة مشفرة</string>
     <string name="MessageNotifier_media_message_with_text">رسالة متعددة الوسائط: %s</string>
-    <string name="MessageNotifier_no_subject">(بلا عنوان)</string>
     <string name="MessageNotifier_message_delivery_failed">فشل توصيل الرسالة.</string>
     <string name="MessageNotifier_failed_to_deliver_message">فشل توصيل الرسالة.</string>
     <string name="MessageNotifier_error_delivering_message">خطأ أثناء عملية توزيع الرسالة.</string>
@@ -300,16 +282,13 @@
     <!--single_contact_selection_activity-->
     <string name="SingleContactSelectionActivity_contact_photo">صورة جهة الاتصال</string>
     <!--ContactSelectionListFragment-->
-    <string name="ContactSelectionlistFragment_select_for">اختيار من أجل</string>
     <!--blocked_contacts_fragment-->
     <string name="blocked_contacts_fragment__no_blocked_contacts">لم تقم بحجب أي مُراسِل بعد</string>
     <!--contact_selection_recent_activity-->
-    <string name="contact_selection_recent_activity__no_recent_calls">لا توجد مكالمات حديثة.</string>
     <!--contact_selection_list_fragment-->
     <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">سايلنس بحاجة إلى الوصول إلى قائمة مراسِليك لعرضهم.</string>
     <string name="contact_selection_list_fragment__show_contacts">اظهر جهات الاتصال</string>
     <!--conversation_title_view-->
-    <string name="conversation_title_view__conversation_muted">المحادثة مكتومة</string>
     <!--conversation_activity-->
     <string name="conversation_activity__type_message_sms_secure">أرسل رسالة آمنة</string>
     <string name="conversation_activity__type_message_sms_insecure">أرسل رسالة نصية غير آمنة</string>
@@ -317,13 +296,10 @@
     <string name="conversation_activity__type_message_mms_insecure">أرسل رسالة وسائط متعددة غير آمنة</string>
     <string name="conversation_activity__via_sim_name">عبر %1$s</string>
     <string name="conversation_activity__send">أرسل</string>
-    <string name="conversation_activity__remove">إزالة</string>
-    <string name="conversation_activity__window_description">محادثة مع %1$s</string>
     <string name="conversation_activity__compose_description">تكوين الرسالة</string>
     <string name="conversation_activity__emoji_toggle_description">تبديل لوحة مفاتيح إيموجي</string>
     <string name="conversation_activity__attachment_thumbnail"> المرفق</string>
     <!--conversation_item-->
-    <string name="conversation_item__mms_downloading_description">جارٍ تنزيل الرسالة</string>
     <string name="conversation_item__mms_image_description">رسالة وسائط متعددة</string>
     <string name="conversation_item__secure_message_description">رسالة آمنة</string>
     <!--conversation_item_sent-->
@@ -346,13 +322,10 @@
     <!--conversation_fragment-->
     <string name="conversation_fragment__scroll_to_the_bottom_content_description">مرّر إلى الأسفل</string>
     <!--import_export_fragment-->
-    <string name="import_export_fragment__export">تصدير</string>
     <string name="import_export_fragment__import">استيراد</string>
     <!--log_submit_activity-->
     <string name="log_submit_activity__log_fetch_failed">تعذر التقاط سجلات التصحيح من هاتفك. يمكنك استخدام ADB للحصول على سجلات التصحيح بدلا من ذلك.</string>
     <string name="log_submit_activity__thanks">شكرا للمساعدة!</string>
-    <string name="log_submit_activity__submitting">إرسال</string>
-    <string name="log_submit_activity__posting_logs">جارٍ نشر السجلات إلى gist…</string>
     <!--database_migration_activity-->
     <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">هل تود استيراد الرسائل النصية إلى قواعد بيانات سايلنس المشفرة؟</string>
     <string name="database_migration_activity__the_default_system_database_will_not_be_modified">لن يتم تغيير قاعدة البيانات الأساسية بأي طريقة.</string>
@@ -412,20 +385,15 @@
     <string name="message_details_header__from">مِن</string>
     <string name="message_details_header__with">مع</string>
     <!--AndroidManifest.xml-->
-    <string name="AndroidManifest__create_passphrase">إنشاء عبارة سرية</string>
-    <string name="AndroidManifest__enter_passphrase">أدخل العبارة السرية</string>
     <string name="AndroidManifest__select_contacts">اخر جهات الاتصال</string>
-    <string name="AndroidManifest__public_identity_key">مفتاح الهوية العلني</string>
     <string name="AndroidManifest__change_passphrase">غير العبارة السرية</string>
     <string name="AndroidManifest__verify_identity">تحقق من الهوية</string>
-    <string name="AndroidManifest__complete_key_exchange">أكمل تبادل المفاتيح</string>
     <string name="AndroidManifest__log_submit">ارسل سجل التصحيح</string>
     <string name="AndroidManifest__media_preview">معاينة الصورة</string>
     <string name="AndroidManifest__media_overview">جميع الصور</string>
     <string name="AndroidManifest__media_overview_named">جميع الصور مع %1$s</string>
     <string name="AndroidManifest__message_details">تفاصيل الرسالة</string>
     <string name="AndroidManifest_archived_conversations">المحادثات المحفوظة</string>
-    <string name="AndroidManifest_configure_mms_settings">إعدادات رسائل الوسائط المتعددة</string>
     <!--arrays.xml-->
     <string name="arrays__import_export">استيراد \ تصدير</string>
     <string name="arrays__your_identity_key">مفتاح هويتك</string>
@@ -455,7 +423,6 @@
         <item quantity="other">%d أخرى</item>
     </plurals>
     <!--preferences.xml-->
-    <string name="preferences__general">عام</string>
     <string name="preferences__sms_mms">رسالة نصية قصيرة ورسالة وسائط متعددة</string>
     <string name="preferences__pref_all_sms_title">اإستقبال كل الرسائل النصية القصيرة</string>
     <string name="preferences__pref_all_mms_title">استقبال كل رسائل الوسائط المتعددة</string>
@@ -463,8 +430,6 @@
     <string name="preferences__use_silence_for_viewing_and_storing_all_incoming_multimedia_messages">استخدم سايلنس لعرض وحفظ كل رسائل الوسائط المتعددة الواردة</string>
     <string name="preferences__keyboard_settings">إعدادات لوحة المفاتيح</string>
     <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">قم بتفعيل هذه الخاصية إن كانت لوحة مفاتيحك تدعم الأوجه التعبيرية.</string>
-    <string name="preferences__display_settings">إعدادات العرض</string>
-    <string name="preferences__choose_your_contact_entry_from_the_contacts_list">اختر مراسِلك من قائمة جهات الاتصال.</string>
     <string name="preferences__change_passphrase">غير العبارة السرية</string>
     <string name="preferences__change_your_passphrase">قُم بتعديل عبارتك السرية</string>
     <string name="preferences__complete_key_exchanges">أكمل تبادل المفاتيح</string>
@@ -475,18 +440,12 @@
     <string name="preferences__disable_screen_security_to_allow_screen_shots">امنع لقطات الشاشة داخل التطبيق وفي قائمة Recents</string>
     <string name="preferences__forget_passphrase_from_memory_after_some_interval">انسى العبارة السرية من ذاكرة الجهاز بعد فترة</string>
     <string name="preferences__timeout_passphrase">نسيان العبارة السرية بعد فترة</string>
-    <string name="preferences__pref_timeout_interval_dialogtitle">تحديد مهلة العبارة السرية</string>
     <string name="preferences__pref_timeout_interval_title">مدة الصلاحية</string>
-    <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">الوقت اللازم ليتم مسح العبارة السرية من الذاكرة</string>
     <string name="preferences__notifications">التنبيهات</string>
     <string name="preferences__enable_message_notifications">عرض تنبيهات الرسائل</string>
     <string name="preferences__led_color">لون ضوء التنبيه LED</string>
     <string name="preferences__led_color_unknown">مجهول</string>
     <string name="preferences__pref_led_blink_title">نمط وميض LED</string>
-    <string name="preferences__pref_led_blink_custom_pattern_title">إعداد أسولب وميض LED</string>
-    <string name="preferences__pref_led_blink_custom_pattern_on_for">مضاءة لأجل:</string>
-    <string name="preferences__pref_led_blink_custom_pattern_off_for">مطفأة:</string>
-    <string name="preferences__pref_led_blink_custom_pattern_set">تم إعداد أسولب وميض LED!</string>
     <string name="preferences__sound">صوت</string>
     <string name="preferences__change_notification_sound">تغيير صوت التنبيه</string>
     <string name="preferences__silent">أكتم</string>
@@ -500,9 +459,6 @@
     <string name="preferences__five_times">خمس مرات</string>
     <string name="preferences__ten_times">عشر مرات</string>
     <string name="preferences__vibrate">هزاز</string>
-    <string name="preferences__also_vibrate_when_notified">شغل الهزاز عند وصول تنبيه</string>
-    <string name="preferences__minutes">دقائق</string>
-    <string name="preferences__hours">ساعات</string>
     <string name="preferences__green">أخضر</string>
     <string name="preferences__red">أحمر</string>
     <string name="preferences__blue">أزرق</string>
@@ -514,12 +470,9 @@
     <string name="preferences__fast">سريع</string>
     <string name="preferences__normal">طبيعي</string>
     <string name="preferences__slow">بطىء</string>
-    <string name="preferences__custom">مخصص</string>
     <string name="preferences__advanced">متقدم</string>
     <string name="preferences__privacy">الخصوصية</string>
     <string name="preferences__advanced_mms_access_point_names">الإعدادات اليدوية لرسائل الوسائط المتعددة</string>
-    <string name="preferences__enable_manual_mms">استخدم الإعدادات اليدوية لرسائل الوسائط المتعددة</string>
-    <string name="preferences__override_system_mms_settings">تغيير إعدادات رسائل الوسائط المتعددة للنظام بالمعلومات أدناه.</string>
     <string name="preferences__mmsc_url">رابط MMSC</string>
     <string name="preferences__mms_proxy_host">مستضيف الخدمة الوسيطة MMS</string>
     <string name="preferences__mms_proxy_port">منفذ الوسيط MMS</string>
@@ -562,19 +515,10 @@
     <!--menus-->
     <!--****************************************-->
     <!--contact_selection_list-->
-    <string name="contact_selection_list__menu_select_all">أختر الكل</string>
-    <string name="contact_selection_list__menu_unselect_all">إلغاء التحديد</string>
-    <string name="contact_selection_list__header">كافة جهات الاتصال</string>
     <string name="contact_selection_list__unknown_contact">رسالة جديدة لـ …</string>
     <!--contact_selection-->
-    <string name="contact_selection__menu_finished">تم الانتهاء</string>
     <!--refreshing push directory from menu-->
-    <string name="push_directory__menu_refresh">تحيدث قائمة الاتصال</string>
     <!--conversation_button_context-->
-    <string name="conversation_button_context__send_secure_sms">أرسل رسالة آمنة</string>
-    <string name="conversation_button_context__send_insecure_sms">أرسل رسالة نصية غير آمنة</string>
-    <string name="conversation_button_context__send_secure_mms">أرسل رسالة وسائط متعددة آمنة</string>
-    <string name="conversation_button_context__send_insecure_mms">أرسل رسالة وسائط متعددة غير آمنة</string>
     <!--conversation_callable-->
     <string name="conversation_callable__menu_call">إتصل</string>
     <!--conversation_context-->
@@ -599,7 +543,6 @@
     <string name="conversation_list__menu_search">بحث</string>
     <!--conversation_list_item_view-->
     <string name="conversation_list_item_view__contact_photo_image">صورة جهة الاتصال</string>
-    <string name="conversation_list_item_view__error_alert">تنبيه بخطأ</string>
     <string name="conversation_list_item_view__archived">محتفظة</string>
     <!--conversation_list_fragment-->
     <string name="conversation_list_fragment__fab_content_description">محادثة جديدة</string>
@@ -631,7 +574,6 @@
     <string name="key_scanning__menu_scan_contacts_qr_code">امسح رمز الكيو آر لمراسِلك</string>
     <string name="share_identity_fingerprint">شارك بصمة هويتك</string>
     <!--text_secure_normal-->
-    <string name="text_secure_normal__menu_new_message">رسالة جديدة</string>
     <string name="text_secure_normal__menu_new_group">مجموعة جديدة</string>
     <string name="text_secure_normal__menu_settings">الإعدادات</string>
     <string name="text_secure_normal__menu_clear_passphrase">أقفل</string>
@@ -650,7 +592,6 @@
     <string name="reminder_header_close_button">إغلاق</string>
     <!--MediaPreviewActivity-->
     <string name="MediaPreviewActivity_you">أنت</string>
-    <string name="MediaPreviewActivity_cant_display">خطأ في معاينة هذه الصورة</string>
     <string name="MediaPreviewActivity_unssuported_media_type">نوع الوسائط المتعددة غير مدعوم</string>
     <string name="MediaPreviewActivity_draft">مسودة</string>
     <!--media_preview-->
@@ -669,7 +610,6 @@
     <string name="transport_selection_list_item__transport_icon">أيقونة النقل</string>
     <string name="RingtonePreference_ringtone_default">النغمة الافتراضية</string>
     <string name="RingtonePreference_ringtone_silent">لا شيء</string>
-    <string name="RingtonePreference_ringtone_picker_title">النغمات</string>
     <string name="RingtonePreference_notification_sound_default">النغمة الافتراضية للإشعارات</string>
     <string name="RingtonePreference_alarm_sound_default">النغمة التنبيهية الافتراضية</string>
     <string name="RingtonePreference_add_ringtone_text">أضف نغمة</string>
@@ -695,7 +635,6 @@
     <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage">إنّ سايلنس بحاجة إلى تصريح للوصول إلى ذاكرة التخزين للقراءة منه.</string>
     <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">إنّ سايلنس بحاجة إلى تصريح للوصول إلى الرسائل النصية القصيرة لاستيرادها</string>
     <string name="ConversationListFragment_sending_selected_drafts">جارٍ إرسال المسودّات المختارة…</string>
-    <string name="ConversationActivity_mms_not_supported_message">لا يمكن إرسال هذه الرسالة لأنّ متعاملكم الهاتفي لا يدعم رسائل الوسائط المتعددة MMS.</string>
     <string name="ConversationItem_received_key_exchange_message_tap_to_process">تم تلقّي رسالة تبادل مفاتيح، اضغط للمواصلة.</string>
     <plurals name="ConversationActivity_d_recipients_in_group">
         <item quantity="zero">0 أعضاء</item>

@@ -10,7 +10,8 @@
             android:textColor="?conversation_item_sent_text_secondary_color"
             android:textSize="@dimen/conversation_item_date_text_size"
             android:paddingTop="1dip"
-            android:paddingLeft="2dip"
+            android:paddingEnd="0dp"
+            android:paddingStart="2dip"
             android:paddingBottom="5dp" />
 
 </merge>

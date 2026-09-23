@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Ya</string>
   <string name="no">Tidak</string>
@@ -67,7 +67,6 @@ dapat mengaksesnya</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Perangkat ini sepertinya tidak mendukung untuk panggilan.</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Rincian pesan</string>
   <!--ConversationListActivity-->
   <!--ConversationListFragment-->
   <string name="ConversationListFragment_deleting">Menghapus</string>
@@ -87,8 +86,6 @@ dapat mengaksesnya</string>
   <string name="GroupCreateActivity_contacts_no_members">Anda butuh minimal satu orang dalam grup anda!</string>
   <!--GroupMembersDialog-->
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Import</string>
-  <string name="ImportExportActivity_export">Eksport</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import">Import</string>
   <string name="ImportFragment_cancel">Batal</string>
@@ -104,7 +101,6 @@ telah mengimport basis data sistem SMS, hal ini akan menyebabkan adanya duplikas
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Pemindai kunci tidak ditemukan!</string>
   <!--MessageDetailsRecipient-->
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Kesalahan dalam menyimpan MMS!</string>
   <!--NotificationMmsMessageRecord-->
   <!--MessageRecord-->
   <!--PassphraseChangeActivity-->
@@ -115,8 +111,6 @@ telah mengimport basis data sistem SMS, hal ini akan menyebabkan adanya duplikas
 tanda tangan pertukaran kunci ini dipercaya, tetapi anda
 menonaktifkan \'selesaikan perturakan kunci
 secara otomatis\'</string>
-  <string name="ReceiveKeyActivity_processing">Memproses</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Memproses pertukaran kunci...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Anda mungkin ingin memverifikasi
 kontak ini.
 </string>
@@ -167,18 +161,15 @@ Diterima pesan pertukaran kunci untuk versi protokol yang tidak valid.
   <!--contact_selection_activity-->
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">Tidak ada kontak</string>
-  <string name="contact_selection_group_activity__finding_contacts">Memuat kontak...</string>
+  <string name="contact_selection_group_activity__finding_contacts">Memuat kontak…</string>
   <!--single_contact_selection_activity-->
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Pilih untuk</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Tidak ada panggilan baru</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
   <string name="conversation_activity__send">Kirim</string>
-  <string name="conversation_activity__remove">Hapus</string>
   <!--conversation_item-->
   <!--conversation_item_sent-->
   <string name="conversation_item_sent__download">Unduh</string>
@@ -220,10 +211,8 @@ Diterima pesan pertukaran kunci untuk versi protokol yang tidak valid.
   <!--arrays.xml-->
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__general">Umum</string>
   <string name="preferences__pref_all_sms_title">Terima semua SMS</string>
   <string name="preferences__pref_all_mms_title">Terima semua MMS</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Pilih kontak anda dari daftar kontak yang ada.</string>
   <string name="preferences__change_passphrase">Ganti Kata Kunci</string>
   <string name="preferences__complete_key_exchanges">Pertukaran kunci berhasil</string>
   <string name="preferences__screen_security">Keamanan Layar</string>
@@ -231,18 +220,13 @@ Diterima pesan pertukaran kunci untuk versi protokol yang tidak valid.
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Lupakan kata kunci dari memori setelah beberapa saat</string>
   <string name="preferences__timeout_passphrase">Kata kunci kadaluarsa</string>
   <string name="preferences__pref_timeout_interval_title">Interval Kadaluarsa</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Waktu tunggu sebelum melupakan kata kunci dari memori</string>
   <string name="preferences__notifications">Pemberitahuan</string>
   <string name="preferences__led_color">Warna LED</string>
   <string name="preferences__pref_led_blink_title">Pola kedip LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Set pola kedip LED!</string>
   <string name="preferences__sound">Bunyi</string>
   <string name="preferences__change_notification_sound">Ganti suara notofikasi</string>
   <string name="preferences__play_inthread_notifications">Bunyikan suara pemberitahuan ketika melihat percakapan yang aktif.</string>
   <string name="preferences__vibrate">Getar</string>
-  <string name="preferences__also_vibrate_when_notified">Bergetar jika ada pemberitahuan masuk</string>
-  <string name="preferences__minutes">menit</string>
-  <string name="preferences__hours">jam</string>
   <string name="preferences__green">Hijau</string>
   <string name="preferences__red">Merah</string>
   <string name="preferences__blue">Biru</string>
@@ -254,9 +238,7 @@ Diterima pesan pertukaran kunci untuk versi protokol yang tidak valid.
   <string name="preferences__fast">Cepat</string>
   <string name="preferences__normal">Normal</string>
   <string name="preferences__slow">Lambat</string>
-  <string name="preferences__custom">Spesifik</string>
   <string name="preferences__advanced">Lanjutan</string>
-  <string name="preferences__override_system_mms_settings">Ganti pengaturan MMS dengan informasi berikut.</string>
   <string name="preferences__sms_delivery_reports">Laporan pengiriman SMS</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">Minta laporan pengiriman untuk tiap SMS yang dikirim</string>
   <string name="preferences__delete_old_messages">Hapus pesan lama</string>
@@ -272,7 +254,6 @@ Diterima pesan pertukaran kunci untuk versi protokol yang tidak valid.
   <!--****************************************-->
   <!--contact_selection_list-->
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Selesai</string>
   <!--refreshing push directory from menu-->
   <!--conversation_button_context-->
   <!--conversation_callable-->

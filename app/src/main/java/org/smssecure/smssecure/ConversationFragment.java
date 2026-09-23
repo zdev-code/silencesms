@@ -204,6 +204,8 @@ public class ConversationFragment extends Fragment {
     super.onResume();
 
     if (list.getAdapter() != null) {
+      // Resume can invalidate every rendered message through recipient and preference changes.
+      //noinspection NotifyDataSetChanged
       list.getAdapter().notifyDataSetChanged();
     }
   }

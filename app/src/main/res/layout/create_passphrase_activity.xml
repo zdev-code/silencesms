@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- This fragment owns its patterned background independently of the host activity theme. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/scroll_parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:background="@drawable/background_pattern_repeat">
+            android:background="@drawable/background_pattern_repeat"
+            tools:ignore="Overdraw">
 
   <RelativeLayout android:id="@+id/prompt_layout"
                   android:layout_width="match_parent"

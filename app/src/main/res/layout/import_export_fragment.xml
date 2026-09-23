@@ -39,7 +39,8 @@
                     android:background="@color/gray10"/>
 
             <LinearLayout android:id="@+id/import_sms"
-                          android:clickable="true"
+                        android:clickable="true"
+                        android:focusable="true"
                           android:orientation="horizontal"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -50,8 +51,8 @@
                           android:layout_marginRight="16dip">
 
                 <ImageView android:layout_width="wrap_content"
+                           android:importantForAccessibility="no"
                            android:layout_height="wrap_content"
-                           android:layout_marginRight="10dip"
                            android:layout_marginEnd="10dip"
                            android:src="?import_sms"/>
 
@@ -80,7 +81,8 @@
                     android:background="@color/gray10"/>
 
             <LinearLayout android:id="@+id/import_encrypted_backup"
-                          android:clickable="true"
+                        android:clickable="true"
+                        android:focusable="true"
                           android:orientation="horizontal"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -91,8 +93,8 @@
                           android:layout_marginRight="16dip">
 
                 <ImageView android:layout_width="wrap_content"
+                           android:importantForAccessibility="no"
                            android:layout_height="wrap_content"
-                           android:layout_marginRight="10dip"
                            android:layout_marginEnd="10dip"
                            android:src="?encrypted_backup"/>
 
@@ -120,7 +122,8 @@
                     android:background="@color/gray10"/>
 
             <LinearLayout android:id="@+id/import_plaintext_backup"
-                          android:clickable="true"
+                        android:clickable="true"
+                        android:focusable="true"
                           android:orientation="horizontal"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -131,8 +134,8 @@
                           android:layout_marginRight="16dip">
 
                 <ImageView android:layout_width="wrap_content"
+                           android:importantForAccessibility="no"
                            android:layout_height="wrap_content"
-                           android:layout_marginRight="10dip"
                            android:layout_marginEnd="10dip"
                            android:src="?plaintext_backup"/>
 
@@ -187,7 +190,8 @@
                     android:background="@color/gray10"/>
 
             <LinearLayout android:id="@+id/export_encrypted_backup"
-                          android:clickable="true"
+                        android:clickable="true"
+                        android:focusable="true"
                           android:orientation="horizontal"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -198,8 +202,8 @@
                           android:layout_marginRight="16dip">
 
                 <ImageView android:layout_width="wrap_content"
+                           android:importantForAccessibility="no"
                            android:layout_height="wrap_content"
-                           android:layout_marginRight="10dip"
                            android:layout_marginEnd="10dip"
                            android:src="?encrypted_backup"/>
 
@@ -227,7 +231,8 @@
                     android:background="@color/gray10"/>
 
                 <LinearLayout android:id="@+id/automatic_encrypted_backup"
-                      android:clickable="true"
+                    android:clickable="true"
+                    android:focusable="true"
                       android:orientation="horizontal"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
@@ -238,8 +243,8 @@
                       android:layout_marginRight="16dip">
 
                 <ImageView android:layout_width="wrap_content"
+                      android:importantForAccessibility="no"
                        android:layout_height="wrap_content"
-                       android:layout_marginRight="10dip"
                        android:layout_marginEnd="10dip"
                        android:src="?encrypted_backup"/>
 
@@ -268,7 +273,8 @@
                     android:background="@color/gray10"/>
 
             <LinearLayout android:id="@+id/export_plaintext_backup"
-                          android:clickable="true"
+                        android:clickable="true"
+                        android:focusable="true"
                           android:orientation="horizontal"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -279,8 +285,8 @@
                           android:layout_marginRight="16dip">
 
                 <ImageView android:layout_width="wrap_content"
+                           android:importantForAccessibility="no"
                            android:layout_height="wrap_content"
-                           android:layout_marginRight="10dip"
                            android:layout_marginEnd="10dip"
                            android:src="?plaintext_backup"/>
 

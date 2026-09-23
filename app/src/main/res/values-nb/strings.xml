@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Ja</string>
   <string name="no">Nei</string>
@@ -80,9 +80,6 @@ Advarsel! Dette vil deaktivere kryptert lagring av alle meldinger og nøkler. Di
   <string name="ConversationActivity_select_contact_info">Velg kontaktinformasjon</string>
   <string name="ConversationActivity_compose_message">Skriv melding</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">Kunne ikke legge til vedlegget.</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">GIF-en du valgte var for stor!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Beklager, den valgte videofilen overstiger avgrensningen for meldingsstørrelse (%1$skB).</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Beklager, den valgte lydfilen overstiger avgrensningen for meldingsstørrelse (%1$skB).</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">Oppgitt mottaker er ikke en gyldig SMS- eller e-postadresse.</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Meldingen du prøver å sende er tom.</string>
   <string name="ConversationActivity_group_members">Gruppemedlemmer</string>
@@ -92,7 +89,6 @@ Advarsel! Dette vil deaktivere kryptert lagring av alle meldinger og nøkler. Di
     <item quantity="one">1 medlem</item>
     <item quantity="other">%d medlemmer</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Lagret utkast</string>
   <string name="ConversationActivity_invalid_recipient">Korriger informasjon oppgitt i mottakerfelt.</string>
   <string name="ConversationActivity_calls_not_supported">Anrop er ikke støttet</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Denne enheten ser ikke ut til å kunne slå nummer.</string>
@@ -103,9 +99,6 @@ Advarsel! Dette vil deaktivere kryptert lagring av alle meldinger og nøkler. Di
   <string name="ConversationActivity_transport_secure_mms">Sikret MMS</string>
   <string name="ConversationActivity_install_smssecure">La oss snakke i fortrolighet: %s</string>
   <string name="ConversationActivity_recipient_self">Igangsetting av sikret økt er forbehold om tilkobling til andre.</string>
-  <string name="ConversationActivity_mms_not_supported_title">MMS er ikke støttet</string>
-  <string name="ConversationActivity_mms_not_supported_message">Denne meldingen kan ikke sendes siden din tilkoblingstilbyder ikke støtter MMS.</string>
-  <string name="ConversationActivity_specify_recipient">Velg en kontakt</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">Vedlegget er for stort for å sendes.</string>
   <!--ConversationAdapter-->
   <plurals name="ConversationAdapter_n_unread_messages">
@@ -113,7 +106,6 @@ Advarsel! Dette vil deaktivere kryptert lagring av alle meldinger og nøkler. Di
     <item quantity="other">%d uleste meldinger</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Meldingsdetaljer</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">Slett valgt melding?</item>
     <item quantity="other">Slett valgte meldinger?</item>
@@ -193,7 +185,6 @@ Advarsel! Dette vil deaktivere kryptert lagring av alle meldinger og nøkler. Di
   <string name="DualSimUtil__a_new_key_has_been_generated">En ny nøkkel har blitt opprettet.</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">En ny nøkkel har blitt opprettet for det SIM-kortet.</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Del med</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">Eksporter</string>
@@ -206,20 +197,15 @@ Advarsel! Dette vil deaktivere kryptert lagring av alle meldinger og nøkler. Di
   <string name="ExportFragment_error_while_writing_to_storage">Feil under skriving til lagringsmedium.</string>
   <string name="ExportFragment_export_successful">Eksportert</string>
   <string name="ExportFragment_export_encrypted_backup">Eksporter kryptert sikkerhetskopi?</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">Dette vil eksportere dine krypterte nøkler, innstillinger og meldinger til lagringsmedium.</string>
   <string name="ExportFragment_exporting_keys_settings_and_messages">Eksporter krypterte nøkler, innstillinger og meldinger…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Ny gruppe</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Oppdater gruppe</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Ny MMS-gruppe</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Opprettelse av gruppe feilet som følge av uventet feil.</string>
   <string name="GroupCreateActivity_contacts_no_members">Hver gruppe må bestå av ihvertfall én person til.</string>
   <string name="GroupCreateActivity_menu_create_title">Opprett gruppe</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">Meg</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Importer</string>
-  <string name="ImportExportActivity_export">Eksporter</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Importer systemets SMS-database?</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">Dette vil importere
@@ -241,14 +227,10 @@ systemets SMS-database før, vil annengangs import medføre duplisering av meldi
   <string name="ImportFragment_no_encrypted_backup_found">Fant ingen krypterte sikkerhetskopier.</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Fant ingen skannet nøkkel.</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">Installer Strekkodeskanner?</string>
-  <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Silence trenger Strekkodeskanner for QR-koder.</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">Forsendelse feilet</string>
   <string name="MessageDetailsRecipient_new_identity">Ny identitet</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Kunne ikke lagre MMS.</string>
-  <string name="MmsDownloader_error_connecting_to_mms_provider">Feil i forsøk på å kontakte MMS-tilbyder</string>
   <string name="MmsDownloader_error_reading_mms_settings">Feil ved innlesing av trådløse MMS-tilbyderinnstillinger</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Multimediamelding</string>
@@ -272,8 +254,6 @@ for denne nøkkelutvekslingen er forskjellig fra hva du tidligere har mottatt fr
 eller at denne kontakten simpelthen re-installerte Silence og nå har en ny identitetsnøkkel.</string>
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">Signaturen tilhørende denne nøkkelutvekslingen er betrodd, men du har skrudd av
 \'fullfør nøkkelutvekslinger automatisk\'.</string>
-  <string name="ReceiveKeyActivity_processing">Behandler</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Behandler nøkkelutveksling…</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Utfør identitetssjekk av denne kontakten.</string>
   <!--RecipientPreferencesActivity-->
   <string name="RecipientPreferenceActivity_block_this_contact_question">Blokker denne kontakten?</string>
@@ -358,7 +338,6 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="MessageNotifier_most_recent_from_s">Nyeste fra: %1$s</string>
   <string name="MessageNotifier_encrypted_message">Kryptert melding</string>
   <string name="MessageNotifier_media_message_with_text">Multimedia-melding: %s</string>
-  <string name="MessageNotifier_no_subject">(Mangler emne)</string>
   <string name="MessageNotifier_message_delivery_failed">Meldingslevering mislyktes.</string>
   <string name="MessageNotifier_failed_to_deliver_message">Klarte ikke å levere meldingen.</string>
   <string name="MessageNotifier_error_delivering_message">Feil ved levering av melding.</string>
@@ -388,27 +367,21 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Kontaktbilde</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Velg for</string>
   <!--blocked_contacts_fragment-->
   <string name="blocked_contacts_fragment__no_blocked_contacts">Ingen blokkerte kontakter</string>
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Ingen nylige samtaler.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
-  <string name="conversation_title_view__conversation_muted">Samtale dempet</string>
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">Send sikret SMS</string>
   <string name="conversation_activity__type_message_sms_insecure">Send usikret SMS</string>
   <string name="conversation_activity__type_message_mms_secure">Send sikret MMS</string>
   <string name="conversation_activity__type_message_mms_insecure">Send usikret MMS</string>
   <string name="conversation_activity__send">Send</string>
-  <string name="conversation_activity__remove">Fjern</string>
-  <string name="conversation_activity__window_description">Samtale med %1$s</string>
   <string name="conversation_activity__compose_description">Meldingsskriving</string>
   <string name="conversation_activity__emoji_toggle_description">Emoji-tastatur av/på</string>
   <string name="conversation_activity__attachment_thumbnail">Miniatyrbilde for vedlegg</string>
   <!--conversation_item-->
-  <string name="conversation_item__mms_downloading_description">Multimedia-melding lastes ned</string>
   <string name="conversation_item__mms_image_description">Multimediamelding</string>
   <string name="conversation_item__secure_message_description">Sikret melding</string>
   <!--conversation_item_sent-->
@@ -431,13 +404,10 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <!--conversation_fragment-->
   <string name="conversation_fragment__scroll_to_the_bottom_content_description">Rull til bunnen</string>
   <!--import_export_fragment-->
-  <string name="import_export_fragment__export">Eksport</string>
   <string name="import_export_fragment__import">Import</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">Kunne ikke lese loggen på din enhet. Du kan fremdeles bruke ADB for å få en feilrettingslogg istedenfor.</string>
   <string name="log_submit_activity__thanks">Takk for hjelpen!</string>
-  <string name="log_submit_activity__submitting">Sender</string>
-  <string name="log_submit_activity__posting_logs">Poster loggføring til gist…</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">Ønsker du å importere dine eksisterende meldinger inn i Silence sin krypterte database?</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">Den forvalgte systemdatabasen vil ikke på ingen måte bli endret.</string>
@@ -492,20 +462,15 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="message_details_header__sent">Sendt</string>
   <string name="message_details_header__received">Mottatt</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">Opprett passordsekvens</string>
-  <string name="AndroidManifest__enter_passphrase">Tast inn passordsekvens</string>
   <string name="AndroidManifest__select_contacts">Velg kontakter</string>
-  <string name="AndroidManifest__public_identity_key">Offentlig ID-nøkkel</string>
   <string name="AndroidManifest__change_passphrase">Bytte av passordsekvens</string>
   <string name="AndroidManifest__verify_identity">Bekreft identitet</string>
-  <string name="AndroidManifest__complete_key_exchange">Fullfør nøkkelutveksling</string>
   <string name="AndroidManifest__log_submit">Send inn feilrettingslogg</string>
   <string name="AndroidManifest__media_preview">Forhåndsvisning av multimedia</string>
   <string name="AndroidManifest__media_overview">Alle bilder</string>
   <string name="AndroidManifest__media_overview_named">Alle bilder med %1$s</string>
   <string name="AndroidManifest__message_details">Meldingsdetaljer</string>
   <string name="AndroidManifest_archived_conversations">Arkiverte samtaler</string>
-  <string name="AndroidManifest_configure_mms_settings">Sett opp MMS-innstillinger</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">Importer / eksporter</string>
   <string name="arrays__your_identity_key">Din ID-nøkkel</string>
@@ -531,7 +496,6 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
     <item quantity="other">%d timer</item>
   </plurals>
   <!--preferences.xml-->
-  <string name="preferences__general">Generelt</string>
   <string name="preferences__sms_mms">SMS og MMS</string>
   <string name="preferences__pref_all_sms_title">Motta alle SMS-er</string>
   <string name="preferences__pref_all_mms_title">Motta alle MMS-er</string>
@@ -540,8 +504,6 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="preferences__keyboard_settings">Tastaturvalg</string>
   <string name="preferences__disable_emoji_drawer">Skru av emoji-skuff</string>
   <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">Skru på dette valget hvis ditt tastatur støtter emoji-er.</string>
-  <string name="preferences__display_settings">Visningsinnstillinger</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Velg din kontakt fra kontaktlisten.</string>
   <string name="preferences__change_passphrase">Bytt passordsekvens</string>
   <string name="preferences__change_your_passphrase">Endre din passordsekvens</string>
   <string name="preferences__complete_key_exchanges">Fullfør nøkkelutvekslinger</string>
@@ -552,18 +514,12 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Blokker kopiering av skjermbildet i \"nylige\"-listen og inne i programmet</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Krev passordsekvens for tilgang til meldinger etter angitt tid</string>
   <string name="preferences__timeout_passphrase">Tidsutløp for passordsekvens</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">Velg tidsutløp for passordsekvens</string>
   <string name="preferences__pref_timeout_interval_title">Intervall for tidsutløp</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Tid før passordet slettes fra enhetens minne</string>
   <string name="preferences__notifications">Varslinger</string>
   <string name="preferences__enable_message_notifications">Skru på meldingsvarslinger</string>
   <string name="preferences__led_color">LED-farge</string>
   <string name="preferences__led_color_unknown">Ukjent</string>
   <string name="preferences__pref_led_blink_title">LED-blinkemønster</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">Angi tilpasset LED-blinkemønster</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">Påskrudd i:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">Avskrudd i:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Tilpasset LED-blinkemønster satt!</string>
   <string name="preferences__sound">Lyd</string>
   <string name="preferences__change_notification_sound">Endre  meldingsvarslingslyd</string>
   <string name="preferences__silent">Stille</string>
@@ -577,9 +533,6 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="preferences__five_times">Fem ganger</string>
   <string name="preferences__ten_times">Ti ganger</string>
   <string name="preferences__vibrate">Vibrer</string>
-  <string name="preferences__also_vibrate_when_notified">Vibrer ved varsling</string>
-  <string name="preferences__minutes">minutter</string>
-  <string name="preferences__hours">timer</string>
   <string name="preferences__green">Grønn</string>
   <string name="preferences__red">Rød</string>
   <string name="preferences__blue">Blå</string>
@@ -591,13 +544,10 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="preferences__fast">Hurtig</string>
   <string name="preferences__normal">Normal</string>
   <string name="preferences__slow">Treg</string>
-  <string name="preferences__custom">Tilpasset</string>
   <string name="preferences__advanced">Avansert</string>
   <string name="preferences__privacy">Personvern</string>
   <string name="preferences__mms_user_agent">MMS-brukeragent</string>
   <string name="preferences__advanced_mms_access_point_names">Manuelle MMS-innstillinger</string>
-  <string name="preferences__enable_manual_mms">Bruk manuelle MMS-innstillinger</string>
-  <string name="preferences__override_system_mms_settings">Overstyr systeminnstillingene for MMS med informasjonen nedenfor.</string>
   <string name="preferences__mmsc_url">MMSC-nettadresse</string>
   <string name="preferences__mms_proxy_host">MMS-mellomtjener</string>
   <string name="preferences__mms_proxy_port">Port brukt av MMS-mellomtjener</string>
@@ -646,19 +596,10 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">Marker alt</string>
-  <string name="contact_selection_list__menu_unselect_all">Avmarker alt</string>
-  <string name="contact_selection_list__header">ALLE KONTAKTER</string>
   <string name="contact_selection_list__unknown_contact">Ny melding til…</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Avslutt</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">Oppdater kontaktliste</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">Send sikret SMS</string>
-  <string name="conversation_button_context__send_insecure_sms">Send usikret SMS</string>
-  <string name="conversation_button_context__send_secure_mms">Send sikret MMS</string>
-  <string name="conversation_button_context__send_insecure_mms">Send usikret MMS</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">Ring</string>
   <!--conversation_context-->
@@ -684,7 +625,6 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="conversation_list__menu_search">Søk</string>
   <!--conversation_list_item_view-->
   <string name="conversation_list_item_view__contact_photo_image">Kontaktbilde</string>
-  <string name="conversation_list_item_view__error_alert">Varsel om feil</string>
   <string name="conversation_list_item_view__archived">Arkivert</string>
   <!--conversation_list_fragment-->
   <string name="conversation_list_fragment__fab_content_description">Ny samtale</string>
@@ -717,7 +657,6 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="key_scanning__menu_display_your_qr_code">Vis din QR-kode</string>
   <string name="key_scanning__menu_scan_contacts_qr_code">Skann kontaktens QR-kode</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">Ny melding</string>
   <string name="text_secure_normal__menu_new_group">Ny gruppe</string>
   <string name="text_secure_normal__menu_settings">Innstillinger</string>
   <string name="text_secure_normal__menu_clear_passphrase">Lås</string>
@@ -739,7 +678,6 @@ Mottok nøkkelutvekslingsmelding for ugyldig protokollversjon.</string>
   <string name="reminder_header_close_button">LUKK</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">Deg</string>
-  <string name="MediaPreviewActivity_cant_display">Klarte ikke å forhåndsvise dette bildet</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Medietypen er ikke støttet.</string>
   <string name="MediaPreviewActivity_draft">Utkast</string>
   <!--media_preview-->

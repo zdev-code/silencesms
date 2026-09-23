@@ -51,9 +51,7 @@ public class TransferControlView extends FrameLayout {
     inflate(context, R.layout.transfer_controls_view, this);
 
     final Drawable background = ContextCompat.getDrawable(context, R.drawable.transfer_controls_background);
-    if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-      background.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(0x66ffffff, BlendModeCompat.MODULATE));
-    }
+    background.setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(0x66ffffff, BlendModeCompat.MODULATE));
     setLongClickable(false);
     ViewUtil.setBackground(this, background);
     setVisibility(GONE);

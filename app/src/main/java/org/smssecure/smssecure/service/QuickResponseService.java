@@ -19,11 +19,10 @@ import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.sms.MessageSender;
 import org.smssecure.smssecure.sms.OutgoingTextMessage;
 import org.smssecure.smssecure.util.Rfc5724Uri;
+import org.smssecure.smssecure.util.Util;
 import java.util.Optional;
 
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 public class QuickResponseService extends MasterSecretIntentService {
 
@@ -47,7 +46,7 @@ public class QuickResponseService extends MasterSecretIntentService {
       String     content    = intent.getStringExtra(Intent.EXTRA_TEXT);
       String     numbers    = uri.getPath();
       if(numbers.contains("%")){
-        numbers = URLDecoder.decode(numbers, StandardCharsets.UTF_8);
+        numbers = Util.decodeUrlEncoded(numbers);
       }
 
       Recipients                      recipients     = RecipientFactory.getRecipientsFromString(this, numbers, false);

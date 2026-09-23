@@ -66,7 +66,6 @@ public class SubscriptionManagerCompat {
     return Optional.empty();
   }
 
-  @RequiresApi(22)
   private void updateDisplayNameList(List<SubscriptionInfo> activeSubscriptions) {
     displayNameList = new LinkedList<String>();
 

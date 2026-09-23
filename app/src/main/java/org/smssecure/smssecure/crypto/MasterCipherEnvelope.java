@@ -14,7 +14,8 @@ final class MasterCipherEnvelope {
   static final int ALGORITHM_LEGACY_CBC_HMAC_SHA1 = 1;
   static final int ALGORITHM_AES_256_GCM = 2;
 
-  private static final int FIXED_HEADER_LENGTH = MAGIC.length + 1 + 1 + 1 + Integer.BYTES;
+  private static final int INTEGER_BYTES = Integer.SIZE / Byte.SIZE;
+  private static final int FIXED_HEADER_LENGTH = MAGIC.length + 1 + 1 + 1 + INTEGER_BYTES;
 
   private final byte[] nonce;
   private final byte[] ciphertext;
@@ -119,7 +120,7 @@ final class MasterCipherEnvelope {
       throw new InvalidMessageException("Unsupported MasterCipher envelope parameters.");
     }
 
-    if (buffer.remaining() < nonceLength + Integer.BYTES + authenticationTagLength) {
+    if (buffer.remaining() < nonceLength + INTEGER_BYTES + authenticationTagLength) {
       throw new InvalidMessageException("Truncated MasterCipher envelope.");
     }
 

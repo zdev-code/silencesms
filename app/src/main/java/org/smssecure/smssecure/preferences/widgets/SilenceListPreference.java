@@ -2,8 +2,6 @@ package org.smssecure.smssecure.preferences.widgets;
 
 
 import android.content.Context;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
@@ -19,13 +17,11 @@ public class SilenceListPreference extends ListPreference {
   private TextView rightSummary;
   private CharSequence summary;
 
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   public SilenceListPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     initialize();
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   public SilenceListPreference(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initialize();

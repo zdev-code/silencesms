@@ -10,8 +10,8 @@
         android:gravity="center_vertical"
         android:focusable="true"
         android:background="@drawable/conversation_item_background"
-        android:paddingLeft="48dp"
-        android:paddingRight="20dp">
+        android:paddingStart="48dp"
+        android:paddingEnd="20dp">
 
     <org.smssecure.smssecure.components.AvatarImageView
             android:id="@+id/contact_photo_image"
@@ -22,7 +22,6 @@
             android:cropToPadding="true"
             app:showBadge="true"
             tools:src="@color/blue_600"
-            android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp"
             android:contentDescription="@string/SingleContactSelectionActivity_contact_photo" />
 
@@ -61,7 +60,7 @@
             <TextView android:id="@+id/label"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:paddingLeft="10dip"
+                      android:paddingEnd="0dp"
                       android:paddingStart="10dip"
                       android:ellipsize="end"
                       android:singleLine="true"

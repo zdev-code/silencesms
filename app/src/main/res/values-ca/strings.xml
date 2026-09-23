@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Si</string>
   <string name="no">No</string>
@@ -36,7 +36,6 @@
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Aquest dispositiu no sembla suportar accions de trucada.</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Detalls del missatge</string>
   <!--ConversationListActivity-->
   <!--ConversationListFragment-->
   <string name="ConversationListFragment_deleting">Esborrant</string>
@@ -55,8 +54,6 @@
   <string name="GroupCreateActivity_contacts_no_members">Necessites almenys una persona dins el teu grup!</string>
   <!--GroupMembersDialog-->
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Importa</string>
-  <string name="ImportExportActivity_export">Exporta</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import">Importa</string>
   <string name="ImportFragment_cancel">Cancel·la</string>
@@ -70,7 +67,6 @@
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">No s\'ha trobat cap clau escanejada!</string>
   <!--MessageDetailsRecipient-->
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Error emmagatzemant MMS!</string>
   <!--NotificationMmsMessageRecord-->
   <!--MessageRecord-->
   <!--PassphraseChangeActivity-->
@@ -78,8 +74,6 @@
   <!--PassphrasePromptActivity-->
   <!--ReceiveKeyActivity-->
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">La signatura en aquest intercanvi de claus és de confiança, però tens l\'ajustament \'completa els intercanvis de claus automàticament\' desactivat.</string>
-  <string name="ReceiveKeyActivity_processing">Processant</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Processant intercanvi de clau...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Pot ser que vulguis verificar aquest contacte.</string>
   <!--RecipientPreferencesActivity-->
   <!--Slide-->
@@ -127,15 +121,12 @@
   <string name="contact_selection_group_activity__no_contacts">Sense contactes.</string>
   <!--single_contact_selection_activity-->
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Selecciona per</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Sense trucades recents.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
   <string name="conversation_activity__send">Envia</string>
-  <string name="conversation_activity__remove">Treu</string>
   <!--conversation_item-->
   <!--conversation_item_sent-->
   <string name="conversation_item_sent__download">Descàrrega</string>
@@ -176,8 +167,6 @@
   <!--arrays.xml-->
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__general">General</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Escull el teu contacte de la llista de contactes</string>
   <string name="preferences__change_passphrase">Canvia frase contrasenya</string>
   <string name="preferences__complete_key_exchanges">Completa intercanvis de claus</string>
   <string name="preferences__screen_security">Seguretat de pantalla</string>
@@ -185,18 +174,13 @@
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Oblida la frase contrasenya de la memòria després d\'un interval de temps</string>
   <string name="preferences__timeout_passphrase">Temps d\'espera de la frase contrasenya</string>
   <string name="preferences__pref_timeout_interval_title">Interval del temps d\'espera</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">La quantitat de temps que s\'esperarà abans d\'oblidar la frase contrasenya de la memòria</string>
   <string name="preferences__notifications">Notificacions</string>
   <string name="preferences__led_color">Color del LED</string>
   <string name="preferences__pref_led_blink_title">Patró d\'intermitència del LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">S\'ha fixat un patró de parpalleig del LED personalitzat!</string>
   <string name="preferences__sound">So</string>
   <string name="preferences__change_notification_sound">Canvia el so de notificació</string>
   <string name="preferences__play_inthread_notifications">Reprodueix un so de notificació quan s\'estigui mirant una conversació activa</string>
   <string name="preferences__vibrate">Vibra</string>
-  <string name="preferences__also_vibrate_when_notified">Vibra també en notificar</string>
-  <string name="preferences__minutes">minuts</string>
-  <string name="preferences__hours">hores</string>
   <string name="preferences__green">Verd</string>
   <string name="preferences__red">Vermell</string>
   <string name="preferences__blue">Blau</string>
@@ -207,9 +191,7 @@
   <string name="preferences__fast">Ràpid</string>
   <string name="preferences__normal">Normal</string>
   <string name="preferences__slow">Lent</string>
-  <string name="preferences__custom">Personalitzat</string>
   <string name="preferences__advanced">Avançat</string>
-  <string name="preferences__override_system_mms_settings">Sobreescriu els ajustaments MMS del sistema amb la informació següent.</string>
   <string name="preferences__sms_delivery_reports">Informes de lliurament de SMS</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">Demana un informe de lliurament en cada missatge SMS que enviïs</string>
   <string name="preferences__delete_old_messages">Esborra missatges antics</string>
@@ -225,7 +207,6 @@
   <!--****************************************-->
   <!--contact_selection_list-->
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Finalitzat</string>
   <!--refreshing push directory from menu-->
   <!--conversation_button_context-->
   <!--conversation_callable-->

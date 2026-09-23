@@ -75,7 +75,7 @@ public class ConversationScreenViewModelTest {
     assertThat(viewModel.getState().getValue().isSending()).isTrue();
 
     ArgumentCaptor<ConversationScreenRepository.Callback<Long>> callback =
-        ArgumentCaptor.forClass(ConversationScreenRepository.Callback.class);
+      ArgumentCaptor.captor();
     verify(repository).sendText(any(), any(), callback.capture());
     viewModel.onCleared();
     callback.getValue().onSuccess(33L);

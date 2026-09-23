@@ -206,14 +206,12 @@ public class Permissions {
   }
 
   public static boolean hasAny(@NonNull Context context, String... permissions) {
-    return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-        Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
+    return Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
 
   }
 
   public static boolean hasAll(@NonNull Context context, String... permissions) {
-    return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-        Arrays.stream(permissions).allMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
+    return Arrays.stream(permissions).allMatch(permission -> ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED);
 
   }
 

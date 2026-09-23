@@ -16,6 +16,7 @@
  */
 package org.smssecure.smssecure.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -55,6 +56,7 @@ public class CanonicalAddressDatabase {
   private static final String SELECTION_NUMBER = "PHONE_NUMBERS_EQUAL(" + ADDRESS_COLUMN + ", ?)";
   private static final String SELECTION_OTHER  = ADDRESS_COLUMN + " = ? COLLATE NOCASE";
 
+  @SuppressLint("StaticFieldLeak") // Construction and reset retain only application contexts.
   private static CanonicalAddressDatabase instance;
   private        DatabaseHelper           databaseHelper;
   private final  Context                  context;

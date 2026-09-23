@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Bai</string>
   <string name="no">Ez</string>
   <string name="delete">Ezabatu</string>
-  <string name="please_wait">Itxaron, mesedez...</string>
+  <string name="please_wait">Itxaron, mesedez…</string>
   <!--AbstractNotificationBuilder-->
   <string name="AbstractNotificationBuilder_new_message">Mezu berria</string>
   <!--ApplicationPreferencesActivity-->
@@ -68,9 +68,6 @@ gai izango da saiootan sartzeko.</string>
   <string name="ConversationActivity_add_attachment">Eranskina gehitu</string>
   <string name="ConversationActivity_select_contact_info">Kontaktuaren informazioa aukeratu</string>
   <string name="ConversationActivity_compose_message">Mezua idatzi</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">Hautatu duzun GIF-a handiegia da!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Barkatu, aukeratutako bideoak amainaren mugak gainditzen ditu t(%1$skB).</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Barkatu, aukeratutako audioak mezuaren tamaina mugak gainditzen ditu  (%1$skB).</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Mezua hutsik dago!</string>
   <string name="ConversationActivity_group_members">Taldeko partaideak</string>
   <string name="ConversationActivity_group_conversation">Taldeko solasaldia</string>
@@ -79,7 +76,6 @@ gai izango da saiootan sartzeko.</string>
     <item quantity="one">partaide 1</item>
     <item quantity="other">%d partaide</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Gordetako zirriborroa</string>
   <string name="ConversationActivity_invalid_recipient">Hartzaile baliogabea!</string>
   <string name="ConversationActivity_calls_not_supported">Deiak ez daude onartuta</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Badirudi gailu honek ez duela onartzen telefono deiekin lotutako ekintzak.</string>
@@ -87,10 +83,8 @@ gai izango da saiootan sartzeko.</string>
   <string name="ConversationActivity_transport_insecure_mms">MMS ez segurua</string>
   <string name="ConversationActivity_transport_secure_sms">SMS segurua</string>
   <string name="ConversationActivity_transport_secure_mms">SMS segurua</string>
-  <string name="ConversationActivity_specify_recipient">Hautatu kontaktu bat</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Mezuaren detaileak</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">Ezabatu hautatutako mezua?</item>
     <item quantity="other">Ezabatu hautatutako mezuak?</item>
@@ -101,11 +95,11 @@ gai izango da saiootan sartzeko.</string>
     <item quantity="other">Fitxategiak ongi gorde dira</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Ezgai biltegian idazteko!</string>
-  <string name="ConversationFragment_collecting_attahments">Eranskailuak eskuratzen...</string>
+  <string name="ConversationFragment_collecting_attahments">Eranskailuak eskuratzen…</string>
   <string name="ConversationFragment_mms">MMS</string>
   <string name="ConversationFragment_sms">SMS</string>
-  <string name="ConversationFragment_deleting">Ezabatzen...</string>
-  <string name="ConversationFragment_deleting_messages">Mezuak ezabatzen...</string>
+  <string name="ConversationFragment_deleting">Ezabatzen…</string>
+  <string name="ConversationFragment_deleting_messages">Mezuak ezabatzen…</string>
   <!--ConversationListActivity-->
   <!--ConversationListFragment-->
   <string name="ConversationListFragment_deleting">Ezabatzen</string>
@@ -122,7 +116,6 @@ gai izango da saiootan sartzeko.</string>
   <string name="DateUtils_yesterday">Atzo</string>
   <!--DualSimUtil-->
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Norekin konpartitu</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">Esportatu</string>
@@ -130,16 +123,12 @@ gai izango da saiootan sartzeko.</string>
   <string name="ExportFragment_exporting">Esportatzen</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Talde berria</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Taldea eguneratu</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">MMS talde berria</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Ustekabeko errorea gertatu da eta eragin du taldea sortu ezin izatea.</string>
   <string name="GroupCreateActivity_contacts_no_members">Gutxienez pertsona bat behar duzu zure taldean!</string>
   <string name="GroupCreateActivity_menu_create_title">Taldea sortu</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">Ni</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Inportatu</string>
-  <string name="ImportExportActivity_export">Esportatu</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Inportatu sistemaren SMS datubasea?</string>
   <string name="ImportFragment_import">Inportatu</string>
@@ -156,11 +145,9 @@ Babeskopia hau lehenago inportatu baduzu, mezu bikoiztuak sortu daitezke.
   <string name="ImportFragment_no_encrypted_backup_found">Ez da topatu enkriptatuko babeskopiarik!</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Ez da topatu eskaneatutako gakorik!</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">Barcode Scanner instalatu?</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_new_identity">Identitate berria</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Errorea MMS gordetzen!</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Multimedia mezua</string>
   <!--MessageRecord-->
@@ -178,8 +165,6 @@ Babeskopia hau lehenago inportatu baduzu, mezu bikoiztuak sortu daitezke.
 datu-trukatze honetako sinadura fidatzekoa da, baina 
 \'gako elkar-trukatzeak automatikoki 
 osatu\' ezarpena desgaituta daukazu</string>
-  <string name="ReceiveKeyActivity_processing">Prozesatzen</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Gakoaren datu-elkartrukea prozesatzen...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Agian kontaktu hau egiaztatu beharko zenuke.</string>
   <!--RecipientPreferencesActivity-->
   <string name="RecipientPreferenceActivity_block_this_contact_question">Blokeatu kontaktu hau?</string>
@@ -234,7 +219,6 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <!--KeyCachingService-->
   <string name="KeyCachingService_lock">Blokeatu pasahitz bat erabiliz</string>
   <!--MessageNotifier-->
-  <string name="MessageNotifier_no_subject">(Ez dago gairik)</string>
   <string name="MessageNotifier_message_delivery_failed">Mezuaren banaketak huts egin du.</string>
   <string name="MessageNotifier_failed_to_deliver_message">Mezuaren banaketak huts egin du.</string>
   <string name="MessageNotifier_error_delivering_message">Errorea mezua banatzen.</string>
@@ -249,14 +233,12 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <!--contact_selection_activity-->
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">Kontakturik ez.</string>
-  <string name="contact_selection_group_activity__finding_contacts">Kontaktuak kargatzen...</string>
+  <string name="contact_selection_group_activity__finding_contacts">Kontaktuak kargatzen…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Kontaktuaren Argazkia</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Hautatu egiteko...</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Ez dago azken deirik.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
@@ -265,8 +247,6 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <string name="conversation_activity__type_message_mms_secure">MMS mezu segurua bidali</string>
   <string name="conversation_activity__type_message_mms_insecure">MMS ez segurua bidali</string>
   <string name="conversation_activity__send">Bidali</string>
-  <string name="conversation_activity__remove">Ezabatu</string>
-  <string name="conversation_activity__window_description">%1$s-(r)ekin solasaldia</string>
   <string name="conversation_activity__compose_description">Mezuaren konposizioa</string>
   <string name="conversation_activity__emoji_toggle_description">Emoji teklatua aktibatu/desaktibatu</string>
   <!--conversation_item-->
@@ -290,7 +270,6 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <!--import_export_fragment-->
   <!--log_submit_activity-->
   <string name="log_submit_activity__thanks">Eskerrik asko zure laguntzagatik!</string>
-  <string name="log_submit_activity__submitting">Bidaltzen</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">Sistemaren lehenetsitako datubasea ez da inolako moduan aldatuko.</string>
   <string name="database_migration_activity__skip">Saltatu</string>
@@ -318,23 +297,16 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <string name="verify_identity_activity__your_identity_you_read">Zure nortasuna (zuk irakurri):</string>
   <!--message_details_header-->
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">Pasahitza sortu</string>
-  <string name="AndroidManifest__enter_passphrase">Pasahitza sartu</string>
   <string name="AndroidManifest__select_contacts">Kontaktuak hautatu</string>
-  <string name="AndroidManifest__public_identity_key">Gako publikoaren nortasuna</string>
   <string name="AndroidManifest__change_passphrase">Pasahitza aldatu</string>
   <string name="AndroidManifest__verify_identity">Nortasuna egiaztatu</string>
-  <string name="AndroidManifest__complete_key_exchange">Gakoaren datu-trukatzea osatuta</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">Inportatu / esportatu</string>
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__general">Orokorra</string>
   <string name="preferences__sms_mms">SMS eta MMS</string>
   <string name="preferences__pref_all_sms_title">Jaso SMS guztiak</string>
   <string name="preferences__pref_all_mms_title">Jaso MMS guztiak</string>
-  <string name="preferences__display_settings">Bistaratze-ezarpenak</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Hautatu zure kontaktua kontaktuen zerrendatik.</string>
   <string name="preferences__change_passphrase">Pasahitza aldatu</string>
   <string name="preferences__complete_key_exchanges">Gakoen datu-trukatzea osatu</string>
   <string name="preferences__enable_passphrase">Pasahitza gaitu</string>
@@ -344,24 +316,15 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Blokeatu pantailazoak arestikoen zerrendan eta aplikazioaren barruan</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Ahaztu pasahitza memoriatik denbora tarte bat pasa ondoren</string>
   <string name="preferences__timeout_passphrase">Denbora tartearen pasahitza</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">Hautatu pasahitzaren iraungitze-denbora</string>
   <string name="preferences__pref_timeout_interval_title">Iraungitzearen tartea</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Memoriatik pasahitza kentzeko itxaron behar den denbora</string>
   <string name="preferences__notifications">Jakinarazpenak</string>
   <string name="preferences__led_color">LED kolorea</string>
   <string name="preferences__led_color_unknown">Ezezaguna</string>
   <string name="preferences__pref_led_blink_title">LEDaren keinuka eredua</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">LEDaren keinuka eredu pertsonalizatu bat ezarri</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">Zenbat denbora piztuta:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">Zenbat denbora itzalita:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Personalizatutako LED keinu eredua ezarrita!</string>
   <string name="preferences__sound">Soinua</string>
   <string name="preferences__change_notification_sound">Aldatu jakinarazpenaren soinua</string>
   <string name="preferences__play_inthread_notifications">Jakinarazpen soinua erreproduzitu indarrean dagoen solasaldi bat ikustean</string>
   <string name="preferences__vibrate">Bibratu</string>
-  <string name="preferences__also_vibrate_when_notified">Jakinarazpena denean ere bibratu</string>
-  <string name="preferences__minutes">minutuak</string>
-  <string name="preferences__hours">orduak</string>
   <string name="preferences__green">Berdea</string>
   <string name="preferences__red">Gorria</string>
   <string name="preferences__blue">Urdina</string>
@@ -373,11 +336,8 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <string name="preferences__fast">Arina</string>
   <string name="preferences__normal">Normala</string>
   <string name="preferences__slow">Motela</string>
-  <string name="preferences__custom">Pertsonalizatua</string>
   <string name="preferences__advanced">Aurreratua</string>
   <string name="preferences__advanced_mms_access_point_names">MMS eskuzko ezarpenak</string>
-  <string name="preferences__enable_manual_mms">MMS eskuzko ezarpenak erabili</string>
-  <string name="preferences__override_system_mms_settings">Jaramonik ez sistemaren MMS ezarpenei azpian dagoen informazioa erabiliz.</string>
   <string name="preferences__sms_delivery_reports">SMS banaketaren txostenak</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">Bidaltzen duzun SMS mezu bakoitzeko banaketa txosten bat eskatu</string>
   <string name="preferences__delete_old_messages">Mezu zaharrak ezabatu</string>
@@ -394,17 +354,9 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">Denak hautatu</string>
-  <string name="contact_selection_list__menu_unselect_all">Denak ez-hautatu</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Bukatua</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">Freskatu kontaktuen zerrenda</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">SMS mezu segurua bidali</string>
-  <string name="conversation_button_context__send_insecure_sms">Segurtasunik gabeko SMSa bidali</string>
-  <string name="conversation_button_context__send_secure_mms">MMS mezu segurua bidali</string>
-  <string name="conversation_button_context__send_insecure_mms">Segurtasunik gabeko MMSa bidali</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">Deitu</string>
   <!--conversation_context-->
@@ -445,7 +397,6 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <!--key_scanning-->
   <string name="key_scanning__menu_compare">Konparatu</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">Mezu berria</string>
   <string name="text_secure_normal__menu_new_group">Talde berria</string>
   <string name="text_secure_normal__menu_settings">Ezarpenak</string>
   <string name="text_secure_normal__menu_clear_passphrase">Blokeatu</string>
@@ -455,7 +406,6 @@ Gakoaren elkar-trukeraro mezua jaso da protokoloaren bertsio baliogabe baterako.
   <string name="reminder_header_sms_import_title">Sistemaren SMSa inportatu?</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">Zu</string>
-  <string name="MediaPreviewActivity_cant_display">Ezgai irudi honen aurrebista sortzeko</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Euskarri mota ez-onartua</string>
   <!--media_preview-->
   <string name="media_preview__save_title">Gorde</string>

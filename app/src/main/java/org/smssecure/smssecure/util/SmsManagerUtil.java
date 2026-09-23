@@ -20,11 +20,7 @@ public final class SmsManagerUtil {
   private SmsManagerUtil() {}
 
   public static @NonNull SmsManager getSystemSmsManager(@NonNull Context context) {
-    SmsManager smsManager = null;
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      smsManager = context.getSystemService(SmsManager.class);
-    }
+    SmsManager smsManager = context.getSystemService(SmsManager.class);
 
     if (smsManager == null) {
       smsManager = legacyGetDefault();
@@ -46,11 +42,7 @@ public final class SmsManagerUtil {
       }
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-      return legacyGetForSubscriptionId(subscriptionId);
-    }
-
-    return getSystemSmsManager(context);
+    return legacyGetForSubscriptionId(subscriptionId);
   }
 
   @RequiresApi(Build.VERSION_CODES.S)

@@ -180,7 +180,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   }
 
   private void inflateViewIdentities(Menu menu) {
-    if (Build.VERSION.SDK_INT >= 22 && activeSubscriptions.size() > 1) {
+    if (activeSubscriptions.size() > 1) {
       menu.findItem(R.id.menu_my_identity).setVisible(false);
       MenuItem menuItem = menu.findItem(R.id.menu_my_identity_dual_sim);
       SubMenu identitiesMenu = menuItem.getSubMenu();
@@ -348,7 +348,11 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
           @Override
           public void run() {
             ConversationListFragment fragment = getCurrentFragment();
-            if (fragment != null) fragment.getListAdapter().notifyDataSetChanged();
+            if (fragment != null) {
+              // Theme changes invalidate every bound row rather than a contiguous range.
+              //noinspection NotifyDataSetChanged
+              fragment.getListAdapter().notifyDataSetChanged();
+            }
           }
         });
       }

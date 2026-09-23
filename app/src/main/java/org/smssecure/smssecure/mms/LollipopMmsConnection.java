@@ -86,7 +86,7 @@ public abstract class LollipopMmsConnection extends BroadcastReceiver {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       flags |= PendingIntent.FLAG_MUTABLE;
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    } else {
       flags |= PendingIntent.FLAG_IMMUTABLE;
     }
 

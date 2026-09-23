@@ -181,13 +181,14 @@ public final class DatabaseMigrationFragment extends Fragment {
   private void renderProgress(@Nullable ProgressDescription update) {
     showProgress();
     if (update == null) {
-      progressLabel.setText("0/0");
+      progressLabel.setText(getString(R.string.database_migration_activity__progress, 0, 0));
       progress.setProgress(0);
       progress.setSecondaryProgress(0);
       return;
     }
-    progressLabel.setText(Math.max(0, update.primaryComplete) + "/" +
-                Math.max(0, update.primaryTotal));
+    progressLabel.setText(getString(R.string.database_migration_activity__progress,
+                                    Math.max(0, update.primaryComplete),
+                                    Math.max(0, update.primaryTotal)));
     progress.setProgress(scale(update.primaryComplete, update.primaryTotal, progress.getMax()));
     progress.setSecondaryProgress(
         scale(update.secondaryComplete, update.secondaryTotal, progress.getMax()));

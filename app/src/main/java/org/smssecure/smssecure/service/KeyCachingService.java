@@ -364,13 +364,7 @@ public class KeyCachingService extends Service {
       return;
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      foregroundServiceModern();
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-      foregroundServiceICS();
-    } else {
-      foregroundServiceLegacy();
-    }
+    foregroundServiceModern();
   }
 
   private void broadcastNewSecret() {

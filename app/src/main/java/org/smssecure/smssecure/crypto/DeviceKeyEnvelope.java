@@ -13,7 +13,8 @@ final class DeviceKeyEnvelope {
   private static final int VERSION = 1;
   private static final int NONCE_LENGTH = 12;
   private static final int TAG_LENGTH_BITS = 128;
-  private static final int HEADER_LENGTH = MAGIC.length + 1 + 1 + Integer.BYTES + NONCE_LENGTH;
+  private static final int INTEGER_BYTES = Integer.SIZE / Byte.SIZE;
+  private static final int HEADER_LENGTH = MAGIC.length + 1 + 1 + INTEGER_BYTES + NONCE_LENGTH;
 
   private DeviceKeyEnvelope() {}
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF7568ae">
+    android:background="#FF7568ae"
+    tools:ignore="Overdraw">
 
     <TextView
         style="@style/Silence.Text.Headline.Welcome"
@@ -23,6 +24,7 @@
 
     <ImageView
         android:id="@+id/imageView"
+        android:importantForAccessibility="no"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="160dp"

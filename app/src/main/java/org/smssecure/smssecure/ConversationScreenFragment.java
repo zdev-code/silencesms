@@ -728,7 +728,7 @@ public class ConversationScreenFragment extends Fragment
   }
 
   private void inflateSubMenuVerifyIdentity(Menu menu) {
-    if (Build.VERSION.SDK_INT >= 22 && activeSubscriptions.size() > 1) {
+    if (activeSubscriptions.size() > 1) {
       menu.findItem(R.id.menu_verify_identity).setVisible(false);
       SubMenu identitiesMenu = menu.findItem(R.id.menu_verify_identity_dual_sim).getSubMenu();
 
@@ -749,7 +749,7 @@ public class ConversationScreenFragment extends Fragment
   }
 
   private void inflateSubMenuStartSecureSession(Menu menu) {
-    if (Build.VERSION.SDK_INT >= 22 && activeSubscriptions.size() > 1) {
+    if (activeSubscriptions.size() > 1) {
       menu.findItem(R.id.menu_start_secure_session).setVisible(false);
       SubMenu startSecureSessionMenu = menu.findItem(R.id.menu_start_secure_session_dual_sim).getSubMenu();
 
@@ -775,7 +775,7 @@ public class ConversationScreenFragment extends Fragment
   }
 
   private void inflateSubMenuAbortSecureSession(Menu menu) {
-    if (Build.VERSION.SDK_INT >= 22 && activeSubscriptions.size() > 1) {
+    if (activeSubscriptions.size() > 1) {
       menu.findItem(R.id.menu_abort_session).setVisible(false);
       SubMenu abortSecureSessionMenu = menu.findItem(R.id.menu_abort_session_dual_sim).getSubMenu();
 
@@ -1162,13 +1162,11 @@ public class ConversationScreenFragment extends Fragment
     if (!isSecureSmsDestination      ) sendButton.disableTransport(Type.SECURE_SMS);
     if (recipients.isGroupRecipient()) sendButton.disableTransport(Type.INSECURE_SMS);
 
-    if (Build.VERSION.SDK_INT >= 22) {
-            List<Integer> subscriptionsWithoutSession = useMasterSecret(
-              secret -> SessionUtil.getSubscriptionIdWithoutSession(requireContext(), secret,
-                primaryRecipient.getNumber(), activeSubscriptions),
-                Collections.emptyList());
-            sendButton.disableTransport(Type.SECURE_SMS, subscriptionsWithoutSession);
-    }
+    List<Integer> subscriptionsWithoutSession = useMasterSecret(
+      secret -> SessionUtil.getSubscriptionIdWithoutSession(requireContext(), secret,
+        primaryRecipient.getNumber(), activeSubscriptions),
+        Collections.emptyList());
+    sendButton.disableTransport(Type.SECURE_SMS, subscriptionsWithoutSession);
 
     if (isSecureSmsDestination) {
       sendButton.setDefaultTransport(Type.SECURE_SMS);
@@ -1360,12 +1358,6 @@ public class ConversationScreenFragment extends Fragment
     archived = screenState.isArchived();
     distributionType = screenState.getDistributionType();
 
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-      LinearLayout conversationContainer = ViewUtil.findById(requireView(), R.id.conversation_container);
-      conversationContainer.setClipChildren(true);
-      conversationContainer.setClipToPadding(true);
-    }
-
     if (!(requireActivity() instanceof ConversationActivity)) {
       LinearLayout conversationContainer = ViewUtil.findById(requireView(), R.id.conversation_container);
       conversationContainer.setPadding(conversationContainer.getPaddingLeft(), 0,
@@ -1528,10 +1520,8 @@ public class ConversationScreenFragment extends Fragment
   private void setActionBarColor(MaterialColor color) {
     getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color.toActionBarColor(requireContext())));
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      setSystemBarColors(color.toStatusBarColor(requireContext()),
-                         ContextCompat.getColor(requireContext(), android.R.color.black));
-    }
+    setSystemBarColors(color.toStatusBarColor(requireContext()),
+                       ContextCompat.getColor(requireContext(), android.R.color.black));
   }
 
   private void setBlockedUserState(Recipients recipients) {
@@ -1551,8 +1541,10 @@ public class ConversationScreenFragment extends Fragment
     CharacterState  characterState  = transportOption.calculateCharacters(messageBody);
 
     if (characterState.charactersRemaining <= 15 || characterState.messagesSpent > 1) {
-      charactersLeft.setText(characterState.charactersRemaining + "/" + characterState.maxMessageSize
-                                 + " (" + characterState.messagesSpent + ")");
+      charactersLeft.setText(getString(R.string.conversation_activity__character_counter,
+                                       characterState.charactersRemaining,
+                                       characterState.maxMessageSize,
+                                       characterState.messagesSpent));
       charactersLeft.setVisibility(View.VISIBLE);
     } else {
       charactersLeft.setVisibility(View.GONE);

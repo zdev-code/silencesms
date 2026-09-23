@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Da</string>
   <string name="no">Ne</string>
@@ -51,12 +51,9 @@ im moći pristupiti.</string>
   <string name="ConversationActivity_add_attachment">Dodaj privitak</string>
   <string name="ConversationActivity_select_contact_info">Odaberite informacije kontakta</string>
   <string name="ConversationActivity_compose_message">Sastavi poruku</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Odabrani video prelazi ograničenje veličine poruke (%1$skB).</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Odabrani audio prelazi ograničenje veličine poruke (%1$skB).</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Poruka je prazna!</string>
   <string name="ConversationActivity_group_conversation">Grupni razgovor</string>
   <string name="ConversationActivity_unnamed_group">Neimenovana grupa</string>
-  <string name="ConversationActivity_saved_draft">Spremljena skica</string>
   <string name="ConversationActivity_invalid_recipient">Naispravan primatelj!</string>
   <string name="ConversationActivity_calls_not_supported">Pozivi nisu podržani</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Ovaj uređaj možda ne podržava radnje pozivanja.</string>
@@ -66,7 +63,6 @@ im moći pristupiti.</string>
   <string name="ConversationActivity_transport_secure_mms">Sigurni MMS</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Detalji poruke</string>
   <string name="ConversationFragment_save_to_sd_card">Spremi na disk?</string>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Nije moguće pisati na disk!</string>
   <string name="ConversationFragment_mms">MMS</string>
@@ -81,7 +77,6 @@ im moći pristupiti.</string>
   <string name="DateUtils_now">Sada</string>
   <!--DualSimUtil-->
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Podijeli s</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">Izvoz</string>
@@ -89,16 +84,12 @@ im moći pristupiti.</string>
   <string name="ExportFragment_exporting">Izvoz</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Nova grupa</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Ažuriraj grupu</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Nova MMS grupa</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Dogodila se neočekivana greška zbog koje je stvaranje grupe neuspješno.</string>
   <string name="GroupCreateActivity_contacts_no_members">Potrebna je barem jedna osoba u vašoj grupi!</string>
   <string name="GroupCreateActivity_menu_create_title">Stvori grupu</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">Ja</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Uvoz</string>
-  <string name="ImportExportActivity_export">Izvoz</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Uvezi sistemsku SMS bazu podataka?</string>
   <string name="ImportFragment_import">Uvoz</string>
@@ -114,12 +105,10 @@ ponovno uvoženje će rezultirati duplim porukama.</string>
   <string name="ImportFragment_no_encrypted_backup_found">Nije pronađena kriptirana kopija!</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Skenirani ključ nije pronađen!</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">Instaliraj Barcode Scanner?</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">Neuspješno slanje</string>
   <string name="MessageDetailsRecipient_new_identity">Novi identitet</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Greška prilikom pohrane MMSa!</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Multimedijalna poruka</string>
   <!--MessageRecord-->
@@ -135,8 +124,6 @@ ponovno uvoženje će rezultirati duplim porukama.</string>
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">Potpis
 na ovoj razmjeni ključeva je ispravan, ali vi ste isključili postavku \'automatski završi
 razmjene ključeva\'.</string>
-  <string name="ReceiveKeyActivity_processing">Obrađivanje</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Obrađivanje razmjene ključeva...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Možda bi trebali provjeriti
 ovaj kontakt.</string>
   <!--RecipientPreferencesActivity-->
@@ -181,7 +168,6 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <!--KeyCachingService-->
   <string name="KeyCachingService_lock">Zaključajte sa lozinkom</string>
   <!--MessageNotifier-->
-  <string name="MessageNotifier_no_subject">(Bez naslova)</string>
   <string name="MessageNotifier_message_delivery_failed">Neuspješna isporuka poruke.</string>
   <string name="MessageNotifier_failed_to_deliver_message">Isporuka poruke nije uspjela.</string>
   <string name="MessageNotifier_error_delivering_message">Greška prilikom isporuke poruke.</string>
@@ -193,14 +179,12 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <!--contact_selection_activity-->
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">Nema kontakata.</string>
-  <string name="contact_selection_group_activity__finding_contacts">Učitavanje kontakata...</string>
+  <string name="contact_selection_group_activity__finding_contacts">Učitavanje kontakata…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Slika kontakta</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Odaberi za</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Nema nedavnih poziva.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
@@ -209,8 +193,6 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <string name="conversation_activity__type_message_mms_secure">Pošalji sigurni MMS</string>
   <string name="conversation_activity__type_message_mms_insecure">Pošalji nesigurni MMS</string>
   <string name="conversation_activity__send">Pošalji</string>
-  <string name="conversation_activity__remove">Ukloni</string>
-  <string name="conversation_activity__window_description">Razgovor sa %1$s</string>
   <string name="conversation_activity__compose_description">Sastavljanje poruke</string>
   <string name="conversation_activity__emoji_toggle_description">Uključi/isključi emoji tipkovnicu</string>
   <!--conversation_item-->
@@ -234,7 +216,6 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <!--import_export_fragment-->
   <!--log_submit_activity-->
   <string name="log_submit_activity__thanks">Hvala na pomoći!</string>
-  <string name="log_submit_activity__submitting">Slanje</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">Zadana sistemska baza podataka neće biti izmjenjena na bilo koji način.</string>
   <string name="database_migration_activity__skip">Preskoči</string>
@@ -268,13 +249,9 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <string name="message_details_header__sent">Poslano</string>
   <string name="message_details_header__received">Primljeno</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">Stvorite lozinku</string>
-  <string name="AndroidManifest__enter_passphrase">Unesite lozinku</string>
   <string name="AndroidManifest__select_contacts">Odaberite kontakte</string>
-  <string name="AndroidManifest__public_identity_key">Javni ključ identiteta</string>
   <string name="AndroidManifest__change_passphrase">Izmjeni lozinku</string>
   <string name="AndroidManifest__verify_identity">Potvrdite identitet</string>
-  <string name="AndroidManifest__complete_key_exchange">Završite razmjenu ključeva</string>
   <string name="AndroidManifest__media_overview">Sve slike</string>
   <string name="AndroidManifest__media_overview_named">Sve slike sa %1$s</string>
   <!--arrays.xml-->
@@ -286,12 +263,9 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
     <item quantity="other">%d sati</item>
   </plurals>
   <!--preferences.xml-->
-  <string name="preferences__general">Općenito</string>
   <string name="preferences__sms_mms">SMS i MMS</string>
   <string name="preferences__pref_all_sms_title">Primi sve SMS</string>
   <string name="preferences__pref_all_mms_title">Primi sve MMS</string>
-  <string name="preferences__display_settings">Postavke prikaza</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Odaberite unos kontakta sa popisa kontakata.</string>
   <string name="preferences__change_passphrase">Izmjeni lozinku</string>
   <string name="preferences__complete_key_exchanges">Završi razmjene ključeva</string>
   <string name="preferences__enable_passphrase">Omogući lozinku</string>
@@ -301,17 +275,11 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Onemogući snimanje ekrana na popisu nedavnih i unutar aplikacije</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Zaboravi lozinku iz memorije nakon nekoliko intervala</string>
   <string name="preferences__timeout_passphrase">Vremensko ograničenje lozinke</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">Odaberite vremensko ograničenje lozinke</string>
   <string name="preferences__pref_timeout_interval_title">Interval vremenskog ograničenja</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Vrijeme nakon kojeg će se obrisati lozinka iz memorije</string>
   <string name="preferences__notifications">Obavijesti</string>
   <string name="preferences__led_color">LED boja</string>
   <string name="preferences__led_color_unknown">Nepoznato</string>
   <string name="preferences__pref_led_blink_title">LED uzorak treptanja</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">Postavite prilagođeni LED uzorak treptanja</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">Uključi za:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">Isključi za:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Prilagođeni LED uzorak treptanja postavljen!</string>
   <string name="preferences__sound">Zvuk</string>
   <string name="preferences__change_notification_sound">Izmjenite zvuk obavijesti</string>
   <string name="preferences__play_inthread_notifications">Pusti zvuk obavijesti prilikom prikaza aktivnog razgovora.</string>
@@ -323,9 +291,6 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <string name="preferences__five_times">Pet puta</string>
   <string name="preferences__ten_times">Deset puta</string>
   <string name="preferences__vibrate">Vibracija</string>
-  <string name="preferences__also_vibrate_when_notified">Također vibriraj prilikom obavijesti</string>
-  <string name="preferences__minutes">minuta</string>
-  <string name="preferences__hours">sati</string>
   <string name="preferences__green">Zelena</string>
   <string name="preferences__red">Crvena</string>
   <string name="preferences__blue">Plava</string>
@@ -337,11 +302,8 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <string name="preferences__fast">Brzo</string>
   <string name="preferences__normal">Normalno</string>
   <string name="preferences__slow">Sporo</string>
-  <string name="preferences__custom">Prilagodi</string>
   <string name="preferences__advanced">Napredno</string>
   <string name="preferences__advanced_mms_access_point_names">Ručne MMS postavke</string>
-  <string name="preferences__enable_manual_mms">Koristi ručne MMS postavke</string>
-  <string name="preferences__override_system_mms_settings">Zaobiđi MMS postavke sustava sa niže navedenim postavkama.</string>
   <string name="preferences__sms_delivery_reports">SMS potvrde isporuke</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">Traži potvrdu isporuke za svaki poslani SMS</string>
   <string name="preferences__delete_old_messages">Obriši stare poruke</string>
@@ -358,17 +320,9 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">Odaberi sve</string>
-  <string name="contact_selection_list__menu_unselect_all">Ukloni sav odabir</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Završeno</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">Osvježi popis kontakata</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">Pošalji sigurni SMS</string>
-  <string name="conversation_button_context__send_insecure_sms">Pošalji nesigurni SMS</string>
-  <string name="conversation_button_context__send_secure_mms">Pošalji sigurni MMS</string>
-  <string name="conversation_button_context__send_insecure_mms">Pošalji nesigurni MMS</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">Nazovi</string>
   <!--conversation_context-->
@@ -411,7 +365,6 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <!--key_scanning-->
   <string name="key_scanning__menu_compare">Usporedi</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">Nova poruka</string>
   <string name="text_secure_normal__menu_new_group">Nova grupa</string>
   <string name="text_secure_normal__menu_settings">Postavke</string>
   <string name="text_secure_normal__menu_clear_passphrase">Zaključaj</string>
@@ -421,7 +374,6 @@ Primljena poruka razmjene ključeva za pogrešnu inačicu protokola.</string>
   <string name="reminder_header_sms_import_title">Uvezi SMS poruke sustava?</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">Vi</string>
-  <string name="MediaPreviewActivity_cant_display">Pregled prikaza slike nije uspio.</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Nepodržani tip medija</string>
   <!--media_preview-->
   <string name="media_preview__save_title">Spremi</string>

@@ -112,15 +112,10 @@ public final class PassphraseCreateController implements AutoCloseable {
     MasterSecretUtil.generateAsymmetricMasterSecret(context, masterSecret);
 
     SubscriptionManagerCompat subscriptionManager = SubscriptionManagerCompat.from(context);
-    if (Build.VERSION.SDK_INT >= 22) {
-      List<SubscriptionInfoCompat> activeSubscriptions =
-          subscriptionManager.getActiveSubscriptionInfoList();
-      DualSimUtil.generateKeysIfDoNotExist(
-          context, masterSecret, activeSubscriptions, false);
-    } else {
-      IdentityKeyUtil.generateIdentityKeys(context, masterSecret, -1, false);
-      subscriptionManager.updateActiveSubscriptionInfoList();
-    }
+    List<SubscriptionInfoCompat> activeSubscriptions =
+      subscriptionManager.getActiveSubscriptionInfoList();
+    DualSimUtil.generateKeysIfDoNotExist(
+      context, masterSecret, activeSubscriptions, false);
 
     VersionTracker.updateLastSeenVersion(context);
     SilencePreferences.setPasswordDisabled(context, true);

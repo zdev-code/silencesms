@@ -23,6 +23,7 @@ import android.os.Bundle;
 import androidx.activity.ComponentActivity;
 
 import org.smssecure.smssecure.domain.conversation.ConversationPayloadStore;
+import org.smssecure.smssecure.util.ShareShortcutHelper;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
@@ -64,6 +65,9 @@ public class ShareActivity extends ComponentActivity {
     try {
       ExternalConversationIntentParser.ShareInput input =
           ExternalConversationIntentParser.parseShare(source);
+      if (source.hasExtra(EXTRA_THREAD_ID)) {
+        ShareShortcutHelper.reportShortcutUsed(this, source.getLongExtra(EXTRA_THREAD_ID, -1L));
+      }
       Uri media = input.getPayload().getMedia();
       Runnable cleanup = () -> {};
       if (input.hasExternalMedia()) {

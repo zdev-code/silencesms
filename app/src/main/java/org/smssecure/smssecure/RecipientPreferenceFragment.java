@@ -98,11 +98,9 @@ public final class RecipientPreferenceFragment extends Fragment {
       title.setText(recipients.toShortString());
       toolbar.setBackgroundColor(recipients.getColor().toActionBarColor(requireContext()));
       blockedIndicator.setVisibility(recipients.isBlocked() ? View.VISIBLE : View.GONE);
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         ((BaseActionBarActivity) requireActivity()).setSystemBarColors(
-            recipients.getColor().toStatusBarColor(requireContext()),
-            androidx.core.content.ContextCompat.getColor(requireContext(), android.R.color.black));
-      }
+          recipients.getColor().toStatusBarColor(requireContext()),
+          androidx.core.content.ContextCompat.getColor(requireContext(), android.R.color.black));
     } catch (Exception exception) {
       clearRenderedState();
     }

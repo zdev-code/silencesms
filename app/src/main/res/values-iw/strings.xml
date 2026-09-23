@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">כן</string>
   <string name="no">לא</string>
@@ -38,7 +38,6 @@
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">נראה כי מכשיר זה אינו תומך בפעולות חיוג.</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">פרטי הודעה</string>
   <!--ConversationListActivity-->
   <!--ConversationListFragment-->
   <string name="ConversationListFragment_deleting">מוחק</string>
@@ -55,8 +54,6 @@
   <!--GroupCreateActivity-->
   <!--GroupMembersDialog-->
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">יבא</string>
-  <string name="ImportExportActivity_export">יצא</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import">יבא</string>
   <string name="ImportFragment_cancel">בטל</string>
@@ -69,7 +66,6 @@
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">לא נמצא מפתח סרוק!</string>
   <!--MessageDetailsRecipient-->
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">שגיאה באחסון ה-MMS!</string>
   <!--NotificationMmsMessageRecord-->
   <!--MessageRecord-->
   <!--PassphraseChangeActivity-->
@@ -124,15 +120,12 @@
   <string name="contact_selection_group_activity__no_contacts">אין אנשי קשר.</string>
   <!--single_contact_selection_activity-->
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">בחר עבור</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">אין שיחות אחרונות.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
   <string name="conversation_activity__send">שלח</string>
-  <string name="conversation_activity__remove">הסר</string>
   <!--conversation_item-->
   <!--conversation_item_sent-->
   <string name="conversation_item_sent__download">הורד</string>
@@ -171,24 +164,18 @@
   <!--arrays.xml-->
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__general">כללי</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">בחר איש קשר מאנשי הקשר.</string>
   <string name="preferences__change_passphrase">שנה סיסמה</string>
   <string name="preferences__complete_key_exchanges">השלם החלפות מפתח</string>
   <string name="preferences__automatically_complete_key_exchanges_for_new_sessions_or_for_existing_sessions_with_the_same_identity_key">השלם אוטומטית החלפות מפתח לחיבורים חדשים או קיימים עם אותו מפתח הזהות</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">שכח את הסיסמה מהזיכרון לאחר זמן מסויים </string>
   <string name="preferences__timeout_passphrase">זמן תוקף לסיסמה</string>
   <string name="preferences__pref_timeout_interval_title">זמן התוקף</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">פרק הזמן שיש להמתין לפני שכיחת הסיסמה מהזיכרון</string>
   <string name="preferences__notifications">התראות</string>
   <string name="preferences__led_color">צבע LED</string>
   <string name="preferences__pref_led_blink_title">תבנית הבהוב ה- LED</string>
   <string name="preferences__sound">קול</string>
   <string name="preferences__play_inthread_notifications">נגן צליל התראות כשצופים בשיחה פעילה.</string>
   <string name="preferences__vibrate">רטט</string>
-  <string name="preferences__also_vibrate_when_notified">הפעל רטט בקבלת התראה</string>
-  <string name="preferences__minutes">דקות</string>
-  <string name="preferences__hours">שעות</string>
   <string name="preferences__green">ירוק</string>
   <string name="preferences__red">אדום</string>
   <string name="preferences__blue">כחול</string>
@@ -198,9 +185,7 @@
   <string name="preferences__fast">מהיר</string>
   <string name="preferences__normal">רגיל</string>
   <string name="preferences__slow">איטי</string>
-  <string name="preferences__custom">מותאם אישית</string>
   <string name="preferences__advanced">מתקדם</string>
-  <string name="preferences__override_system_mms_settings">החלף את הגדרות ה-MMS של המערכת עם המידע הבא.</string>
   <string name="preferences__sms_delivery_reports">דוחות מסירה של SMS</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">בקש דוח מסירה לכל SMS שאתה שולח</string>
   <string name="preferences__delete_old_messages">מחק הודעות ישנות</string>
@@ -214,7 +199,6 @@
   <!--****************************************-->
   <!--contact_selection_list-->
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">הושלם</string>
   <!--refreshing push directory from menu-->
   <!--conversation_button_context-->
   <!--conversation_callable-->

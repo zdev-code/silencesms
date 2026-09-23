@@ -7,6 +7,8 @@ import android.telephony.ServiceState;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 
+import androidx.annotation.RequiresApi;
+
 import org.whispersystems.jobqueue.requirements.RequirementListener;
 import org.whispersystems.jobqueue.requirements.RequirementProvider;
 
@@ -17,8 +19,7 @@ public class ServiceRequirementProvider implements RequirementProvider {
 
   private final TelephonyManager     telephonyManager;
   private final PhoneStateListener   legacyServiceStateListener;
-  private final ServiceStateCallback serviceStateCallback;
-  private final java.util.concurrent.Executor callbackExecutor;
+  private final ServiceStateRegistration serviceStateRegistration;
   private final AtomicBoolean        listeningForServiceState;
 
   private RequirementListener requirementListener;
@@ -26,8 +27,9 @@ public class ServiceRequirementProvider implements RequirementProvider {
   public ServiceRequirementProvider(Context context) {
     this.telephonyManager         = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
     this.legacyServiceStateListener = new LegacyServiceStateListener();
-    this.serviceStateCallback    = new ServiceStateCallback();
-    this.callbackExecutor        = context.getMainExecutor();
+    this.serviceStateRegistration = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                    ? new Api31ServiceStateRegistration(context, telephonyManager, this::handleInService)
+                    : null;
     this.listeningForServiceState = new AtomicBoolean(false);
   }
 
@@ -54,7 +56,7 @@ public class ServiceRequirementProvider implements RequirementProvider {
 
   private void registerListener() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      telephonyManager.registerTelephonyCallback(callbackExecutor, serviceStateCallback);
+      serviceStateRegistration.register();
     } else {
       registerLegacyListener(PhoneStateListener.LISTEN_SERVICE_STATE);
     }
@@ -62,7 +64,7 @@ public class ServiceRequirementProvider implements RequirementProvider {
 
   private void unregisterListener() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      telephonyManager.unregisterTelephonyCallback(serviceStateCallback);
+      serviceStateRegistration.unregister();
     } else {
       registerLegacyListener(PhoneStateListener.LISTEN_NONE);
     }
@@ -73,10 +75,38 @@ public class ServiceRequirementProvider implements RequirementProvider {
     telephonyManager.listen(legacyServiceStateListener, events);
   }
 
-  private class ServiceStateCallback extends TelephonyCallback implements TelephonyCallback.ServiceStateListener {
+  private interface ServiceStateRegistration {
+    void register();
+    void unregister();
+  }
+
+  @RequiresApi(Build.VERSION_CODES.S)
+  private static class Api31ServiceStateRegistration extends TelephonyCallback
+      implements TelephonyCallback.ServiceStateListener, ServiceStateRegistration {
+
+    private final java.util.concurrent.Executor callbackExecutor;
+    private final TelephonyManager telephonyManager;
+    private final Runnable onInService;
+
+    private Api31ServiceStateRegistration(Context context, TelephonyManager telephonyManager, Runnable onInService) {
+      this.callbackExecutor = context.getMainExecutor();
+      this.telephonyManager = telephonyManager;
+      this.onInService      = onInService;
+    }
+
+    @Override
+    public void register() {
+      telephonyManager.registerTelephonyCallback(callbackExecutor, this);
+    }
+
+    @Override
+    public void unregister() {
+      telephonyManager.unregisterTelephonyCallback(this);
+    }
+
     @Override
     public void onServiceStateChanged(ServiceState serviceState) {
-      if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) handleInService();
+      if (serviceState.getState() == ServiceState.STATE_IN_SERVICE) onInService.run();
     }
   }
 

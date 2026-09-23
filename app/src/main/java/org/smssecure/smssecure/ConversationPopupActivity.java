@@ -100,12 +100,7 @@ public class ConversationPopupActivity extends ConversationActivity {
               org.smssecure.smssecure.database.ThreadDatabase.DistributionTypes.DEFAULT,
               false, System.currentTimeMillis(), 0L, null);
 
-            if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-              startActivity(intent, transition.toBundle());
-            } else {
-              startActivity(intent);
-              ActivityTransitionCompat.overrideOpen(ConversationPopupActivity.this, R.anim.fade_scale_in, R.anim.slide_to_right);
-            }
+            startActivity(intent, transition.toBundle());
 
             finish();
           }

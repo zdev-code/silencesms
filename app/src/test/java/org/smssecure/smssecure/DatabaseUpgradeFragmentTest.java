@@ -205,6 +205,7 @@ public class DatabaseUpgradeFragmentTest {
     assertThat(Shadows.shadowOf(activity).getNextStartedActivity()).isNull();
   }
 
+  @SuppressWarnings("deprecation")
   private static void assertContainsNoSensitiveState(Bundle bundle) {
     for (String key : bundle.keySet()) {
       Object value = bundle.get(key);

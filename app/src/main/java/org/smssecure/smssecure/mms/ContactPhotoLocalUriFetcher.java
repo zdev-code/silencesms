@@ -23,10 +23,6 @@ public class ContactPhotoLocalUriFetcher extends StreamLocalUriFetcher {
   protected InputStream loadResource(Uri uri, ContentResolver contentResolver)
       throws FileNotFoundException
   {
-    if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
-      return ContactsContract.Contacts.openContactPhotoInputStream(contentResolver, uri, true);
-    } else {
-      return ContactsContract.Contacts.openContactPhotoInputStream(contentResolver, uri);
-    }
+    return ContactsContract.Contacts.openContactPhotoInputStream(contentResolver, uri, true);
   }
 }

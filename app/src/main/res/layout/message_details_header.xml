@@ -46,13 +46,13 @@
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="@string/message_details_header__sent"
-                          android:gravity="right"
+                          android:gravity="end"
                           android:textStyle="bold" />
 
                 <TextView android:id="@+id/sent_time"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:layout_marginLeft="@dimen/message_details_table_row_pad"
+                          android:layout_marginStart="@dimen/message_details_table_row_pad"
                           tools:text="Jan 18, 2015, 12:29:37 AM GMT-08:00" />
 
             </TableRow>
@@ -64,13 +64,13 @@
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="@string/message_details_header__received"
-                          android:gravity="right"
+                          android:gravity="end"
                           android:textStyle="bold" />
 
                 <TextView android:id="@+id/received_time"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:layout_marginLeft="@dimen/message_details_table_row_pad"
+                          android:layout_marginStart="@dimen/message_details_table_row_pad"
                           tools:text="Jan 18, 2015, 12:29:37 AM GMT-08:00" />
 
             </TableRow>
@@ -82,13 +82,13 @@
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="@string/message_details_header__type"
-                          android:gravity="right"
+                          android:gravity="end"
                           android:textStyle="bold" />
 
                 <TextView android:id="@+id/transport"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:layout_marginLeft="@dimen/message_details_table_row_pad"
+                          android:layout_marginStart="@dimen/message_details_table_row_pad"
                           tools:text="" />
             </TableRow>
 

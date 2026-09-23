@@ -8,6 +8,8 @@ import java.security.NoSuchAlgorithmException;
 final class BackupMessageFingerprint {
 
   private static final char[] HEX = "0123456789abcdef".toCharArray();
+  private static final int INTEGER_BYTES = Integer.SIZE / Byte.SIZE;
+  private static final int LONG_BYTES = Long.SIZE / Byte.SIZE;
 
   private BackupMessageFingerprint() {}
 
@@ -29,9 +31,9 @@ final class BackupMessageFingerprint {
     }
 
     update(digest, address);
-    digest.update(ByteBuffer.allocate(Long.BYTES).putLong(date).array());
-    digest.update(ByteBuffer.allocate(Integer.BYTES).putInt(type).array());
-    digest.update(ByteBuffer.allocate(Integer.BYTES).putInt(protocol).array());
+    digest.update(ByteBuffer.allocate(LONG_BYTES).putLong(date).array());
+    digest.update(ByteBuffer.allocate(INTEGER_BYTES).putInt(type).array());
+    digest.update(ByteBuffer.allocate(INTEGER_BYTES).putInt(protocol).array());
     update(digest, subject);
     update(digest, body);
     update(digest, serviceCenter);
@@ -52,7 +54,7 @@ final class BackupMessageFingerprint {
 
     byte[] encoded = value.getBytes(StandardCharsets.UTF_8);
     digest.update((byte) 1);
-    digest.update(ByteBuffer.allocate(Integer.BYTES).putInt(encoded.length).array());
+    digest.update(ByteBuffer.allocate(INTEGER_BYTES).putInt(encoded.length).array());
     digest.update(encoded);
   }
 

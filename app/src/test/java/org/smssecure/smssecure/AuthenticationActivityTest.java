@@ -526,6 +526,7 @@ public class AuthenticationActivityTest {
         "app/src/main/java/org/smssecure/smssecure/" + fileName)), StandardCharsets.UTF_8);
   }
 
+    @SuppressWarnings("deprecation")
     private static void assertContainsNoSensitiveState(Bundle bundle) {
         for (String key : bundle.keySet()) {
             Object value = bundle.get(key);

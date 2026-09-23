@@ -10,12 +10,11 @@
              android:entries="@array/default_or_custom_entries"
              android:entryValues="@array/default_or_custom_values"
              android:layout_marginStart="16dip"
-             android:layout_marginLeft="16dip"
              android:spinnerMode="dropdown"/>
 
     <TextView android:id="@+id/default_label"
-              android:layout_marginLeft="18dip"
-              android:layout_marginRight="16dip"
+              android:layout_marginStart="18dip"
+              android:layout_marginEnd="16dip"
               android:layout_marginTop="16dip"
               android:layout_marginBottom="16dip"
               android:layout_width="match_parent"
@@ -28,6 +27,8 @@
               android:layout_marginBottom="16dip"
               android:visibility="gone"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"/>
+              android:layout_height="match_parent"
+              android:hint="@string/arrays__use_custom"
+              android:inputType="text"/>
 
 </LinearLayout>

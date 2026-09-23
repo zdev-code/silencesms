@@ -8,6 +8,8 @@ import android.telephony.ServiceState;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 
+import androidx.annotation.RequiresApi;
+
 public class TelephonyServiceState {
 
   public boolean isConnected(Context context) {
@@ -82,6 +84,7 @@ public class TelephonyServiceState {
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.S)
   private static class ModernListenCallback extends TelephonyCallback implements TelephonyCallback.ServiceStateListener {
 
     private final Looper looper;

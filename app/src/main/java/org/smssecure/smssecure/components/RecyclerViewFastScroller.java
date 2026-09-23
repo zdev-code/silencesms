@@ -109,12 +109,22 @@ public class RecyclerViewFastScroller extends LinearLayout {
       setRecyclerViewPosition(y);
       return true;
     case MotionEvent.ACTION_UP:
+      performClick();
+      handle.setSelected(false);
+      hideBubble();
+      return true;
     case MotionEvent.ACTION_CANCEL:
       handle.setSelected(false);
       hideBubble();
       return true;
     }
     return super.onTouchEvent(event);
+  }
+
+  @Override
+  public boolean performClick() {
+    super.performClick();
+    return true;
   }
 
   public void setRecyclerView(final @NonNull RecyclerView recyclerView) {
@@ -175,35 +185,29 @@ public class RecyclerViewFastScroller extends LinearLayout {
 
   private void showBubble() {
     bubble.setVisibility(VISIBLE);
-    if (VERSION.SDK_INT >= 11) {
-      if (currentAnimator != null) currentAnimator.cancel();
-      currentAnimator = ObjectAnimator.ofFloat(bubble, "alpha", 0f, 1f).setDuration(BUBBLE_ANIMATION_DURATION);
-      currentAnimator.start();
-    }
+    if (currentAnimator != null) currentAnimator.cancel();
+    currentAnimator = ObjectAnimator.ofFloat(bubble, "alpha", 0f, 1f).setDuration(BUBBLE_ANIMATION_DURATION);
+    currentAnimator.start();
   }
 
   private void hideBubble() {
-    if (VERSION.SDK_INT >= 11) {
-      if (currentAnimator != null) currentAnimator.cancel();
-      currentAnimator = ObjectAnimator.ofFloat(bubble, "alpha", 1f, 0f).setDuration(BUBBLE_ANIMATION_DURATION);
-      currentAnimator.addListener(new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          super.onAnimationEnd(animation);
-          bubble.setVisibility(INVISIBLE);
-          currentAnimator = null;
-        }
+    if (currentAnimator != null) currentAnimator.cancel();
+    currentAnimator = ObjectAnimator.ofFloat(bubble, "alpha", 1f, 0f).setDuration(BUBBLE_ANIMATION_DURATION);
+    currentAnimator.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        super.onAnimationEnd(animation);
+        bubble.setVisibility(INVISIBLE);
+        currentAnimator = null;
+      }
 
-        @Override
-        public void onAnimationCancel(Animator animation) {
-          super.onAnimationCancel(animation);
-          bubble.setVisibility(INVISIBLE);
-          currentAnimator = null;
-        }
-      });
-      currentAnimator.start();
-    } else {
-      bubble.setVisibility(INVISIBLE);
-    }
+      @Override
+      public void onAnimationCancel(Animator animation) {
+        super.onAnimationCancel(animation);
+        bubble.setVisibility(INVISIBLE);
+        currentAnimator = null;
+      }
+    });
+    currentAnimator.start();
   }
 }

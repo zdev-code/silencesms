@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.os.LocaleList;
 import android.text.TextUtils;
 
 import androidx.core.os.ConfigurationCompat;
@@ -56,7 +55,6 @@ public class DynamicLanguage {
 
     if (!selectedLocale.equals(current)) {
       configuration.setLocale(selectedLocale);
-      configuration.setLocales(new LocaleList(selectedLocale));
       configuration.setLayoutDirection(selectedLocale);
       context.createConfigurationContext(configuration);
     }

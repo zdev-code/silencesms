@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">ဟုတ်ကဲ့</string>
   <string name="no">မလုပ်ပါ</string>
@@ -28,7 +28,6 @@
   <string name="ConversationActivity_message_is_empty_exclamation">စာတိုမရှိ</string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">စာတို အသေးစိတ်အချက်အလက်များ</string>
   <!--ConversationListActivity-->
   <!--ConversationListFragment-->
   <string name="ConversationListFragment_deleting">ဖျက်နေသည်</string>
@@ -43,15 +42,12 @@
   <!--GroupCreateActivity-->
   <!--GroupMembersDialog-->
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">သွင်းယူ</string>
-  <string name="ImportExportActivity_export">ထုတ်ယူ</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import">သွင်းယူ</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">စိစစ်ထားသောကီးရှာမတွေ့</string>
   <!--MessageDetailsRecipient-->
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">MMS အားသိမ်းဆည်းခြင်းအမှား</string>
   <!--NotificationMmsMessageRecord-->
   <!--MessageRecord-->
   <!--PassphraseChangeActivity-->
@@ -97,15 +93,12 @@
   <string name="contact_selection_group_activity__no_contacts">အဆက်အသွယ်မရှိ</string>
   <!--single_contact_selection_activity-->
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">အတွက်　ရွေးချယ်ပါ</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">မကြာသေးမှီကခေါ်ဆိုထားမှုများမရှိ</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
   <string name="conversation_activity__send">ပို့</string>
-  <string name="conversation_activity__remove">ဖယ်ပစ်</string>
   <!--conversation_item-->
   <!--conversation_item_sent-->
   <string name="conversation_item_sent__download">ကူးဆွဲ</string>
@@ -142,17 +135,12 @@
   <!--arrays.xml-->
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">အဆက်အသွယ်ကို အဆက်အသွယ်စာရင်းမှ ရွေးယူပါ</string>
   <string name="preferences__automatically_complete_key_exchanges_for_new_sessions_or_for_existing_sessions_with_the_same_identity_key">ဆက်ရှင်အသစ်အတွက်(သို့)ကိုယ်စားပြုကီးတူညီသောလက်ရှိဆက်ရှင်အတွက် ကီးပြောင်းလဲမှုကိုအလိုလျှောက်လုပ်ဆောင်ပါ</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">အချိန်တစ်ခုကြာပြီးနောက်မန်မိုရီပေါ်မှဝှက်စာကိုမေ့ပစ်ပါ</string>
   <string name="preferences__timeout_passphrase">စကားဝှက် အချိန်လွန်</string>
   <string name="preferences__pref_timeout_interval_title">ကြားချိန်</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">မန်မိုရီပေါ်မှစကားဝှက်ပျောက်မသွားခင်စောင့်ရမည့်ကြာချိန်</string>
   <string name="preferences__notifications">အသိပေးချက်များ</string>
   <string name="preferences__vibrate">တုန်ခါမှု</string>
-  <string name="preferences__also_vibrate_when_notified">အချက်ပြစဉ်တုန်ခါပါ</string>
-  <string name="preferences__minutes">မိနစ်</string>
-  <string name="preferences__hours">နာရီ</string>
   <string name="preferences__green">အစိမ်း</string>
   <string name="preferences__red">အနီ</string>
   <string name="preferences__blue">အပြာ</string>
@@ -162,7 +150,6 @@
   <string name="preferences__fast">အမြန်</string>
   <string name="preferences__normal">ပုံမှန်</string>
   <string name="preferences__slow">အနှေး</string>
-  <string name="preferences__custom">စိတ်ကြိုက်</string>
   <string name="preferences__sms_delivery_reports">SMS ပို့ပြီးကြောင်းအသိပေးခြင်း</string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">SMS တစ်ခုပို့ပြီးတိုင်း ပို့ပြီးကြောင်း အသိပေးပါ</string>
   <string name="preferences__delete_old_messages">စာတိုအဟောင်းများကိုဖျတ်ပါ</string>
@@ -172,7 +159,6 @@
   <!--****************************************-->
   <!--contact_selection_list-->
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">ပြီးပါပြီ</string>
   <!--refreshing push directory from menu-->
   <!--conversation_button_context-->
   <!--conversation_callable-->

@@ -65,7 +65,7 @@ public class DefaultConversationScreenRepositoryTest {
     when(dataSource.saveDrafts(any(), org.mockito.ArgumentMatchers.eq(-1L),
         org.mockito.ArgumentMatchers.eq(recipients), org.mockito.ArgumentMatchers.eq(2),
         org.mockito.ArgumentMatchers.same(drafts))).thenReturn(12L);
-    ConversationScreenRepository.Callback<Long> callback = mock(ConversationScreenRepository.Callback.class);
+    ConversationScreenRepository.Callback<Long> callback = mock();
 
     repository.saveDrafts(-1L, new long[]{4L}, 2, drafts, unlockCapability(), callback);
 

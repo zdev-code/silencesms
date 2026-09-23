@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Tak</string>
   <string name="no">Nie</string>
@@ -52,7 +52,6 @@ Uwaga, szyfrowanie wszystkich Twoich wiadomości i kluczy zostanie wyłączone. 
   <string name="DraftDatabase_Draft_video_snippet">(film)</string>
   <!--AttchmentManager-->
   <string name="AttachmentManager_cant_open_media_selection">Nie można znaleźć aplikacji do obsługi mediów.</string>
-  <string name="AttachmentManager_silence_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">Silence wymaga uprawnienia odczytu pamięci, aby móc dołączać zdjęcia, wideo bądź audio do wiadomości lecz zostało ono permanentnie odrzucone. Prosimy otworzyć menu aplikacji Androida, „uprawnienia aplikacji”, a następnie zezwól na „pamięć”.</string>
   <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Silence wymaga uprawnienia odczytu kontaktów, aby móc dołączać informacje o kontakcie do wiadomości, lecz zostało ono permanentnie odrzucone. Prosimy otworzyć menu aplikacji Androida, „uprawnienia aplikacji”, a następnie zezwól na „kontakty”.</string>
   <!--AttachmentTypeSelectorAdapter-->
   <string name="AttachmentTypeSelectorAdapter_camera">Aparat</string>
@@ -89,9 +88,6 @@ Uwaga, szyfrowanie wszystkich Twoich wiadomości i kluczy zostanie wyłączone. 
   <string name="ConversationActivity_select_contact_info">Wybierz dane kontaktowe</string>
   <string name="ConversationActivity_compose_message">Nowa wiadomość</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">Przepraszamy, wystąpił błąd podczas dodawania załącznika.</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">Wybrany obrazek GIF jest zbyt duży!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Przepraszamy, ten plik wideo przekracza dozwolony rozmiar (%1$skB).</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Przepraszamy, ten plik audio przekracza dozwolony rozmiar (%1$skB).</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">Podany numer, lub adres e-mail jest niepoprawny!</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Wiadomość jest pusta!</string>
   <string name="ConversationActivity_group_members">Członkowie grupy</string>
@@ -103,7 +99,6 @@ Uwaga, szyfrowanie wszystkich Twoich wiadomości i kluczy zostanie wyłączone. 
     <item quantity="many">%d uczestników</item>
     <item quantity="other">%d uczestników</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Zapisane szkice</string>
   <string name="ConversationActivity_invalid_recipient">Nieprawidłowy adresat!</string>
   <string name="ConversationActivity_calls_not_supported">Połączenia nie są obsługiwane</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Wygląda na to, że urządzenie nie wspiera wybierania numeru.</string>
@@ -114,9 +109,6 @@ Uwaga, szyfrowanie wszystkich Twoich wiadomości i kluczy zostanie wyłączone. 
   <string name="ConversationActivity_transport_secure_mms">Bezpieczny MMS</string>
   <string name="ConversationActivity_install_smssecure">Porozmawiajmy bezpiecznie: %s</string>
   <string name="ConversationActivity_recipient_self">Bezpieczne sesje mogą być ustanowione tylko z innymi ludźmi.</string>
-  <string name="ConversationActivity_mms_not_supported_title">MMS-y nie są obsługiwane</string>
-  <string name="ConversationActivity_mms_not_supported_message">Nie można przesłać tej wiadomości, ponieważ Twój operator nie obsługuje MMS-ów.</string>
-  <string name="ConversationActivity_specify_recipient">Proszę wybrać kontakt</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">Zbyt duży rozmiar załącznika.</string>
   <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Silence wymaga uprawnienia SMS, aby móc wysyłać wiadomości SMS, lecz zostało ono permanentnie odrzucone. Prosimy otworzyć menu aplikacji Androida, „uprawnienia aplikacji”, a następnie zezwól na „SMS”.</string>
   <!--ConversationAdapter-->
@@ -127,7 +119,6 @@ Uwaga, szyfrowanie wszystkich Twoich wiadomości i kluczy zostanie wyłączone. 
     <item quantity="other">%d nieprzeczytanych wiadomości</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Szczegóły wiadomości</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">Usunąć wybraną wiadomość?</item>
     <item quantity="few">Usunąć wybrane wiadomości?</item>
@@ -237,7 +228,6 @@ Kontynuować?</item>
   <string name="DualSimUtil__a_new_key_has_been_generated">Utworzono nowy klucz.</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">Utworzono nowy klucz dla tej karty SIM.</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Podziel się z</string>
   <!--WelcomeActivity-->
   <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">Zwiększ swoją prywatność, rozmawiaj ze wszystkimi</string>
   <string name="WelcomeActivity_encrypt_your_messages">Wymieniaj się szyfrowanymi wiadomościami z użytkownikami Silence i zwykłymi wiadomościami SMS/MMS z innymi.</string>
@@ -259,20 +249,15 @@ Kontynuować?</item>
   <string name="ExportFragment_error_while_writing_to_storage">Błąd podczas zapisu na dysk.</string>
   <string name="ExportFragment_export_successful">Pomyślnie wyeksportowano.</string>
   <string name="ExportFragment_export_encrypted_backup">Czy wyeksportować zaszyfrowaną kopię zapasową?</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">To wyeksportuje Twoje zaszyfrowane klucze, ustawienia, i wiadomości na dysk.</string>
   <string name="ExportFragment_exporting_keys_settings_and_messages">Eksportowanie zaszyfrowanych kluczy, ustawień i wiadomości…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Nowa grupa</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Aktualizuj grupę</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Nowa grupa MMS</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Wystąpił błąd podczas tworzenia nowej grupy. Grupa nie została utworzona.</string>
   <string name="GroupCreateActivity_contacts_no_members">Potrzebujesz przynajmniej jeden osoby w Twojej grupie.</string>
   <string name="GroupCreateActivity_menu_create_title">Utwórz grupę</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">Ja</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Import</string>
-  <string name="ImportExportActivity_export">Eksport</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Zaimportować systemową bazę danych SMS?</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">Wiadomości z Twojej domyślnej systemowej bazy danych zostaną zaimportowane do bazy danych Silence. Jeśli wcześniej importowałeś bazę danych SMS, to ponowny import spowoduje duplikację wiadomości.</string>
@@ -297,14 +282,10 @@ Kontynuować?</item>
   <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage">Silence wymaga uprawnienia „pamięć”, aby móc zapisywać do pamięci zewnętrznej</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Nie znaleziono żadnego zeskanowanego klucza!</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">Zainstalować Barcode Scanner?</string>
-  <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Silence wymaga aplikacji Barcode Scanner do kodów QR.</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">Nie udało się wysłać</string>
   <string name="MessageDetailsRecipient_new_identity">Nowa tożsamość</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Błąd przechowywania MMS!</string>
-  <string name="MmsDownloader_error_connecting_to_mms_provider">Błąd podczas połączenia z dostawcą MMS</string>
   <string name="MmsDownloader_error_reading_mms_settings">Błąd odczytu ustawień dostawcy MMS</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Wiadomość multimedialna</string>
@@ -325,8 +306,6 @@ Kontynuować?</item>
   <!--ReceiveKeyActivity-->
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_different">Podpis pod tą wymianą kluczy jest inny od tego, który otrzymałeś poprzednio od tego kontaktu. Może to oznaczać, że ktoś próbuje przechwycić Twoją komunikację lub Twój kontakt przeinstalował program Silence i posiada teraz nowy klucz tożsamości.</string>
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">Podpis pod tą wymianą kluczy jest zaufany, ale masz wyłączoną opcję \'automatyczna wymiana klucza\'.</string>
-  <string name="ReceiveKeyActivity_processing">Przetwarzanie</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Przetwarzanie wymiany kluczy…</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Może chcesz zweryfikować 
 ten kontakt.
 </string>
@@ -412,7 +391,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="MessageNotifier_most_recent_from_s">Ostatnie zaczynając od %1$s</string>
   <string name="MessageNotifier_encrypted_message">Zaszyfrowana wiadomość</string>
   <string name="MessageNotifier_media_message_with_text">Wiadomość multimedialna: %s</string>
-  <string name="MessageNotifier_no_subject">(Brak tematu)</string>
   <string name="MessageNotifier_message_delivery_failed">Nie udało się dostarczyć wiadomości.</string>
   <string name="MessageNotifier_failed_to_deliver_message">Dostarczenie wiadomości nie powiodło się.</string>
   <string name="MessageNotifier_error_delivering_message">Błąd przy wysyłaniu wiadomości.</string>
@@ -442,17 +420,14 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Obrazek kontaktu</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Wybierz dla</string>
   <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Silence wymaga uprawnienia odczytu kontaktów, aby móc wyświetlać listę Twoich kontaktów, lecz zostało ono permanentnie odrzucone. Prosimy otworzyć menu aplikacji Androida, „uprawnienia aplikacji”, a następnie zezwól na „kontakty”.</string>
   <!--blocked_contacts_fragment-->
   <string name="blocked_contacts_fragment__no_blocked_contacts">Brak zablokowanych kontaktów</string>
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Brak ostatnich połączeń.</string>
   <!--contact_selection_list_fragment-->
   <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Silence wymaga dostępu do kontaktów, aby móc je wyświetlać</string>
   <string name="contact_selection_list_fragment__show_contacts">Wyświetl kontakty</string>
   <!--conversation_title_view-->
-  <string name="conversation_title_view__conversation_muted">Rozmowa wyciszona</string>
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">Wyślij szyfrowany SMS</string>
   <string name="conversation_activity__type_message_sms_insecure">Wyślij nieszyfrowany SMS</string>
@@ -460,13 +435,10 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="conversation_activity__type_message_mms_insecure">Wyślij nieszyfrowany MMS</string>
   <string name="conversation_activity__via_sim_name">Przez %1$s</string>
   <string name="conversation_activity__send">Wyślij</string>
-  <string name="conversation_activity__remove">Usuń</string>
-  <string name="conversation_activity__window_description">Rozmowa z %1$s</string>
   <string name="conversation_activity__compose_description">Kompozycja wiadomości</string>
   <string name="conversation_activity__emoji_toggle_description">Przełącz do emoji klawiatury</string>
   <string name="conversation_activity__attachment_thumbnail">Minaturka załącznika</string>
   <!--conversation_item-->
-  <string name="conversation_item__mms_downloading_description">Pobieranie wiadomości multimedialnej…</string>
   <string name="conversation_item__mms_image_description">Wiadomość multimedialna</string>
   <string name="conversation_item__secure_message_description">Bezpieczna wiadomość</string>
   <!--conversation_item_sent-->
@@ -489,13 +461,10 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <!--conversation_fragment-->
   <string name="conversation_fragment__scroll_to_the_bottom_content_description">Przewiń na dół</string>
   <!--import_export_fragment-->
-  <string name="import_export_fragment__export">Eksportuj</string>
   <string name="import_export_fragment__import">Importuj</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">Nie udało się odczytać logów z Twojego urządzenia. W dalszym ciągu możesz użyć ADB, aby pobrać logi debugowania.</string>
   <string name="log_submit_activity__thanks">Dziękujemy za Twoją pomoc!</string>
-  <string name="log_submit_activity__submitting">Wysyłanie</string>
-  <string name="log_submit_activity__posting_logs">Wysyłanie protokołów na gist…</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">Czy chcesz zaimportować swoje wiadomości do zaszyfrowanej bazy danych Silence?</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">Domyślna baza danych nie zostanie zmodyfikowana ani zastąpiona w żaden sposób.</string>
@@ -554,20 +523,15 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="message_details_header__from">Od</string>
   <string name="message_details_header__with">Z</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">Utwórz hasło</string>
-  <string name="AndroidManifest__enter_passphrase">Podaj hasło</string>
   <string name="AndroidManifest__select_contacts">Wybierz kontakty</string>
-  <string name="AndroidManifest__public_identity_key">Publiczny klucz tożsamości</string>
   <string name="AndroidManifest__change_passphrase">Zmień hasło</string>
   <string name="AndroidManifest__verify_identity">Zweryfikuj tożsamość</string>
-  <string name="AndroidManifest__complete_key_exchange">Ukończ wymianę kluczy</string>
   <string name="AndroidManifest__log_submit">Wyślij logi debugowania</string>
   <string name="AndroidManifest__media_preview">Podgląd pliku</string>
   <string name="AndroidManifest__media_overview">Wszystkie obrazy</string>
   <string name="AndroidManifest__media_overview_named">Wszystkie obrazy z %1$s</string>
   <string name="AndroidManifest__message_details">Szczegóły wiadomości</string>
   <string name="AndroidManifest_archived_conversations">Archiwum konwersacji</string>
-  <string name="AndroidManifest_configure_mms_settings">Konfiguracja ustawień MMS</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">Import / eksport</string>
   <string name="arrays__your_identity_key">Twój klucz tożsamości</string>
@@ -595,7 +559,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
     <item quantity="other">%d godzin</item>
   </plurals>
   <!--preferences.xml-->
-  <string name="preferences__general">Ogólne</string>
   <string name="preferences__sms_mms">SMS i MMS</string>
   <string name="preferences__pref_all_sms_title">Otrzymuj wszystkie SMSy</string>
   <string name="preferences__pref_all_mms_title">Otrzymuj wszystkie MMSy</string>
@@ -604,8 +567,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="preferences__keyboard_settings">Opcje klawiatury</string>
   <string name="preferences__disable_emoji_drawer">Wyłącz rysownik emoji</string>
   <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">Włącz tę opcję, jeżeli Twoja klawiatura obsługuje emoji.</string>
-  <string name="preferences__display_settings">Ustawienia wyświetlania</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Wybierz swój kontakt z listy kontaktów.</string>
   <string name="preferences__change_passphrase">Zmień hasło</string>
   <string name="preferences__change_your_passphrase">Zmień hasło</string>
   <string name="preferences__complete_key_exchanges">Ukończenie wymiany kluczy</string>
@@ -616,18 +577,12 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Blokuj rzuty ekranu w obecnej liście oraz w aplikacji</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Wymaż hasło z pamięci systemu po pewnym czasie</string>
   <string name="preferences__timeout_passphrase">Limit czasu dla hasła?</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">Wybierz czas wygaśnięcia hasła</string>
   <string name="preferences__pref_timeout_interval_title">Wybierz czas wygaśnięcia hasła</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Ilość czasu zanim hasło zostanie wymazane z pamięci urządzenia</string>
   <string name="preferences__notifications">Powiadomienia</string>
   <string name="preferences__enable_message_notifications">Włącz powiadomienia wiadomości</string>
   <string name="preferences__led_color">Kolor LED</string>
   <string name="preferences__led_color_unknown">Nieznane</string>
   <string name="preferences__pref_led_blink_title">Wzór powiadomień LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">Ustaw wzór migania LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">Włączony dla:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">Wyłączony dla:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Ustawiono niestandardowy wzór migających świateł LED!</string>
   <string name="preferences__sound">Dźwięk</string>
   <string name="preferences__change_notification_sound">Zmień dźwięk powiadomienia</string>
   <string name="preferences__silent">Cichy</string>
@@ -641,9 +596,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="preferences__five_times">Pięć razy</string>
   <string name="preferences__ten_times">Dziesięć razy</string>
   <string name="preferences__vibrate">Wibracja</string>
-  <string name="preferences__also_vibrate_when_notified">Wibruje także przy powiadomieniach</string>
-  <string name="preferences__minutes">minuty</string>
-  <string name="preferences__hours">godzin</string>
   <string name="preferences__green">Zielony</string>
   <string name="preferences__red">Czerwony</string>
   <string name="preferences__blue">Niebieski</string>
@@ -655,13 +607,10 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="preferences__fast">Szybko</string>
   <string name="preferences__normal">Normalnie</string>
   <string name="preferences__slow">Wolno</string>
-  <string name="preferences__custom">Własne</string>
   <string name="preferences__advanced">Zaawansowane</string>
   <string name="preferences__privacy">Prywatność</string>
   <string name="preferences__mms_user_agent">MMS User Agent</string>
   <string name="preferences__advanced_mms_access_point_names">Manualne ustawienia MMS</string>
-  <string name="preferences__enable_manual_mms">Użyj manualnych ustawień MMS</string>
-  <string name="preferences__override_system_mms_settings">Zastąp ustawienia systemowe MMS poniższymi informacjami.</string>
   <string name="preferences__mmsc_url">MMSC URL</string>
   <string name="preferences__mms_proxy_host">Host Proxy dla MMS\'a </string>
   <string name="preferences__mms_proxy_port">Port Proxy dla MMS\'a </string>
@@ -712,19 +661,10 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">Zaznacz wszystko</string>
-  <string name="contact_selection_list__menu_unselect_all">Odznacz wszystko</string>
-  <string name="contact_selection_list__header">WSZYSTKIE KONTAKTY</string>
   <string name="contact_selection_list__unknown_contact">Nowa wiadomość do…</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Zakończono</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">Odśwież listę kontaktów</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">Wyślij szyfrowany SMS</string>
-  <string name="conversation_button_context__send_insecure_sms">Wyślij nieszyfrowany SMS</string>
-  <string name="conversation_button_context__send_secure_mms">Wyślij szyfrowany MMS</string>
-  <string name="conversation_button_context__send_insecure_mms">Wyślij nieszyfrowany MMS</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">Zadzwoń</string>
   <!--conversation_context-->
@@ -750,7 +690,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="conversation_list__menu_search">Szukaj</string>
   <!--conversation_list_item_view-->
   <string name="conversation_list_item_view__contact_photo_image">Zdjęcie kontaktu</string>
-  <string name="conversation_list_item_view__error_alert">Powiadomienie błedu</string>
   <string name="conversation_list_item_view__archived">Archiwum</string>
   <!--conversation_list_fragment-->
   <string name="conversation_list_fragment__fab_content_description">Nowa konwersacja</string>
@@ -784,7 +723,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="key_scanning__menu_scan_contacts_qr_code">Skanuj kod QR kontaktu</string>
   <string name="share_identity_fingerprint">Udostępnij odcisk klucza</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">Nowa wiadomość</string>
   <string name="text_secure_normal__menu_new_group">Nowa grupa</string>
   <string name="text_secure_normal__menu_settings">Ustawienia</string>
   <string name="text_secure_normal__menu_clear_passphrase">Zablokuj</string>
@@ -806,7 +744,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="reminder_header_close_button">ZAMKNIJ</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">Ty</string>
-  <string name="MediaPreviewActivity_cant_display">Podgląd tego obrazu nie udał się</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Nieobsługiwany typ media</string>
   <string name="MediaPreviewActivity_draft">Szkic</string>
   <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silence wymaga uprawnienia zapisu pamięci, lecz zostało ono permanentnie odrzucone. Prosimy otworzyć menu aplikacji Androida, „uprawnienia aplikacji”, a następnie zezwól na „pamięć”.</string>
@@ -827,7 +764,6 @@ Otrzymano wiadomość wymiany klucz dla niepoprawnej wersji protokołu.</string>
   <string name="transport_selection_list_item__transport_icon">Ikona transportu</string>
   <string name="RingtonePreference_ringtone_default">Domyślny dzwonek</string>
   <string name="RingtonePreference_ringtone_silent">Brak</string>
-  <string name="RingtonePreference_ringtone_picker_title">Dzwonki</string>
   <string name="RingtonePreference_notification_sound_default">Domyślny dźwięk powiadomienia</string>
   <string name="RingtonePreference_alarm_sound_default">Domyślny dźwięk alarmu</string>
   <string name="RingtonePreference_add_ringtone_text">Dodaj dzwonek</string>

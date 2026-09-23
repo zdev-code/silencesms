@@ -1,5 +1,6 @@
 package org.smssecure.smssecure.components;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
@@ -54,9 +55,7 @@ public class RepeatableImageKey extends AppCompatImageButton {
     @Override
     public void run() {
       notifyListener();
-      postDelayed(this, VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB_MR1
-                        ? ViewConfiguration.getKeyRepeatDelay()
-                        : 50);
+      postDelayed(this, ViewConfiguration.getKeyRepeatDelay());
     }
   }
 
@@ -68,12 +67,11 @@ public class RepeatableImageKey extends AppCompatImageButton {
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility") // Returning false delegates the eventual click to the view.
     public boolean onTouch(View view, MotionEvent motionEvent) {
       switch (motionEvent.getAction()) {
       case MotionEvent.ACTION_DOWN:
-        view.postDelayed(repeater, VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB_MR1
-                                   ? ViewConfiguration.getKeyRepeatTimeout()
-                                   : ViewConfiguration.getLongPressTimeout());
+        view.postDelayed(repeater, ViewConfiguration.getKeyRepeatTimeout());
         performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         return false;
       case MotionEvent.ACTION_CANCEL:

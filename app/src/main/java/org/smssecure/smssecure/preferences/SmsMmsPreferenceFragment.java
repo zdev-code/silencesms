@@ -31,6 +31,7 @@ import java.util.List;
 
 public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
   private static final String KITKAT_DEFAULT_PREF = "pref_set_default";
+  private static final String ACTION_MANAGE_DEFAULT_APPS_SETTINGS = "android.settings.MANAGE_DEFAULT_APPS_SETTINGS";
   private static final String MMS_PREF            = "pref_mms_preferences";
 
   private final ActivityResultLauncher<Intent> roleRequestLauncher =
@@ -72,57 +73,53 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
     Preference       allMmsPreference    = findPreference(SilencePreferences.ALL_MMS_PREF);
     Preference       manualMmsPreference = findPreference(MMS_PREF);
 
-    if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-      if (allSmsPreference != null) preferenceScreen.removePreference(allSmsPreference);
-      if (allMmsPreference != null) preferenceScreen.removePreference(allMmsPreference);
+    if (allSmsPreference != null) preferenceScreen.removePreference(allSmsPreference);
+    if (allMmsPreference != null) preferenceScreen.removePreference(allMmsPreference);
 
-      if (Util.isDefaultSmsProvider(getActivity())) {
-        defaultPreference.setTitle(getString(R.string.ApplicationPreferencesActivity_sms_enabled));
-        defaultPreference.setSummary(getString(R.string.ApplicationPreferencesActivity_tap_to_change_your_default_sms_app));
-        defaultPreference.setOnPreferenceClickListener(preference -> {
-          Activity activity = getActivity();
-          if (activity == null) {
-            return false;
-          }
+    if (Util.isDefaultSmsProvider(getActivity())) {
+      defaultPreference.setTitle(getString(R.string.ApplicationPreferencesActivity_sms_enabled));
+      defaultPreference.setSummary(getString(R.string.ApplicationPreferencesActivity_tap_to_change_your_default_sms_app));
+      defaultPreference.setOnPreferenceClickListener(preference -> {
+        Activity activity = getActivity();
+        if (activity == null) {
+          return false;
+        }
 
-          Intent manageDefaultAppsIntent = new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS);
-          if (isResolvable(activity, manageDefaultAppsIntent)) {
-            startActivity(manageDefaultAppsIntent);
+        Intent manageDefaultAppsIntent = new Intent(ACTION_MANAGE_DEFAULT_APPS_SETTINGS);
+        if (isResolvable(activity, manageDefaultAppsIntent)) {
+          startActivity(manageDefaultAppsIntent);
+          return true;
+        }
+
+        Intent changeDefaultIntent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+        changeDefaultIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
+        startActivity(changeDefaultIntent);
+        return true;
+      });
+    } else {
+      defaultPreference.setTitle(getString(R.string.ApplicationPreferencesActivity_sms_disabled));
+      defaultPreference.setSummary(getString(R.string.ApplicationPreferencesActivity_tap_to_make_silence_your_default_sms_app));
+
+      defaultPreference.setOnPreferenceClickListener(preference -> {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+          RoleManager roleManager = (RoleManager) getActivity().getSystemService(Context.ROLE_SERVICE);
+          if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_SMS)) {
+            if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
+              Intent roleIntent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS);
+              roleRequestLauncher.launch(roleIntent);
+            }
             return true;
           }
+        }
 
-          Intent changeDefaultIntent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-          changeDefaultIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, activity.getPackageName());
-          startActivity(changeDefaultIntent);
-          return true;
-        });
-      } else {
-        defaultPreference.setTitle(getString(R.string.ApplicationPreferencesActivity_sms_disabled));
-        defaultPreference.setSummary(getString(R.string.ApplicationPreferencesActivity_tap_to_make_silence_your_default_sms_app));
-
-        defaultPreference.setOnPreferenceClickListener(preference -> {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            RoleManager roleManager = (RoleManager) getActivity().getSystemService(Context.ROLE_SERVICE);
-            if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_SMS)) {
-              if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
-                Intent roleIntent = roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS);
-                roleRequestLauncher.launch(roleIntent);
-              }
-              return true;
-            }
-          }
-
-          Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-          intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getActivity().getPackageName());
-          startActivity(intent);
-          return true;
-        });
-      }
-    } else if (defaultPreference != null) {
-      preferenceScreen.removePreference(defaultPreference);
+        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getActivity().getPackageName());
+        startActivity(intent);
+        return true;
+      });
     }
 
-    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && manualMmsPreference != null) {
+    if (manualMmsPreference != null) {
       preferenceScreen.removePreference(manualMmsPreference);
     }
   }
@@ -160,17 +157,8 @@ public class SmsMmsPreferenceFragment extends CorrectedPreferenceFragment {
 
     final int incomingSmsSummary;
     boolean postKitkatSMS = Util.isDefaultSmsProvider(context);
-    boolean preKitkatSMS  = SilencePreferences.isInterceptAllSmsEnabled(context);
-    boolean preKitkatMMS  = SilencePreferences.isInterceptAllMmsEnabled(context);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      if (postKitkatSMS)                      incomingSmsSummary = onResId;
-      else                                    incomingSmsSummary = offResId;
-    } else {
-      if      (preKitkatSMS && preKitkatMMS)  incomingSmsSummary = onResId;
-      else if (preKitkatSMS && !preKitkatMMS) incomingSmsSummary = smsResId;
-      else if (!preKitkatSMS && preKitkatMMS) incomingSmsSummary = mmsResId;
-      else                                    incomingSmsSummary = offResId;
-    }
+    if (postKitkatSMS) incomingSmsSummary = onResId;
+    else               incomingSmsSummary = offResId;
     return context.getString(incomingSmsResId, context.getString(incomingSmsSummary));
   }
 }

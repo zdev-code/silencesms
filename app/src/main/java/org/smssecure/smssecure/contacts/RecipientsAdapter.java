@@ -113,7 +113,7 @@ public class RecipientsAdapter extends ResourceCursorAdapter {
         label.setText(mContactAccessor.phoneTypeToString(mContext, type, cursor.getString(LABEL_INDEX)));
 
         TextView number = (TextView) view.findViewById(R.id.number);
-        number.setText("(" + cursor.getString(NUMBER_INDEX) + ")");
+        number.setText(context.getString(R.string.recipients_adapter__phone_number, cursor.getString(NUMBER_INDEX)));
     }
 
     @Override

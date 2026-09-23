@@ -29,8 +29,9 @@ final class Argon2MasterSecretEnvelope {
   private static final int NONCE_LENGTH = 12;
   private static final int TAG_LENGTH_BITS = 128;
   private static final int MASTER_SECRET_LENGTH = 36;
-  private static final int FIXED_HEADER_LENGTH = MAGIC.length + 1 + 1 + Integer.BYTES +
-                                                  Integer.BYTES + 1 + 1 + 1 + Integer.BYTES;
+  private static final int INTEGER_BYTES = Integer.SIZE / Byte.SIZE;
+  private static final int FIXED_HEADER_LENGTH = MAGIC.length + 1 + 1 + INTEGER_BYTES +
+                                                  INTEGER_BYTES + 1 + 1 + 1 + INTEGER_BYTES;
 
   interface KeyDeriver {
     byte[] derive(String passphrase, byte[] salt, int memoryKiB,

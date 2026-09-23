@@ -2,8 +2,6 @@ package org.smssecure.smssecure.preferences.widgets;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 
 
@@ -21,7 +19,6 @@ public class AdvancedRingtonePreference extends RingtonePreference {
     super(context);
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   public AdvancedRingtonePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
   }

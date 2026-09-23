@@ -17,7 +17,6 @@
 
 package org.smssecure.smssecure;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ClipData;
 import android.content.Context;
@@ -269,12 +268,11 @@ public class SubmitLogFragment extends Fragment {
                          asMegs(info.maxMemory()));
   }
 
-  @TargetApi(VERSION_CODES.KITKAT)
   public static String getMemoryClass(Context context) {
     ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
     String          lowMem          = "";
 
-    if (VERSION.SDK_INT >= VERSION_CODES.KITKAT && activityManager.isLowRamDevice()) {
+    if (activityManager.isLowRamDevice()) {
       lowMem = ", low-mem device";
     }
     return activityManager.getMemoryClass() + lowMem;

@@ -37,6 +37,8 @@ public final class RestoredPreferences {
     if (restored.isEmpty()) return;
 
     apply(context.getSharedPreferences(MasterSecretUtil.PREFERENCES_NAME, 0), restored);
+    // The staging file is part of an atomic restore path and must be durably cleared before return.
+    //noinspection ApplySharedPref
     source.edit().clear().commit();
   }
 

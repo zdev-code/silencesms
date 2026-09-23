@@ -1,5 +1,6 @@
 package org.smssecure.smssecure.components;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -80,27 +81,25 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     this.pauseButton.setOnClickListener(new PauseClickedListener());
     this.seekBar.setOnSeekBarChangeListener(new SeekBarModifiedListener());
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Drawable playDrawable  = AppCompatResources.getDrawable(context, R.drawable.play_icon);
-      Drawable pauseDrawable = AppCompatResources.getDrawable(context, R.drawable.pause_icon);
-      Drawable circleDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_circle_fill_white_48dp);
+    Drawable playDrawable  = AppCompatResources.getDrawable(context, R.drawable.play_icon);
+    Drawable pauseDrawable = AppCompatResources.getDrawable(context, R.drawable.pause_icon);
+    Drawable circleDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_circle_fill_white_48dp);
 
-      if (playDrawable != null) {
-        this.playButton.setImageDrawable(playDrawable);
-      }
+    if (playDrawable != null) {
+      this.playButton.setImageDrawable(playDrawable);
+    }
 
-      if (pauseDrawable != null) {
-        this.pauseButton.setImageDrawable(pauseDrawable);
-      }
+    if (pauseDrawable != null) {
+      this.pauseButton.setImageDrawable(pauseDrawable);
+    }
 
-      if (circleDrawable != null) {
-        this.playButton.setBackground(circleDrawable);
+    if (circleDrawable != null) {
+      this.playButton.setBackground(circleDrawable);
 
-        Drawable pauseBackground = circleDrawable.getConstantState() != null
-                                    ? circleDrawable.getConstantState().newDrawable().mutate()
-                                    : circleDrawable.mutate();
-        this.pauseButton.setBackground(pauseBackground);
-      }
+      Drawable pauseBackground = circleDrawable.getConstantState() != null
+                                 ? circleDrawable.getConstantState().newDrawable().mutate()
+                                 : circleDrawable.mutate();
+      this.pauseButton.setBackground(pauseBackground);
     }
 
     if (attrs != null) {
@@ -175,6 +174,7 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
   }
 
   @Override
+  @SuppressLint("ClickableViewAccessibility") // Disabled seek bars intentionally consume every touch.
   public void setClickable(boolean clickable) {
     super.setClickable(clickable);
     this.playButton.setClickable(clickable);
@@ -209,15 +209,10 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
   }
 
   public void setTint(int foregroundTint, int backgroundTint) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      this.playButton.setBackgroundTintList(ColorStateList.valueOf(foregroundTint));
-      this.playButton.setImageTintList(ColorStateList.valueOf(backgroundTint));
-      this.pauseButton.setBackgroundTintList(ColorStateList.valueOf(foregroundTint));
-      this.pauseButton.setImageTintList(ColorStateList.valueOf(backgroundTint));
-    } else {
-      this.playButton.setColorFilter(foregroundTint, PorterDuff.Mode.SRC_IN);
-      this.pauseButton.setColorFilter(foregroundTint, PorterDuff.Mode.SRC_IN);
-    }
+    this.playButton.setBackgroundTintList(ColorStateList.valueOf(foregroundTint));
+    this.playButton.setImageTintList(ColorStateList.valueOf(backgroundTint));
+    this.pauseButton.setBackgroundTintList(ColorStateList.valueOf(foregroundTint));
+    this.pauseButton.setImageTintList(ColorStateList.valueOf(backgroundTint));
 
     this.downloadButton.setColorFilter(foregroundTint, PorterDuff.Mode.SRC_IN);
     this.downloadProgress.setIndicatorColor(foregroundTint);
@@ -225,9 +220,7 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     this.timestamp.setTextColor(foregroundTint);
     this.seekBar.getProgressDrawable().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(foregroundTint, BlendModeCompat.SRC_IN));
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      this.seekBar.getThumb().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(foregroundTint, BlendModeCompat.SRC_IN));
-    }
+    this.seekBar.getThumb().setColorFilter(BlendModeColorFilterCompat.createBlendModeColorFilterCompat(foregroundTint, BlendModeCompat.SRC_IN));
   }
 
   private double getProgress() {
@@ -241,15 +234,13 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
   private void togglePlayToPause() {
     controlToggle.displayQuick(pauseButton);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Drawable playToPauseDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.play_to_pause_animation);
+    Drawable playToPauseDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.play_to_pause_animation);
 
-      if (playToPauseDrawable != null) {
-        pauseButton.setImageDrawable(playToPauseDrawable);
+    if (playToPauseDrawable != null) {
+      pauseButton.setImageDrawable(playToPauseDrawable);
 
-        if (playToPauseDrawable instanceof Animatable) {
-          ((Animatable) playToPauseDrawable).start();
-        }
+      if (playToPauseDrawable instanceof Animatable) {
+        ((Animatable) playToPauseDrawable).start();
       }
     }
   }
@@ -257,15 +248,13 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
   private void togglePauseToPlay() {
     controlToggle.displayQuick(playButton);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Drawable pauseToPlayDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.pause_to_play_animation);
+    Drawable pauseToPlayDrawable = AppCompatResources.getDrawable(getContext(), R.drawable.pause_to_play_animation);
 
-      if (pauseToPlayDrawable != null) {
-        playButton.setImageDrawable(pauseToPlayDrawable);
+    if (pauseToPlayDrawable != null) {
+      playButton.setImageDrawable(pauseToPlayDrawable);
 
-        if (pauseToPlayDrawable instanceof Animatable) {
-          ((Animatable) pauseToPlayDrawable).start();
-        }
+      if (pauseToPlayDrawable instanceof Animatable) {
+        ((Animatable) pauseToPlayDrawable).start();
       }
     }
   }
@@ -332,6 +321,7 @@ public class AudioView extends FrameLayout implements AudioSlidePlayer.Listener 
     }
   }
 
+  @SuppressLint("ClickableViewAccessibility")
   private class TouchIgnoringListener implements OnTouchListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {

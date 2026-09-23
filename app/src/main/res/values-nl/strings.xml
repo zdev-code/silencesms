@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Ja</string>
   <string name="no">Nee</string>
@@ -46,7 +46,6 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="DraftDatabase_Draft_video_snippet">(video)</string>
   <!--AttchmentManager-->
   <string name="AttachmentManager_cant_open_media_selection">Kan geen app vinden om media te selecteren.</string>
-  <string name="AttachmentManager_silence_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">Silence heeft toegang nodig tot de camera om foto\'s te kunnen maken, maar deze toegang is permanent geweigerd. Ga naar de instellingen, selecteer ‘Toestemmingen’ en schakel ‘Opslagruimte’ in.</string>
   <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Silence heeft toegang nodig tot SMS om een SMS te versturen maar deze toestemming is permanent geweigerd. Ga naar de instellingen, selecteer ‘Toestemmingen’ en schakel ‘SMS’ in.</string>
   <!--AttachmentTypeSelectorAdapter-->
   <string name="AttachmentTypeSelectorAdapter_camera">Camera</string>
@@ -83,9 +82,6 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="ConversationActivity_select_contact_info">Selecteer contactinformatie</string>
   <string name="ConversationActivity_compose_message">Bericht opstellen</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">Sorry, er is een fout opgetreden bij het instellen van de bijlage.</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">De geselecteerde GIF-afbeelding is te groot!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Sorry, het videobestand overschrijdt de maximale berichtgrootte (%1$skB).</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Sorry, het audiobestand overschrijdt de maximale berichtgrootte (%1$skB).</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">Ontvanger heeft geen geldig sms- of e-mailadres!</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Bericht is leeg!</string>
   <string name="ConversationActivity_group_members">Groepsleden</string>
@@ -95,7 +91,6 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
     <item quantity="one">%d lid</item>
     <item quantity="other">%d leden</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Concept opgeslagen</string>
   <string name="ConversationActivity_invalid_recipient">Ongeldige ontvanger!</string>
   <string name="ConversationActivity_calls_not_supported">Bellen niet ondersteund</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Dit apparaat lijkt dial-acties niet te ondersteunen.</string>
@@ -106,9 +101,6 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="ConversationActivity_transport_secure_mms">Beveiligde mms</string>
   <string name="ConversationActivity_install_smssecure">Laten we veilig chatten: %s</string>
   <string name="ConversationActivity_recipient_self">Beveiligde sessies kunnen alleen met andere personen worden gevoerd.</string>
-  <string name="ConversationActivity_mms_not_supported_title">Mms niet ondersteund.</string>
-  <string name="ConversationActivity_mms_not_supported_message">Dit bericht kan niet worden verstuurd omdat je provider geen mms ondersteunt.</string>
-  <string name="ConversationActivity_specify_recipient">Kies een contact</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">Bijlage groter dan limiet.</string>
   <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Silence heeft toegang nodig tot SMS om een SMS te versturen maar deze toestemming is permanent geweigerd. Ga naar de instellingen, selecteer ‘Toestemmingen’ en schakel ‘SMS’ in.</string>
   <!--ConversationAdapter-->
@@ -117,7 +109,6 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
     <item quantity="other">%d ongelezen berichten</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Berichtdetails</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">Geselecteerd bericht verwijderen?</item>
     <item quantity="other">Geselecteerde berichten verwijderen?</item>
@@ -149,11 +140,11 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
     <item quantity="other">%1$d bijlagen worden opgeslagen naar opslag…</item>
   </plurals>
   <string name="ConversationFragment_collecting_attahments">Bijlagen worden verzameld…</string>
-  <string name="ConversationFragment_pending">Wachten...</string>
+  <string name="ConversationFragment_pending">Wachten…</string>
   <string name="ConversationFragment_mms">Mms</string>
   <string name="ConversationFragment_sms">Sms</string>
-  <string name="ConversationFragment_deleting">Verwijderen...</string>
-  <string name="ConversationFragment_deleting_messages">Berichten aan het verwijderen...</string>
+  <string name="ConversationFragment_deleting">Verwijderen…</string>
+  <string name="ConversationFragment_deleting_messages">Berichten aan het verwijderen…</string>
   <!--ConversationListActivity-->
   <string name="ConversationListActivity_search">Zoeken</string>
   <!--ConversationListFragment-->
@@ -166,7 +157,7 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
     <item quantity="other">Dit verwijderd alle %1$d geselecteerde gesprekken permanent.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">Aan het verwijderen</string>
-  <string name="ConversationListFragment_deleting_selected_conversations">Geselecteerde gesprekken aan het verwijderen...</string>
+  <string name="ConversationListFragment_deleting_selected_conversations">Geselecteerde gesprekken aan het verwijderen…</string>
   <plurals name="ConversationListFragment_conversations_archived">
     <item quantity="one">Gesprek gearchiveerd</item>
     <item quantity="other">%d gesprekken gearchiveerd</item>
@@ -180,7 +171,7 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="ConversationListFragment_this_will_send_drafts_of_selected_conversations">Dit verzend de concepten van de geselecteerde gesprekken.</string>
   <string name="ConversationListFragment_send">Zenden</string>
   <string name="ConversationListFragment_sending">Aan het zenden</string>
-  <string name="ConversationListFragment_sending_selected_drafts">Geselecteerde concepten aan het verzenden...</string>
+  <string name="ConversationListFragment_sending_selected_drafts">Geselecteerde concepten aan het verzenden…</string>
   <!--ConversationListItemAction-->
   <string name="ConversationListItemAction_archived_conversations_d">Gearchiveerde gesprekken (%d)</string>
   <!--CustomDefaultPreference-->
@@ -197,7 +188,6 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="DualSimUtil__a_new_key_has_been_generated">Er is een nieuwe sleutel gegenereerd.</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">Er is een nieuwe sleutel gegenereerd voor deze simkaart.</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Delen met</string>
   <!--WelcomeActivity-->
   <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">Verhoog je privacy, spreek met iedereen</string>
   <string name="WelcomeActivity_encrypt_your_messages">Versleutel uw berichten met andere Silence gebruikers en wissel gewone SMS/MMS berichten uit met anderen.</string>
@@ -214,25 +204,20 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="ExportFragment_warning_this_will_export_the_contents_of_your_messages_to_storage_in_plaintext">Waarschuwing, hiermee exportreert u de berichten van Silence in een onversleuteld formaat.</string>
   <string name="ExportFragment_cancel">Annuleren</string>
   <string name="ExportFragment_exporting">Aan het exporteren</string>
-  <string name="ExportFragment_exporting_plaintext_to_storage">Onversleutelde berichten worden geëxporteren naar opslag...</string>
+  <string name="ExportFragment_exporting_plaintext_to_storage">Onversleutelde berichten worden geëxporteren naar opslag…</string>
   <string name="ExportFragment_error_unable_to_write_to_storage">Fout, kan niet schrijven naar het opslaggeheugen.</string>
   <string name="ExportFragment_error_while_writing_to_storage">Fout tijdens het schrijven naar het opslaggeheugen.</string>
   <string name="ExportFragment_export_successful">Export succesvol.</string>
   <string name="ExportFragment_export_encrypted_backup">Exporteer versleutelde backup?</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">Dit exporteert je keys, instellingen en berichten versleuteld naar het opslaggeheugen.</string>
-  <string name="ExportFragment_exporting_keys_settings_and_messages">Versleutelde sleutels, instellingen en berichten worden geëxporteerd...</string>
+  <string name="ExportFragment_exporting_keys_settings_and_messages">Versleutelde sleutels, instellingen en berichten worden geëxporteerd…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Nieuwe groep</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Groep bijwerken</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Nieuwe mms-groep</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Er is een onverwachte fout opgetreden waardoor het aanmaken van een groep is mislukt.</string>
   <string name="GroupCreateActivity_contacts_no_members">De groep moet ten minste één persoon bevatten.</string>
   <string name="GroupCreateActivity_menu_create_title">Groep aanmaken</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">IK</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Importeer</string>
-  <string name="ImportExportActivity_export">Exporteer</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Sms-berichten uit de systeemdatabase importeren?</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">Dit importeert de sms-berichten uit de systeemdatabase in Silence. Als de sms-database al eerder geïmporteerd is kan opnieuw importeren leiden tot dubbele berichten.</string>
@@ -243,11 +228,11 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="ImportFragment_import_plaintext_backup">Onversleutelde back-up importeren?</string>
   <string name="ImportFragment_this_will_import_messages_from_a_plaintext_backup">Dit zal berichten importeren uit een platte tekstbackup. Als je deze backup eerder al eens hebt geimporteerd, zal het opnieuw importeren resulteren in dubbele berichten.</string>
   <string name="ImportFragment_importing">Importeren</string>
-  <string name="ImportFragment_import_plaintext_backup_elipse">Niet-versleutelde back-up importeren...</string>
+  <string name="ImportFragment_import_plaintext_backup_elipse">Niet-versleutelde back-up importeren…</string>
   <string name="ImportFragment_no_plaintext_backup_found">Geen niet-versleutelde back-up gevonden!</string>
   <string name="ImportFragment_error_importing_backup">Fout bij het importeren van back-up!</string>
   <string name="ImportFragment_import_complete">Importeren voltooid!</string>
-  <string name="ImportFragment_restoring_encrypted_backup">Versleutelde backup aan het terugzetten...</string>
+  <string name="ImportFragment_restoring_encrypted_backup">Versleutelde backup aan het terugzetten…</string>
   <string name="ImportFragment_no_encrypted_backup_found">Geen versleutelde back-up gevonden!</string>
   <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">Silence heeft toegang nodig tot SMS berichten om SMS berichten te importeren, maar deze toegang is permanent geweigerd. Ga naar de instellingen, selecteer ‘Toestemmingen’ en schakel ‘SMS’ in.</string>
   <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">Silence heeft toegang tot SMS berichten nodig om deze te kunnen importeren.</string>
@@ -257,14 +242,10 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage">Silence heeft toegang nodig tot het opslaggeheugen om daarnaar te kunnen schrijven.</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Geen gescande sleutel gevonden!</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">Installeer Barcode Scanner?</string>
-  <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Silence heeft Barcode Scanner nodig om QR codes te kunnen lezen.</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">Verzenden mislukt</string>
   <string name="MessageDetailsRecipient_new_identity">Nieuwe identiteit</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Mms opslaan mislukt!</string>
-  <string name="MmsDownloader_error_connecting_to_mms_provider">Fout tijdens het verbinden met mms-provider</string>
   <string name="MmsDownloader_error_reading_mms_settings">Fout bij het lezen van de mms-instellingen van de provider</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Multimediabericht</string>
@@ -285,8 +266,6 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   <!--ReceiveKeyActivity-->
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_different">De handtekening op deze sleuteluitwisseling is anders dan wat je eerder ontvangen hebt van dit contact. Dit kan betekenen dat iemand je communicatie probeert te onderscheppen, of dat dit contact gewoon Silence opnieuw geïnstalleerd heeft en nu een nieuwe identiteitssleutel heeft.</string>
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">De handtekening op deze sleuteluitwisseling is vertrouwd, maar u heeft de \'automatisch aanvullen sleuteluitwisselingen\' instelling uitgeschakeld.</string>
-  <string name="ReceiveKeyActivity_processing">Aan het verwerken</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Sleuteluitwisseling verwerken...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">U kunt wensen dit contact te verifiëren.</string>
   <!--RecipientPreferencesActivity-->
   <string name="RecipientPreferenceActivity_block_this_contact_question">Blokkeer dit contact?</string>
@@ -371,7 +350,6 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="MessageNotifier_most_recent_from_s">Laatste van: %1$s</string>
   <string name="MessageNotifier_encrypted_message">Versleuteld bericht</string>
   <string name="MessageNotifier_media_message_with_text">Media bericht: %s</string>
-  <string name="MessageNotifier_no_subject">(Geen onderwerp)</string>
   <string name="MessageNotifier_message_delivery_failed">Berichtaflevering mislukt.</string>
   <string name="MessageNotifier_failed_to_deliver_message">Het bericht afleveren is mislukt.</string>
   <string name="MessageNotifier_error_delivering_message">Fout bij afleveren bericht.</string>
@@ -397,21 +375,18 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="contact_selection_activity__enter_name_or_number">Type een naam of nummer</string>
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">Geen contacten.</string>
-  <string name="contact_selection_group_activity__finding_contacts">Contacten laden...</string>
+  <string name="contact_selection_group_activity__finding_contacts">Contacten laden…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Contactfoto</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Selecteer voor</string>
   <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Silence heeft toegang nodig tot de contacten om deze weer te kunnen geven, maar deze toegang is permanent geweigerd. Ga naar de instellingen, selecteer ‘Toestemmingen’ en schakel ‘Contacten’ in.</string>
   <!--blocked_contacts_fragment-->
   <string name="blocked_contacts_fragment__no_blocked_contacts">Geen geblokkeerde contacten</string>
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Geen recente gesprekken.</string>
   <!--contact_selection_list_fragment-->
   <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Silence heeft toegang nodig tot de contacten om deze weer te kunnen geven.</string>
   <string name="contact_selection_list_fragment__show_contacts">Contacten tonen.</string>
   <!--conversation_title_view-->
-  <string name="conversation_title_view__conversation_muted">Geluid uit</string>
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">Verstuur beveiligde sms</string>
   <string name="conversation_activity__type_message_sms_insecure">Verstuur onbeveiligde sms</string>
@@ -419,13 +394,10 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="conversation_activity__type_message_mms_insecure">Verstuur onbeveiligde mms</string>
   <string name="conversation_activity__via_sim_name">Via %1$s</string>
   <string name="conversation_activity__send">Verstuur</string>
-  <string name="conversation_activity__remove">Verwijder</string>
-  <string name="conversation_activity__window_description">Gesprek met %1$s</string>
   <string name="conversation_activity__compose_description">Bericht samenstelling</string>
   <string name="conversation_activity__emoji_toggle_description">Wissel emoji toetsenbord</string>
   <string name="conversation_activity__attachment_thumbnail">Bijlage miniatuur</string>
   <!--conversation_item-->
-  <string name="conversation_item__mms_downloading_description">Media bericht wordt gedownload</string>
   <string name="conversation_item__mms_image_description">Mediabericht</string>
   <string name="conversation_item__secure_message_description">Beveiligd bericht</string>
   <!--conversation_item_sent-->
@@ -448,13 +420,10 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <!--conversation_fragment-->
   <string name="conversation_fragment__scroll_to_the_bottom_content_description">Naar de bodem scrollen</string>
   <!--import_export_fragment-->
-  <string name="import_export_fragment__export">Exporteren</string>
   <string name="import_export_fragment__import">Importeren</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">Kan geen logs van het apparaat verzamelen. U kunt nog steeds ADB gebruiken om debug logs te verzamelen.</string>
   <string name="log_submit_activity__thanks">Bedankt voor uw hulp!</string>
-  <string name="log_submit_activity__submitting">Aan het indienen</string>
-  <string name="log_submit_activity__posting_logs">Logs posten naar gist...</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">Wilt u de huidige tekstberichtendatabase importeren naar de versleutelde database van Silence?</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">De standaard systeemdatabase zal niet gewijzigd of aangepast worden op enigerlei wijze.</string>
@@ -470,7 +439,7 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="import_fragment__import_the_database_from_the_default_system">Importeer de database van de standaard berichten app</string>
   <string name="import_fragment__restore_encrypted_backup">Versleutelde backup terugzetten</string>
   <string name="import_fragment__restore_a_previously_exported_encrypted_backup">Herstel een eerder geëxporteerde versleutelde backup</string>
-  <string name="import_fragment__import_plaintext_backup">Onversleutelde back-up importeren...</string>
+  <string name="import_fragment__import_plaintext_backup">Onversleutelde back-up importeren…</string>
   <string name="import_fragment__import_a_plaintext_backup_file">Importeer een niet-versleutelde back-up compatibel met \'SMS back-up en herstellen\'.</string>
   <string name="export_fragment__export_encrypted_backup">Exporteer versleutelde backup</string>
   <string name="export_fragment__export_an_encrypted_backup_to_storage">Export een versleutelde back-up naar het opslaggeheugen.</string>
@@ -513,20 +482,15 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="message_details_header__from">Van</string>
   <string name="message_details_header__with">Met</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">Wachtwoord creëren</string>
-  <string name="AndroidManifest__enter_passphrase">Wachtwoord invoeren</string>
   <string name="AndroidManifest__select_contacts">Contacten selecteren</string>
-  <string name="AndroidManifest__public_identity_key">Publieke identiteitssleutel</string>
   <string name="AndroidManifest__change_passphrase">Wachtwoord veranderen</string>
   <string name="AndroidManifest__verify_identity">Identiteit verifiëren</string>
-  <string name="AndroidManifest__complete_key_exchange">Sleuteluitwisseling voltooien</string>
   <string name="AndroidManifest__log_submit">Debug logs indienen</string>
   <string name="AndroidManifest__media_preview">Media Voorvertoning</string>
   <string name="AndroidManifest__media_overview">Alle afbeeldingen</string>
   <string name="AndroidManifest__media_overview_named">Alle afbeeldingen met %1$s</string>
   <string name="AndroidManifest__message_details">Berichtdetails</string>
   <string name="AndroidManifest_archived_conversations">Gearchiveerde gesprekken</string>
-  <string name="AndroidManifest_configure_mms_settings">Mms-instellingen</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">Importeer / exporteer </string>
   <string name="arrays__your_identity_key">Mijn identiteitssleutel</string>
@@ -552,7 +516,6 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
     <item quantity="other">%d uren</item>
   </plurals>
   <!--preferences.xml-->
-  <string name="preferences__general">Algemeen</string>
   <string name="preferences__sms_mms">Sms en mms</string>
   <string name="preferences__pref_all_sms_title">Ontvang alle sms</string>
   <string name="preferences__pref_all_mms_title">Ontvang alle mms</string>
@@ -561,8 +524,6 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="preferences__keyboard_settings">Toetsenbord opties</string>
   <string name="preferences__disable_emoji_drawer">Zet emoji knop uit</string>
   <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">Gebruik deze optie als uw toetsenbord een emoji toets heeft.</string>
-  <string name="preferences__display_settings">Beeldscherminstellingen</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Kies uw contactinformatie uit de contactpersonenlijst.</string>
   <string name="preferences__change_passphrase">Wachtwoord veranderen</string>
   <string name="preferences__change_your_passphrase">Wachtwoord veranderen</string>
   <string name="preferences__complete_key_exchanges">Sleuteluitwisselingen voltooien</string>
@@ -573,18 +534,12 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Screenshots onmogelijk maken in deze app en de recente lijst</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Wachtwoord na een bepaalde tijd uit het geheugen vergeten</string>
   <string name="preferences__timeout_passphrase">Time-out wachtwoord</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">Wachtwoord time-out selecteren</string>
   <string name="preferences__pref_timeout_interval_title">Time-out interval</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Hoe lang te wachten voor het vergeten van het wachtwoord uit het geheugen</string>
   <string name="preferences__notifications">Notificaties</string>
   <string name="preferences__enable_message_notifications">Toon berichtnotificaties</string>
   <string name="preferences__led_color">LED-kleur</string>
   <string name="preferences__led_color_unknown">Onbekend</string>
   <string name="preferences__pref_led_blink_title">LED-knipperpatroon</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">Aangepast LED knipperpatroon instellen</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">Aan voor:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">Uit voor:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Aangepast LED knipper patroon ingesteld.</string>
   <string name="preferences__sound">Geluid</string>
   <string name="preferences__change_notification_sound">Verander notificatiegeluid</string>
   <string name="preferences__silent">Stil</string>
@@ -598,9 +553,6 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="preferences__five_times">Vijf keer</string>
   <string name="preferences__ten_times">Tien keer</string>
   <string name="preferences__vibrate">Trillen</string>
-  <string name="preferences__also_vibrate_when_notified">Ook trillen bij notificaties</string>
-  <string name="preferences__minutes">minuten</string>
-  <string name="preferences__hours">uren</string>
   <string name="preferences__green">Groen</string>
   <string name="preferences__red">Rood</string>
   <string name="preferences__blue">Blauw</string>
@@ -612,13 +564,10 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="preferences__fast">Snel</string>
   <string name="preferences__normal">Normaal</string>
   <string name="preferences__slow">Langzaam</string>
-  <string name="preferences__custom">Aangepast</string>
   <string name="preferences__advanced">Geavanceerd</string>
   <string name="preferences__privacy">Privacy</string>
   <string name="preferences__mms_user_agent">Mms-gebruikersprogramma</string>
   <string name="preferences__advanced_mms_access_point_names">Handmatige mms-instellingen</string>
-  <string name="preferences__enable_manual_mms">Gebruik handmatige mms-instellingen</string>
-  <string name="preferences__override_system_mms_settings">Gebruik onderstaande gegevens in plaats van de mms-instellingen van het systeem.</string>
   <string name="preferences__mmsc_url">MMSC-URL</string>
   <string name="preferences__mms_proxy_host">Mms-proxyhost</string>
   <string name="preferences__mms_proxy_port">Mms-proxypoort</string>
@@ -669,19 +618,10 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">Alles selecteren</string>
-  <string name="contact_selection_list__menu_unselect_all">Alles deselecteren</string>
-  <string name="contact_selection_list__header">ALLE CONTACTEN</string>
   <string name="contact_selection_list__unknown_contact">Nieuw bericht aan…</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Voltooid</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">Contactenlijst verversen</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">Verstuur beveiligde sms</string>
-  <string name="conversation_button_context__send_insecure_sms">Verstuur onbeveiligde sms</string>
-  <string name="conversation_button_context__send_secure_mms">Verstuur beveiligde mms</string>
-  <string name="conversation_button_context__send_insecure_mms">Verstuur onbeveiligde mms</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">Bel</string>
   <!--conversation_context-->
@@ -707,7 +647,6 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="conversation_list__menu_search">Zoeken</string>
   <!--conversation_list_item_view-->
   <string name="conversation_list_item_view__contact_photo_image">Contact avatar</string>
-  <string name="conversation_list_item_view__error_alert">Foutalarm</string>
   <string name="conversation_list_item_view__archived">Gearchiveerd</string>
   <!--conversation_list_fragment-->
   <string name="conversation_list_fragment__fab_content_description">Nieuw gesprek</string>
@@ -741,7 +680,6 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="key_scanning__menu_scan_contacts_qr_code">Scan de QR code van uw contact</string>
   <string name="share_identity_fingerprint">Identiteitssleutel delen</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">Nieuw bericht</string>
   <string name="text_secure_normal__menu_new_group">Nieuwe groep</string>
   <string name="text_secure_normal__menu_settings">Instellingen</string>
   <string name="text_secure_normal__menu_clear_passphrase">Vergrendel</string>
@@ -763,7 +701,6 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <string name="reminder_header_close_button">SLUITEN</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">Jij</string>
-  <string name="MediaPreviewActivity_cant_display">Weergeven van deze afbeelding is mislukt</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Niet ondersteund mediatype</string>
   <string name="MediaPreviewActivity_draft">Concept</string>
   <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silence heeft toegang nodig tot het opslaggeheugen om daarnaar te kunnen opslaan, maar deze toegang is permanent geweigerd. Ga naar de instellingen, selecteer ‘Toestemmingen’ en schakel ‘Opslag’ in.</string>
@@ -777,14 +714,13 @@ Sleuteluitwisselingsbericht ontvangen voor een verkeerde protocol-versie.</strin
   <!--media_preview_activity-->
   <string name="media_preview_activity__image_content_description">Media Voorvertoning</string>
   <!--Trimmer-->
-  <string name="trimmer__deleting">Verwijderen...</string>
-  <string name="trimmer__deleting_old_messages">Oude berichten aan het verwijderen...</string>
+  <string name="trimmer__deleting">Verwijderen…</string>
+  <string name="trimmer__deleting_old_messages">Oude berichten aan het verwijderen…</string>
   <string name="trimmer__old_messages_successfully_deleted">Oude berichten succesvol verwijderd</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Transport icoon</string>
   <string name="RingtonePreference_ringtone_default">Standaard beltoon</string>
   <string name="RingtonePreference_ringtone_silent">Geen</string>
-  <string name="RingtonePreference_ringtone_picker_title">Beltonen</string>
   <string name="RingtonePreference_notification_sound_default">Standaard geluid voor berichtmeldingen</string>
   <string name="RingtonePreference_alarm_sound_default">Standaard alarmgeluid</string>
   <string name="RingtonePreference_add_ringtone_text">Beltoon toevoegen</string>

@@ -617,6 +617,7 @@ hilt {
 
 android {
     namespace = "org.smssecure.smssecure"
+    //noinspection GradleDependency -- API 36 is the repository's tested compile/target contract.
     compileSdk = 36
     ndkVersion = "28.2.13676358"
 
@@ -625,6 +626,7 @@ android {
         versionCode = 216
         versionName = "0.16.14-unstable"
         minSdk = 23
+        //noinspection OldTargetApi -- API 36 is the repository's tested target contract.
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -698,6 +700,7 @@ android {
         }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             testProguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }

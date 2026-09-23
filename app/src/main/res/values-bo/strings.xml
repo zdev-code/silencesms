@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">ཡིན།</string>
   <string name="no">མིན། </string>
@@ -28,7 +28,6 @@
   <string name="ConversationActivity_message_is_empty_exclamation">འཕྲིན་ཐུང་སྟོང་པ་རེད་འདུག </string>
   <!--ConversationAdapter-->
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">འཕྲིན་ཐུང་གི་ཞིབ་ཆ།</string>
   <!--ConversationListActivity-->
   <!--ConversationListFragment-->
   <string name="ConversationListFragment_deleting">གསུབ་་བཞིན་ཡོད།</string>
@@ -44,8 +43,6 @@
   <!--GroupCreateActivity-->
   <!--GroupMembersDialog-->
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">ནང་འདྲེན་བྱོས། </string>
-  <string name="ImportExportActivity_export">ཕྱི་འདྲེན་བྱོས། </string>
   <!--ImportFragment-->
   <string name="ImportFragment_import">ནང་འདྲེན་བྱོས། </string>
   <string name="ImportFragment_cancel">ཕྱིར་འཐེན་བྱེད།</string>
@@ -53,7 +50,6 @@
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">ཞིབ་བརྟག་བྱས་པའི་ལྡེ་མིག་རྙེད་མི་ཐུབ།</string>
   <!--MessageDetailsRecipient-->
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">སྣ་མང་བརྒྱུད་ལམ་ཅན་གྱི་འཕྲིན་ཐུང་གསོག་ཉར་ལ་སྐྱོན་འདུག </string>
   <!--NotificationMmsMessageRecord-->
   <!--MessageRecord-->
   <!--PassphraseChangeActivity-->
@@ -99,15 +95,12 @@
   <string name="contact_selection_group_activity__no_contacts">འབྲེལ་མིང་མི་འདུག</string>
   <!--single_contact_selection_activity-->
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">ཆེད་དུ་འདེམས།</string>
   <!--blocked_contacts_fragment-->
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">ཉེ་ཆར་ཁ་པར་བཏང་བ་མི་འདུག </string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
   <!--conversation_activity-->
   <string name="conversation_activity__send">ཐོངས། </string>
-  <string name="conversation_activity__remove">ཕྱིར་ཕུད། </string>
   <!--conversation_item-->
   <!--conversation_item_sent-->
   <string name="conversation_item_sent__download">ཕབ་ལེན་བྱོས། </string>
@@ -145,17 +138,12 @@
   <!--arrays.xml-->
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">འབྲེལ་ཐོ་ནས་ཁྱེད་ཀྱིས་འབྲེལ་བ་བྱེད་ས་དེ་གདེམས། </string>
   <string name="preferences__change_passphrase">གསང་ཚིག་བརྗེ་བོ་རྒྱོབས།</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">དུས་བརྒལ་གྱི་དབར་དྲན་ཐོ་ནས་གསང་ཚིག་བརྗེད། </string>
   <string name="preferences__timeout_passphrase">གསང་ཚིག་གི་དུས་ཚོད་ཡོལ་འདུག</string>
   <string name="preferences__pref_timeout_interval_title">བར་སེང་མཚམས་ཞོག </string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">དྲན་ཐོ་ནས་གསང་ཚིག་མ་བརྗེད་གོང་སྒུག་ཡུན་དུས་ཚོད།</string>
   <string name="preferences__notifications">བརྡ་གཏོང་།</string>
   <string name="preferences__vibrate"> འདར་བཅུག</string>
-  <string name="preferences__also_vibrate_when_notified">བརྡ་གཏོང་སྐབས་འདར་བཅུག</string>
-  <string name="preferences__minutes">སྐར་མ།</string>
-  <string name="preferences__hours">དུས་ཚོད།</string>
   <string name="preferences__green">ལྗང་ཁུ།</string>
   <string name="preferences__red">དམར་པོ།</string>
   <string name="preferences__blue">སྔོན་པོ།</string>
@@ -165,7 +153,6 @@
   <string name="preferences__fast">མགྱོགས་པོ།</string>
   <string name="preferences__normal">སྤྱིར་བཏང་། </string>
   <string name="preferences__slow">དལ་བོ། </string>
-  <string name="preferences__custom">ཡུལ་སྲོལ། </string>
   <string name="preferences__sms_delivery_reports">སྣ་མང་བརྒྱུད་ལམ་ཅན་གྱི་འཕྲིན་ཐུང་གིས་སྙན་ཐོ་སྐྱེལ། </string>
   <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">ཁྱེད་ཀྱིས་གཏོང་བའི་འཕྲིན་ཐུང་རེ་རེར་སྙན་ཐོ་སྐྱེལ་བའི་རེ་སྐུལ་བྱོས། </string>
   <string name="preferences__delete_old_messages">འཕྲིན་ཐུང་རྙིང་པ་གསུབ། </string>
@@ -175,7 +162,6 @@
   <!--****************************************-->
   <!--contact_selection_list-->
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">མཇུག་རྫོགས་སོ།</string>
   <!--refreshing push directory from menu-->
   <!--conversation_button_context-->
   <!--conversation_callable-->

@@ -143,7 +143,7 @@ public class IdentityKeyUtil {
   }
 
   public static String getIdentityPublicKeyDjbPref(int subscriptionId) {
-    if (Build.VERSION.SDK_INT >= 22 && subscriptionId != -1) {
+    if (subscriptionId != -1) {
       return IDENTITY_PUBLIC_KEY_DJB_PREF + "_" + subscriptionId;
     } else {
       return IDENTITY_PUBLIC_KEY_DJB_PREF;
@@ -151,7 +151,7 @@ public class IdentityKeyUtil {
   }
 
   public static String getIdentityPrivateKeyDjbPref(int subscriptionId) {
-    if (Build.VERSION.SDK_INT >= 22 && subscriptionId != -1) {
+    if (subscriptionId != -1) {
       return IDENTITY_PRIVATE_KEY_DJB_PREF + "_" + subscriptionId;
     } else {
       return IDENTITY_PRIVATE_KEY_DJB_PREF;

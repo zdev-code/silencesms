@@ -3,7 +3,8 @@
 
     <FrameLayout android:id="@+id/pending_indicator_stub"
                  android:layout_width="wrap_content"
-                 android:paddingRight="2dp"
+                 android:paddingStart="0dp"
+                 android:paddingEnd="2dp"
                  android:layout_height="wrap_content" />
 
     <ImageView android:id="@+id/sent_indicator"
@@ -11,7 +12,8 @@
                android:layout_height="wrap_content"
                android:layout_gravity="center_vertical|end"
                android:src="@drawable/ic_done_white_18dp"
-               android:paddingLeft="2dp"
+               android:paddingEnd="0dp"
+               android:paddingStart="2dp"
                android:paddingBottom="2dp"
                android:visibility="gone"
                android:contentDescription="@string/conversation_item_sent__delivered_description" />
@@ -21,7 +23,8 @@
                android:layout_height="wrap_content"
                android:layout_gravity="center_vertical|end"
                android:src="@drawable/ic_done_all_white_18dp"
-               android:paddingLeft="2dp"
+               android:paddingEnd="0dp"
+               android:paddingStart="2dp"
                android:paddingBottom="2dp"
                android:visibility="gone"
                android:contentDescription="@string/conversation_item_sent__delivered_description" />

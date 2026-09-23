@@ -54,7 +54,7 @@
                       android:padding="10dp"
                       android:background="@null"
                       android:fontFamily="monospace"
-                      android:hint=""
+                      android:hint="@string/AndroidManifest__log_submit"
                       android:scrollHorizontally="true"
                       android:inputType="textImeMultiLine|textNoSuggestions|textMultiLine"
                       android:textSize="10sp"
@@ -67,11 +67,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button android:id="@+id/cancel"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/log_submit_activity__button_dont_share"
                 android:layout_weight="1"/>
         <Button android:id="@+id/ok"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/log_submit_activity__button_share"

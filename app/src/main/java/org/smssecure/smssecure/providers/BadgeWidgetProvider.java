@@ -1,5 +1,6 @@
 package org.smssecure.smssecure.providers;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -19,6 +20,7 @@ public class BadgeWidgetProvider extends AppWidgetProvider {
 
   public static final int MAX_COUNT = 99;
 
+  @SuppressLint("StaticFieldLeak") // Singleton construction stores only the application context.
   private static BadgeWidgetProvider instance;
   private        Class               activityToLaunch = org.smssecure.smssecure.ConversationListActivity.class;
   private        Context             context;
@@ -31,7 +33,7 @@ public class BadgeWidgetProvider extends AppWidgetProvider {
   }
 
   public BadgeWidgetProvider(@NonNull Context context, @Nullable Class activity) {
-    this.context          = context;
+    this.context          = context.getApplicationContext();
     this.activityToLaunch = activity;
   }
 

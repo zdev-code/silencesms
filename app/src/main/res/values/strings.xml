@@ -5,7 +5,6 @@
     <string name="no">No</string>
     <string name="delete">Delete</string>
     <string name="please_wait">Please wait…</string>
-    <string name="conversation_list_empty_placeholder" translatable="false">Placeholder</string>
 
     <!-- AbstractNotificationBuilder -->
     <string name="AbstractNotificationBuilder_new_message">New message</string>
@@ -60,7 +59,6 @@
 
     <!-- AttchmentManager -->
     <string name="AttachmentManager_cant_open_media_selection">Can\'t find an app to select media.</string>
-    <string name="AttachmentManager_silence_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio">Silence requires the External Storage permission in order to attach photos, videos, or audio, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Storage\".</string>
     <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Silence requires Contacts permission in order to attach contact information, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Contacts\".</string>
 
     <!-- AttachmentTypeSelectorAdapter -->
@@ -102,9 +100,6 @@
     <string name="ConversationActivity_select_contact_info">Select contact info</string>
     <string name="ConversationActivity_compose_message">Compose message</string>
     <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">Sorry, there was an error adding your attachment.</string>
-    <string name="ConversationActivity_the_gif_you_selected_was_too_big">The GIF you selected was too big!</string>
-    <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Sorry, the selected video exceeds message size restrictions (%1$skB).</string>
-    <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Sorry, the selected audio exceeds message size restrictions (%1$skB).</string>
     <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">Recipient is not a valid SMS or email address!</string>
     <string name="ConversationActivity_message_is_empty_exclamation">The message you are trying to send is empty!</string>
     <string name="ConversationActivity_group_members">Group members</string>
@@ -114,7 +109,6 @@
     <item quantity="one">%d member</item>
     <item quantity="other">%d members</item>
     </plurals>
-    <string name="ConversationActivity_saved_draft">Saved draft</string>
     <string name="ConversationActivity_invalid_recipient">Invalid recipient!</string>
     <string name="ConversationActivity_calls_not_supported">Calls not supported</string>
     <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">This device does not appear to support dial actions.</string>
@@ -125,9 +119,6 @@
     <string name="ConversationActivity_transport_secure_mms">Secure MMS</string>
     <string name="ConversationActivity_install_smssecure">Let\'s chat securely: %s</string>
     <string name="ConversationActivity_recipient_self">Secure sessions can only be established with other people.</string>
-    <string name="ConversationActivity_mms_not_supported_title">MMS not supported</string>
-    <string name="ConversationActivity_mms_not_supported_message">This message cannot be sent since your carrier doesn\'t support MMS.</string>
-    <string name="ConversationActivity_specify_recipient">Please choose a contact</string>
     <string name="ConversationActivity_attachment_exceeds_size_limits">Attachment exceeds size limits.</string>
     <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Silence needs SMS permission in order to send an SMS, but it has been permanently denied. Please continue to app settings, select \"Permissions\" and enable \"SMS\".</string>
 
@@ -138,7 +129,6 @@
     </plurals>
 
     <!-- ConversationFragment -->
-    <string name="ConversationFragment_message_details">Message details</string>
     <plurals name="ConversationFragment_delete_selected_messages">
         <item quantity="one">Delete selected message?</item>
         <item quantity="other">Delete selected messages?</item>
@@ -178,8 +168,6 @@
 
     <!-- ConversationListActivity -->
     <string name="ConversationListActivity_search">Search</string>
-    <string name="country_sort_name" tools:ignore="MissingTranslation">Name</string>
-    <string name="country_sort_code" tools:ignore="MissingTranslation">Calling code</string>
 
     <!-- ConversationListFragment -->
     <plurals name="ConversationListFragment_delete_selected_conversations">
@@ -227,7 +215,6 @@
     <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">A new key has been generated for that SIM card.</string>
 
     <!-- ShareActivity -->
-    <string name="ShareActivity_share_with">Share with</string>
 
     <!-- WelcomeActivity -->
     <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">Improve your privacy, talk to everyone</string>
@@ -251,7 +238,6 @@
     <string name="ExportFragment_error_while_writing_to_storage">Error while writing to storage.</string>
     <string name="ExportFragment_export_successful">Export successful.</string>
     <string name="ExportFragment_export_encrypted_backup">Export encrypted backup?</string>
-    <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">This will export your encrypted keys, settings, and messages to storage.</string>
     <string name="ExportFragment_store_recovery_key">Store this recovery key in your password manager or another secure location. It is required to restore this backup and is not stored inside it.</string>
     <string name="ExportFragment_choose_recovery_key">Choose recovery key</string>
     <string name="ExportFragment_choose_recovery_key_message">Use the automatic backup recovery key so one key restores both backup types, or create a separate key for this export.</string>
@@ -262,8 +248,6 @@
 
     <!-- GroupCreateActivity -->
     <string name="GroupCreateActivity_actionbar_title">New group</string>
-    <string name="GroupCreateActivity_actionbar_update_title">Update group</string>
-    <string name="GroupCreateActivity_actionbar_mms_title">New MMS group</string>
     <string name="GroupCreateActivity_contacts_mms_exception">Could not create group due to an unexpected error.</string>
     <string name="GroupCreateActivity_contacts_no_members">You need at least one person in your group!</string>
     <string name="GroupCreateActivity_menu_create_title">Create group</string>
@@ -272,8 +256,6 @@
     <string name="GroupMembersDialog_me">Me</string>
 
     <!-- ImportExportActivity -->
-    <string name="ImportExportActivity_import">Import</string>
-    <string name="ImportExportActivity_export">Export</string>
 
     <!-- ImportFragment -->
     <string name="ImportFragment_import_system_sms_database">Import system SMS database?</string>
@@ -319,8 +301,6 @@
 
     <!-- KeyScanningActivity -->
     <string name="KeyScanningActivity_no_scanned_key_found_exclamation">No scanned key found!</string>
-    <string name="KeyScanningActivity_install_barcode_Scanner">Install Barcode Scanner?</string>
-    <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Silence needs Barcode Scanner for QR codes.</string>
     <string name="KeyScanningActivity_no_identity_key">No identity key available.</string>
     <string name="KeyScanningActivity_unable_to_generate_qr_code">Unable to generate QR code.</string>
 
@@ -329,8 +309,6 @@
     <string name="MessageDetailsRecipient_new_identity">New identity</string>
 
     <!-- MmsDownloader -->
-    <string name="MmsDownloader_error_storing_mms">Error storing MMS!</string>
-    <string name="MmsDownloader_error_connecting_to_mms_provider">Error connecting to MMS provider</string>
     <string name="MmsDownloader_error_reading_mms_settings">Error reading wireless provider MMS settings</string>
 
     <!-- NotificationMmsMessageRecord -->
@@ -366,8 +344,6 @@
         signature on this key exchange is trusted, but you have the \'automatically complete key
         exchanges\' setting disabled.
     </string>
-    <string name="ReceiveKeyActivity_processing">Processing</string>
-    <string name="ReceiveKeyActivity_processing_key_exchange">Processing key exchange…</string>
     <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">You should verify the identity of this contact.</string>
 
     <!-- RecipientPreferencesActivity -->
@@ -470,7 +446,6 @@
     <string name="MessageNotifier_most_recent_from_s">Most recent from: %1$s</string>
     <string name="MessageNotifier_encrypted_message">Encrypted message</string>
     <string name="MessageNotifier_media_message_with_text">Media message: %s</string>
-    <string name="MessageNotifier_no_subject">(No subject)</string>
     <string name="MessageNotifier_message_delivery_failed">Message delivery failed.</string>
     <string name="MessageNotifier_failed_to_deliver_message">Failed to deliver message.</string>
     <string name="MessageNotifier_error_delivering_message">Error delivering message.</string>
@@ -509,27 +484,24 @@
 
     <!-- contact_selection_group_activity -->
     <string name="contact_selection_group_activity__no_contacts">No contacts.</string>
-    <string name="contact_selection_group_activity__finding_contacts">Loading contacts&#8230;</string>
+    <string name="contact_selection_group_activity__finding_contacts">Loading contacts…</string>
 
     <!-- single_contact_selection_activity -->
     <string name="SingleContactSelectionActivity_contact_photo">Contact Photo</string>
 
     <!-- ContactSelectionListFragment-->
-    <string name="ContactSelectionlistFragment_select_for">Select for</string>
     <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Silence requires the Contacts permission in order to display your contacts, but it has been permanently denied. Please continue to the app settings menu, select \"Permissions\", and enable \"Contacts\".</string>
 
     <!-- blocked_contacts_fragment -->
     <string name="blocked_contacts_fragment__no_blocked_contacts">No blocked contacts</string>
 
     <!-- contact_selection_recent_activity -->
-    <string name="contact_selection_recent_activity__no_recent_calls">No recent calls.</string>
 
     <!-- contact_selection_list_fragment -->
     <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Silence needs access to your contacts in order to display them.</string>
     <string name="contact_selection_list_fragment__show_contacts">Show Contacts</string>
 
     <!-- conversation_title_view -->
-    <string name="conversation_title_view__conversation_muted">Conversation muted</string>
 
     <!-- conversation_activity -->
     <string name="conversation_activity__type_message_sms_secure">Send secure SMS</string>
@@ -538,16 +510,19 @@
     <string name="conversation_activity__type_message_mms_insecure">Send unsecured MMS</string>
     <string name="conversation_activity__via_sim_name">Via %1$s</string>
     <string name="conversation_activity__send">Send</string>
-    <string name="conversation_activity__remove">Remove</string>
-    <string name="conversation_activity__window_description">Conversation with %1$s</string>
     <string name="conversation_activity__compose_description">Message composition</string>
     <string name="conversation_activity__emoji_toggle_description">Toggle emoji keyboard</string>
     <string name="conversation_activity__attachment_thumbnail">Attachment Thumbnail</string>
+    <string name="conversation_activity__character_counter" translatable="false">%1$d/%2$d (%3$d)</string>
+    <string name="conversation_activity__character_counter_default" translatable="false">160/160 (1)</string>
 
     <!-- conversation_item -->
-    <string name="conversation_item__mms_downloading_description">Media message downloading</string>
     <string name="conversation_item__mms_image_description">Media message</string>
     <string name="conversation_item__secure_message_description">Secure message</string>
+    <string name="conversation_item__mms_metadata" translatable="false">%1$s\n%2$s</string>
+
+    <!-- recipients_adapter -->
+    <string name="recipients_adapter__phone_number" translatable="false">(%1$s)</string>
 
     <!-- conversation_item_sent -->
     <string name="conversation_item_sent__download">Download</string>
@@ -574,7 +549,6 @@
     <string name="conversation_fragment__scroll_to_the_bottom_content_description">Scroll to the bottom</string>
 
     <!-- import_export_fragment -->
-    <string name="import_export_fragment__export">Export</string>
     <string name="import_export_fragment__import">Import</string>
 
     <!-- log_submit_activity -->
@@ -582,21 +556,10 @@
     <string name="log_submit_activity__thanks">Thanks for your help!</string>
     <string name="log_submit_activity__button_dont_share">Don\'t share</string>
     <string name="log_submit_activity__button_share">Share</string>
-    <string name="log_submit_activity__button_got_it">Got it</string>
-    <string name="log_submit_activity__button_compose_email">Compose email</string>
     <string name="log_submit_activity__this_log_will_be_shared">This diagnostic log will be shared with an app you choose. You may examine and edit it before sharing.</string>
     <string name="log_submit_activity__loading_logs">Loading logs…</string>
-    <string name="log_submit_activity__submitting">Submitting</string>
-    <string name="log_submit_activity__uploading_logs">Uploading logs…</string>
-    <string name="log_submit_activity__success">Success!</string>
-    <string name="log_submit_activity__copy_this_url_and_add_it_to_your_issue">Copy this URL and add it to your issue report or support email:\n\n&lt;b>%1$s&lt;/b>\n</string>
-    <string name="log_submit_activity__copied_to_clipboard">Copied to clipboard</string>
-    <string name="log_submit_activity__choose_email_app">Choose email app</string>
     <string name="log_submit_activity__choose_share_app">Share diagnostic log</string>
     <string name="log_submit_activity__share_failed">Could not prepare the diagnostic log for sharing.</string>
-    <string name="log_submit_activity__please_review_this_log_from_my_app">Please review this log from my app: %1$s</string>
-    <string name="log_submit_activity__network_failure">Network failure. Please try again.</string>
-    <string name="log_submit_activity__posting_logs">Posting the logs to gist…</string>
 
     <!-- database_migration_activity -->
     <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">Would you like to import your existing text messages into Silence\'s encrypted database?</string>
@@ -605,6 +568,8 @@
     <string name="database_migration_activity__import">Import</string>
     <string name="database_migration_activity__this_could_take_a_moment_please_be_patient">This could take a moment. Please be patient, you will be notified when the import is complete.</string>
     <string name="database_migration_activity__importing">IMPORTING</string>
+    <string name="database_migration_activity__progress" translatable="false">%1$d/%2$d</string>
+    <string name="database_migration_activity__progress_default" translatable="false">0/100</string>
 
     <!-- database_upgrade_activity -->
     <string name="database_upgrade_activity__updating_database">Updating database…</string>
@@ -676,20 +641,15 @@
     <string name="message_details_header__with">With</string>
 
     <!-- AndroidManifest.xml -->
-    <string name="AndroidManifest__create_passphrase">Create passphrase</string>
-    <string name="AndroidManifest__enter_passphrase">Enter passphrase</string>
     <string name="AndroidManifest__select_contacts">Select contacts</string>
-    <string name="AndroidManifest__public_identity_key">Public identity key</string>
     <string name="AndroidManifest__change_passphrase">Change passphrase</string>
     <string name="AndroidManifest__verify_identity">Verify identity</string>
-    <string name="AndroidManifest__complete_key_exchange">Complete key exchange</string>
     <string name="AndroidManifest__log_submit">Submit debug log</string>
     <string name="AndroidManifest__media_preview">Media preview</string>
     <string name="AndroidManifest__media_overview">All images</string>
     <string name="AndroidManifest__media_overview_named">All images with %1$s</string>
     <string name="AndroidManifest__message_details">Message details</string>
     <string name="AndroidManifest_archived_conversations">Archived conversations</string>
-    <string name="AndroidManifest_configure_mms_settings">Configure MMS Settings</string>
 
     <!-- arrays.xml -->
     <string name="arrays__import_export">Import / export</string>
@@ -722,7 +682,6 @@
     </plurals>
 
     <!-- preferences.xml -->
-    <string name="preferences__general">General</string>
     <string name="preferences__sms_mms">SMS and MMS</string>
     <string name="preferences__pref_all_sms_title">Receive all SMS</string>
     <string name="preferences__pref_all_mms_title">Receive all MMS</string>
@@ -731,8 +690,6 @@
     <string name="preferences__keyboard_settings">Keyboard options</string>
     <string name="preferences__disable_emoji_drawer">Disable emoji drawer</string>
     <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">Enable this option if your keyboard supports emojis.</string>
-    <string name="preferences__display_settings">Display settings</string>
-    <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Choose your contact entry from the contacts list.</string>
     <string name="preferences__change_passphrase">Change passphrase</string>
     <string name="preferences__change_your_passphrase">Change your passphrase</string>
     <string name="preferences__complete_key_exchanges">Complete key exchanges</string>
@@ -743,18 +700,12 @@
     <string name="preferences__disable_screen_security_to_allow_screen_shots">Block screenshots in the recents list and inside the app</string>
     <string name="preferences__forget_passphrase_from_memory_after_some_interval">Require the passphrase to access messages after a given time</string>
     <string name="preferences__timeout_passphrase">Timeout passphrase</string>
-    <string name="preferences__pref_timeout_interval_dialogtitle">Select passphrase timeout</string>
     <string name="preferences__pref_timeout_interval_title">Timeout interval</string>
-    <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">The amount of time to wait before forgetting passphrase from memory</string>
     <string name="preferences__notifications">Notifications</string>
     <string name="preferences__enable_message_notifications">Enable message notifications</string>
     <string name="preferences__led_color">LED color</string>
     <string name="preferences__led_color_unknown">Unknown</string>
     <string name="preferences__pref_led_blink_title">LED blink pattern</string>
-    <string name="preferences__pref_led_blink_custom_pattern_title">Set custom LED blink pattern</string>
-    <string name="preferences__pref_led_blink_custom_pattern_on_for">On for:</string>
-    <string name="preferences__pref_led_blink_custom_pattern_off_for">Off for:</string>
-    <string name="preferences__pref_led_blink_custom_pattern_set">Custom LED blink pattern set!</string>
     <string name="preferences__sound">Sound</string>
     <string name="preferences__change_notification_sound">Change notification sound</string>
     <string name="preferences__silent">Silent</string>
@@ -768,9 +719,6 @@
     <string name="preferences__five_times">Five times</string>
     <string name="preferences__ten_times">Ten times</string>
     <string name="preferences__vibrate">Vibrate</string>
-    <string name="preferences__also_vibrate_when_notified">Also vibrate when notified</string>
-    <string name="preferences__minutes">minutes</string>
-    <string name="preferences__hours">hours</string>
     <string name="preferences__green">Green</string>
     <string name="preferences__red">Red</string>
     <string name="preferences__blue">Blue</string>
@@ -782,13 +730,10 @@
     <string name="preferences__fast">Fast</string>
     <string name="preferences__normal">Normal</string>
     <string name="preferences__slow">Slow</string>
-    <string name="preferences__custom">Custom</string>
     <string name="preferences__advanced">Advanced</string>
     <string name="preferences__privacy">Privacy</string>
     <string name="preferences__mms_user_agent">MMS User Agent</string>
     <string name="preferences__advanced_mms_access_point_names">Manual MMS settings</string>
-    <string name="preferences__enable_manual_mms">Use manual MMS settings</string>
-    <string name="preferences__override_system_mms_settings">Override system MMS settings with the information below.</string>
     <string name="preferences__mmsc_url">MMSC URL</string>
     <string name="preferences__mms_proxy_host">MMS Proxy Host</string>
     <string name="preferences__mms_proxy_port">MMS Proxy Port</string>
@@ -842,22 +787,13 @@
     <!-- **************************************** -->
 
     <!-- contact_selection_list -->
-    <string name="contact_selection_list__menu_select_all">Select all</string>
-    <string name="contact_selection_list__menu_unselect_all">Unselect all</string>
-    <string name="contact_selection_list__header">ALL CONTACTS</string>
     <string name="contact_selection_list__unknown_contact">New message to…</string>
 
     <!-- contact_selection -->
-    <string name="contact_selection__menu_finished">Finished</string>
 
     <!-- refreshing push directory from menu -->
-    <string name="push_directory__menu_refresh">Refresh contact list</string>
 
     <!-- conversation_button_context -->
-    <string name="conversation_button_context__send_secure_sms">Send secure SMS</string>
-    <string name="conversation_button_context__send_insecure_sms">Send unsecured SMS</string>
-    <string name="conversation_button_context__send_secure_mms">Send secure MMS</string>
-    <string name="conversation_button_context__send_insecure_mms">Send unsecured MMS</string>
 
     <!-- conversation_callable -->
     <string name="conversation_callable__menu_call">Call</string>
@@ -891,7 +827,6 @@
 
     <!-- conversation_list_item_view -->
     <string name="conversation_list_item_view__contact_photo_image">Contact avatar</string>
-    <string name="conversation_list_item_view__error_alert">Error alert</string>
     <string name="conversation_list_item_view__archived">Archived</string>
 
     <!-- conversation_list_fragment -->
@@ -935,7 +870,6 @@
     <string name="share_identity_fingerprint">Share your identity fingerprint</string>
 
     <!-- text_secure_normal -->
-    <string name="text_secure_normal__menu_new_message">New message</string>
     <string name="text_secure_normal__menu_new_group">New group</string>
     <string name="text_secure_normal__menu_settings">Settings</string>
     <string name="text_secure_normal__menu_clear_passphrase">Lock</string>
@@ -959,7 +893,6 @@
 
     <!-- MediaPreviewActivity -->
     <string name="MediaPreviewActivity_you">You</string>
-    <string name="MediaPreviewActivity_cant_display">Failed to preview this image</string>
     <string name="MediaPreviewActivity_unssuported_media_type">Unsupported media type</string>
     <string name="MediaPreviewActivity_draft">Draft</string>
     <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silence needs the Storage permission in order to save to external storage, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Storage\".</string>
@@ -975,6 +908,16 @@
 
     <!-- media_preview_activity -->
     <string name="media_preview_activity__image_content_description">Image preview</string>
+    <string name="accessibility__unread_message_count" tools:ignore="MissingTranslation">Unread message count</string>
+    <string name="accessibility__search" tools:ignore="MissingTranslation">Search</string>
+    <string name="accessibility__switch_to_dialpad" tools:ignore="MissingTranslation">Switch to dialpad</string>
+    <string name="accessibility__switch_to_keyboard" tools:ignore="MissingTranslation">Switch to keyboard</string>
+    <string name="accessibility__clear_search" tools:ignore="MissingTranslation">Clear search</string>
+    <string name="accessibility__cached_key" tools:ignore="MissingTranslation">Encryption key cached</string>
+    <string name="accessibility__remove_attachment" tools:ignore="MissingTranslation">Remove attachment</string>
+    <string name="accessibility__select_recipients" tools:ignore="MissingTranslation">Select recipients</string>
+    <string name="accessibility__scroll_handle" tools:ignore="MissingTranslation">Scroll handle</string>
+    <string name="accessibility__delete_recipient" tools:ignore="MissingTranslation">Delete recipient</string>
 
     <!-- Trimmer -->
     <string name="trimmer__deleting">Deleting…</string>
@@ -986,7 +929,6 @@
 
     <string name="RingtonePreference_ringtone_default">Default ringtone</string>
     <string name="RingtonePreference_ringtone_silent">None</string>
-    <string name="RingtonePreference_ringtone_picker_title">Ringtones</string>
     <string name="RingtonePreference_notification_sound_default">Default notification sound</string>
     <string name="RingtonePreference_alarm_sound_default">Default alarm sound</string>
     <string name="RingtonePreference_add_ringtone_text">Add ringtone</string>

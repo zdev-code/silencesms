@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
@@ -78,9 +78,6 @@
   <string name="ConversationActivity_select_contact_info">連絡先情報を選択</string>
   <string name="ConversationActivity_compose_message">メッセージ作成</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">申し訳ありません。添付中にエラーが発生しました。</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">選択したGIFは大きすぎます!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">選択された映像ファイルはサイズ限度を超えています(%1$skB)。</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">選択された音声ファイルはサイズ限度を超えています(%1$skB)。</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">受信先のSMSまたはメールアドレスが有効ではありません!</string>
   <string name="ConversationActivity_message_is_empty_exclamation">メッセージが空です。</string>
   <string name="ConversationActivity_group_members">グループの参加者</string>
@@ -89,7 +86,6 @@
   <plurals name="ConversationActivity_d_recipients_in_group">
     <item quantity="other">参加者%d人</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">下書きとして保存しました</string>
   <string name="ConversationActivity_invalid_recipient">受信先が無効です。</string>
   <string name="ConversationActivity_calls_not_supported">通話には対応していません</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">お使いの端末は、ダイヤル機能に対応していないようです。</string>
@@ -100,16 +96,12 @@
   <string name="ConversationActivity_transport_secure_mms">暗号化されているMMS</string>
   <string name="ConversationActivity_install_smssecure">暗号化されたチャットをしましょう: %s</string>
   <string name="ConversationActivity_recipient_self">他の人とだけ、暗号化されたセッションは確立できます。</string>
-  <string name="ConversationActivity_mms_not_supported_title">MMSには対応していません</string>
-  <string name="ConversationActivity_mms_not_supported_message">お使いの無線通信事業者がMMSに対応していないため、このメッセージを送信できません。</string>
-  <string name="ConversationActivity_specify_recipient">連絡先を選択してください</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">添付ファイルのサイズが制限を越えています。</string>
   <!--ConversationAdapter-->
   <plurals name="ConversationAdapter_n_unread_messages">
     <item quantity="other">%d 未読メッセージ</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">メッセージの詳細</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="other">選択したメッセージを削除しますか?</item>
   </plurals>
@@ -178,7 +170,6 @@
   <string name="DualSimUtil__a_new_key_has_been_generated">新しい鍵が生成されました。</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">その SIM カードに新しい鍵が生成されました。</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">共有</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">エクスポート</string>
@@ -191,20 +182,15 @@
   <string name="ExportFragment_error_while_writing_to_storage">ストレージに書き込む途中でエラーが発生しました。</string>
   <string name="ExportFragment_export_successful">正常にエクスポートしました。</string>
   <string name="ExportFragment_export_encrypted_backup">暗号化されたバックアップをエクスポートしますか?</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">暗号化された鍵、設定、メッセージをストレージにエクスポートします。</string>
   <string name="ExportFragment_exporting_keys_settings_and_messages">暗号化された鍵、設定、メッセージをエクスポートしています…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">新規グループ</string>
-  <string name="GroupCreateActivity_actionbar_update_title">グループを更新する</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">新規MMSグループ</string>
   <string name="GroupCreateActivity_contacts_mms_exception">予期せぬエラーが発生したため、グループ作成が失敗しました。</string>
   <string name="GroupCreateActivity_contacts_no_members">最低一人でもグループに参加する必要があります！</string>
   <string name="GroupCreateActivity_menu_create_title">グループ作成</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">私</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">インポート</string>
-  <string name="ImportExportActivity_export">エクスポート</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">システムのSMSデータベースをインポートしますか？</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">これは、システムのデフォルトSMSデータベースからSilenceにメッセージをインポートします。
@@ -225,14 +211,10 @@
   <string name="ImportFragment_no_encrypted_backup_found">暗号化されたバックアップ・ファイルは見つかりませんでした。</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">スキャンした鍵はありません。</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">バーコードスキャナをインストールする?</string>
-  <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">SilenceではQRコードはバーコードスキャナが必要です。</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">送信に失敗</string>
   <string name="MessageDetailsRecipient_new_identity">新規の認証キー</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">MMS保存中にエラーがありました。</string>
-  <string name="MmsDownloader_error_connecting_to_mms_provider">MMSプロバイダーに接続中にエラーが発生しました</string>
   <string name="MmsDownloader_error_reading_mms_settings">無線プロバイダーのMMS設定を読み込み時にエラーが発生しました</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">マルチメディアメッセージ</string>
@@ -256,8 +238,6 @@
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">この
 鍵交換の電子署名は信用されていますが、「自動で鍵交換を完了する」設定は
 無効になっています。</string>
-  <string name="ReceiveKeyActivity_processing">処理中</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">鍵交換を処理中...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">この連絡先を
 照合することが推奨されています。</string>
   <!--RecipientPreferencesActivity-->
@@ -342,7 +322,6 @@
   <string name="MessageNotifier_most_recent_from_s">最新の送信者： %1$s</string>
   <string name="MessageNotifier_encrypted_message">暗号化されたメッセージ</string>
   <string name="MessageNotifier_media_message_with_text">メディアメッセージ: %s</string>
-  <string name="MessageNotifier_no_subject">（無題）</string>
   <string name="MessageNotifier_message_delivery_failed">メッセージの配信に失敗しました。</string>
   <string name="MessageNotifier_failed_to_deliver_message">メッセージの配信に失敗しました。</string>
   <string name="MessageNotifier_error_delivering_message">メッセージ配信中にエラーがありました。</string>
@@ -372,28 +351,22 @@
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">連絡先の写真</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">選択</string>
   <!--blocked_contacts_fragment-->
   <string name="blocked_contacts_fragment__no_blocked_contacts">ブロックした連絡先はありません</string>
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">最近の通話はありません。</string>
   <!--contact_selection_list_fragment-->
   <string name="contact_selection_list_fragment__show_contacts">連絡先を表示</string>
   <!--conversation_title_view-->
-  <string name="conversation_title_view__conversation_muted">会話をミュートしました</string>
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">暗号化されているSMSを送信</string>
   <string name="conversation_activity__type_message_sms_insecure">セキュアではないSMSを送信</string>
   <string name="conversation_activity__type_message_mms_secure">暗号化されているMMSを送信</string>
   <string name="conversation_activity__type_message_mms_insecure">セキュアではないMMSを送信</string>
   <string name="conversation_activity__send">送信</string>
-  <string name="conversation_activity__remove">削除</string>
-  <string name="conversation_activity__window_description">%1$sとの会話</string>
   <string name="conversation_activity__compose_description">メッセージ新規作成</string>
   <string name="conversation_activity__emoji_toggle_description">絵文字キーボードを切り替え</string>
   <string name="conversation_activity__attachment_thumbnail">添付のサムネイル</string>
   <!--conversation_item-->
-  <string name="conversation_item__mms_downloading_description">メディアメッセージ ダウンロード中</string>
   <string name="conversation_item__mms_image_description">メディアーメッセージ</string>
   <string name="conversation_item__secure_message_description">暗号化されたメッセージ</string>
   <!--conversation_item_sent-->
@@ -416,13 +389,10 @@
   <!--conversation_fragment-->
   <string name="conversation_fragment__scroll_to_the_bottom_content_description">下にスクロール</string>
   <!--import_export_fragment-->
-  <string name="import_export_fragment__export">エクスポート</string>
   <string name="import_export_fragment__import">インポート</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">デバイスのログが読み込めませんでした。ADBを使ってデバッグログを取得することができます。</string>
   <string name="log_submit_activity__thanks">提出どうもありがとうございます！</string>
-  <string name="log_submit_activity__submitting">提出中</string>
-  <string name="log_submit_activity__posting_logs">ログをgistに投稿中…</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">Silenceの暗号化されたデータベースに、今あるテキストメッセージをインポートしてもよろしいですか？</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">携帯端末にある既定データベースは変更されません。</string>
@@ -477,20 +447,15 @@
   <string name="message_details_header__sent">送信</string>
   <string name="message_details_header__received">受信</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">パスワードの作成</string>
-  <string name="AndroidManifest__enter_passphrase">パスワード入力</string>
   <string name="AndroidManifest__select_contacts">連絡先を選択</string>
-  <string name="AndroidManifest__public_identity_key">公共認証キー</string>
   <string name="AndroidManifest__change_passphrase">パスワードの変更</string>
   <string name="AndroidManifest__verify_identity">認証検証</string>
-  <string name="AndroidManifest__complete_key_exchange">鍵交換を自動的に実行</string>
   <string name="AndroidManifest__log_submit">デバッグログを提出</string>
   <string name="AndroidManifest__media_preview">メディアプレビュー</string>
   <string name="AndroidManifest__media_overview">すべての画像</string>
   <string name="AndroidManifest__media_overview_named">%1$s とすべての画像</string>
   <string name="AndroidManifest__message_details">メッセージの詳細</string>
   <string name="AndroidManifest_archived_conversations">会話をアーカイブしました</string>
-  <string name="AndroidManifest_configure_mms_settings">MMSを設定</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">インポート／エクスポート</string>
   <string name="arrays__your_identity_key">あなたの認証キー</string>
@@ -515,7 +480,6 @@
     <item quantity="other">%d 時間</item>
   </plurals>
   <!--preferences.xml-->
-  <string name="preferences__general">一般設定</string>
   <string name="preferences__sms_mms">SMSとMMS</string>
   <string name="preferences__pref_all_sms_title">全てのSMSを受信</string>
   <string name="preferences__pref_all_mms_title">全てのMMSを受信</string>
@@ -524,8 +488,6 @@
   <string name="preferences__keyboard_settings">キーボードオプション</string>
   <string name="preferences__disable_emoji_drawer">絵文字ドロワーを無効にする</string>
   <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">キーボードが絵文字をサポートしている場合、このオプションを有効にしてください。</string>
-  <string name="preferences__display_settings">表示設定</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">連絡先リストからあなたの連絡先を選んでください。</string>
   <string name="preferences__change_passphrase">パスワードの変更</string>
   <string name="preferences__change_your_passphrase">あなたのパスワードを変更</string>
   <string name="preferences__complete_key_exchanges">鍵交換の自動完了</string>
@@ -537,18 +499,12 @@
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">一定時間経過するとメモリからパスワードを消去する</string>
   <string name="preferences__timeout_passphrase">パスワードの
 タイムアウト</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">パスワードタイムアウトを選択</string>
   <string name="preferences__pref_timeout_interval_title">タイムアウトの間隔</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">メモリからパスワードを消去するまでの待ち時間です</string>
   <string name="preferences__notifications">通知</string>
   <string name="preferences__enable_message_notifications">メッセージ通知を有効にする</string>
   <string name="preferences__led_color">LED色</string>
   <string name="preferences__led_color_unknown">不明</string>
   <string name="preferences__pref_led_blink_title">LED点滅パターン</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">通知LEDの点滅パターンを設定</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">点灯時間:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">消灯時間:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">オリジナルのLED点滅パターンが設定されました！</string>
   <string name="preferences__sound">着信音</string>
   <string name="preferences__change_notification_sound">通知音を変更</string>
   <string name="preferences__silent">サイレント</string>
@@ -562,9 +518,6 @@
   <string name="preferences__five_times">5回</string>
   <string name="preferences__ten_times">10回</string>
   <string name="preferences__vibrate">振動</string>
-  <string name="preferences__also_vibrate_when_notified">通知する時に振動もする</string>
-  <string name="preferences__minutes">分</string>
-  <string name="preferences__hours">時間</string>
   <string name="preferences__green">緑</string>
   <string name="preferences__red">赤</string>
   <string name="preferences__blue">青</string>
@@ -576,13 +529,10 @@
   <string name="preferences__fast">速い</string>
   <string name="preferences__normal">普通</string>
   <string name="preferences__slow">遅い</string>
-  <string name="preferences__custom">カスタム</string>
   <string name="preferences__advanced">詳細設定</string>
   <string name="preferences__privacy">プライバシー</string>
   <string name="preferences__mms_user_agent">MMS ユーザーエージェント</string>
   <string name="preferences__advanced_mms_access_point_names">手動MMS設定</string>
-  <string name="preferences__enable_manual_mms">手動MMS設定を使う</string>
-  <string name="preferences__override_system_mms_settings">システムのMMS設定を下の設定で上書きする。</string>
   <string name="preferences__mmsc_url">MMSC URL</string>
   <string name="preferences__mms_proxy_host">MMS プロキシーホスト</string>
   <string name="preferences__mms_proxy_port">MMS プロキシーポート</string>
@@ -631,19 +581,10 @@
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">すべて選択</string>
-  <string name="contact_selection_list__menu_unselect_all">すべての選択を解除</string>
-  <string name="contact_selection_list__header">すべての連絡先</string>
   <string name="contact_selection_list__unknown_contact">新規メッセージ…</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">終了</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">連絡先リストを更新</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">暗号化されているSMSを送信</string>
-  <string name="conversation_button_context__send_insecure_sms">セキュアでないSMSを送信</string>
-  <string name="conversation_button_context__send_secure_mms">暗号化されているMMSを送信</string>
-  <string name="conversation_button_context__send_insecure_mms">セキュアでないMMSを送信</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">通話</string>
   <!--conversation_context-->
@@ -669,7 +610,6 @@
   <string name="conversation_list__menu_search">検索</string>
   <!--conversation_list_item_view-->
   <string name="conversation_list_item_view__contact_photo_image">連絡先の画像</string>
-  <string name="conversation_list_item_view__error_alert">エラーアラート</string>
   <string name="conversation_list_item_view__archived">アーカイブしました</string>
   <!--conversation_list_fragment-->
   <string name="conversation_list_fragment__fab_content_description">新しい会話</string>
@@ -702,7 +642,6 @@
   <string name="key_scanning__menu_display_your_qr_code">あなたのQRコードを表示</string>
   <string name="key_scanning__menu_scan_contacts_qr_code">連絡先のQRコードをスキャン</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">新規メッセージ</string>
   <string name="text_secure_normal__menu_new_group">新規グループ</string>
   <string name="text_secure_normal__menu_settings">設定</string>
   <string name="text_secure_normal__menu_clear_passphrase">ロック</string>
@@ -724,7 +663,6 @@
   <string name="reminder_header_close_button">閉じる</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">あなた</string>
-  <string name="MediaPreviewActivity_cant_display">この画像のプレビューに失敗</string>
   <string name="MediaPreviewActivity_unssuported_media_type">サポートされないメディア種別</string>
   <string name="MediaPreviewActivity_draft">下書き</string>
   <!--media_preview-->

@@ -2,7 +2,6 @@ package org.smssecure.smssecure.crypto;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import android.os.Build;
 
 import org.smssecure.smssecure.crypto.storage.SilenceSessionStore;
 import org.smssecure.smssecure.recipients.Recipient;
@@ -24,25 +23,17 @@ public class SessionUtil {
   }
 
   public static boolean hasSession(Context context, MasterSecret masterSecret, @NonNull String number, List<SubscriptionInfoCompat> activeSubscriptions) {
-    if (Build.VERSION.SDK_INT >= 22) {
-      for (SubscriptionInfoCompat subscriptionInfo : activeSubscriptions) {
-        if (!hasSession(context, masterSecret, number, subscriptionInfo.getSubscriptionId())) return false;
-      }
-      return true;
-    } else {
-      return hasSession(context, masterSecret, number, -1);
+    for (SubscriptionInfoCompat subscriptionInfo : activeSubscriptions) {
+      if (!hasSession(context, masterSecret, number, subscriptionInfo.getSubscriptionId())) return false;
     }
+    return true;
   }
 
   public static boolean hasAtLeastOneSession(Context context, MasterSecret masterSecret, @NonNull String number, List<SubscriptionInfoCompat> activeSubscriptions) {
-    if (Build.VERSION.SDK_INT >= 22) {
-      for (SubscriptionInfoCompat subscriptionInfo : activeSubscriptions) {
-        if (hasSession(context, masterSecret, number, subscriptionInfo.getSubscriptionId())) return true;
-      }
-      return false;
-    } else {
-      return hasSession(context, masterSecret, number, -1);
+    for (SubscriptionInfoCompat subscriptionInfo : activeSubscriptions) {
+      if (hasSession(context, masterSecret, number, subscriptionInfo.getSubscriptionId())) return true;
     }
+    return false;
   }
 
   public static List<Integer> getSubscriptionIdWithoutSession(Context context, MasterSecret masterSecret, @NonNull String number, List<SubscriptionInfoCompat> activeSubscriptions) {

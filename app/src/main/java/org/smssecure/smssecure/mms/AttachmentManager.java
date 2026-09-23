@@ -283,14 +283,12 @@ public class AttachmentManager {
     final Intent intent = new Intent();
     intent.setType(type);
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-      try {
-        launcher.launch(intent);
-        return;
-      } catch (ActivityNotFoundException anfe) {
-        Log.w(TAG, "couldn't complete ACTION_OPEN_DOCUMENT, no activity found. falling back.");
-      }
+    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+    try {
+      launcher.launch(intent);
+      return;
+    } catch (ActivityNotFoundException anfe) {
+      Log.w(TAG, "couldn't complete ACTION_OPEN_DOCUMENT, no activity found. falling back.");
     }
 
     intent.setAction(Intent.ACTION_GET_CONTENT);

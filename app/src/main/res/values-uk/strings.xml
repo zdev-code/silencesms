@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Так</string>
   <string name="no">Ні</string>
@@ -85,9 +85,6 @@
   <string name="ConversationActivity_select_contact_info">Виберіть контакт</string>
   <string name="ConversationActivity_compose_message">Скласти повідомлення</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">Пробачте, сталася помилка при спробі додати Ваше вкладення.</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">Обрана Вами GIF надто велика!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Даруйте, вибране відео завелике (перевищує %1$sкБ )</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Даруйте, вибране аудіо завелике (перевищує %1$s кБ )</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">Адреса отримувача не допустима для SMS чи електронної пошти!</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Повідомлення, яке Ви намагаєтеся відправити, порожнє!</string>
   <string name="ConversationActivity_group_members">Учасники групи</string>
@@ -99,7 +96,6 @@
     <item quantity="many">%d учасників</item>
     <item quantity="other">%d учасників</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Проект збережено</string>
   <string name="ConversationActivity_invalid_recipient">Неприпустимий отримувач!</string>
   <string name="ConversationActivity_calls_not_supported">Дзвінки не підтримуються</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Ваше пристрій мабуть не підтримує голосові дзвінки.</string>
@@ -110,9 +106,6 @@
   <string name="ConversationActivity_transport_secure_mms">Зашифроване MMS</string>
   <string name="ConversationActivity_install_smssecure">Давайте обмінюватися повідомленнями приватно: %s</string>
   <string name="ConversationActivity_recipient_self">Зашифровані сеанси можна створювати лише з іншими людьми.</string>
-  <string name="ConversationActivity_mms_not_supported_title">MMS не підтримується</string>
-  <string name="ConversationActivity_mms_not_supported_message">Це повідомлення неможливо відправити, оскільки оператор мобільної мережі не підтримує MMS.</string>
-  <string name="ConversationActivity_specify_recipient">Будь ласка, виберіть контакт</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">Вкладення завелике</string>
   <!--ConversationAdapter-->
   <plurals name="ConversationAdapter_n_unread_messages">
@@ -122,7 +115,6 @@
     <item quantity="other">%dнепрочитаних повідомлень</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Деталі повідомлення</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">Видалити вибране повідомлення?</item>
     <item quantity="few">Видалити вибрані повідомлення?</item>
@@ -224,7 +216,6 @@
   <string name="DualSimUtil__a_new_key_has_been_generated">Згенеровано новий ключ.</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">Згенеровано новий ключ для цієї SIM карти.</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Поділитися з</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">Експортувати</string>
@@ -237,20 +228,15 @@
   <string name="ExportFragment_error_while_writing_to_storage">Під час запису на пристрій сталася помилка.</string>
   <string name="ExportFragment_export_successful">Успішно вивантажено.</string>
   <string name="ExportFragment_export_encrypted_backup">Зберегти зашифровану резервну копію?</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">Це збереже Ваші зашифровані ключі, налаштування й повідомлення на пристрій.</string>
   <string name="ExportFragment_exporting_keys_settings_and_messages">Вивантаження зашифрованих ключів, налаштувань і повідомлень…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Нова група</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Оновити групу</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Нова група MMS</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Не зміг створити групу через неочікувану помилку</string>
   <string name="GroupCreateActivity_contacts_no_members">Для групи потрібна щонайменше одна особа!</string>
   <string name="GroupCreateActivity_menu_create_title">Створити групу</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">Я</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Імпортувати</string>
-  <string name="ImportExportActivity_export">Експортувати</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Завантажити SMS із бази системи?</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">Це завантажить
@@ -272,14 +258,10 @@
   <string name="ImportFragment_no_encrypted_backup_found">Зашифрована резервна копія не знайдена!</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">При скануванні ключ невиявлений!</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">Встановити програму для сканування QR-кодів?</string>
-  <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Сайленс потрібна програма для сканування QR-кодів.</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">Не зміг надіслати</string>
   <string name="MessageDetailsRecipient_new_identity">Нова ідентичність</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Помилка при збереженні MMS!</string>
-  <string name="MmsDownloader_error_connecting_to_mms_provider">Помилка при підключенні до постачальника MMS</string>
   <string name="MmsDownloader_error_reading_mms_settings">Помилка читання налаштувань бездротового постачальника MMS</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Мультимедійне повідомлення</string>
@@ -300,8 +282,6 @@
   <!--ReceiveKeyActivity-->
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_different">Підпис на цьому обміні ключами відрізняється від того, який Ви отримували від цього контакту раніше. Це може означати, що хтось намагається перехопити Ваші повідомлення, або що контакт просто перевстановив Сайленс і тепер має новий ключ ідентифікації.</string>
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">Підпис цього обміну ключами довірений, але ви відключили настройку \'автоматично завершувати обмін ключами\'.</string>
-  <string name="ReceiveKeyActivity_processing">Обробка</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Виконується обмін ключами...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Можливо, вам потрібно перевірити цей контакт.</string>
   <!--RecipientPreferencesActivity-->
   <string name="RecipientPreferenceActivity_block_this_contact_question">Заблокувати цей контакт?</string>
@@ -384,7 +364,6 @@
   <string name="MessageNotifier_most_recent_from_s">Найновіше від: %1$s</string>
   <string name="MessageNotifier_encrypted_message">Зашифроване повідомлення</string>
   <string name="MessageNotifier_media_message_with_text">Мультимедійне повідомлення: %s</string>
-  <string name="MessageNotifier_no_subject">(Немає теми)</string>
   <string name="MessageNotifier_message_delivery_failed">Збій доставки повідомлення.</string>
   <string name="MessageNotifier_failed_to_deliver_message">Не вдалось доставити повідомлення.</string>
   <string name="MessageNotifier_error_delivering_message">Помилка доставки повідомлення.</string>
@@ -414,27 +393,21 @@
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Фото контакта</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Вибрати для</string>
   <!--blocked_contacts_fragment-->
   <string name="blocked_contacts_fragment__no_blocked_contacts">Немає заблокованих контактів</string>
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Останнім часом ви нікому не телефонували.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
-  <string name="conversation_title_view__conversation_muted">Вимкнено сповіщення для розмови</string>
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">Відправити зашифроване SMS</string>
   <string name="conversation_activity__type_message_sms_insecure">Відправити незашифроване SMS</string>
   <string name="conversation_activity__type_message_mms_secure">Відправите зашифроване MMS</string>
   <string name="conversation_activity__type_message_mms_insecure">Відправити незашифроване MMS</string>
   <string name="conversation_activity__send">Надіслати</string>
-  <string name="conversation_activity__remove">Вилучити</string>
-  <string name="conversation_activity__window_description">Розмова з %1$s</string>
   <string name="conversation_activity__compose_description">Створення повідомлення</string>
   <string name="conversation_activity__emoji_toggle_description">Перемкнути емодзі клавіатуру</string>
   <string name="conversation_activity__attachment_thumbnail">Іконка вкладення</string>
   <!--conversation_item-->
-  <string name="conversation_item__mms_downloading_description">Завантаження мультимедійного повідомлення</string>
   <string name="conversation_item__mms_image_description">Мультимедійне повідомлення</string>
   <string name="conversation_item__secure_message_description">Приватне повідомлення</string>
   <!--conversation_item_sent-->
@@ -457,13 +430,10 @@
   <!--conversation_fragment-->
   <string name="conversation_fragment__scroll_to_the_bottom_content_description">Прокрутити в кінець</string>
   <!--import_export_fragment-->
-  <string name="import_export_fragment__export">Вивантажити</string>
   <string name="import_export_fragment__import">Завантажити</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">Не вдалося прочитати журнал на Вашому пристрої. Ви ще можете скористатися ADB, щоб натомість отримати журнал налагодження.</string>
   <string name="log_submit_activity__thanks">Дякуємо за вашу допомогу!</string>
-  <string name="log_submit_activity__submitting">Відправлення</string>
-  <string name="log_submit_activity__posting_logs">Публікація журналів…</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">Бажаєте завантажити Ваші наявні текстові повідомлення до зашифрованої бази Сайленс?</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">Системна база даних не буде порушена.</string>
@@ -518,20 +488,15 @@
   <string name="message_details_header__sent">Відправлено</string>
   <string name="message_details_header__received">Отримано</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">Створити фразу-пароль</string>
-  <string name="AndroidManifest__enter_passphrase">Увести фразу-пароль</string>
   <string name="AndroidManifest__select_contacts">Вибрати контакти</string>
-  <string name="AndroidManifest__public_identity_key">Публічний ключ ідентифікації</string>
   <string name="AndroidManifest__change_passphrase">Змінити фразу-ключ</string>
   <string name="AndroidManifest__verify_identity">Перевірити особу</string>
-  <string name="AndroidManifest__complete_key_exchange">Завершити обмін ключами</string>
   <string name="AndroidManifest__log_submit">Надати журнал налагодження</string>
   <string name="AndroidManifest__media_preview">Попередній перегляд мультимедія</string>
   <string name="AndroidManifest__media_overview">Усі зображення</string>
   <string name="AndroidManifest__media_overview_named">Усі зображення з %1$s</string>
   <string name="AndroidManifest__message_details">Деталі повідомлень</string>
   <string name="AndroidManifest_archived_conversations">Заархівовані розмови</string>
-  <string name="AndroidManifest_configure_mms_settings">Налаштувати MMS</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">Завантажити чи вивантажити</string>
   <string name="arrays__your_identity_key">Ваш ключ ідентифікації</string>
@@ -559,7 +524,6 @@
     <item quantity="other">%d годин</item>
   </plurals>
   <!--preferences.xml-->
-  <string name="preferences__general">Загальні</string>
   <string name="preferences__sms_mms">SMS і MMS</string>
   <string name="preferences__pref_all_sms_title">Отримати всі SMS</string>
   <string name="preferences__pref_all_mms_title">Отримати всі MMS</string>
@@ -568,8 +532,6 @@
   <string name="preferences__keyboard_settings">Налаштування клавіатури</string>
   <string name="preferences__disable_emoji_drawer">Вимкнути вкладку емодзі</string>
   <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">Виберіть це, якщо Ваша клавіатура підтримує емодзі</string>
-  <string name="preferences__display_settings">Показати налаштування</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Виберіть себе із списку контактів.</string>
   <string name="preferences__change_passphrase">Змінити фразу-ключ</string>
   <string name="preferences__change_your_passphrase">Змінити Вашу фразу-пароль</string>
   <string name="preferences__complete_key_exchanges">Виконувати обміни ключами</string>
@@ -580,18 +542,12 @@
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Блокувати спроби робити знімки екрану в переліку недавніх програм й усередині програми</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Стирати з пам’яті фразу-ключ через деякий час</string>
   <string name="preferences__timeout_passphrase">Забувати фразу-ключ</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">Вибрати строк дії для фрази-пароля</string>
   <string name="preferences__pref_timeout_interval_title">Термін зберігання</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Час, після якого фраза-пароль буде стерта з пам’яті</string>
   <string name="preferences__notifications">Сповіщення</string>
   <string name="preferences__enable_message_notifications">Увімкнути сповіщення про повідомлення</string>
   <string name="preferences__led_color">Колір LED</string>
   <string name="preferences__led_color_unknown">Невідомо</string>
   <string name="preferences__pref_led_blink_title">Шаблон мерехтіння LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">Вибрати послідовність блимання LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">Увімкнено протягом:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">Вимкнено протягом:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Власний шаблон мерехтіння LED задано!</string>
   <string name="preferences__sound">Звук</string>
   <string name="preferences__change_notification_sound">Змінити звук сповіщення</string>
   <string name="preferences__silent">Сайлент</string>
@@ -605,9 +561,6 @@
   <string name="preferences__five_times">П\'ять разів</string>
   <string name="preferences__ten_times">Десять разів</string>
   <string name="preferences__vibrate">Вібрувати</string>
-  <string name="preferences__also_vibrate_when_notified">Також вібрувати під час сповіщення</string>
-  <string name="preferences__minutes">хвилин</string>
-  <string name="preferences__hours">годин</string>
   <string name="preferences__green">Зелений</string>
   <string name="preferences__red">Червоний</string>
   <string name="preferences__blue">Синій</string>
@@ -619,13 +572,10 @@
   <string name="preferences__fast">Швидко</string>
   <string name="preferences__normal">Звичайний</string>
   <string name="preferences__slow">Повільно</string>
-  <string name="preferences__custom">Користувацький</string>
   <string name="preferences__advanced">Додаткові функції</string>
   <string name="preferences__privacy">Приватність</string>
   <string name="preferences__mms_user_agent">MMS User Agent</string>
   <string name="preferences__advanced_mms_access_point_names">Налаштувати MMS вручну</string>
-  <string name="preferences__enable_manual_mms">Використовувати ручні налаштування MMS</string>
-  <string name="preferences__override_system_mms_settings">Перезаписати системні налаштування MMS вказаними нижче.</string>
   <string name="preferences__mmsc_url">MMSC URL</string>
   <string name="preferences__mms_proxy_host">MMS проксі сервер</string>
   <string name="preferences__mms_proxy_port">MMS проксі порт</string>
@@ -674,19 +624,10 @@
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">Вибрати все</string>
-  <string name="contact_selection_list__menu_unselect_all">Зняти вибір з усього</string>
-  <string name="contact_selection_list__header">УСІ КОНТАКТИ</string>
   <string name="contact_selection_list__unknown_contact">Нове повідомлення до…</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Завершено</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">Оновити перелік контактів</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">Відправити зашифроване SMS</string>
-  <string name="conversation_button_context__send_insecure_sms">Відправити незашифроване SMS</string>
-  <string name="conversation_button_context__send_secure_mms">Відправити зашифроване MMS</string>
-  <string name="conversation_button_context__send_insecure_mms">Відправити незашифроване MMS</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">Виклик</string>
   <!--conversation_context-->
@@ -712,7 +653,6 @@
   <string name="conversation_list__menu_search">Пошук</string>
   <!--conversation_list_item_view-->
   <string name="conversation_list_item_view__contact_photo_image">Іконка контакта</string>
-  <string name="conversation_list_item_view__error_alert">Попередження про помилку</string>
   <string name="conversation_list_item_view__archived">Заархівовано</string>
   <!--conversation_list_fragment-->
   <string name="conversation_list_fragment__fab_content_description">Нова розмова</string>
@@ -745,7 +685,6 @@
   <string name="key_scanning__menu_display_your_qr_code">Показати QR-код</string>
   <string name="key_scanning__menu_scan_contacts_qr_code">Сканувати QR-код контакту</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">Нове повідомлення</string>
   <string name="text_secure_normal__menu_new_group">Нова група</string>
   <string name="text_secure_normal__menu_settings">Налаштування</string>
   <string name="text_secure_normal__menu_clear_passphrase">Очистити фразу-ключ</string>
@@ -767,7 +706,6 @@
   <string name="reminder_header_close_button">ЗАКРИТИ</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">ВИ</string>
-  <string name="MediaPreviewActivity_cant_display">Не зміг попередньо переглянути зображення</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Вид медіа не підтримується</string>
   <string name="MediaPreviewActivity_draft">Проект</string>
   <!--media_preview-->

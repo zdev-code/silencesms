@@ -14,8 +14,7 @@ public class FileProviderUtil {
   private static final String AUTHORITY = "org.smssecure.smssecure.fileprovider";
 
   public static Uri getUriFor(@NonNull Context context, @NonNull File file) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) return FileProvider.getUriForFile(context, AUTHORITY, file);
-    else                                                       return Uri.fromFile(file);
+    return FileProvider.getUriForFile(context, AUTHORITY, file);
   }
 
 }

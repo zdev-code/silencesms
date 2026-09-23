@@ -55,8 +55,6 @@ public class SimChangedReceiver extends BroadcastReceiver {
   }
 
   private static String getDeviceSubscriptions(Context context) {
-    if (Build.VERSION.SDK_INT < 22) return "1";
-
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
       Log.w(TAG, "Missing READ_PHONE_STATE permission; using default subscription identifier");
       return "1";

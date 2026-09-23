@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.smssecure.smssecure.R;
@@ -62,11 +61,10 @@ public class AttachmentTypeSelectorAdapter extends ArrayAdapter<AttachmentTypeSe
       view = convertView;
     }
 
-    TextView  text  = (TextView)  view.findViewById(R.id.text1);
-    ImageView image = (ImageView) view.findViewById(R.id.icon);
+    TextView text = (TextView) view;
 
     text.setText(getItem(position).getTitle());
-    image.setImageResource(getItem(position).getResource());
+    text.setCompoundDrawablesRelativeWithIntrinsicBounds(getItem(position).getResource(), 0, 0, 0);
 
     return view;
   }

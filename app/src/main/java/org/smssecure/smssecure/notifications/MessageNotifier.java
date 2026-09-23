@@ -141,47 +141,43 @@ public class MessageNotifier {
     NotificationManager notifications = ServiceUtil.getNotificationManager(context);
     notifications.cancel(SUMMARY_NOTIFICATION_ID);
 
-    if (Build.VERSION.SDK_INT >= 23) {
-      try {
-        StatusBarNotification[] activeNotifications = notifications.getActiveNotifications();
+    try {
+      StatusBarNotification[] activeNotifications = notifications.getActiveNotifications();
 
-        for (StatusBarNotification activeNotification : activeNotifications) {
-          notifications.cancel(activeNotification.getId());
-        }
-      } catch (Throwable e) {
-        // XXX Appears to be a ROM bug, see https://github.com/WhisperSystems/Signal-Android/issues/6043
-        Log.w(TAG, e);
-        notifications.cancelAll();
+      for (StatusBarNotification activeNotification : activeNotifications) {
+        notifications.cancel(activeNotification.getId());
       }
+    } catch (Throwable e) {
+      // XXX Appears to be a ROM bug, see https://github.com/WhisperSystems/Signal-Android/issues/6043
+      Log.w(TAG, e);
+      notifications.cancelAll();
     }
   }
 
   private static void cancelOrphanedNotifications(@NonNull Context context, NotificationState notificationState) {
-    if (Build.VERSION.SDK_INT >= 23) {
-      try {
-        NotificationManager     notifications       = ServiceUtil.getNotificationManager(context);
-        StatusBarNotification[] activeNotifications = notifications.getActiveNotifications();
+    try {
+      NotificationManager     notifications       = ServiceUtil.getNotificationManager(context);
+      StatusBarNotification[] activeNotifications = notifications.getActiveNotifications();
 
-        for (StatusBarNotification notification : activeNotifications) {
-          boolean validNotification = false;
+      for (StatusBarNotification notification : activeNotifications) {
+        boolean validNotification = false;
 
-          if (notification.getId() != SUMMARY_NOTIFICATION_ID) {
-            for (NotificationItem item : notificationState.getNotifications()) {
-              if (notification.getId() == (SUMMARY_NOTIFICATION_ID + item.getThreadId())) {
-                validNotification = true;
-                break;
-              }
-            }
-
-            if (!validNotification) {
-              notifications.cancel(notification.getId());
+        if (notification.getId() != SUMMARY_NOTIFICATION_ID) {
+          for (NotificationItem item : notificationState.getNotifications()) {
+            if (notification.getId() == (SUMMARY_NOTIFICATION_ID + item.getThreadId())) {
+              validNotification = true;
+              break;
             }
           }
+
+          if (!validNotification) {
+            notifications.cancel(notification.getId());
+          }
         }
-      } catch (Throwable e) {
-        // XXX Android ROM Bug, see https://github.com/WhisperSystems/Signal-Android/issues/6043
-        Log.w(TAG, e);
       }
+    } catch (Throwable e) {
+      // XXX Android ROM Bug, see https://github.com/WhisperSystems/Signal-Android/issues/6043
+      Log.w(TAG, e);
     }
   }
 
@@ -240,10 +236,8 @@ public class MessageNotifier {
       NotificationState notificationState = constructNotificationState(context, masterSecret, telcoCursor);
 
       if (notificationState.hasMultipleThreads()) {
-        if (Build.VERSION.SDK_INT >= 23) {
-          for (long threadId : notificationState.getThreads()) {
-            sendSingleThreadNotification(context, masterSecret, new NotificationState(notificationState.getNotificationsForThread(threadId)), 0, true);
-          }
+        for (long threadId : notificationState.getThreads()) {
+          sendSingleThreadNotification(context, masterSecret, new NotificationState(notificationState.getNotificationsForThread(threadId)), 0, true);
         }
 
         sendMultipleThreadNotification(context, notificationState, flags);

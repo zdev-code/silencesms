@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">آری</string>
   <string name="no">خیر</string>
@@ -82,9 +82,6 @@
   <string name="ConversationActivity_select_contact_info">انتخاب اطلاعات مخاطب</string>
   <string name="ConversationActivity_compose_message">نوشتن پیام</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">ببخشید، خطایی در اضافه کردن ضمیمه تان رخ داد.</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">فایل GIF که انتخاب کردید بیش از حد بزرگ بود!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">ببخشید، ویدیوی انتخاب شده از محدوده حجم مجاز بیشتر می باشد (%1$s کیلوبایت )</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">ببخشید، فایل صوتی انتخاب شده از محدوده حجم مجاز بیشتر می باشد ( %1$s کیلوبایت )</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">گیرنده یک آدرس ایمیل یا SMS معتبر نمی باشد!</string>
   <string name="ConversationActivity_message_is_empty_exclamation">پیامی که سعی در ارسال آن دارید خالی می باشد!</string>
   <string name="ConversationActivity_group_members">اعضای گروه</string>
@@ -94,7 +91,6 @@
     <item quantity="one">۱ عضو</item>
     <item quantity="other">%d عضو</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">پیشنویس ذخیره شد</string>
   <string name="ConversationActivity_invalid_recipient">گیرنده وجود ندارد!</string>
   <string name="ConversationActivity_calls_not_supported">تماس های تلفنی پشتیبانی نمی شوند</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">به نظر می آید این دسگاه از عملیات های تماس گیری پشتیبانی نمی کند.</string>
@@ -105,9 +101,6 @@
   <string name="ConversationActivity_transport_secure_mms">ام ام اس امن</string>
   <string name="ConversationActivity_install_smssecure">به صورت امن گپ بزنیم: %s</string>
   <string name="ConversationActivity_recipient_self">نشست های امن تنها با سایر افراد قابل برقرار سازی می باشد.</string>
-  <string name="ConversationActivity_mms_not_supported_title">MMS پشتیبانی نمی شود</string>
-  <string name="ConversationActivity_mms_not_supported_message">این پیام قابل ارسال نیست از آنجایی که فرابر از MMS پشتیبانی نمی کند.</string>
-  <string name="ConversationActivity_specify_recipient">لطفا یک مخاطب انتخاب کنید</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">حجم ضمیمه از حد مجاز بیشتر است.</string>
   <!--ConversationAdapter-->
   <plurals name="ConversationAdapter_n_unread_messages">
@@ -115,7 +108,6 @@
     <item quantity="other">%dپیام های ناخوانده</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">جزییات پیام</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">حذف پیام انتخاب شده؟</item>
     <item quantity="other">حذف پیام های انتخاب شده؟</item>
@@ -143,15 +135,15 @@
     <item quantity="other">ذخیره %1$d پیوست</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">ذخیره پیوست در انبار...</item>
-    <item quantity="other">ذخیره %1$d پیوست در انبار...</item>
+    <item quantity="one">ذخیره پیوست در انبار…</item>
+    <item quantity="other">ذخیره %1$d پیوست در انبار…</item>
   </plurals>
-  <string name="ConversationFragment_collecting_attahments">جمع آوری ضمیمه ها...</string>
-  <string name="ConversationFragment_pending">در حال انتظار ...</string>
+  <string name="ConversationFragment_collecting_attahments">جمع آوری ضمیمه ها…</string>
+  <string name="ConversationFragment_pending">در حال انتظار …</string>
   <string name="ConversationFragment_mms">MMS</string>
   <string name="ConversationFragment_sms">پیامک</string>
-  <string name="ConversationFragment_deleting">در حال حذف...</string>
-  <string name="ConversationFragment_deleting_messages">در حال حذف پیام ها...</string>
+  <string name="ConversationFragment_deleting">در حال حذف…</string>
+  <string name="ConversationFragment_deleting_messages">در حال حذف پیام ها…</string>
   <!--ConversationListActivity-->
   <string name="ConversationListActivity_search">جستجو</string>
   <!--ConversationListFragment-->
@@ -164,7 +156,7 @@
     <item quantity="other">این کار %1$d مکالمه انتخاب شده را به صورت دائم پاک خواهد کرد.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">در حال حذف</string>
-  <string name="ConversationListFragment_deleting_selected_conversations">حذف مکالمات انتخاب شده...</string>
+  <string name="ConversationListFragment_deleting_selected_conversations">حذف مکالمات انتخاب شده…</string>
   <plurals name="ConversationListFragment_conversations_archived">
     <item quantity="one">مکالمه آرشیو شده</item>
     <item quantity="other">%d مکالمه آرشیو شده</item>
@@ -178,7 +170,7 @@
   <string name="ConversationListFragment_this_will_send_drafts_of_selected_conversations">این کار پیشنویس مکالمه های انتخاب شده را ارسال خواهد کرد.</string>
   <string name="ConversationListFragment_send">فرستادن</string>
   <string name="ConversationListFragment_sending">در حال ارسال</string>
-  <string name="ConversationListFragment_sending_selected_drafts">ارسال پیشنویس های انتخاب شده...</string>
+  <string name="ConversationListFragment_sending_selected_drafts">ارسال پیشنویس های انتخاب شده…</string>
   <!--ConversationListItemAction-->
   <string name="ConversationListItemAction_archived_conversations_d">مکالمه های آرشیو شده (%d)</string>
   <!--CustomDefaultPreference-->
@@ -195,7 +187,6 @@
   <string name="DualSimUtil__a_new_key_has_been_generated">یک کلید جدید تولید شد.</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">یک کلید جدید برای آن سیم کارت تولید شد.</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">به اشتراک گذاری با</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">خروجی گرفتن</string>
@@ -203,25 +194,20 @@
   <string name="ExportFragment_warning_this_will_export_the_contents_of_your_messages_to_storage_in_plaintext">هشدار، این کار باعث برون برد محتوای پیام های Silence شما در حافظه به صورت متن آشکار خواهد شد.</string>
   <string name="ExportFragment_cancel">لغو کردن</string>
   <string name="ExportFragment_exporting">مشغول برون برد</string>
-  <string name="ExportFragment_exporting_plaintext_to_storage">مشغول برون برد متن آشکار به انبار...</string>
+  <string name="ExportFragment_exporting_plaintext_to_storage">مشغول برون برد متن آشکار به انبار…</string>
   <string name="ExportFragment_error_unable_to_write_to_storage">خطا، ناتوانی در نوشتن در حافظه.</string>
   <string name="ExportFragment_error_while_writing_to_storage">خطا در هنگام نوشتن روی حافظه.</string>
   <string name="ExportFragment_export_successful">خروجی گرفتن موفق بود.</string>
   <string name="ExportFragment_export_encrypted_backup">خروجی گرفتن از پشتیبان رمزنگاری شده؟</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">این کار تمام کلید های رمزنگاری شده، تنظیمات، پیام ها را به انبار خارج می کند.</string>
-  <string name="ExportFragment_exporting_keys_settings_and_messages">خروجی گرفتن از کلید های رمزنگاری شده، تنظیمات، و پیام ها...</string>
+  <string name="ExportFragment_exporting_keys_settings_and_messages">خروجی گرفتن از کلید های رمزنگاری شده، تنظیمات، و پیام ها…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">گروه جدید</string>
-  <string name="GroupCreateActivity_actionbar_update_title">آپدیت گروه</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">گروه MMS جدید</string>
   <string name="GroupCreateActivity_contacts_mms_exception">ناتوانی در ایجاد گروه به دلیل یک خطا غیر منتظره</string>
   <string name="GroupCreateActivity_contacts_no_members">حداقل یک نفر باید در گروه شما باشد!</string>
   <string name="GroupCreateActivity_menu_create_title">ایجاد گروه</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">من</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">وارد کردن</string>
-  <string name="ImportExportActivity_export">خروجی گرفتن</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">وارد کردن پایگاه داده SMS سیستم؟</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">این باعث درون برد
@@ -236,22 +222,18 @@
 پیام ها از پشتیبان متن آشکار می شود. اگر از قبل این پشتیبان را درون برده اید،
 درون برد دوباره آن باعث پیام های تکراری خواهد شد.</string>
   <string name="ImportFragment_importing">مشغول درون برد</string>
-  <string name="ImportFragment_import_plaintext_backup_elipse">مشغول درون برد پشتیبان متن آشکار...</string>
+  <string name="ImportFragment_import_plaintext_backup_elipse">مشغول درون برد پشتیبان متن آشکار…</string>
   <string name="ImportFragment_no_plaintext_backup_found">هیچ پشتیبان متن آشکاری یافت نشد!</string>
   <string name="ImportFragment_error_importing_backup">خطا در درون‌ برد پشتیبان</string>
   <string name="ImportFragment_import_complete">درون‌ برد تکمیل شد!</string>
-  <string name="ImportFragment_restoring_encrypted_backup">بازیابی پشتیبان رمزنگاری شده...</string>
+  <string name="ImportFragment_restoring_encrypted_backup">بازیابی پشتیبان رمزنگاری شده…</string>
   <string name="ImportFragment_no_encrypted_backup_found">هیچ بکاپ رمزنگاری شده ای یافت نشد!</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">هیچ کلید اسکن شده ای یافت نشد!</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">نصب Barcode Scanner؟</string>
-  <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Silence برای کد های QR نیاز به Barcode Scanner دارد.</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">ناتوانی در ارسال</string>
   <string name="MessageDetailsRecipient_new_identity">هویت جدید</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">خطا در ذخیره MMS!</string>
-  <string name="MmsDownloader_error_connecting_to_mms_provider">خطا در اتصال به ارائه دهنده MMS</string>
   <string name="MmsDownloader_error_reading_mms_settings">خطا در خواندن تنظیمات MMS ارائه دهنده بی سیم</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">پیام چند رسانه ای</string>
@@ -275,8 +257,6 @@
 این مخاطب برنامه Silence را دوباره نصب کرده است و اکنون یک کلید هویت جدید دارد.</string>
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">امضا روی این تبادل کلید مورد اعتماد می باشد، اما شما تنظیمات
 \'تکمیل تبادل های کلید به صورت خودکار\' غیرفعال شد.</string>
-  <string name="ReceiveKeyActivity_processing">در حال پردازش</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">پردازش تبادل کلید...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">شما باید هویت این مخاطب را تایید کنید.</string>
   <!--RecipientPreferencesActivity-->
   <string name="RecipientPreferenceActivity_block_this_contact_question">بلاک کردن این مخاطب؟</string>
@@ -328,20 +308,20 @@
   <string name="KeyExchangeInitiator_send">فرستادن</string>
   <!--MessageDisplayHelper-->
   <string name="MessageDisplayHelper_bad_encrypted_message">پیام رمزنگاری شده بد</string>
-  <string name="MessageDisplayHelper_decrypting_please_wait">در حال رمزگشایی، لطفاً صبر کنید...</string>
+  <string name="MessageDisplayHelper_decrypting_please_wait">در حال رمزگشایی، لطفاً صبر کنید…</string>
   <string name="MessageDisplayHelper_message_encrypted_for_non_existing_session">پیام رمزنگاری شده برای نشست ناموجود</string>
   <string name="MessageDisplayHelper_end_session_encrypted_for_non_existing_session">درخواست برای پایان یک نشست ناموجود</string>
   <!--EncryptingSmsDatabase-->
   <string name="EncryptingSmsDatabase_error_decrypting_message">خطا در رمزگشایی پیام.</string>
   <!--MmsDatabase-->
-  <string name="MmsDatabase_connecting_to_mms_server">اتصال به سرور MMS...</string>
-  <string name="MmsDatabase_downloading_mms">در حال دانلود MMS...</string>
+  <string name="MmsDatabase_connecting_to_mms_server">اتصال به سرور MMS…</string>
+  <string name="MmsDatabase_downloading_mms">در حال دانلود MMS…</string>
   <string name="MmsDatabase_mms_download_failed">دانلود ام ام اس با خطاء روبرو شد!</string>
-  <string name="MmsDatabase_downloading">در حال دانلود...</string>
+  <string name="MmsDatabase_downloading">در حال دانلود…</string>
   <string name="MmsDatabase_mms_pending_download">به منظور پیکربندی تنظیمات MMS برای ادامه دانلود کلیک کنید.</string>
   <string name="MmsDatabase_error_decrypting_message">خطاء در رمزگشایی پیام.</string>
   <!--MmsMessageRecord-->
-  <string name="MmsMessageRecord_decrypting_mms_please_wait">رمزگشایی ام ام اس، لطفاً صبر کنید...</string>
+  <string name="MmsMessageRecord_decrypting_mms_please_wait">رمزگشایی ام ام اس، لطفاً صبر کنید…</string>
   <string name="MmsMessageRecord_bad_encrypted_mms_message">پیام MMS رمزنگاری شده بد</string>
   <string name="MmsMessageRecord_mms_message_encrypted_for_non_existing_session">پیام MMS رمزنگاری شده برای نشست ناموجود</string>
   <!--MuteDialog-->
@@ -361,7 +341,6 @@
   <string name="MessageNotifier_most_recent_from_s">تازه ترین از: %1$s</string>
   <string name="MessageNotifier_encrypted_message">پیام رمزنگاری شده</string>
   <string name="MessageNotifier_media_message_with_text">پیام رسانه: %s</string>
-  <string name="MessageNotifier_no_subject">(بدون موضوع)</string>
   <string name="MessageNotifier_message_delivery_failed">تحویل پیام ناموفق بود.</string>
   <string name="MessageNotifier_failed_to_deliver_message">ناموفقیت در تحویل پیام.</string>
   <string name="MessageNotifier_error_delivering_message">خطا در تحویل پیام.</string>
@@ -387,31 +366,25 @@
   <string name="contact_selection_activity__enter_name_or_number">یک نام یا شماره وارد وارد کنید</string>
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">هیچ مخاطبی وجود ندارد.</string>
-  <string name="contact_selection_group_activity__finding_contacts">بارگذاری مخاطبان...</string>
+  <string name="contact_selection_group_activity__finding_contacts">بارگذاری مخاطبان…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">تصویر مخاطب</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">انتخاب برای</string>
   <!--blocked_contacts_fragment-->
   <string name="blocked_contacts_fragment__no_blocked_contacts">هیچ مخاطب بلاک شده ای وجود ندارد</string>
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">هیچ تماس جدیدی وجود ندارد.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
-  <string name="conversation_title_view__conversation_muted">مکالمه ساکت شد</string>
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">فرستادن SMS امن</string>
   <string name="conversation_activity__type_message_sms_insecure">فرستادن SMS ناامن</string>
   <string name="conversation_activity__type_message_mms_secure">فرستادن MMS امن</string>
   <string name="conversation_activity__type_message_mms_insecure">فرستادن MMS ناامن</string>
   <string name="conversation_activity__send">فرستادن</string>
-  <string name="conversation_activity__remove">حذف کردن</string>
-  <string name="conversation_activity__window_description">مکالمه با %1$s</string>
   <string name="conversation_activity__compose_description">پیام نویسی</string>
   <string name="conversation_activity__emoji_toggle_description">تغییر وضعیت کیبورد ایموجی </string>
   <string name="conversation_activity__attachment_thumbnail">تصویر کوچک پیوست</string>
   <!--conversation_item-->
-  <string name="conversation_item__mms_downloading_description">دانلود پیام رسانه ای</string>
   <string name="conversation_item__mms_image_description">پیام رسانه</string>
   <string name="conversation_item__secure_message_description">پیام امن</string>
   <!--conversation_item_sent-->
@@ -434,13 +407,10 @@
   <!--conversation_fragment-->
   <string name="conversation_fragment__scroll_to_the_bottom_content_description">نوردش به پایین</string>
   <!--import_export_fragment-->
-  <string name="import_export_fragment__export">برون برد</string>
   <string name="import_export_fragment__import">درون برد</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">ناتوانی در خوانش گزارش بر روی دستگاه شما. شما هم چنان قادر هستید تا از ADB برای گزارش اشکال زدایی استفاده کنید.</string>
   <string name="log_submit_activity__thanks">سپاس از کمک شما!</string>
-  <string name="log_submit_activity__submitting">در حال ثبت</string>
-  <string name="log_submit_activity__posting_logs">پست گزارش ها در چکیده</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">آیا مایل به درون برد پیام های متن موجود خود به پایگاه داده رمزنگاری شده Silence هستید؟</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">پایگاه داده سیستم پیش فرض به هیچ شکلی دچار تغییر و تحول نخواهد شد.</string>
@@ -449,7 +419,7 @@
   <string name="database_migration_activity__this_could_take_a_moment_please_be_patient">این ممکن است یک لحظه وقت بگیرد. لطفا صبور باشید، زمانی که درون برد کامل شد شما باخبر خواهید شد.</string>
   <string name="database_migration_activity__importing">مشغول درون برد</string>
   <!--database_upgrade_activity-->
-  <string name="database_upgrade_activity__updating_database">در حال به روز رسانی دیتابیس...</string>
+  <string name="database_upgrade_activity__updating_database">در حال به روز رسانی دیتابیس…</string>
   <string name="export_fragment__export_plaintext_backup">برون برد پشتیبان متن آشکار</string>
   <string name="export_fragment__export_a_plaintext_backup_compatible_with">برون برد یک پشتیبان متن آشکار سازگار با \'پشتیبان &amp;  بازیابی \' به حافظه</string>
   <string name="import_fragment__import_system_sms_database">درون برد پایگاه داده SMS سیستم</string>
@@ -495,20 +465,15 @@
   <string name="message_details_header__sent">فرستاده داده شده</string>
   <string name="message_details_header__received">دریافت شده</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">ایجاد عبارت عبور</string>
-  <string name="AndroidManifest__enter_passphrase">عبارت عبور را وارد کنید</string>
   <string name="AndroidManifest__select_contacts">انتخاب مخاطبان</string>
-  <string name="AndroidManifest__public_identity_key">کلید هویت عمومی</string>
   <string name="AndroidManifest__change_passphrase">تغییر عبارت عبور</string>
   <string name="AndroidManifest__verify_identity">تایید هویت</string>
-  <string name="AndroidManifest__complete_key_exchange">تکمیل تبادل کلید</string>
   <string name="AndroidManifest__log_submit">ثبت گزارش اشکال زدایی</string>
   <string name="AndroidManifest__media_preview">پیش نمایش رسانه</string>
   <string name="AndroidManifest__media_overview">تمام تصاویر</string>
   <string name="AndroidManifest__media_overview_named">تمام تصاویر با %1$s</string>
   <string name="AndroidManifest__message_details">جزییات پیام</string>
   <string name="AndroidManifest_archived_conversations">مکالمه های آرشیو شده</string>
-  <string name="AndroidManifest_configure_mms_settings">پیکربندی تنظیمات MMS</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">درون برد / برون برد</string>
   <string name="arrays__your_identity_key">کلید هویت شما</string>
@@ -534,7 +499,6 @@
     <item quantity="other">%d ساعت</item>
   </plurals>
   <!--preferences.xml-->
-  <string name="preferences__general">کلی</string>
   <string name="preferences__sms_mms">SMS و MMS</string>
   <string name="preferences__pref_all_sms_title">دریافت تمام SMS ها</string>
   <string name="preferences__pref_all_mms_title">دریافت تمام MMS ها</string>
@@ -543,8 +507,6 @@
   <string name="preferences__keyboard_settings">گزینه های کیبورد</string>
   <string name="preferences__disable_emoji_drawer">غیرفعال سازی گنجه ایموجی</string>
   <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">این گزینه را فعال کنید اگر کیبورد شما ایموجی ها را پشتیبانی میکند.</string>
-  <string name="preferences__display_settings">تنظیمات نمایش</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">ورودی مخاطب خود را از لیست مخاطبان انتخاب کنید.</string>
   <string name="preferences__change_passphrase">تغییر عبارت عبور</string>
   <string name="preferences__change_your_passphrase">تغییر عبارت عبور شما</string>
   <string name="preferences__complete_key_exchanges">تکمیل تبادل کلید</string>
@@ -555,18 +517,12 @@
   <string name="preferences__disable_screen_security_to_allow_screen_shots">مسدود سازی اسکرین شات در لیست اخیر و درون برنامه</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">خواست عبارت عبور برای دسترسی به پیام ها بعد از یک زمان مشخص</string>
   <string name="preferences__timeout_passphrase">پایان زمان عبارت عبور</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">انتخاب پایان زمان عبارت عبور</string>
   <string name="preferences__pref_timeout_interval_title">بازه پایان زمان</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">مقدار زمان انتظار قبل از فراموش کردن عبارت عبور از حافظه</string>
   <string name="preferences__notifications">نوتیفیکیشن ها</string>
   <string name="preferences__enable_message_notifications">فعال سازی نوتیفیکیشن های پیام</string>
   <string name="preferences__led_color">رنگ LED</string>
   <string name="preferences__led_color_unknown">ناشناس</string>
   <string name="preferences__pref_led_blink_title">الگو چشمک LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">تنظیم الگو چشمک LED سفارشی</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">روشن برای:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">خاموش برای:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">الگو چشمک LED سفارشی تنظیم شد!</string>
   <string name="preferences__sound">صدا</string>
   <string name="preferences__change_notification_sound">تغییر صدا نوتیفیکیشن</string>
   <string name="preferences__silent">ساکت</string>
@@ -580,9 +536,6 @@
   <string name="preferences__five_times">پنج بار</string>
   <string name="preferences__ten_times">ده بار</string>
   <string name="preferences__vibrate">لرزش</string>
-  <string name="preferences__also_vibrate_when_notified">در زمان خبر دادن هم بلرز</string>
-  <string name="preferences__minutes">دقیقه</string>
-  <string name="preferences__hours">ساعت</string>
   <string name="preferences__green">سبز</string>
   <string name="preferences__red">قرمز</string>
   <string name="preferences__blue">آبی</string>
@@ -594,13 +547,10 @@
   <string name="preferences__fast">سریع</string>
   <string name="preferences__normal">عادی</string>
   <string name="preferences__slow">کند</string>
-  <string name="preferences__custom">سفارشی</string>
   <string name="preferences__advanced">پیشرفته</string>
   <string name="preferences__privacy">حریم خصوصی</string>
   <string name="preferences__mms_user_agent">عامل کاربر MMS</string>
   <string name="preferences__advanced_mms_access_point_names">تنظیمات MMS دستی</string>
-  <string name="preferences__enable_manual_mms">استفاده از تنظیمات MMS دستی</string>
-  <string name="preferences__override_system_mms_settings">نادیده گرفتن تنظیمات MMS سیستم  با اطلاعات زیر.</string>
   <string name="preferences__mmsc_url">آدرس اینترنتی MMSC</string>
   <string name="preferences__mms_proxy_host">میزبان پراکسی MMS</string>
   <string name="preferences__mms_proxy_port">پورت پروکسی MMS</string>
@@ -649,19 +599,10 @@
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">انتخاب همه</string>
-  <string name="contact_selection_list__menu_unselect_all">لغو انتخاب همه</string>
-  <string name="contact_selection_list__header">تمام مخاطبان</string>
-  <string name="contact_selection_list__unknown_contact">پیام جدید به...</string>
+  <string name="contact_selection_list__unknown_contact">پیام جدید به…</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">پایان یافته</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">رفرش لیست مخاطبان</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">ارسال SMS امن</string>
-  <string name="conversation_button_context__send_insecure_sms">ارسال SMS ناامن</string>
-  <string name="conversation_button_context__send_secure_mms">ارسال MMS امن</string>
-  <string name="conversation_button_context__send_insecure_mms">ارسال MMS ناامن</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">تماس</string>
   <!--conversation_context-->
@@ -687,7 +628,6 @@
   <string name="conversation_list__menu_search">جستجو</string>
   <!--conversation_list_item_view-->
   <string name="conversation_list_item_view__contact_photo_image">آواتار مخاطب</string>
-  <string name="conversation_list_item_view__error_alert">هشدار خطا</string>
   <string name="conversation_list_item_view__archived">آرشیو شده</string>
   <!--conversation_list_fragment-->
   <string name="conversation_list_fragment__fab_content_description">مکالمه جدید</string>
@@ -720,7 +660,6 @@
   <string name="key_scanning__menu_display_your_qr_code">نمایش کد QR شما</string>
   <string name="key_scanning__menu_scan_contacts_qr_code">اسکن کد QR مخاطب</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">پیام جدید</string>
   <string name="text_secure_normal__menu_new_group">گروه جدید</string>
   <string name="text_secure_normal__menu_settings">تنظیمات</string>
   <string name="text_secure_normal__menu_clear_passphrase">قفل</string>
@@ -742,7 +681,6 @@
   <string name="reminder_header_close_button">بستن</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">شما</string>
-  <string name="MediaPreviewActivity_cant_display">ناموفقیت در پیش نمایش این تصویر</string>
   <string name="MediaPreviewActivity_unssuported_media_type">نوع رسانه پشتیبانی نشده</string>
   <string name="MediaPreviewActivity_draft">پیشنویس</string>
   <!--media_preview-->
@@ -754,8 +692,8 @@
   <!--media_preview_activity-->
   <string name="media_preview_activity__image_content_description">پیش نمایش تصویر</string>
   <!--Trimmer-->
-  <string name="trimmer__deleting">در حال حذف...</string>
-  <string name="trimmer__deleting_old_messages">حذف پیام های قدیمی...</string>
+  <string name="trimmer__deleting">در حال حذف…</string>
+  <string name="trimmer__deleting_old_messages">حذف پیام های قدیمی…</string>
   <string name="trimmer__old_messages_successfully_deleted">پیام های قدیمی با موفقیت پاک شدند</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">آیکون انتقال</string>

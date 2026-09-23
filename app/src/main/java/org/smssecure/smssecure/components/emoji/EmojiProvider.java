@@ -156,7 +156,7 @@ class EmojiProvider {
 
     public void setBitmap(Bitmap bitmap) {
       Util.assertMainThread();
-      if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB_MR1 || bmp == null || !bmp.sameAs(bitmap)) {
+      if (bmp == null || !bmp.sameAs(bitmap)) {
         bmp = bitmap;
         invalidateSelf();
       }

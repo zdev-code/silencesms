@@ -93,7 +93,7 @@ public class TelephonyUtil {
   }
 
   @SuppressWarnings("deprecation")
-  @SuppressLint("HardwareIds")
+  @SuppressLint({"HardwareIds", "MissingPermission"}) // Caller checks permissions and handles SecurityException.
   private static String getLegacyLine1Number(TelephonyManager telephonyManager) {
     return telephonyManager.getLine1Number();
   }

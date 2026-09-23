@@ -62,11 +62,10 @@ public class KeyExchangeInitiator {
   }
 
   public static void initiate(final Context context, final MasterSecret masterSecret, final Recipients recipients, boolean promptOnExisting) {
-    if (Build.VERSION.SDK_INT >= 22) {
-      if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-        initiate(context, masterSecret, recipients, promptOnExisting, -1);
-        return;
-      }
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+      initiate(context, masterSecret, recipients, promptOnExisting, -1);
+      return;
+    }
 
     SubscriptionManager subscriptionManager = getSubscriptionManager(context);
 
@@ -89,28 +88,10 @@ public class KeyExchangeInitiator {
       } catch (SecurityException securityException) {
         initiate(context, masterSecret, recipients, promptOnExisting, -1);
       }
-    } else {
-      initiate(context, masterSecret, recipients, promptOnExisting, -1);
-    }
-
   }
 
   private static SubscriptionManager getSubscriptionManager(Context context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      SubscriptionManager subscriptionManager = context.getSystemService(SubscriptionManager.class);
-      if (subscriptionManager != null) {
-        return subscriptionManager;
-      }
-    }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-      Object service = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-      if (service instanceof SubscriptionManager) {
-        return (SubscriptionManager) service;
-      }
-    }
-
-    return null;
+    return context.getSystemService(SubscriptionManager.class);
   }
 
   public static void initiate(final Context context, final MasterSecret masterSecret, final Recipients recipients, boolean promptOnExisting, final int subscriptionId) {

@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="yes">Ano</string>
   <string name="no">Ne</string>
   <string name="delete">Smazat</string>
-  <string name="please_wait">Čekejte prosím...</string>
+  <string name="please_wait">Čekejte prosím…</string>
   <!--AbstractNotificationBuilder-->
   <string name="AbstractNotificationBuilder_new_message">Napsat zprávu</string>
   <!--ApplicationPreferencesActivity-->
@@ -88,9 +88,6 @@ je bude schopen přečíst.</string>
   <string name="ConversationActivity_select_contact_info">Vybrat informace o kontaktu</string>
   <string name="ConversationActivity_compose_message">Napsat zprávu</string>
   <string name="ConversationActivity_sorry_there_was_an_error_adding_your_attachment">Je nám líto, při vkládání přílohy se vyskytl problém.</string>
-  <string name="ConversationActivity_the_gif_you_selected_was_too_big">GIF, který jste vybrali, je příliš velký!</string>
-  <string name="ConversationActivity_sorry_the_selected_video_exceeds_message_size_restrictions">Zvolené video svou velikostí přesahuje povolenou velikost zprávy (%1$skB).</string>
-  <string name="ConversationActivity_sorry_the_selected_audio_exceeds_message_size_restrictions">Zvolené audio svou velikostí přesahuje povolenou velikost zprávy (%1$skB).</string>
   <string name="ConversationActivity_recipient_is_not_a_valid_sms_or_email_address_exclamation">Příjemce nemá platnou SMS nebo e-mailovou adresu!</string>
   <string name="ConversationActivity_message_is_empty_exclamation">Pokoušíte se odeslat prázdnou zprávu!</string>
   <string name="ConversationActivity_group_members">Členové skupiny</string>
@@ -102,7 +99,6 @@ je bude schopen přečíst.</string>
     <item quantity="many">%d členů</item>
     <item quantity="other">%d členů</item>
   </plurals>
-  <string name="ConversationActivity_saved_draft">Uložený koncept</string>
   <string name="ConversationActivity_invalid_recipient">Neplatný příjemce!</string>
   <string name="ConversationActivity_calls_not_supported">Hovory nejsou podporovány</string>
   <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Zdá se, že toto zařízení nepodporuje vytáčení.</string>
@@ -113,9 +109,6 @@ je bude schopen přečíst.</string>
   <string name="ConversationActivity_transport_secure_mms">Zabezpečená MMS</string>
   <string name="ConversationActivity_install_smssecure">Pojďme komunikovat bezpečně: %s</string>
   <string name="ConversationActivity_recipient_self">Zabezpečená komunikace může být navázána pouze s jinými osobami.</string>
-  <string name="ConversationActivity_mms_not_supported_title">MMS nejsou podporovány</string>
-  <string name="ConversationActivity_mms_not_supported_message">Tuto zprávu nelze odeslat, jelikož váš operátor nepodporuje MMS.</string>
-  <string name="ConversationActivity_specify_recipient">Prosím vyberte kontakt</string>
   <string name="ConversationActivity_attachment_exceeds_size_limits">Příloha je příliš velká</string>
   <!--ConversationAdapter-->
   <plurals name="ConversationAdapter_n_unread_messages">
@@ -125,7 +118,6 @@ je bude schopen přečíst.</string>
     <item quantity="other">%d nepřečtených zpráv</item>
   </plurals>
   <!--ConversationFragment-->
-  <string name="ConversationFragment_message_details">Detaily zprávy</string>
   <plurals name="ConversationFragment_delete_selected_messages">
     <item quantity="one">Smazat vybranou zprávu?</item>
     <item quantity="few">Smazat vybrané zprávy?</item>
@@ -164,12 +156,12 @@ je bude schopen přečíst.</string>
     <item quantity="many">Ukládání %1$d příloh</item>
     <item quantity="other">Ukládání %1$d příloh</item>
   </plurals>
-  <string name="ConversationFragment_collecting_attahments">Získávám přílohy...</string>
-  <string name="ConversationFragment_pending">Odesílám...</string>
+  <string name="ConversationFragment_collecting_attahments">Získávám přílohy…</string>
+  <string name="ConversationFragment_pending">Odesílám…</string>
   <string name="ConversationFragment_mms">MMS</string>
   <string name="ConversationFragment_sms">SMS</string>
-  <string name="ConversationFragment_deleting">Mažu...</string>
-  <string name="ConversationFragment_deleting_messages">Mažu zprávy...</string>
+  <string name="ConversationFragment_deleting">Mažu…</string>
+  <string name="ConversationFragment_deleting_messages">Mažu zprávy…</string>
   <!--ConversationListActivity-->
   <string name="ConversationListActivity_search">Hledat</string>
   <!--ConversationListFragment-->
@@ -186,7 +178,7 @@ je bude schopen přečíst.</string>
     <item quantity="other">Tímto nenávratně smažete všech %1$d vybraných konverzací.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">Mazání</string>
-  <string name="ConversationListFragment_deleting_selected_conversations">Mažu vybrané konverzace...</string>
+  <string name="ConversationListFragment_deleting_selected_conversations">Mažu vybrané konverzace…</string>
   <plurals name="ConversationListFragment_conversations_archived">
     <item quantity="one">Konverzace archivována</item>
     <item quantity="few">%d konverzace archivovány</item>
@@ -204,7 +196,7 @@ je bude schopen přečíst.</string>
   <string name="ConversationListFragment_this_will_send_drafts_of_selected_conversations">Koncepty vybraných konverzací budou odeslány.</string>
   <string name="ConversationListFragment_send">Odeslat</string>
   <string name="ConversationListFragment_sending">Odesílání</string>
-  <string name="ConversationListFragment_sending_selected_drafts">Odesílám zvolené koncepty...</string>
+  <string name="ConversationListFragment_sending_selected_drafts">Odesílám zvolené koncepty…</string>
   <!--ConversationListItemAction-->
   <string name="ConversationListItemAction_archived_conversations_d">Archivované konverzace (%d)</string>
   <!--CustomDefaultPreference-->
@@ -221,7 +213,6 @@ je bude schopen přečíst.</string>
   <string name="DualSimUtil__a_new_key_has_been_generated">Nový klíč byl vygenerován.</string>
   <string name="DualSimUtil__a_new_key_has_been_generated_for_that_new_sim_card">Nový klíč byl vygenerován pro danou SIM kartu.</string>
   <!--ShareActivity-->
-  <string name="ShareActivity_share_with">Sdílet s</string>
   <!--WelcomeActivity-->
   <!--ExportFragment-->
   <string name="ExportFragment_export">Exportovat</string>
@@ -229,25 +220,20 @@ je bude schopen přečíst.</string>
   <string name="ExportFragment_warning_this_will_export_the_contents_of_your_messages_to_storage_in_plaintext">Pozor, chystáte se exportovat obsah vašich zpráv ze Silence na úložiště v nešifrované podobě.</string>
   <string name="ExportFragment_cancel">Zrušit</string>
   <string name="ExportFragment_exporting">Exportování</string>
-  <string name="ExportFragment_exporting_plaintext_to_storage">Exportuji nešifrované zprávy na úložiště...</string>
+  <string name="ExportFragment_exporting_plaintext_to_storage">Exportuji nešifrované zprávy na úložiště…</string>
   <string name="ExportFragment_error_unable_to_write_to_storage">Chyba, na úložiště nelze zapsat.</string>
   <string name="ExportFragment_error_while_writing_to_storage">Chyba při zápisu na úložiště.</string>
   <string name="ExportFragment_export_successful">Export proběhl úspěšně.</string>
   <string name="ExportFragment_export_encrypted_backup">Exportovat šifrovanou zálohu?</string>
-  <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">Tímto exportujete vaše zašifrované klíče a zprávy na úložiště.</string>
-  <string name="ExportFragment_exporting_keys_settings_and_messages">Exportuji šifrované klíče, nastavení a konverzace...</string>
+  <string name="ExportFragment_exporting_keys_settings_and_messages">Exportuji šifrované klíče, nastavení a konverzace…</string>
   <!--GroupCreateActivity-->
   <string name="GroupCreateActivity_actionbar_title">Nová skupina</string>
-  <string name="GroupCreateActivity_actionbar_update_title">Aktualizovat skupinu</string>
-  <string name="GroupCreateActivity_actionbar_mms_title">Nová MMS skupina</string>
   <string name="GroupCreateActivity_contacts_mms_exception">Skupinu nelze vytvořit, nastala neznámá chyba.</string>
   <string name="GroupCreateActivity_contacts_no_members">Do skupiny musíte přidat alespoň jednoho člena!</string>
   <string name="GroupCreateActivity_menu_create_title">Vytvořit skupinu</string>
   <!--GroupMembersDialog-->
   <string name="GroupMembersDialog_me">Já</string>
   <!--ImportExportActivity-->
-  <string name="ImportExportActivity_import">Importovat</string>
-  <string name="ImportExportActivity_export">Exportovat</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">Importovat systémovou databázi SMS?</string>
   <string name="ImportFragment_this_will_import_messages_from_the_system">Tímto importujete
@@ -262,22 +248,18 @@ opětovným importem dojde ke zdvojení zpráv.</string>
 zprávy z nešifrované zálohy. Pokud jste zálohu již importovali,
 opětovným importem dojde ke zdvojení zpráv.</string>
   <string name="ImportFragment_importing">Importování</string>
-  <string name="ImportFragment_import_plaintext_backup_elipse">Importuji nešifrovanou zálohu...</string>
+  <string name="ImportFragment_import_plaintext_backup_elipse">Importuji nešifrovanou zálohu…</string>
   <string name="ImportFragment_no_plaintext_backup_found">Nenalezena žádná nešifrovaná záloha!</string>
   <string name="ImportFragment_error_importing_backup">Chyba při importu zálohy!</string>
   <string name="ImportFragment_import_complete">Import dokončen!</string>
-  <string name="ImportFragment_restoring_encrypted_backup">Obnovuji šifrovanou zálohu...</string>
+  <string name="ImportFragment_restoring_encrypted_backup">Obnovuji šifrovanou zálohu…</string>
   <string name="ImportFragment_no_encrypted_backup_found">Nenalezena žádná šifrovaná záloha!</string>
   <!--KeyScanningActivity-->
   <string name="KeyScanningActivity_no_scanned_key_found_exclamation">Nenalezen žádný načtený klíč!</string>
-  <string name="KeyScanningActivity_install_barcode_Scanner">Instalovat Barcode Scanner?</string>
-  <string name="KeyScanningActivity_this_application_requires_barcode_scanner_would_you_like_to_install_it">Silence vyžaduje Barcode Scanner pro čtení QR kódů.</string>
   <!--MessageDetailsRecipient-->
   <string name="MessageDetailsRecipient_failed_to_send">Chyba při odesílání</string>
   <string name="MessageDetailsRecipient_new_identity">Nová identita</string>
   <!--MmsDownloader-->
-  <string name="MmsDownloader_error_storing_mms">Chyba při ukládání MMS!</string>
-  <string name="MmsDownloader_error_connecting_to_mms_provider">Chyba při připojení k poskytovateli MMS</string>
   <string name="MmsDownloader_error_reading_mms_settings">Chyba při získávání konfigurace MMS poskytovatele</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Multimediální zpráva</string>
@@ -303,8 +285,6 @@ nebo váš kontakt jednoduše přeinstaloval Silence a nyní používá nový id
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">Podpis
 v této zprávě s výměnou klíčů je důvěryhodný, ale možnost  \'automaticky dokončovat
 výměny klíčů\' je zakázána.</string>
-  <string name="ReceiveKeyActivity_processing">Zpracovávání</string>
-  <string name="ReceiveKeyActivity_processing_key_exchange">Zpracovávání výměny klíčů...</string>
   <string name="ConfirmIdentityDialog_you_may_wish_to_verify_this_contact">Měli byste ověřit identitu tohoto kontaktů.</string>
   <!--RecipientPreferencesActivity-->
   <string name="RecipientPreferenceActivity_block_this_contact_question">Blokovat tento kontakt?</string>
@@ -354,20 +334,20 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="KeyExchangeInitiator_send">Odeslat</string>
   <!--MessageDisplayHelper-->
   <string name="MessageDisplayHelper_bad_encrypted_message">Chybná šifrovaná zpráva</string>
-  <string name="MessageDisplayHelper_decrypting_please_wait">Dešifruji, čekejte prosím...</string>
+  <string name="MessageDisplayHelper_decrypting_please_wait">Dešifruji, čekejte prosím…</string>
   <string name="MessageDisplayHelper_message_encrypted_for_non_existing_session">Zpráva zašifrována pro neexistující relaci</string>
   <string name="MessageDisplayHelper_end_session_encrypted_for_non_existing_session">Zažádat o ukončení neexistující relace</string>
   <!--EncryptingSmsDatabase-->
   <string name="EncryptingSmsDatabase_error_decrypting_message">Chyba při dešifrování zprávy.</string>
   <!--MmsDatabase-->
-  <string name="MmsDatabase_connecting_to_mms_server">Připojuji se k MMS serveru...</string>
-  <string name="MmsDatabase_downloading_mms">Stahuji MMS...</string>
+  <string name="MmsDatabase_connecting_to_mms_server">Připojuji se k MMS serveru…</string>
+  <string name="MmsDatabase_downloading_mms">Stahuji MMS…</string>
   <string name="MmsDatabase_mms_download_failed">Chyba pri stahování MMS!</string>
-  <string name="MmsDatabase_downloading">Stahuji...</string>
+  <string name="MmsDatabase_downloading">Stahuji…</string>
   <string name="MmsDatabase_mms_pending_download">Klikněte a nastavte MMS konfiguraci pro pokračování stahování.</string>
   <string name="MmsDatabase_error_decrypting_message">Chyba při dešifrování zprávy.</string>
   <!--MmsMessageRecord-->
-  <string name="MmsMessageRecord_decrypting_mms_please_wait">Dešifruji MMS, čekejte prosím...</string>
+  <string name="MmsMessageRecord_decrypting_mms_please_wait">Dešifruji MMS, čekejte prosím…</string>
   <string name="MmsMessageRecord_bad_encrypted_mms_message">Chybná šifrovaná MMS zpráva</string>
   <string name="MmsMessageRecord_mms_message_encrypted_for_non_existing_session">MMS zpráva zašifrována pro neexistující relaci</string>
   <!--MuteDialog-->
@@ -387,7 +367,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="MessageNotifier_most_recent_from_s">Poslední zpráva od: %1$s</string>
   <string name="MessageNotifier_encrypted_message">Šifrovaná zpráva</string>
   <string name="MessageNotifier_media_message_with_text">Multimediální zpráva: %s</string>
-  <string name="MessageNotifier_no_subject">(bez předmětu)</string>
   <string name="MessageNotifier_message_delivery_failed">Doručení zprávy selhalo.</string>
   <string name="MessageNotifier_failed_to_deliver_message">Doručení zprávy selhalo.</string>
   <string name="MessageNotifier_error_delivering_message">Chyba při doručení zprávy.</string>
@@ -413,31 +392,25 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="contact_selection_activity__enter_name_or_number">Zadejte jméno nebo telefonní číslo</string>
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">Žádné kontakty.</string>
-  <string name="contact_selection_group_activity__finding_contacts">Načítám kontakty...</string>
+  <string name="contact_selection_group_activity__finding_contacts">Načítám kontakty…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Fotografie Kontaktu</string>
   <!--ContactSelectionListFragment-->
-  <string name="ContactSelectionlistFragment_select_for">Vybrat pro</string>
   <!--blocked_contacts_fragment-->
   <string name="blocked_contacts_fragment__no_blocked_contacts">Žádné blokované kontakty</string>
   <!--contact_selection_recent_activity-->
-  <string name="contact_selection_recent_activity__no_recent_calls">Žádné nedávné hovory.</string>
   <!--contact_selection_list_fragment-->
   <!--conversation_title_view-->
-  <string name="conversation_title_view__conversation_muted">Konverzace ztlumena</string>
   <!--conversation_activity-->
   <string name="conversation_activity__type_message_sms_secure">Odeslat zabezpečenou SMS</string>
   <string name="conversation_activity__type_message_sms_insecure">Odeslat nezabezpečenou SMS</string>
   <string name="conversation_activity__type_message_mms_secure">Odeslat zabezpečenou MMS</string>
   <string name="conversation_activity__type_message_mms_insecure">Odeslat nezabezpečenou MMS</string>
   <string name="conversation_activity__send">Odeslat</string>
-  <string name="conversation_activity__remove">Odstranit</string>
-  <string name="conversation_activity__window_description">Konverzace s %1$s</string>
   <string name="conversation_activity__compose_description">Kompozice zprávy</string>
   <string name="conversation_activity__emoji_toggle_description">Přepnout klávesnici emotikonů</string>
   <string name="conversation_activity__attachment_thumbnail">Náhled Přílohy</string>
   <!--conversation_item-->
-  <string name="conversation_item__mms_downloading_description">Stahování multimediální zprávy</string>
   <string name="conversation_item__mms_image_description">Multimediální zpráva</string>
   <string name="conversation_item__secure_message_description">Zabezpečená zpráva</string>
   <!--conversation_item_sent-->
@@ -463,8 +436,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">Nebylo možné přečíst log na vašem zařízení. Můžete ovšem použít ADB a získat místo něj debug log.</string>
   <string name="log_submit_activity__thanks">Děkujeme za vaši pomoc!</string>
-  <string name="log_submit_activity__submitting">Odesílám</string>
-  <string name="log_submit_activity__posting_logs">Odesílám logy do gist...</string>
   <!--database_migration_activity-->
   <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">Chcete importovat vaše stávající textové zprávy do šifrované databáze Silence?</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">Výchozí systémová databáze nebude jakkoli modifikována.</string>
@@ -473,7 +444,7 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="database_migration_activity__this_could_take_a_moment_please_be_patient">Tato operace může chvíli trvat. Mějte prosím strpení, o dokončení importu budete notifikováni.</string>
   <string name="database_migration_activity__importing">IMPORTUJI</string>
   <!--database_upgrade_activity-->
-  <string name="database_upgrade_activity__updating_database">Aktualizuji databázi...</string>
+  <string name="database_upgrade_activity__updating_database">Aktualizuji databázi…</string>
   <string name="export_fragment__export_plaintext_backup">Exportovat nešifrovanou zálohu</string>
   <string name="export_fragment__export_a_plaintext_backup_compatible_with">Exportovat nešifrovanou zálohu kompatibilní s \"SMS Backup &amp; Restore\" na úložiště</string>
   <string name="import_fragment__import_system_sms_database">Importovat systémovou databázi SMS</string>
@@ -519,20 +490,15 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="message_details_header__sent">Odesláno</string>
   <string name="message_details_header__received">Přijato</string>
   <!--AndroidManifest.xml-->
-  <string name="AndroidManifest__create_passphrase">Vytvořit heslo</string>
-  <string name="AndroidManifest__enter_passphrase">Zadat heslo</string>
   <string name="AndroidManifest__select_contacts">Vybrat kontakty</string>
-  <string name="AndroidManifest__public_identity_key">Klíč veřejné identity</string>
   <string name="AndroidManifest__change_passphrase">Změnit heslo</string>
   <string name="AndroidManifest__verify_identity">Ověřit identitu</string>
-  <string name="AndroidManifest__complete_key_exchange">Dokončit výměnu klíčů</string>
   <string name="AndroidManifest__log_submit">Odeslat debug log</string>
   <string name="AndroidManifest__media_preview">Ukázka média</string>
   <string name="AndroidManifest__media_overview">Všechny obrázky</string>
   <string name="AndroidManifest__media_overview_named">Všechny obrázky s %1$s</string>
   <string name="AndroidManifest__message_details">Detaily zprávy</string>
   <string name="AndroidManifest_archived_conversations">Archivované konverzace</string>
-  <string name="AndroidManifest_configure_mms_settings">Konfigurovat MMS Nastavení</string>
   <!--arrays.xml-->
   <string name="arrays__import_export">Importovat / exportovat</string>
   <string name="arrays__your_identity_key">Váš identifikační klíč</string>
@@ -554,7 +520,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="arrays__send_key">Zobrazit tlačítko odeslat</string>
   <!--plurals.xml-->
   <!--preferences.xml-->
-  <string name="preferences__general">Obecné</string>
   <string name="preferences__sms_mms">SMS a MMS</string>
   <string name="preferences__pref_all_sms_title">Přijímat všechny SMS</string>
   <string name="preferences__pref_all_mms_title">Přijímat všechny MMS</string>
@@ -563,8 +528,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="preferences__keyboard_settings">Možnosti klávesnice</string>
   <string name="preferences__disable_emoji_drawer">Zakázat emotikony</string>
   <string name="preferences__enable_this_option_if_your_keyboard_supports_emojis">Povolte tuto možnost, pokud vaše klávesnice podporuje emotikony.</string>
-  <string name="preferences__display_settings">Zobrazit nastavení</string>
-  <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Zvolte svůj záznam kontaktu ze seznamu kontaktů.</string>
   <string name="preferences__change_passphrase">Změnit heslo</string>
   <string name="preferences__change_your_passphrase">Změňte své heslo</string>
   <string name="preferences__complete_key_exchanges">Dokončit výměnu klíčů</string>
@@ -575,18 +538,12 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Zakázat snímky obrazovky v listu nedávných konverzací a uvnitř aplikace</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Požadovat heslo pro přístup ke konverzacím po určitém čase</string>
   <string name="preferences__timeout_passphrase">Časový limit hesla</string>
-  <string name="preferences__pref_timeout_interval_dialogtitle">Zvolit časový limit hesla</string>
   <string name="preferences__pref_timeout_interval_title">Časový limit</string>
-  <string name="preferences__the_amount_of_time_to_wait_before_forgetting_passphrase">Časový úsek před zapomenutím hesla z paměti</string>
   <string name="preferences__notifications">Upozornění</string>
   <string name="preferences__enable_message_notifications">Povolit notifikace zpráv</string>
   <string name="preferences__led_color">LED barva</string>
   <string name="preferences__led_color_unknown">Neznámý</string>
   <string name="preferences__pref_led_blink_title">Schéma blikání LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_title">Nastavit vlastní schéma blikání LED</string>
-  <string name="preferences__pref_led_blink_custom_pattern_on_for">Zapnuto na:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_off_for">Vypnuto na:</string>
-  <string name="preferences__pref_led_blink_custom_pattern_set">Vlastní schéma blikání LED nastaveno!</string>
   <string name="preferences__sound">Zvuk</string>
   <string name="preferences__change_notification_sound">Změnit zvuk notifikace</string>
   <string name="preferences__silent">Tichý</string>
@@ -600,9 +557,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="preferences__five_times">Čtyřikrát</string>
   <string name="preferences__ten_times">Pětkrát</string>
   <string name="preferences__vibrate">Vibrace</string>
-  <string name="preferences__also_vibrate_when_notified">Vibrovat při notifikaci</string>
-  <string name="preferences__minutes">minut</string>
-  <string name="preferences__hours">hodin</string>
   <string name="preferences__green">Zelená</string>
   <string name="preferences__red">Červená</string>
   <string name="preferences__blue">Modrá</string>
@@ -614,13 +568,10 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="preferences__fast">Rychlé</string>
   <string name="preferences__normal">Normální</string>
   <string name="preferences__slow">Pomalé</string>
-  <string name="preferences__custom">Vlastní</string>
   <string name="preferences__advanced">Pokročilé</string>
   <string name="preferences__privacy">Soukromí</string>
   <string name="preferences__mms_user_agent">MMS User Agent</string>
   <string name="preferences__advanced_mms_access_point_names">Manuální MMS nastavení</string>
-  <string name="preferences__enable_manual_mms">Použít manuální MMS nastavení</string>
-  <string name="preferences__override_system_mms_settings">Přepsat systémové MMS nastavení informacemi níže.</string>
   <string name="preferences__mmsc_url">MMSC URL</string>
   <string name="preferences__mms_proxy_host">MMS Proxy Host</string>
   <string name="preferences__mms_proxy_port">MMS Proxy Port</string>
@@ -664,19 +615,10 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <!--menus-->
   <!--****************************************-->
   <!--contact_selection_list-->
-  <string name="contact_selection_list__menu_select_all">Vybrat vše</string>
-  <string name="contact_selection_list__menu_unselect_all">Odznačit vše</string>
-  <string name="contact_selection_list__header">VŠECHNY KONTAKTY</string>
-  <string name="contact_selection_list__unknown_contact">Nová zpráva pro...</string>
+  <string name="contact_selection_list__unknown_contact">Nová zpráva pro…</string>
   <!--contact_selection-->
-  <string name="contact_selection__menu_finished">Dokončeno</string>
   <!--refreshing push directory from menu-->
-  <string name="push_directory__menu_refresh">Obnovit seznam kontaktů</string>
   <!--conversation_button_context-->
-  <string name="conversation_button_context__send_secure_sms">Odeslat zabezpečenou SMS</string>
-  <string name="conversation_button_context__send_insecure_sms">Odeslat nezabezpečenou SMS</string>
-  <string name="conversation_button_context__send_secure_mms">Odeslat zabezpečenou MMS</string>
-  <string name="conversation_button_context__send_insecure_mms">Odeslat nezabezpečenou MMS</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">Volat</string>
   <!--conversation_context-->
@@ -702,7 +644,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="conversation_list__menu_search">Hledat</string>
   <!--conversation_list_item_view-->
   <string name="conversation_list_item_view__contact_photo_image">Avatar kontaktu</string>
-  <string name="conversation_list_item_view__error_alert">Upozornění chyby</string>
   <string name="conversation_list_item_view__archived">Archivováno</string>
   <!--conversation_list_fragment-->
   <string name="conversation_list_fragment__fab_content_description">Nová konverzace</string>
@@ -735,7 +676,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="key_scanning__menu_display_your_qr_code">Zobrazit váš QR kód</string>
   <string name="key_scanning__menu_scan_contacts_qr_code">Skenovat QR kód kontaktu</string>
   <!--text_secure_normal-->
-  <string name="text_secure_normal__menu_new_message">Nová zpráva</string>
   <string name="text_secure_normal__menu_new_group">Nová skupina</string>
   <string name="text_secure_normal__menu_settings">Nastavení</string>
   <string name="text_secure_normal__menu_clear_passphrase">Uzamknout</string>
@@ -757,7 +697,6 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <string name="reminder_header_close_button">ZAVŘÍT</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">Vy</string>
-  <string name="MediaPreviewActivity_cant_display">Zobrazení náhledu obrázku selhalo.</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Nepodporovaný formát média.</string>
   <string name="MediaPreviewActivity_draft">Koncept</string>
   <!--media_preview-->
@@ -769,8 +708,8 @@ Přijatá zpráva výměny klíčů pro nesprávnou verzi protokolu.</string>
   <!--media_preview_activity-->
   <string name="media_preview_activity__image_content_description">Náhled obrázku</string>
   <!--Trimmer-->
-  <string name="trimmer__deleting">Mažu...</string>
-  <string name="trimmer__deleting_old_messages">Mažu staré zprávy...</string>
+  <string name="trimmer__deleting">Mažu…</string>
+  <string name="trimmer__deleting_old_messages">Mažu staré zprávy…</string>
   <string name="trimmer__old_messages_successfully_deleted">Staré zprávy byly úspěšně smazány</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Transportní ikona</string>

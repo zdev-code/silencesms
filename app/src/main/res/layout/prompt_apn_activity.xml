@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!-- This dialog body owns its patterned background independently of the host activity theme. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:fillViewport="true"
-            android:background="@drawable/background_pattern_repeat">
+            android:background="@drawable/background_pattern_repeat"
+            tools:ignore="Overdraw">
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" >
-        
-        <LinearLayout android:paddingRight="16dip"
+    <LinearLayout android:paddingRight="16dip"
                       android:paddingLeft="16dip"
                       android:paddingTop="10dip"
                       android:layout_width="fill_parent"
@@ -39,20 +37,21 @@
                           android:layout_marginBottom="20dip">
 
                 <Button android:id="@+id/cancel_button"
+                    style="?android:attr/buttonBarButtonStyle"
                         android:text="@android:string/cancel"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="7dip"
+                        android:layout_marginEnd="7dip"
                         android:textAppearance="?android:attr/textAppearanceMedium"/>
                 
                 <Button android:id="@+id/ok_button"
+                    style="?android:attr/buttonBarButtonStyle"
                         android:text="@android:string/ok"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"/>                
             </LinearLayout>
-        </LinearLayout>    
-    </FrameLayout>
+    </LinearLayout>
 </ScrollView>

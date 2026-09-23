@@ -163,8 +163,7 @@ public class ThumbnailView extends FrameLayout {
 
   static boolean isContextValid(Context context) {
     Activity activity = findActivity(context);
-    return activity == null || VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN_MR1 ||
-           !activity.isDestroyed();
+    return activity == null || !activity.isDestroyed();
   }
 
   private static Activity findActivity(Context context) {

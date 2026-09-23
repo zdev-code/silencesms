@@ -38,13 +38,16 @@
                       android:gravity="center_vertical"
                       android:orientation="horizontal"
                       android:clickable="true"
+                      android:focusable="true"
                       android:background="?android:windowBackground"
                       android:padding="5dp">
 
+            <!-- The outer and inner weights allocate independent vertical and horizontal space. -->
             <LinearLayout android:id="@+id/compose_bubble"
                           android:layout_width="0dp"
                           android:layout_height="wrap_content"
                           android:layout_weight="1"
+                          tools:ignore="NestedWeights"
                           android:background="@drawable/sent_bubble">
 
                 <org.smssecure.smssecure.components.emoji.EmojiToggle
@@ -106,12 +109,13 @@
                 android:visibility="gone"/>
 
         <TextView android:id="@+id/space_left"
-                  android:paddingLeft="5dip"
+                  android:paddingEnd="0dp"
+                  android:paddingStart="5dip"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
                   android:visibility="gone"
                   android:background="?android:windowBackground"
-                  android:text="160/160 (1)" />
+                  android:text="@string/conversation_activity__character_counter_default" />
 
 
         <ViewStub

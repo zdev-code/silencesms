@@ -217,7 +217,7 @@ public class VendoredSessionStore implements SessionStore {
     Recipient recipient   = RecipientFactory.getRecipientsFromString(context, axolotlAddress.getName(), true).getPrimaryRecipient();
     long      recipientId = recipient.getRecipientId();
 
-    return recipientId + ((Build.VERSION.SDK_INT < 22 || subscriptionId == -1) ? "" : "." + subscriptionId);
+    return recipientId + (subscriptionId == -1 ? "" : "." + subscriptionId);
   }
 
   private byte[] readBlob(FileInputStream in) throws IOException {

@@ -175,7 +175,7 @@ public class NotificationState {
   }
 
   private static int getImmutableFlag() {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0;
+    return PendingIntent.FLAG_IMMUTABLE;
   }
 
 

@@ -58,6 +58,7 @@
                  android:supportsRtl="true"
                  tools:replace="android:allowBackup"
                  android:allowBackup="false"
+                 android:fullBackupContent="false"
                  android:dataExtractionRules="@xml/data_extraction_rules"
                  android:theme="@style/Silence.LightTheme"
                  android:largeHeap="true"
@@ -100,9 +101,7 @@
 
     <activity
         android:name="com.journeyapps.barcodescanner.CaptureActivity"
-        android:screenOrientation="fullSensor"
-        android:stateNotNeeded="true"
-        tools:replace="android:screenOrientation" />
+        android:stateNotNeeded="true" />
 
     <activity android:name=".ShareActivity"
               android:exported="true"

@@ -56,6 +56,14 @@ public final class ShareShortcutHelper {
     EXECUTOR.execute(() -> publishInternal(appContext, masterSecret));
   }
 
+  public static void reportShortcutUsed(@NonNull Context context, long threadId) {
+    try {
+      ShortcutManagerCompat.reportShortcutUsed(context.getApplicationContext(), buildShortcutId(threadId));
+    } catch (RuntimeException e) {
+      Log.w(TAG, "Unable to report share shortcut usage", e);
+    }
+  }
+
   private static void publishInternal(@NonNull Context context, @NonNull MasterSecret masterSecret) {
     MasterCipher masterCipher = new MasterCipher(masterSecret);
     ThreadDatabase threadDatabase = DatabaseFactory.getThreadDatabase(context);
@@ -143,6 +151,10 @@ public final class ShareShortcutHelper {
   }
 
   private static String buildShortcutId(@NonNull ThreadRecord record) {
-    return "share_thread_" + record.getThreadId();
+    return buildShortcutId(record.getThreadId());
+  }
+
+  private static String buildShortcutId(long threadId) {
+    return "share_thread_" + threadId;
   }
 }

@@ -41,7 +41,7 @@ public final class PromptMmsDialogFragment extends DialogFragment {
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
-    View content = LayoutInflater.from(requireContext()).inflate(R.layout.prompt_apn_activity, null);
+    View content = getLayoutInflater().inflate(R.layout.prompt_apn_activity, null);
     AlertDialog dialog = new AlertDialog.Builder(requireContext()).setView(content).create();
     content.findViewById(R.id.ok_button).setOnClickListener(view -> {
       FragmentActivity activity = getActivity();

@@ -46,7 +46,8 @@
               android:paddingTop="8dp"
               android:paddingBottom="8dp"
               android:textColor="#99ffffff"
-              android:clickable="true"
+            android:clickable="true"
+            android:focusable="true"
               android:text="@string/reminder_header_close_button" />
 
     <TextView android:id="@+id/accept"

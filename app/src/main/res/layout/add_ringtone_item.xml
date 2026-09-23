@@ -19,6 +19,7 @@
               android:gravity="center_vertical">
 
     <ImageView
+         android:importantForAccessibility="no"
          android:layout_width="24dp"
          android:layout_height="24dp"
          android:layout_marginLeft="24dp"
@@ -26,8 +27,7 @@
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_add" />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/add_ringtone_text"
+     <TextView android:id="@+id/add_ringtone_text"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:drawablePadding="20dp"
@@ -35,8 +35,8 @@
               android:gravity="center_vertical"
               android:maxLines="3"
               android:minHeight="?android:attr/listPreferredItemHeightSmall"
+              android:paddingStart="0dp"
               android:paddingEnd="?dialogPreferredPadding"
-              android:paddingRight="?dialogPreferredPadding"
               android:text="@string/RingtonePreference_add_ringtone_text"
               android:textAppearance="?android:attr/textAppearanceMedium"
               android:textColor="?colorAccent" />

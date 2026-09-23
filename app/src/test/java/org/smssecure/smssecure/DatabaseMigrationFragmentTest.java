@@ -252,6 +252,7 @@ public class DatabaseMigrationFragmentTest {
         .isEqualTo(HostNavigationCommand.Destination.INBOX);
   }
 
+  @SuppressWarnings("deprecation")
   private static void assertContainsNoSensitiveState(Bundle bundle) {
     for (String key : bundle.keySet()) {
       Object value = bundle.get(key);
