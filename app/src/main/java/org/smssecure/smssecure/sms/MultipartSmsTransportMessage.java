@@ -44,6 +44,12 @@ public class MultipartSmsTransportMessage {
       this.message         = message;
       this.decodedMessage  = Base64.decodeWithoutPadding(message.getMessageBody().substring(WirePrefix.PREFIX_SIZE));
 
+      if (decodedMessage.length < 2 ||
+          (!isDeprecatedTransport() && getMultipartCount() > 1 && decodedMessage.length < 3))
+      {
+        throw new IOException("Truncated transport message");
+      }
+
       redecodeWirePrefix(-1);
     } catch (IllegalArgumentException iae) {
       throw new IOException(iae);

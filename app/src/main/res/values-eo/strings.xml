@@ -201,7 +201,7 @@ Atentu, tio ĉi malaktivigos ĉifradon de konservejo por ĉiuj mesaĝoj kaj ŝlo
   <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence">Necesas doni permesojn al Silence.</string>
   <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it">Vi devas doni kelkajn Androidajn permesojn al Silence por pluigi uzi ĝin. Frapetu por pluigi.</string>
   <string name="WelcomeActivity_silence_needs_the_phone_permission_in_order_to_manage_encryption_keys_and_bind_them_to_your_sim_cards_and_sms_permission_in_order_to_receive_sms_messages">Silence bezonas la permeson al telefono por administri ĉifrajn ŝlosilojn kaj ligi ilin al viaj SIM‑kartoj, kaj la permeson al SMS por ricevi SMS‑mesaĝojn.</string>
-  <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">Silence bezonas la permesojn al SMS kaj telefono por funkcii, sed ili estas rifuzitaj. Bonvolu malfermi Androidan menuon de aplikaĵaj agordoj → permesoj, kaj aktivigu “telefonon” kaj “SMS”</string>
+  <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">Silence bezonas la permesojn al SMS kaj telefono por funkcii, sed ili estas rifuzitaj. Bonvolu malfermi Androidan menuon de aplikaĵaj agordoj → permesoj, kaj aktivigu “telefonon” kaj “SMS”.</string>
   <!--ExportFragment-->
   <string name="ExportFragment_export">Elporti</string>
   <string name="ExportFragment_export_plaintext_to_storage">Ĉu elporti plattekston al konservejo?</string>
@@ -262,9 +262,9 @@ Atentu, tio ĉi malaktivigos ĉifradon de konservejo por ĉiuj mesaĝoj kaj ŝlo
   <!--PassphraseChangeActivity-->
   <string name="PassphraseChangeActivity_passphrases_dont_match_exclamation">Pasfrazoj malsamas!</string>
   <string name="PassphraseChangeActivity_incorrect_old_passphrase_exclamation">Ekspasfazo eraras!</string>
-  <string name="PassphraseChangeActivity_enter_new_passphrase_exclamation">Nenia pasfrazo entajpita!</string>
+  <string name="PassphraseChangeActivity_enter_new_passphrase_exclamation">Nenia pasfrazo enigita!</string>
   <!--PassphrasePromptActivity-->
-  <string name="PassphrasePromptActivity_enter_passphrase">Entajpu pasfrazon</string>
+  <string name="PassphrasePromptActivity_enter_passphrase">Enigu pasfrazon</string>
   <string name="PassphrasePromptActivity_watermark_content_description">Emblemo de Silence</string>
   <string name="PassphrasePromptActivity_invalid_passphrase_exclamation">Erara pasfrazo!</string>
   <!--ReceiveKeyActivity-->
@@ -373,18 +373,18 @@ Ricevis ŝlosil-interŝanĝan mesaĝon por erara versio de protokolo.</string>
   <!--change_passphrase_activity-->
   <string name="change_passphrase_activity__old_passphrase">Malnova pasfrazo</string>
   <string name="change_passphrase_activity__new_passphrase">Nova pasfrazo</string>
-  <string name="change_passphrase_activity__repeat_new_passphrase">Reentajpu novan pasfrazon</string>
+  <string name="change_passphrase_activity__repeat_new_passphrase">Reenigu novan pasfrazon</string>
   <!--contact_selection_activity-->
-  <string name="contact_selection_activity__enter_name_or_number">Entajpu nomon aŭ numeron</string>
+  <string name="contact_selection_activity__enter_name_or_number">Enigu nomon aŭ numeron</string>
   <!--contact_selection_group_activity-->
-  <string name="contact_selection_group_activity__no_contacts">Neniaj kontaktoj.</string>
+  <string name="contact_selection_group_activity__no_contacts">Neniu kontakto.</string>
   <string name="contact_selection_group_activity__finding_contacts">Ŝargado de kontaktoj…</string>
   <!--single_contact_selection_activity-->
   <string name="SingleContactSelectionActivity_contact_photo">Kontakta Bildo</string>
   <!--ContactSelectionListFragment-->
   <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Silence bezonas la permeson al kontaktoj por montri viajn kontaktojn, sed ĝi estas rifuzita. Bonvolu malfermi Androidan menuon de aplikaĵaj agordoj → permesoj, kaj aktivigu “kontaktojn”.</string>
   <!--blocked_contacts_fragment-->
-  <string name="blocked_contacts_fragment__no_blocked_contacts">Neniuj blokitaj kontaktoj</string>
+  <string name="blocked_contacts_fragment__no_blocked_contacts">Neniu blokita kontakto</string>
   <!--contact_selection_recent_activity-->
   <!--contact_selection_list_fragment-->
   <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Silence bezonas aliron al viaj kontaktoj por vidigi ilin.</string>
@@ -471,7 +471,9 @@ Ricevis ŝlosil-interŝanĝan mesaĝon por erara versio de protokolo.</string>
   <!--receive_key_dialog-->
   <string name="receive_key_activity__complete">Pluigi</string>
   <!--recipients_panel-->
-  <string name="recipients_panel__to"><small>Entajpu nomon aŭ numeron</small></string>
+  <string name="recipients_panel__to">
+        <small>Enigu nomon aŭ numeron</small>
+    </string>
   <string name="recipients_panel__add_member">Aldoni anon</string>
   <!--verify_identity_activity-->
   <string name="verify_identity_activity__their_identity_they_read">Lia identeco (li legas):</string>
@@ -489,7 +491,7 @@ Ricevis ŝlosil-interŝanĝan mesaĝon por erara versio de protokolo.</string>
   <string name="AndroidManifest__change_passphrase">Ŝanĝi pasfrazon</string>
   <string name="AndroidManifest__verify_identity">Verigi identecon</string>
   <string name="AndroidManifest__log_submit">Alŝuti senerarig-protokolon</string>
-  <string name="AndroidManifest__media_preview">Antaŭrigardo de aŭdvidaĵo</string>
+  <string name="AndroidManifest__media_preview">Antaŭrigardi aŭdvidaĵon</string>
   <string name="AndroidManifest__media_overview">Ĉiuj bildoj</string>
   <string name="AndroidManifest__media_overview_named">Ĉiuj bildoj kun %1$s</string>
   <string name="AndroidManifest__message_details">Mesaĝaj detaletoj</string>
@@ -601,7 +603,7 @@ Ricevis ŝlosil-interŝanĝan mesaĝon por erara versio de protokolo.</string>
   <string name="preferences__about_version">Versio %s</string>
   <string name="preferences__privacy_policy">Politiko pri privateco</string>
   <string name="preferences__incognito_keyboard">Privata klavaro</string>
-  <string name="preferences__request_keyboard_to_disable_personalized_learning">En privata reĝimo la klavaro ne memoros, lernos kaj konservos iujn ajn entajpitajn vortojn</string>
+  <string name="preferences__request_keyboard_to_disable_personalized_learning">En privata reĝimo la klavaro ne memoros, lernos kaj konservos iujn ajn enigatajn vortojn</string>
   <string name="preferences_app_protection__blocked_contacts">Blokitaj kontaktoj</string>
   <string name="preferences_notifications__display_in_notifications">Montri en sciigoj</string>
   <string name="preferences__show_sent_time">Montri tempon de sendo</string>
@@ -644,8 +646,8 @@ Ricevis ŝlosil-interŝanĝan mesaĝon por erara versio de protokolo.</string>
   <string name="conversation_list_batch__menu_delete_selected">Forigi elektitajn</string>
   <string name="conversation_list_batch__menu_select_all">Elekti ĉiujn</string>
   <string name="conversation_list_batch__menu_send_drafts">Sendi elektitajn malnetojn</string>
-  <string name="conversation_list_batch_archive__menu_archive_selected">Arĥivigi elektitajn</string>
-  <string name="conversation_list_batch_unarchive__menu_unarchive_selected">Malarĥivigi elektitajn</string>
+  <string name="conversation_list_batch_archive__menu_archive_selected">Arĥivi elektitajn</string>
+  <string name="conversation_list_batch_unarchive__menu_unarchive_selected">Malarĥivi elektitajn</string>
   <!--conversation_list-->
   <string name="conversation_list__menu_search">Serĉi</string>
   <!--conversation_list_item_view-->
@@ -664,8 +666,8 @@ Ricevis ŝlosil-interŝanĝan mesaĝon por erara versio de protokolo.</string>
   <!--conversation-->
   <string name="conversation__menu_add_attachment">Aldoni kunsendaĵon</string>
   <string name="conversation__menu_delete_conversation">Forigi interparoladon</string>
-  <string name="conversation__menu_archive_conversation">Arĥivigi interparoladon</string>
-  <string name="conversation__menu_unarchive_conversation">Malarĥivigi interparoladon</string>
+  <string name="conversation__menu_archive_conversation">Arĥivi interparoladon</string>
+  <string name="conversation__menu_unarchive_conversation">Malarĥivi interparoladon</string>
   <string name="conversation__menu_view_media">Ĉiuj bildoj</string>
   <string name="conversation__menu_conversation_settings">Interparoladaj agordoj</string>
   <!--conversation_popup-->
@@ -732,4 +734,8 @@ Ricevis ŝlosil-interŝanĝan mesaĝon por erara versio de protokolo.</string>
   <string name="Permissions_continue">Pluigi</string>
   <string name="Permissions_not_now">Ne nun</string>
   <!--EOF-->
+    <string name="NotificationChannel_other">Aliaj</string>
+    <string name="NotificationChannel_locked_status">Stato de ŝloso</string>
+    <string name="NotificationChannel_failures">Paneoj</string>
+    <string name="NotificationChannel_messages">Mesaĝoj</string>
 </resources>

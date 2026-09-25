@@ -94,11 +94,7 @@ public class SmsDecryptJob extends MasterSecretJob {
       else if (message.isXmppExchange())  handleXmppExchangeMessage(masterSecret, messageId, threadId, (IncomingXmppExchangeMessage) message);
       else                                database.updateMessageBody(masterSecret, messageId, message.getMessageBody());
 
-      if (!isReceivedWhenLocked) {
-        MessageNotifier.updateNotification(context, masterSecret, threadId);
-      } else {
-        MessageNotifier.updateNotification(context, masterSecret);
-      }
+      updateNotification(masterSecret, threadId);
     } catch (LegacyMessageException e) {
       Log.w(TAG, e);
       database.markAsLegacyVersion(messageId);
@@ -111,6 +107,22 @@ public class SmsDecryptJob extends MasterSecretJob {
     } catch (NoSessionException | UntrustedIdentityException e) {
       Log.w(TAG, e);
       database.markAsNoSession(messageId);
+    } catch (RuntimeException e) {
+      // The vendored JobConsumer rethrows runtime exceptions, which kills the process and replays this persisted job.
+      Log.w(TAG, e);
+      database.markAsDecryptFailed(messageId);
+    }
+  }
+
+  private void updateNotification(MasterSecret masterSecret, long threadId) {
+    try {
+      if (!isReceivedWhenLocked) {
+        MessageNotifier.updateNotification(context, masterSecret, threadId);
+      } else {
+        MessageNotifier.updateNotification(context, masterSecret);
+      }
+    } catch (RuntimeException e) {
+      Log.w(TAG, e);
     }
   }
 

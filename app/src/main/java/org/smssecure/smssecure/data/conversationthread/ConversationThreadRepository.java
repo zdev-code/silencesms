@@ -13,6 +13,10 @@ public interface ConversationThreadRepository {
                     MutationCallback callback);
   TaskHandle resend(MessageRecord message, ConversationUnlockCapability unlockCapability,
                     OperationCallback callback);
+  default TaskHandle checkManualResendWarning(MessageRecord message, ResendWarningCallback callback) {
+    callback.onResult(false);
+    return null;
+  }
   TaskHandle saveAttachment(Attachment attachment, ConversationUnlockCapability unlockCapability,
                             AttachmentCallback callback);
 
@@ -33,6 +37,11 @@ public interface ConversationThreadRepository {
 
   interface OperationCallback {
     void onSuccess();
+    void onFailure(Exception exception);
+  }
+
+  interface ResendWarningCallback {
+    void onResult(boolean required);
     void onFailure(Exception exception);
   }
 

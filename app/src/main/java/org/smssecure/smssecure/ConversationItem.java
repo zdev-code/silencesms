@@ -130,6 +130,7 @@ public class ConversationItem extends LinearLayout
 
   private final Context context;
   private MediaClickListener mediaClickListener;
+  private @Nullable OnClickListener itemClickListener;
 
   public interface MediaClickListener {
     void onMediaPreview(long partRowId, long partUniqueId, long messageId, long threadId,
@@ -172,7 +173,12 @@ public class ConversationItem extends LinearLayout
 
   @Override
   public void setOnClickListener(OnClickListener l) {
+    itemClickListener = l;
     super.setOnClickListener(new ClickListener(l));
+  }
+
+  private void setItemClickTarget(@Nullable OnClickListener target) {
+    super.setOnClickListener(new ClickListener(target));
   }
 
   @Override
@@ -221,15 +227,20 @@ public class ConversationItem extends LinearLayout
     this.recipient.addListener(this);
     this.conversationRecipients.addListener(this);
 
+    setItemClickTarget(itemClickListener);
+    // Media first so interaction state reaches stubs inflated by this bind.
+    setMediaAttributes(messageRecord);
     setInteractionState(messageRecord);
     setBodyText(messageRecord);
     setBubbleState(messageRecord, recipient);
     setStatusIcons(messageRecord);
+    if (messageRecord.isMmsNotification()) {
+      setNotificationMmsAttributes((NotificationMmsMessageRecord) messageRecord);
+    }
     setContactPhoto(recipient);
     setGroupMessageStatus(messageRecord, recipient);
     checkForAutoInitiate(messageRecord);
     setMinimumWidth();
-    setMediaAttributes(messageRecord);
     setSimInfo(messageRecord);
   }
 
@@ -360,7 +371,6 @@ public class ConversationItem extends LinearLayout
       if (audioViewStub.resolved()) audioViewStub.get().setVisibility(View.GONE);
 
       bodyText.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-      setNotificationMmsAttributes((NotificationMmsMessageRecord) messageRecord);
     } else if (hasAudio(messageRecord)) {
       audioViewStub.get().setVisibility(View.VISIBLE);
       if (mediaThumbnailStub.resolved()) mediaThumbnailStub.get().setVisibility(View.GONE);
@@ -500,9 +510,9 @@ public class ConversationItem extends LinearLayout
       mmsDownloadingLabel.setVisibility(View.VISIBLE);
 
       if (MmsDatabase.Status.isHardError(messageRecord.getStatus()) && !messageRecord.isOutgoing())
-        setOnClickListener(mmsDownloadClickListener);
+        setItemClickTarget(mmsDownloadClickListener);
       else if (MmsDatabase.Status.DOWNLOAD_APN_UNAVAILABLE == messageRecord.getStatus() && !messageRecord.isOutgoing())
-        setOnClickListener(mmsPreferencesClickListener);
+        setItemClickTarget(mmsPreferencesClickListener);
     }
   }
 

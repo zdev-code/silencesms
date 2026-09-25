@@ -155,6 +155,11 @@ public final class ConversationThreadViewModel extends ViewModel {
         });
   }
 
+  public void checkManualResendWarning(MessageRecord message,
+                                       ConversationThreadRepository.ResendWarningCallback callback) {
+    repository.checkManualResendWarning(Objects.requireNonNull(message), Objects.requireNonNull(callback));
+  }
+
   public void saveAttachment(Attachment attachment, ConversationUnlockCapability unlockCapability) {
     Objects.requireNonNull(attachment);
     Objects.requireNonNull(unlockCapability);

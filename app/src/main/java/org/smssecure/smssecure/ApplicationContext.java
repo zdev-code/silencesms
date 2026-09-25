@@ -30,6 +30,7 @@ import org.smssecure.smssecure.backup.SecureBackupArchive;
 import org.smssecure.smssecure.crypto.MasterSecretUtil;
 import org.smssecure.smssecure.crypto.PRNGFixes;
 import org.smssecure.smssecure.jobs.persistence.EncryptingJobSerializer;
+import org.smssecure.smssecure.jobs.sms.SmsAttemptRecoveryWorker;
 import org.smssecure.smssecure.jobs.requirements.MasterSecretRequirementProvider;
 import org.smssecure.smssecure.jobs.requirements.MediaNetworkRequirementProvider;
 import org.smssecure.smssecure.jobs.requirements.ServiceRequirementProvider;
@@ -83,6 +84,7 @@ public class ApplicationContext extends Application implements DependencyInjecto
     initializeJobManager();
     checkSimState();
     NotificationChannels.create(this);
+    SmsAttemptRecoveryWorker.schedule(this);
   }
 
   @Override

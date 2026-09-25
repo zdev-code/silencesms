@@ -76,13 +76,13 @@ public class DatabaseFactory {
   private static final int INTRODUCED_SUBSCRIPTION_ID_VERSION              = 28;
   private static final int INTRODUCED_LAST_SEEN                            = 29;
   private static final int INTRODUCED_NOTIFIED                             = 30;
+  private static final int INTRODUCED_SMS_SEND_ATTEMPTS                   = 32;
 
   /*
-   * Yes, INTRODUCED_XMPP_TRANSPORT > DATABASE_VERSION to allow database
-   * downgrade when XMPP transport will be included in unstable branch.
+   * Version 31 remains reserved for the unreleased XMPP transport schema.
    */
   private static final int INTRODUCED_XMPP_TRANSPORT                       = 31;
-  private static final int DATABASE_VERSION                                = 30;
+  private static final int DATABASE_VERSION                                = INTRODUCED_SMS_SEND_ATTEMPTS;
 
   private static final String DATABASE_NAME    = "messages.db";
   private static final Object lock             = new Object();
@@ -92,6 +92,7 @@ public class DatabaseFactory {
   private DatabaseHelper databaseHelper;
 
   private final SmsDatabase sms;
+  private final SmsSendAttemptDatabase smsSendAttempts;
   private final EncryptingSmsDatabase encryptingSms;
   private final MmsDatabase mms;
   private final AttachmentDatabase attachments;
@@ -128,6 +129,10 @@ public class DatabaseFactory {
 
   public static SmsDatabase getSmsDatabase(Context context) {
     return getInstance(context).sms;
+  }
+
+  public static SmsSendAttemptDatabase getSmsSendAttemptDatabase(Context context) {
+    return getInstance(context).smsSendAttempts;
   }
 
   public static MmsDatabase getMmsDatabase(Context context) {
@@ -173,6 +178,7 @@ public class DatabaseFactory {
   private DatabaseFactory(Context context) {
     this.databaseHelper              = new DatabaseHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
     this.sms                         = new SmsDatabase(context, databaseHelper);
+    this.smsSendAttempts             = new SmsSendAttemptDatabase(databaseHelper);
     this.encryptingSms               = new EncryptingSmsDatabase(context, databaseHelper);
     this.mms                         = new MmsDatabase(context, databaseHelper);
     this.attachments                 = new AttachmentDatabase(context, databaseHelper);
@@ -192,6 +198,7 @@ public class DatabaseFactory {
     this.databaseHelper = new DatabaseHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
 
     this.sms.reset(databaseHelper);
+    this.smsSendAttempts.reset(databaseHelper);
     this.encryptingSms.reset(databaseHelper);
     this.mms.reset(databaseHelper);
     this.attachments.reset(databaseHelper);
@@ -258,6 +265,7 @@ public class DatabaseFactory {
       db.execSQL(IdentityDatabase.CREATE_TABLE);
       db.execSQL(DraftDatabase.CREATE_TABLE);
       db.execSQL(RecipientPreferenceDatabase.CREATE_TABLE);
+      SmsSendAttemptDatabase.createTables(db);
 
       executeStatements(db, SmsDatabase.CREATE_INDEXS);
       executeStatements(db, MmsDatabase.CREATE_INDEXS);
@@ -591,6 +599,10 @@ public class DatabaseFactory {
 
         db.execSQL("DROP INDEX mms_read_and_thread_id_index");
         db.execSQL("CREATE INDEX IF NOT EXISTS mms_read_and_notified_and_thread_id_index ON mms(read,notified,thread_id)");
+      }
+
+      if (oldVersion < INTRODUCED_SMS_SEND_ATTEMPTS) {
+        SmsSendAttemptDatabase.createTables(db);
       }
 
       db.setTransactionSuccessful();

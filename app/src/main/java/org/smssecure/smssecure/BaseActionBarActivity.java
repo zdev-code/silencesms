@@ -127,13 +127,15 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
           // Non-overlay theme action bar: ActionBarOverlayLayout already positions the content
           // frame below the padded action bar. Only side and bottom insets belong on its children.
           // Pad every child so fragments being swapped during a transition are all handled.
+          // A hidden action bar leaves the content at the top, so it then needs the top inset too.
+          int contentTop = isThemeActionBarShowing() ? 0 : bars.top;
           if (content instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) content;
             for (int i = 0; i < group.getChildCount(); i++) {
-              group.getChildAt(i).setPadding(bars.left, 0, bars.right, contentBottom);
+              group.getChildAt(i).setPadding(bars.left, contentTop, bars.right, contentBottom);
             }
           } else {
-            content.setPadding(bars.left, 0, bars.right, contentBottom);
+            content.setPadding(bars.left, contentTop, bars.right, contentBottom);
           }
         }
       } else {
@@ -215,6 +217,10 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
    */
   protected boolean isActionBarOverlay() {
     return false;
+  }
+
+  private boolean isThemeActionBarShowing() {
+    return getSupportActionBar() == null || getSupportActionBar().isShowing();
   }
 
   private void ensureBarScrims(int statusBarColor, int navigationBarColor) {

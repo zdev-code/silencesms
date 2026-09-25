@@ -1,7 +1,9 @@
 package org.smssecure.smssecure.crypto.storage;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.util.Base64;
 import android.util.Log;
 
 import org.smssecure.smssecure.crypto.MasterCipher;
@@ -21,15 +23,21 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.whispersystems.libsignal.state.StorageProtos.SessionStructure;
 
 public class VendoredSessionStore implements SessionStore {
 
+  public enum DeleteOutcome { DELETED, ALREADY_ABSENT, CHANGED }
+
   private static final String TAG                   = VendoredSessionStore.class.getSimpleName();
   private static final String SESSIONS_DIRECTORY_V2 = "sessions-v2";
+  private static final String GENERATIONS = "session-generations";
 
   private static final int SINGLE_STATE_VERSION   = 1;
   private static final int ARCHIVE_STATES_VERSION = 2;
@@ -96,6 +104,7 @@ public class VendoredSessionStore implements SessionStore {
       File temp   = null;
       try {
         MasterCipher masterCipher = new MasterCipher(masterSecret);
+        invalidateSessionGeneration(context, target);
         temp = File.createTempFile("session", ".tmp", target.getParentFile());
 
         try (RandomAccessFile sessionFile = new RandomAccessFile(temp, "rw")) {
@@ -131,6 +140,7 @@ public class VendoredSessionStore implements SessionStore {
   @Override
   public void deleteSession(SignalProtocolAddress address) {
     synchronized (sessionLock()) {
+      invalidateSessionGeneration(context, getSessionFile(address));
       getSessionFile(address).delete();
     }
   }
@@ -145,6 +155,91 @@ public class VendoredSessionStore implements SessionStore {
       for (int device : devices) {
         deleteSession(new SignalProtocolAddress(name, device));
       }
+    }
+  }
+
+  public String snapshotSession(String name) {
+    synchronized (sessionLock()) {
+      SignalProtocolAddress address = new SignalProtocolAddress(name, 1);
+      File file = getSessionFile(address);
+      String digest = fingerprint(file);
+      if ("absent".equals(digest)) return getSessionName(address) + ":absent";
+      SharedPreferences generations = generations(context);
+      String key = generationKey(file);
+      String generation = generations.getString(key, null);
+      if (generation == null || generation.startsWith("deleting:")) {
+        generation = UUID.randomUUID().toString();
+        if (!generations.edit().putString(key, generation).commit()) {
+          throw new IllegalStateException("Unable to persist session generation");
+        }
+      }
+      return getSessionName(address) + ":" + generation + ":" + digest;
+    }
+  }
+
+  public DeleteOutcome deleteSessionIfUnchanged(String name, String snapshot) {
+    synchronized (sessionLock()) {
+      SignalProtocolAddress address = new SignalProtocolAddress(name, 1);
+      File file = getSessionFile(address);
+      String prefix = getSessionName(address) + ":";
+      if (snapshot == null || !snapshot.startsWith(prefix)) return DeleteOutcome.CHANGED;
+      if (snapshot.equals(prefix + "absent")) {
+        return "absent".equals(fingerprint(file)) ? DeleteOutcome.ALREADY_ABSENT
+        : DeleteOutcome.CHANGED;
+      }
+      String[] parts = snapshot.substring(prefix.length()).split(":", 2);
+      if (parts.length != 2 || parts[0].isEmpty() || parts[1].isEmpty()) return DeleteOutcome.CHANGED;
+      SharedPreferences generations = generations(context);
+      String key = generationKey(file);
+      String generation = generations.getString(key, null);
+      if (!parts[0].equals(generation) && !("deleting:" + parts[0]).equals(generation)) {
+        return DeleteOutcome.CHANGED;
+      }
+      String current = fingerprint(file);
+      if ("absent".equals(current)) {
+        return ("deleting:" + parts[0]).equals(generation) ? DeleteOutcome.ALREADY_ABSENT
+            : DeleteOutcome.CHANGED;
+      }
+      if (!parts[1].equals(current)) return DeleteOutcome.CHANGED;
+      if (!("deleting:" + parts[0]).equals(generation) &&
+          !generations.edit().putString(key, "deleting:" + parts[0]).commit()) {
+        throw new IllegalStateException("Unable to persist session deletion");
+      }
+      if (!file.delete()) {
+        throw new IllegalStateException("Unable to delete selected session");
+      }
+      return DeleteOutcome.DELETED;
+    }
+  }
+
+  static void invalidateSessionGeneration(Context context, File file) {
+    if (!generations(context).edit().putString(generationKey(file), UUID.randomUUID().toString()).commit()) {
+      throw new IllegalStateException("Unable to invalidate session generation");
+    }
+  }
+
+  private static SharedPreferences generations(Context context) {
+    return context.getSharedPreferences(GENERATIONS, Context.MODE_PRIVATE);
+  }
+
+  private static String generationKey(File file) {
+    return file.getParentFile().getName() + "/" + file.getName();
+  }
+
+  private static String fingerprint(File file) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      try (FileInputStream input = new FileInputStream(file)) {
+        byte[] buffer = new byte[4096];
+        int count;
+        while ((count = input.read(buffer)) != -1) digest.update(buffer, 0, count);
+      } catch (java.io.FileNotFoundException error) {
+        if (!file.exists()) return "absent";
+        throw error;
+      }
+      return Base64.encodeToString(digest.digest(), Base64.NO_WRAP);
+    } catch (IOException | NoSuchAlgorithmException error) {
+      throw new IllegalStateException("Unable to snapshot selected session", error);
     }
   }
 

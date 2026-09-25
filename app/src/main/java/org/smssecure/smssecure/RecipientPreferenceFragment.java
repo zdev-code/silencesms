@@ -70,6 +70,7 @@ public final class RecipientPreferenceFragment extends Fragment {
     avatar = toolbar.findViewById(R.id.avatar);
     title = toolbar.findViewById(R.id.name);
     blockedIndicator = toolbar.findViewById(R.id.blocked_indicator);
+    toolbar.setLogo(null);
     toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material);
     toolbar.setNavigationOnClickListener(ignored -> NavHostFragment.findNavController(this).navigateUp());
 

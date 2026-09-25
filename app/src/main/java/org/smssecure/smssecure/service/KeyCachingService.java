@@ -43,6 +43,7 @@ import org.smssecure.smssecure.domain.identity.ConflictIdentityStore;
 import org.smssecure.smssecure.domain.security.UnlockSession;
 import org.smssecure.smssecure.domain.upgrade.DatabaseUpgradePolicy;
 import org.smssecure.smssecure.notifications.MessageNotifier;
+import org.smssecure.smssecure.jobs.sms.SmsAttemptRecoveryWorker;
 import org.smssecure.smssecure.notifications.NotificationChannels;
 import org.smssecure.smssecure.util.DynamicLanguage;
 import org.smssecure.smssecure.util.ParcelUtil;
@@ -172,6 +173,11 @@ public class KeyCachingService extends Service {
                             .getJobManager()
                             .setEncryptionKeys(new EncryptionKeys(ParcelUtil.serialize(masterSecret)));
           MessageNotifier.updateNotification(KeyCachingService.this, masterSecret);
+          try {
+            SmsAttemptRecoveryWorker.replay(KeyCachingService.this, masterSecret);
+          } catch (RuntimeException error) {
+            Log.w("KeyCachingService", "Pending SMS effect replay failed", error);
+          }
         }
       });
     }

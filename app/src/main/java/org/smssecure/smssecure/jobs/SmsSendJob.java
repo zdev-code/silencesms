@@ -50,6 +50,10 @@ public class SmsSendJob extends SendJob {
 
   @Override
   public void onSend(MasterSecret masterSecret) throws NoSuchMessageException {
+    if (DatabaseFactory.getSmsSendAttemptDatabase(context).hasAttemptForMessage(messageId)) {
+      Log.w(TAG, "Ignoring legacy send for attempt-owned message");
+      return;
+    }
     EncryptingSmsDatabase database = DatabaseFactory.getEncryptingSmsDatabase(context);
     SmsMessageRecord      record   = database.getMessage(masterSecret, messageId);
 
@@ -76,6 +80,7 @@ public class SmsSendJob extends SendJob {
   @Override
   public void onCanceled() {
     Log.w(TAG, "onCanceled()");
+    if (DatabaseFactory.getSmsSendAttemptDatabase(context).hasAttemptForMessage(messageId)) return;
     long       threadId   = DatabaseFactory.getSmsDatabase(context).getThreadIdForMessage(messageId);
     Recipients recipients = DatabaseFactory.getThreadDatabase(context).getRecipientsForThreadId(threadId);
 

@@ -111,6 +111,7 @@ public class SilenceSessionStore implements SessionStore {
       File temp   = null;
       try {
         MasterCipher masterCipher = new MasterCipher(masterSecret);
+        VendoredSessionStore.invalidateSessionGeneration(context, target);
         temp = File.createTempFile("session", ".tmp", target.getParentFile());
 
         try (RandomAccessFile sessionFile = new RandomAccessFile(temp, "rw")) {
@@ -145,6 +146,7 @@ public class SilenceSessionStore implements SessionStore {
   @Override
   public void deleteSession(SignalProtocolAddress address) {
     synchronized (sessionLock()) {
+      VendoredSessionStore.invalidateSessionGeneration(context, getSessionFile(address));
       getSessionFile(address).delete();
     }
   }

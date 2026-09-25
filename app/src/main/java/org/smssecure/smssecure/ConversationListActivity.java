@@ -18,13 +18,17 @@ package org.smssecure.smssecure;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.view.MenuItemCompat;
+import androidx.core.view.ViewCompat;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -490,8 +494,15 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     boolean contactSelection = destinationId == R.id.push_contact_selection;
     boolean conversation = destinationId == R.id.conversation_screen;
     boolean recipientPreferences = destinationId == R.id.recipient_preferences;
+    boolean recipientColored = conversation || destinationId == R.id.message_details;
+    // AppCompat re-enables this in onPostResume; an animated show leaves the inset pass seeing a hidden bar.
+    getSupportActionBar().setShowHideAnimationEnabled(false);
     if (newConversation || contactSelection || recipientPreferences) getSupportActionBar().hide();
     else                 getSupportActionBar().show();
+    ViewCompat.requestApplyInsets(getWindow().getDecorView());
+    getSupportActionBar().setDisplayShowHomeEnabled(destinationId == R.id.conversation_list_inbox);
+    getSupportActionBar().setSubtitle(null);
+    if (!recipientColored) getSupportActionBar().setBackgroundDrawable(themeActionBarBackground());
     if (!conversation) {
       getSupportActionBar().setDisplayShowCustomEnabled(false);
       getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -500,6 +511,18 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     getSupportActionBar().setDisplayHomeAsUpEnabled(
         destinationId != R.id.conversation_list_inbox && !newConversation && !contactSelection);
     if (!conversation) getSupportActionBar().setTitle(destination.getLabel());
+  }
+
+  private Drawable themeActionBarBackground() {
+    TypedValue style = new TypedValue();
+    if (!getTheme().resolveAttribute(androidx.appcompat.R.attr.actionBarStyle, style, true)) return null;
+    TypedArray attributes = obtainStyledAttributes(style.resourceId,
+                                                   new int[]{androidx.appcompat.R.attr.background});
+    try {
+      return attributes.getDrawable(0);
+    } finally {
+      attributes.recycle();
+    }
   }
 
   @Override

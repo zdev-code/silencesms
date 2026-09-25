@@ -30,7 +30,7 @@ import org.smssecure.smssecure.database.NotInDirectoryException;
 import org.smssecure.smssecure.database.ThreadDatabase;
 import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.jobs.MmsSendJob;
-import org.smssecure.smssecure.jobs.SmsSendJob;
+import org.smssecure.smssecure.jobs.SmsAttemptSendJob;
 import org.smssecure.smssecure.mms.MmsException;
 import org.smssecure.smssecure.mms.OutgoingMediaMessage;
 import org.smssecure.smssecure.mms.OutgoingSecureMediaMessage;
@@ -155,6 +155,6 @@ public class MessageSender {
   private static void sendTextMessage(Context context, Recipients recipients, long messageId)
   {
     JobManager jobManager = ApplicationContext.getInstance(context).getJobManager();
-    jobManager.add(new SmsSendJob(context, messageId, recipients.getPrimaryRecipient().getName()));
+    jobManager.add(new SmsAttemptSendJob(context, messageId, recipients.getPrimaryRecipient().getNumber()));
   }
 }

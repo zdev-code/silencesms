@@ -680,4 +680,47 @@
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">転送アイコン</string>
   <!--EOF-->
+    <string name="Permissions_not_now">後で</string>
+    <string name="Permissions_continue">続行</string>
+    <string name="Permissions_permission_required">アクセス許可が必要です</string>
+    <string name="RingtonePreference_unable_to_add_ringtone">カスタム着信音を追加できません</string>
+    <string name="RingtonePreference_add_ringtone_text">着信音を追加</string>
+    <string name="RingtonePreference_alarm_sound_default">デフォルトのアラーム音</string>
+    <string name="RingtonePreference_notification_sound_default">デフォルトの通知音</string>
+    <string name="RingtonePreference_ringtone_silent">なし</string>
+    <string name="RingtonePreference_ringtone_default">デフォルトの着信音</string>
+    <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">アクセス許可がないと外部ストレージに保存できません</string>
+    <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silenceは、外部ストレージに保存するためにストレージのアクセス許可が必要ですが、完全に拒否されています。 アプリの設定に進んで「アクセス許可」を選択して、「ストレージ」を有効にしてください。</string>
+    <string name="share_identity_fingerprint">IDフィンガープリントを共有する</string>
+    <string name="preferences_advanced__always_ask_for_the_sim_card_to_use_when_sending_messages">メッセージを送信するとき、使用するSIMカードを常に確認します</string>
+    <string name="preferences_advanced__always_ask_for_sim_card">常にSIMカードを確認する</string>
+    <string name="message_details_header__with">含む</string>
+    <string name="message_details_header__from">送信者</string>
+    <string name="message_details_header__to">宛先</string>
+    <string name="message_details_header__type">種類</string>
+    <string name="conversation_activity__via_sim_name">%1$s で</string>
+    <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Silenceは、連絡先を表示するために連絡先にアクセスする必要があります。</string>
+    <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Silenceは、連絡先を表示するために連絡先のアクセス許可が必要ですが、完全に拒否されています。 アプリの設定メニューに進んで「アクセス許可」を選択して、「連絡先」を有効にしてください。</string>
+    <string name="NotificationChannel_other">その他</string>
+    <string name="NotificationChannel_locked_status">ロックステータス</string>
+    <string name="NotificationChannel_failures">失敗</string>
+    <string name="NotificationChannel_messages">メッセージ</string>
+    <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage">Silenceは、外部ストレージに書き込むためにストレージのアクセス許可が必要です。</string>
+    <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silenceは、外部ストレージに書き込むためにストレージのアクセス許可が必要ですが、完全に拒否されています。 アプリの設定に進んで「アクセス許可」を選択してから、「ストレージ」を有効にしてください。</string>
+    <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage">Silenceは、外部ストレージから読み込むためにストレージのアクセス許可が必要です。</string>
+    <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied">Silenceは、外部ストレージから読み込むためにストレージのアクセス許可が必要ですが、完全に拒否されています。 アプリの設定に進んで「アクセス許可」を選択してから、「ストレージ」を有効にしてください。</string>
+    <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">SilenceはSMSメッセージをインポートするためにSMSのアクセス許可が必要です</string>
+    <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">Silenceは、SMSメッセージをインポートするためにSMSのアクセス許可が必要ですが、完全に拒否されています。 アプリの設定に進んで「アクセス許可」を選択して、「SMS」を有効にしてください。</string>
+    <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">Silenceを機能させるには電話とSMSのアクセス許可が必要ですが、それらは完全に拒否されています。 アプリの設定に進んで「アクセス許可」を選択してから、「電話」と「SMS」を有効にしてください。</string>
+    <string name="WelcomeActivity_silence_needs_the_phone_permission_in_order_to_manage_encryption_keys_and_bind_them_to_your_sim_cards_and_sms_permission_in_order_to_receive_sms_messages">Silenceは、暗号化キーを管理してSIMカードにバインドするための電話のアクセス許可と、SMSメッセージを受信するためのSMSのアクセス許可が必要です。</string>
+    <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it">Silenceを引き続き使用するには、Silenceにいくつかのアクセス許可を付与する必要があります。 タップして続行します。</string>
+    <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence">Silenceにいくつかのアクセス許可を与える必要があります。</string>
+    <string name="WelcomeActivity_action_required">操作が必要です!</string>
+    <string name="WelcomeActivity_continue">続行</string>
+    <string name="WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms">Silence は、友達とつながり、暗号化キーとチャットを管理するために、連絡先、電話の状態、SMSメッセージにアクセスする必要があります。</string>
+    <string name="WelcomeActivity_encrypt_your_messages">他のユーザーと通常のSMS/MMSメッセージを使用しているときに、Silenceユーザーとメッセージを暗号化します。</string>
+    <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">プライバシーを改善して、みんなと話しましょう</string>
+    <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Silence は、SMSを送信するためにSMSのアクセス許可が必要ですが、完全に拒否されました。 アプリの設定に進んで「アクセス許可」を選択して「SMS」を有効にしてください。</string>
+    <string name="ConversationItem_via_s">%s で</string>
+    <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Silence は、連絡先情報を添付するために連絡先のアクセス許可が必要ですが、完全に拒否されています。 アプリの設定メニューに進んで「アクセス許可」を選択して、「連絡先」を有効にしてください。</string>
 </resources>

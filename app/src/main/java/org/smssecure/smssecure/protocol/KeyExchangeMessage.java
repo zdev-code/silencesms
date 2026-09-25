@@ -66,6 +66,10 @@ public class KeyExchangeMessage {
   public KeyExchangeMessage(byte[] serialized)
       throws InvalidMessageException, InvalidVersionException, LegacyMessageException
   {
+    if (serialized == null || serialized.length < 2) {
+      throw new InvalidMessageException("Key exchange message too short");
+    }
+
     try {
       byte[][] parts        = ByteUtil.split(serialized, 1, serialized.length - 1);
       this.version          = ByteUtil.highBitsToInt(parts[0][0]);

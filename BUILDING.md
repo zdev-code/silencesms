@@ -57,6 +57,15 @@ The production release writes modern local-crypto formats and retains legacy rea
 from older installations remain supported. The Phase A compatibility artifact has already shipped and
 is retained as a signed release artifact rather than rebuilt from current source.
 
+## Optional AOSP Make integration
+
+The root `Android.mk` is retained for external AOSP Make integration. It is optional and separate from
+the normal Gradle workflow above: it invokes `./gradlew :app:assembleRelease`, exposes
+`app/build/outputs/apk/release/app-release.apk` as a `BUILD_PREBUILT` package, and requests the AOSP
+`platform` certificate. Use it only with the normal Android build prerequisites and a compatible AOSP
+build environment. This integration path is retained for downstream AOSP users but is not validated by
+the repository's normal Gradle checks and has not been qualified here.
+
 ## Setting up a development environment
 
 [Android Studio](https://developer.android.com/studio) is the recommended development environment.

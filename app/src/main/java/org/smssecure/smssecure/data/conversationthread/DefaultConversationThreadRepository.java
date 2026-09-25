@@ -32,6 +32,7 @@ public final class DefaultConversationThreadRepository implements ConversationTh
     Cursor query(long threadId, long limit);
     long getLastSeen(long threadId);
     boolean delete(MessageReference message);
+    default boolean requiresManualResendWarning(long messageId) { return false; }
   }
 
   interface InvalidationSource {
@@ -125,6 +126,17 @@ public final class DefaultConversationThreadRepository implements ConversationTh
         }
 
         @Override
+        public TaskHandle checkManualResendWarning(MessageRecord message,
+                               ResendWarningCallback callback) {
+          Objects.requireNonNull(message);
+          Objects.requireNonNull(callback);
+          return executor.submitSerial(
+              () -> !message.isMms() && dataSource.requiresManualResendWarning(message.getId()),
+            callback::onResult,
+            callback::onFailure);
+        }
+
+        @Override
         public TaskHandle saveAttachment(Attachment attachment,
                      ConversationUnlockCapability unlockCapability,
                      AttachmentCallback callback) {
@@ -204,12 +216,14 @@ public final class DefaultConversationThreadRepository implements ConversationTh
     private final ThreadDatabase threadDatabase;
     private final org.smssecure.smssecure.database.MmsDatabase mmsDatabase;
     private final org.smssecure.smssecure.database.SmsDatabase smsDatabase;
+    private final org.smssecure.smssecure.database.SmsSendAttemptDatabase smsSendAttemptDatabase;
 
     private DatabaseDataSource(Context context) {
       mmsSmsDatabase = DatabaseFactory.getMmsSmsDatabase(context);
       threadDatabase = DatabaseFactory.getThreadDatabase(context);
       mmsDatabase = DatabaseFactory.getMmsDatabase(context);
       smsDatabase = DatabaseFactory.getSmsDatabase(context);
+      smsSendAttemptDatabase = DatabaseFactory.getSmsSendAttemptDatabase(context);
     }
 
     @Override public Cursor query(long threadId, long limit) {
@@ -219,6 +233,9 @@ public final class DefaultConversationThreadRepository implements ConversationTh
     @Override public boolean delete(MessageReference message) {
       return message.isMms() ? mmsDatabase.delete(message.getMessageId())
                              : smsDatabase.deleteMessage(message.getMessageId());
+    }
+    @Override public boolean requiresManualResendWarning(long messageId) {
+      return smsSendAttemptDatabase.requiresManualResendWarning(messageId);
     }
   }
 

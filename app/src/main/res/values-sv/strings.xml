@@ -244,7 +244,7 @@ importerat systemets SMS-databas så kommer denna åtgärd skapa dubbletter av m
   <!--PassphraseChangeActivity-->
   <string name="PassphraseChangeActivity_passphrases_dont_match_exclamation">Lösenorden matchar inte!</string>
   <string name="PassphraseChangeActivity_incorrect_old_passphrase_exclamation">Inkorrekt gammalt lösenord!</string>
-  <string name="PassphraseChangeActivity_enter_new_passphrase_exclamation">Ingen lösenfras inknappad!</string>
+  <string name="PassphraseChangeActivity_enter_new_passphrase_exclamation">Inget lösenord har angetts!</string>
   <!--PassphrasePromptActivity-->
   <string name="PassphrasePromptActivity_enter_passphrase">Ange lösenord</string>
   <string name="PassphrasePromptActivity_watermark_content_description">Silenceikon</string>
@@ -361,7 +361,7 @@ Tog emot meddelande för nyckelutbyte för ogiltig protokollversion.</string>
   <string name="change_passphrase_activity__new_passphrase">Nytt lösenord</string>
   <string name="change_passphrase_activity__repeat_new_passphrase">Upprepa nytt lösenord</string>
   <!--contact_selection_activity-->
-  <string name="contact_selection_activity__enter_name_or_number">Fyll i namn eller nummer</string>
+  <string name="contact_selection_activity__enter_name_or_number">Ange namn eller nummer</string>
   <!--contact_selection_group_activity-->
   <string name="contact_selection_group_activity__no_contacts">Inga kontakter.</string>
   <string name="contact_selection_group_activity__finding_contacts">Laddar kontakter…</string>
@@ -380,7 +380,7 @@ Tog emot meddelande för nyckelutbyte för ogiltig protokollversion.</string>
   <string name="conversation_activity__type_message_mms_insecure">Skicka okrypterat MMS</string>
   <string name="conversation_activity__send">Skicka</string>
   <string name="conversation_activity__compose_description">Skapa meddelande</string>
-  <string name="conversation_activity__emoji_toggle_description">Växla till emoji-tangentbord</string>
+  <string name="conversation_activity__emoji_toggle_description">Växla till emojitangentbord</string>
   <string name="conversation_activity__attachment_thumbnail">Bifogad tumnagel</string>
   <!--conversation_item-->
   <string name="conversation_item__mms_image_description">Mediameddelande</string>
@@ -453,7 +453,9 @@ Tog emot meddelande för nyckelutbyte för ogiltig protokollversion.</string>
   <!--receive_key_dialog-->
   <string name="receive_key_activity__complete">Klart</string>
   <!--recipients_panel-->
-  <string name="recipients_panel__to"><small>Fyll i ett namn eller nummer</small></string>
+  <string name="recipients_panel__to">
+        <small>Ange ett namn eller nummer</small>
+    </string>
   <string name="recipients_panel__add_member">Lägg till medlem</string>
   <!--verify_identity_activity-->
   <string name="verify_identity_activity__their_identity_they_read">Deras identitet (de läser):</string>
@@ -488,9 +490,9 @@ Tog emot meddelande för nyckelutbyte för ogiltig protokollversion.</string>
   <string name="arrays__name_and_message">Namn och meddelande</string>
   <string name="arrays__name_only">Endast namn</string>
   <string name="arrays__no_name_or_message">Inget namn eller meddelande</string>
-  <string name="arrays__enter_key">Visa Enter-knapp</string>
-  <string name="arrays__emoji_key">Visa emoji-knapp</string>
-  <string name="arrays__send_key">Visa skicka-knapp</string>
+  <string name="arrays__enter_key">Visa returknapp</string>
+  <string name="arrays__emoji_key">Visa emojiknapp</string>
+  <string name="arrays__send_key">Visa skickaknapp</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="one">%d timme</item>
@@ -573,8 +575,8 @@ Tog emot meddelande för nyckelutbyte för ogiltig protokollversion.</string>
   <string name="preferences__make_default_sms_app">Använd som standardapp för SMS</string>
   <string name="preferences__make_silence_the_default_sms_mms_app">Gör Silence till standardappen för SMS/MMS på din enhet.</string>
   <string name="preferences__submit_debug_log">Skicka in loggfilen för felsökning</string>
-  <string name="preferences__support_wifi_calling">\'Wi-Fi-Calling\' kompatibilitetsläge</string>
-  <string name="preferences__enable_if_your_device_supports_sms_mms_delivery_over_wifi">Aktivera om din enhet skickar SMS/MMS över Wi-Fi (aktivera endast när \'W-iFi-Calling\' är aktiverat på din enhet).</string>
+  <string name="preferences__support_wifi_calling">\"Wi-Fi-samtal\"-kompatibilitetsläge</string>
+  <string name="preferences__enable_if_your_device_supports_sms_mms_delivery_over_wifi">Aktivera om din enhet skickar SMS/MMS över Wi-Fi (aktivera endast när \"Wi-Fi-samtal\" är aktiverat på din enhet).</string>
   <string name="preferences__about">Om Silence</string>
   <string name="preferences__about_version">Version %s</string>
   <string name="preferences__privacy_policy">Sekretesspolicy</string>
@@ -661,7 +663,7 @@ Tog emot meddelande för nyckelutbyte för ogiltig protokollversion.</string>
   <string name="text_secure_normal__menu_new_group">Ny grupp</string>
   <string name="text_secure_normal__menu_settings">Inställningar</string>
   <string name="text_secure_normal__menu_clear_passphrase">Lås</string>
-  <string name="text_secure_normal__mark_all_as_read">Markera alla lästa</string>
+  <string name="text_secure_normal__mark_all_as_read">Markera alla som lästa</string>
   <string name="text_secure_normal__menu_archived_conversations">Arkiverade konversationer</string>
   <!--reminder_header-->
   <string name="reminder_header_sms_default_title">Använd som standardapp för SMS</string>

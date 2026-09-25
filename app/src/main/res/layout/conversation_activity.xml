@@ -52,8 +52,8 @@
 
                 <org.smssecure.smssecure.components.emoji.EmojiToggle
                         android:id="@+id/emoji_toggle"
-                        android:layout_width="37dp"
-                        android:layout_height="37dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_gravity="bottom"
                         android:background="@drawable/touch_highlight_background"
                         android:contentDescription="@string/conversation_activity__emoji_toggle_description" />

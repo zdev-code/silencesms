@@ -27,7 +27,7 @@ Atenție, acestă acțiune va dezactiva stocarea criptată a tuturor mesajelor �
   <string name="ApplicationPreferencesActivity_sms_enabled">Primire SMS activă</string>
   <string name="ApplicationPreferencesActivity_tap_to_change_your_default_sms_app">Atingeţi pentru a schimba aplicaţia SMS implicită</string>
   <string name="ApplicationPreferencesActivity_sms_disabled">SMS-uri primite dezactivate</string>
-  <string name="ApplicationPreferencesActivity_tap_to_make_silence_your_default_sms_app">Apasați pentru a seta Silence ca și aplicație SMS implicită.</string>
+  <string name="ApplicationPreferencesActivity_tap_to_make_silence_your_default_sms_app">Apasați pentru a seta Silence ca și aplicație SMS implicită</string>
   <string name="ApplicationPreferencesActivity_on">activat</string>
   <string name="ApplicationPreferencesActivity_On">Activat</string>
   <string name="ApplicationPreferencesActivity_off">dezactivat</string>
@@ -75,7 +75,7 @@ Atenție, acestă acțiune va dezactiva stocarea criptată a tuturor mesajelor �
   <string name="ConversationActivity_initiate_secure_session_question">Inițializare sesiune securizată?</string>
   <string name="ConversationActivity_initiate_secure_session_with_s_question">Inițializare sesiune securizată cu %s?</string>
   <string name="ConversationActivity_detected_silence_initiate_session_question">Mesaj primit de la cineva care are de asemenea Silence, se va iniția o sesiune securizată și criptată?</string>
-  <string name="ConversationActivity_abort_secure_session_confirmation">Se confirmă terminarea sesiunii securizate</string>
+  <string name="ConversationActivity_abort_secure_session_confirmation">Se încheie sesiunea securizată\?</string>
   <string name="ConversationActivity_are_you_sure_that_you_want_to_abort_this_secure_session_question">Sunteți sigur(ă) că doriți terminarea sesiunii securizate?</string>
   <string name="ConversationActivity_delete_thread_question">Șterg conversația?</string>
   <string name="ConversationActivity_this_will_permanently_delete_all_messages_in_this_conversation">Se vor șterge permanent toate mesaje din această conversație.</string>
@@ -284,8 +284,7 @@ Atenție, acestă acțiune va dezactiva stocarea criptată a tuturor mesajelor �
   <string name="Slide_audio">Audio</string>
   <string name="Slide_video">Video</string>
   <!--SmsMessageRecord-->
-  <string name="SmsMessageRecord_received_corrupted_key_exchange_message">Am primit mesajul conform căruia
-schimbul de chei este corupt </string>
+  <string name="SmsMessageRecord_received_corrupted_key_exchange_message">Am primit un mesaj corupt pentru schimbul de chei!</string>
   <string name="SmsMessageRecord_received_key_exchange_message_for_invalid_protocol_version">
 Am primit mesajul conform căruia schimbul de chei a avut loc pentru o versiune de protocol invalidă.</string>
   <string name="SmsMessageRecord_received_message_with_unknown_identity_key_tap_to_process">A fost primit un mesaj trimis cu o cheie de identitate necunoscută. Apăsă pentru a-l procesa și afișa.</string>
@@ -434,7 +433,7 @@ Am primit mesajul conform căruia schimbul de chei a avut loc pentru o versiune 
   <string name="database_migration_activity__this_could_take_a_moment_please_be_patient">S-ar putea să dureze câteva momente. Vă rugăm să aveți răbdare, vă vom notifica atunci când importul este complet.</string>
   <string name="database_migration_activity__importing">SE IMPORTĂ</string>
   <!--database_upgrade_activity-->
-  <string name="database_upgrade_activity__updating_database">Se actualizează baza de date</string>
+  <string name="database_upgrade_activity__updating_database">Se actualizează baza de date…</string>
   <string name="export_fragment__export_plaintext_backup">Exportă o copie de rezervă în format text</string>
   <string name="export_fragment__export_a_plaintext_backup_compatible_with">Exportă o copie de rezervă, format text, compatibilă cu \'SMSBackup And Restore\' pe spațiul de stocare</string>
   <string name="import_fragment__import_system_sms_database">Import baza de date cu SMS-uri</string>
@@ -529,7 +528,7 @@ Am primit mesajul conform căruia schimbul de chei a avut loc pentru o versiune 
   <string name="preferences__enable_passphrase">Activează parola</string>
   <string name="preferences__enable_local_encryption_of_messages_and_keys">Activează criptarea locală a mesajelor și a cheilor</string>
   <string name="preferences__screen_security">Securitate ecran</string>
-  <string name="preferences__automatically_complete_key_exchanges_for_new_sessions_or_for_existing_sessions_with_the_same_identity_key">Completează în mod automat schimburile de chei pentru sesiunile noi sau existente cu aceeaşi cheie de identitate.</string>
+  <string name="preferences__automatically_complete_key_exchanges_for_new_sessions_or_for_existing_sessions_with_the_same_identity_key">Completează în mod automat schimburile de chei pentru sesiunile noi sau existente cu aceeaşi cheie de identitate</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Blochează screenshot-urile în lista cu aplicaţii recente şi în interiorul applicaţiei</string>
   <string name="preferences__forget_passphrase_from_memory_after_some_interval">Şterge parolele din memorie după un interval de timp</string>
   <string name="preferences__timeout_passphrase">Expiră parola</string>
@@ -541,7 +540,7 @@ Am primit mesajul conform căruia schimbul de chei a avut loc pentru o versiune 
   <string name="preferences__pref_led_blink_title">Tipar de clipire LED</string>
   <string name="preferences__sound">Sunet</string>
   <string name="preferences__change_notification_sound">Schimbă sunetul de notificare</string>
-  <string name="preferences__silent">Silent</string>
+  <string name="preferences__silent">Silențios</string>
   <string name="preferences__in_conversation_notifications">Notificări în conversație</string>
   <string name="preferences__play_inthread_notifications">Redare sunet de notificare în timp ce vizualizați o conversație activă.</string>
   <string name="preferences__repeat_alerts">Repetare alerte</string>

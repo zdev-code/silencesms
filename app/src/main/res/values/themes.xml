@@ -203,6 +203,11 @@
         <item name="pref_ic_advanced">@drawable/ic_advanced_black</item>
 
         <item name="group_members_dialog_icon">@drawable/ic_group_grey600_24dp</item>
+        <item name="recipient_preference_blocked">#d00000</item>
+        <item name="contact_selection_label_text">#66000000</item>
+        <item name="contact_selection_push_user">#ff000000</item>
+        <item name="contact_selection_lay_user">#a0000000</item>
+        <item name="contact_selection_header_text">@color/silence_primary_dark</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Fix</item>
     </style>
 
@@ -317,6 +322,11 @@
         <item name="pref_ic_advanced">@drawable/ic_advanced_gray</item>
 
         <item name="group_members_dialog_icon">@drawable/ic_group_white_24dp</item>
+        <item name="recipient_preference_blocked">#d00000</item>
+        <item name="contact_selection_label_text">#66eeeeee</item>
+        <item name="contact_selection_push_user">#ffeeeeee</item>
+        <item name="contact_selection_lay_user">#afeeeeee</item>
+        <item name="contact_selection_header_text">#66eeeeee</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.Fix</item>
     </style>
 

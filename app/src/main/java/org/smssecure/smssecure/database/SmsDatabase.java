@@ -145,6 +145,13 @@ public class SmsDatabase extends MessagingDatabase {
     }
   }
 
+  public void notifyMessageStateChanged(long id) {
+    long threadId = getThreadIdForMessage(id);
+    if (threadId < 0) return;
+    DatabaseFactory.getThreadDatabase(context).update(threadId, false);
+    notifyConversationListeners(threadId);
+  }
+
   public int getMessageCount() {
     SQLiteDatabase db = databaseHelper.getReadableDatabase();
     Cursor cursor     = null;

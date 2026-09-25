@@ -45,7 +45,7 @@ en mesure de les lire.</string>
     <!--DraftDatabase-->
     <string name="DraftDatabase_Draft_image_snippet">(image)</string>
     <string name="DraftDatabase_Draft_audio_snippet">(audio)</string>
-    <string name="DraftDatabase_Draft_video_snippet">(video)</string>
+    <string name="DraftDatabase_Draft_video_snippet">(vidéo)</string>
     <!--AttchmentManager-->
     <string name="AttachmentManager_cant_open_media_selection">Impossible de trouver une application pour sélectionner le média.</string>
     <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Silence a besoin de la permission Contacts afin de pouvoir joindre des informations sur les contacts, mais cela a été refusé. Veuillez aller dans les paramètres de l\'application, sélectionner « Permissions » et activer « Contacts ».</string>
@@ -97,8 +97,8 @@ en mesure de les lire.</string>
     <string name="ConversationActivity_calls_not_supported">Appels non supportés</string>
     <string name="ConversationActivity_this_device_does_not_appear_to_support_dial_actions">Cet appareil ne semble pas prendre en charge les actions de numérotation.</string>
     <string name="ConversationActivity_cant_open_link">Impossible de trouver une application pour ouvrir ce lien.</string>
-    <string name="ConversationActivity_transport_insecure_sms">SMS non-chiffré</string>
-    <string name="ConversationActivity_transport_insecure_mms">MMS non-chiffré</string>
+    <string name="ConversationActivity_transport_insecure_sms">SMS non chiffré</string>
+    <string name="ConversationActivity_transport_insecure_mms">MMS non chiffré</string>
     <string name="ConversationActivity_transport_secure_sms">SMS chiffré</string>
     <string name="ConversationActivity_transport_secure_mms">MMS chiffré</string>
     <string name="ConversationActivity_install_smssecure">Et si on discutait de manière sécurisée ? %s</string>
@@ -227,13 +227,13 @@ en mesure de les lire.</string>
     <string name="ImportFragment_cancel">Annuler</string>
     <string name="ImportFragment_restore_encrypted_backup">Restaurer une sauvegarde chiffrée ?</string>
     <string name="ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys">La restauration d\'une sauvegarde chiffrée remplacera complètement vos clés existantes, préférences et messages. Vous perdrez toutes les informations qui se trouve dans votre installation de Silence actuelle mais pas dans la sauvegarde. Silence s\'arrêtera après la restauration.</string>
-    <string name="ImportFragment_import_plaintext_backup">Importer une sauvegarde non-chiffrée ?</string>
+    <string name="ImportFragment_import_plaintext_backup">Importer une sauvegarde non chiffrée \?</string>
     <string name="ImportFragment_this_will_import_messages_from_a_plaintext_backup">Ceci importera
 les messages provenant d\'une sauvegarde non-chiffrée. Si vous avez déjà importé la base de données SMS du système,
 l\'importer à nouveau se traduira par des messages dupliqués.</string>
     <string name="ImportFragment_importing">Importation en cours</string>
     <string name="ImportFragment_import_plaintext_backup_elipse">Restauration de la sauvegarde non chiffrée…</string>
-    <string name="ImportFragment_no_plaintext_backup_found">Aucune sauvegarde non-chiffrée trouvée !</string>
+    <string name="ImportFragment_no_plaintext_backup_found">Aucune sauvegarde non chiffrée trouvée !</string>
     <string name="ImportFragment_error_importing_backup">Erreur lors de l\'importation de la sauvegarde !</string>
     <string name="ImportFragment_import_complete">Importation terminée !</string>
     <string name="ImportFragment_restoring_encrypted_backup">Restauration de la sauvegarde chiffrée…</string>
@@ -394,9 +394,9 @@ Réception d\'un message d\'échange de clés pour une version invalide du proto
     <!--conversation_title_view-->
     <!--conversation_activity-->
     <string name="conversation_activity__type_message_sms_secure">Envoyer un SMS chiffré</string>
-    <string name="conversation_activity__type_message_sms_insecure">Envoyer un SMS non-chiffré</string>
+    <string name="conversation_activity__type_message_sms_insecure">Envoyer un SMS non chiffré</string>
     <string name="conversation_activity__type_message_mms_secure">Envoyer un MMS chiffré</string>
-    <string name="conversation_activity__type_message_mms_insecure">Envoyer un MMS non-chiffré</string>
+    <string name="conversation_activity__type_message_mms_insecure">Envoyer un MMS non chiffré</string>
     <string name="conversation_activity__via_sim_name">Avec %1$s</string>
     <string name="conversation_activity__send">Envoyer</string>
     <string name="conversation_activity__compose_description">Rédaction du message</string>
@@ -438,13 +438,13 @@ Réception d\'un message d\'échange de clés pour une version invalide du proto
     <string name="database_migration_activity__importing">IMPORTATION</string>
     <!--database_upgrade_activity-->
     <string name="database_upgrade_activity__updating_database">Mise à jour de la base de donnée…</string>
-    <string name="export_fragment__export_plaintext_backup">Exporter une sauvegarde non-chiffrée</string>
+    <string name="export_fragment__export_plaintext_backup">Exporter une sauvegarde non chiffrée</string>
     <string name="export_fragment__export_a_plaintext_backup_compatible_with">Exporter une sauvegarde en texte clair compatible avec « SMS Backup &amp; Restore » vers le stockage</string>
     <string name="import_fragment__import_system_sms_database">Importer la base de données SMS du système</string>
     <string name="import_fragment__import_the_database_from_the_default_system">Importer la base de données depuis l\'application SMS par défaut</string>
     <string name="import_fragment__restore_encrypted_backup">Restaurer une sauvegarde chiffrée</string>
     <string name="import_fragment__restore_a_previously_exported_encrypted_backup">Restaurer une sauvegarde chiffrée précédemment exportée</string>
-    <string name="import_fragment__import_plaintext_backup">Importer la sauvegarde non-chiffrée</string>
+    <string name="import_fragment__import_plaintext_backup">Importer la sauvegarde non chiffrée</string>
     <string name="import_fragment__import_a_plaintext_backup_file">Importer un fichier de sauvegarde en clair. Compatible avec « SMS Backup &amp; Restore »</string>
     <string name="export_fragment__export_encrypted_backup">Exporter une sauvegarde chiffrée</string>
     <string name="export_fragment__export_an_encrypted_backup_to_storage">Exporter une sauvegarde chiffrée vers l\'espace de stockage</string>
@@ -608,8 +608,8 @@ Réception d\'un message d\'échange de clés pour une version invalide du proto
     <string name="preferences__request_keyboard_to_disable_personalized_learning">Si le mode incognito est activé, le clavier ne retiendra pas, n\'apprendra pas et ne stockera pas les mots que vous écrivez</string>
     <string name="preferences_app_protection__blocked_contacts">Contacts bloqués</string>
     <string name="preferences_notifications__display_in_notifications">Afficher dans les notifications</string>
-    <string name="preferences__show_sent_time">Afficher la date d\'envoi</string>
-    <string name="preferences__show_sent_time_instead_of_received_time_in_conversations">Afficher la l\'heure d\'envoi au lieu de celle de réception des messages</string>
+    <string name="preferences__show_sent_time">Afficher l\'heure d\'envoi</string>
+    <string name="preferences__show_sent_time_instead_of_received_time_in_conversations">Afficher l\'heure d\'envoi au lieu de celle de réception des messages</string>
     <string name="preferences__hide_unread_message_divider">Masquer le séparateur pour les messages non lus</string>
     <string name="preferences_chats__mms">MMS</string>
     <string name="preferences__auto_retrieve">Récupération auto</string>

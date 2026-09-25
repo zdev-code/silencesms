@@ -119,11 +119,11 @@ public class MessageRecipientListItem extends RelativeLayout
       resendButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          Context appContext = getContext().getApplicationContext();
-          AppTaskExecutor.getInstance().submitSerial(() -> {
-            MessageSender.resend(appContext, masterSecret, record);
-            return null;
-          }, ignored -> {}, exception -> Log.w(TAG, "Failed to resend message", exception));
+          AppTaskExecutor.getInstance().submitSerial(
+              () -> !record.isMms() && DatabaseFactory.getSmsSendAttemptDatabase(getContext())
+                  .requiresManualResendWarning(record.getId()),
+              required -> confirmOrResend(masterSecret, record, required),
+              exception -> Log.w(TAG, "Unable to check SMS resend outcome", exception));
         }
       });
     } else {
@@ -133,6 +133,29 @@ public class MessageRecipientListItem extends RelativeLayout
 
     errorDescription.setText(errorText);
     errorDescription.setVisibility(TextUtils.isEmpty(errorText) ? View.GONE : View.VISIBLE);
+  }
+
+  private void confirmOrResend(MasterSecret masterSecret, MessageRecord record, boolean required) {
+    if (required) {
+      new androidx.appcompat.app.AlertDialog.Builder(getContext())
+          .setIconAttribute(R.attr.dialog_alert_icon)
+          .setTitle(R.string.sms_resend_may_duplicate_title)
+          .setMessage(R.string.sms_resend_may_duplicate_message)
+          .setPositiveButton(R.string.sms_resend_anyway,
+              (dialog, which) -> resend(masterSecret, record))
+          .setNegativeButton(R.string.no, null)
+          .show();
+    } else {
+      resend(masterSecret, record);
+    }
+  }
+
+  private void resend(MasterSecret masterSecret, MessageRecord record) {
+          Context appContext = getContext().getApplicationContext();
+          AppTaskExecutor.getInstance().submitSerial(() -> {
+            MessageSender.resend(appContext, masterSecret, record);
+            return null;
+          }, ignored -> {}, exception -> Log.w(TAG, "Failed to resend message", exception));
   }
 
   private NetworkFailure getNetworkFailure(final MessageRecord record) {

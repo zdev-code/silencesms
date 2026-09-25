@@ -760,6 +760,9 @@
     <string name="preferences__make_silence_the_default_sms_mms_app">Make Silence the default SMS/MMS application for your system.</string>
     <string name="preferences__submit_debug_log">Submit debug log</string>
     <string name="preferences__support_wifi_calling">\'Wi-Fi Calling\' compatibility mode</string>
+    <string name="sms_resend_may_duplicate_title" tools:ignore="MissingTranslation">Message may already have been sent</string>
+    <string name="sms_resend_may_duplicate_message" tools:ignore="MissingTranslation">Some or all parts may have reached the recipient. Sending again could create a duplicate.</string>
+    <string name="sms_resend_anyway" tools:ignore="MissingTranslation">Send again</string>
     <string name="preferences__enable_if_your_device_supports_sms_mms_delivery_over_wifi">Enable if your device uses SMS/MMS delivery over Wi-Fi (only enable when \'Wi-Fi Calling\' is enabled on your device).</string>
     <string name="preferences__about">About Silence</string>
     <string name="preferences__about_version">Version %s</string>

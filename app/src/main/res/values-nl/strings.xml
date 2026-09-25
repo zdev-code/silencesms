@@ -119,9 +119,13 @@ Let op, dit schakelt opslagversleuteling uit voor alle berichten en sleutels. Je
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">Opslaan?</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">Het opslaan van dit mediabestand maakt het toegankelijk voor alle apps op je telefoon.t.\n\nDoorgaan?</item>
-    <item quantity="other">Het opslaan van deze %1$d mediabestanden maakt ze toegankelijk voor alle apps op je telefoon.t.\n\nDoorgaan?</item>
-  </plurals>
+        <item quantity="one">Het opslaan van dit mediabestand maakt het toegankelijk voor alle apps op je telefoon.
+\n
+\nDoorgaan\?</item>
+        <item quantity="other">Het opslaan van deze %1$d mediabestanden maakt ze toegankelijk voor alle apps op je telefoon.
+\n
+\nDoorgaan\?</item>
+    </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
     <item quantity="one">Fout tijdens het opslaan van de bijlage!</item>
     <item quantity="other">Fout tijdens het opslaan van de bijlagen!</item>

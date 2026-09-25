@@ -1,14 +1,9 @@
 package org.smssecure.smssecure.jobs;
 
-import android.app.Activity;
 import android.content.Context;
-import android.telephony.SmsManager;
 import android.util.Log;
 
-import org.smssecure.smssecure.ApplicationContext;
 import org.smssecure.smssecure.crypto.MasterSecret;
-import org.smssecure.smssecure.crypto.SecurityEvent;
-import org.smssecure.smssecure.crypto.storage.VendoredSessionStore;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.EncryptingSmsDatabase;
 import org.smssecure.smssecure.database.NoSuchMessageException;
@@ -16,9 +11,7 @@ import org.smssecure.smssecure.database.model.SmsMessageRecord;
 import org.smssecure.smssecure.jobs.requirements.MasterSecretRequirement;
 import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.service.SmsDeliveryListener;
-import org.smssecure.smssecure.util.SilencePreferences;
 import org.whispersystems.jobqueue.JobParameters;
-import org.whispersystems.libsignal.state.SessionStore;
 
 public class SmsSentJob extends MasterSecretJob {
 
@@ -48,12 +41,17 @@ public class SmsSentJob extends MasterSecretJob {
   public void onRun(MasterSecret masterSecret) {
     Log.w(TAG, "Got SMS callback: " + action + " , " + result);
 
+    if (DatabaseFactory.getSmsSendAttemptDatabase(context).hasAttemptForMessage(messageId)) {
+      Log.w(TAG, "Ignoring legacy callback for attempt-owned message");
+      return;
+    }
+
     switch (action) {
       case SmsDeliveryListener.SENT_SMS_ACTION:
         handleSentResult(masterSecret, messageId, result);
         break;
       case SmsDeliveryListener.DELIVERED_SMS_ACTION:
-        handleDeliveredResult(masterSecret, messageId, result);
+        handleDeliveredResult(messageId, result);
         break;
     }
   }
@@ -68,50 +66,18 @@ public class SmsSentJob extends MasterSecretJob {
 
   }
 
-  private void handleDeliveredResult(MasterSecret masterSecret, long messageId, int result) {
-    try {
-      EncryptingSmsDatabase database      = DatabaseFactory.getEncryptingSmsDatabase(context);
-      SmsMessageRecord      record        = database.getMessage(masterSecret, messageId);
-      String                recipientName = (record.getIndividualRecipient().getName() == null ? record.getIndividualRecipient().getNumber() : record.getIndividualRecipient().getName());
-
-      if (!record.isDelivered() && SilencePreferences.isSmsDeliveryReportsToastEnabled(context)){
-        MessageNotifier.sendDeliveryToast(context, recipientName);
-      }
-      DatabaseFactory.getEncryptingSmsDatabase(context).markAsReceived(messageId);
-    } catch (NoSuchMessageException e) {
-      Log.w(TAG, e);
-    }
+  private void handleDeliveredResult(long messageId, int result) {
+    Log.w(TAG, "Ignoring non-authoritative legacy delivery callback for message " + messageId +
+        " result=" + result);
   }
 
   private void handleSentResult(MasterSecret masterSecret, long messageId, int result) {
     try {
       EncryptingSmsDatabase database = DatabaseFactory.getEncryptingSmsDatabase(context);
       SmsMessageRecord      record   = database.getMessage(masterSecret, messageId);
-
-      switch (result) {
-        case Activity.RESULT_OK:
-          database.markAsSent(messageId, record.isSecure());
-
-          if (record != null && record.isEndSession()) {
-            Log.w(TAG, "Ending session...");
-            SessionStore sessionStore = new VendoredSessionStore(context, masterSecret, record.getSubscriptionId());
-            sessionStore.deleteAllSessions(record.getIndividualRecipient().getNumber());
-            SecurityEvent.broadcastSecurityUpdateEvent(context, record.getThreadId());
-          }
-
-          break;
-        case SmsManager.RESULT_ERROR_NO_SERVICE:
-        case SmsManager.RESULT_ERROR_RADIO_OFF:
-          Log.w(TAG, "Service connectivity problem, requeuing...");
-          ApplicationContext.getInstance(context)
-              .getJobManager()
-              .add(new SmsSendJob(context, messageId, record.getIndividualRecipient().getNumber()));
-
-          break;
-        default:
-          database.markAsSentFailed(messageId);
-          MessageNotifier.notifyMessageDeliveryFailed(context, record.getRecipients(), record.getThreadId());
-      }
+      Log.w(TAG, "Legacy sent callback cannot establish whole-message outcome; refusing automatic retry");
+      database.markAsSentFailed(messageId);
+      MessageNotifier.notifyMessageDeliveryFailed(context, record.getRecipients(), record.getThreadId());
     } catch (NoSuchMessageException e) {
       Log.w(TAG, e);
     }

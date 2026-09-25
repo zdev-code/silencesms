@@ -95,7 +95,7 @@ public class MultipartSmsMessageHandler {
       else if (transportMessage.isSinglePart()) return processMessage(transportMessage);
       else                                      return processLegacyMultipartMessage(transportMessage);
       //return processSinglePartMessage(transportMessage);
-    } catch (IOException e) {
+    } catch (IOException | RuntimeException e) {
       Log.w(TAG, e);
       return message;
     }

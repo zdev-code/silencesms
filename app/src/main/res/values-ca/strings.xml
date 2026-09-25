@@ -5,11 +5,11 @@
   <string name="delete">Esborra</string>
   <!--AbstractNotificationBuilder-->
   <!--ApplicationPreferencesActivity-->
-  <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Encara no has establert cap frase contrasenya!</string>
+  <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Encara no has establert cap contrasenya!</string>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Esborrar ara els missatges antics?</string>
   <string name="ApplicationPreferencesActivity_delete">Esborra</string>
-  <string name="ApplicationPreferencesActivity_disable_storage_encryption">Desactivar l\'encriptació del magatzem de dades?</string>
-  <string name="ApplicationPreferencesActivity_warning_this_will_disable_storage_encryption_for_all_messages">Alerta, això desactivarà l\'emmagatzematge encriptat per a tots els missatges i claus. Les teves sessions continuaran funcionant, però qualsevol persona amb accés físic al teu dispositiu podrà accedir-hi.</string>
+  <string name="ApplicationPreferencesActivity_disable_storage_encryption">Desactivar el xifrat del magatzem de dades\?</string>
+  <string name="ApplicationPreferencesActivity_warning_this_will_disable_storage_encryption_for_all_messages">Alerta, això desactivarà l\'emmagatzematge xifrat per a tots els missatges i claus. Les teves sessions continuaran funcionant, però qualsevol persona amb accés físic al teu dispositiu podrà accedir-hi.</string>
   <string name="ApplicationPreferencesActivity_disable">Desactiva</string>
   <!--AppProtectionPreferenceFragment-->
   <!--DraftDatabase-->
@@ -252,4 +252,16 @@
   <!--Trimmer-->
   <!--transport_selection_list_item-->
   <!--EOF-->
+    <string name="ApplicationPreferencesActivity_On">Establert</string>
+    <string name="ApplicationPreferencesActivity_on">establert</string>
+    <string name="ApplicationPreferencesActivity_tap_to_make_silence_your_default_sms_app">Toca per fer que Silence sigui l\'aplicació de SMS per defecte</string>
+    <string name="ApplicationPreferencesActivity_sms_disabled">SMS entrant desactivat</string>
+    <string name="ApplicationPreferencesActivity_tap_to_change_your_default_sms_app">Toca per canviar l\'aplicació de SMS per defecte</string>
+    <string name="ApplicationPreferencesActivity_sms_enabled">SMS entrant activat</string>
+    <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
+        <item quantity="one">L\'acció deixarà només el missatge més recent.</item>
+        <item quantity="other">L\'acció deixarà només els %d missatges més recents.</item>
+    </plurals>
+    <string name="AbstractNotificationBuilder_new_message">Missatge nou</string>
+    <string name="please_wait">Espera…</string>
 </resources>

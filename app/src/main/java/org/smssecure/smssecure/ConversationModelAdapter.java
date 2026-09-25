@@ -43,6 +43,8 @@ public final class ConversationModelAdapter
   private static final int MESSAGE_TYPE_UPDATE = 2;
   private static final int MESSAGE_TYPE_AUDIO_OUTGOING = 3;
   private static final int MESSAGE_TYPE_AUDIO_INCOMING = 4;
+  private static final int MESSAGE_TYPE_THUMBNAIL_OUTGOING = 5;
+  private static final int MESSAGE_TYPE_THUMBNAIL_INCOMING = 6;
   private static final int FOOTER_TYPE = Integer.MIN_VALUE + 1;
   private static final long FOOTER_ID = Long.MIN_VALUE + 1;
 
@@ -109,7 +111,7 @@ public final class ConversationModelAdapter
   public void setMessages(List<ConversationMessageRow> rows, Set<String> selectedIds) {
     this.rows = List.copyOf(rows);
     this.selectedIds = Set.copyOf(selectedIds);
-    cache.keySet().retainAll(this.rows.stream().map(ConversationMessageRow::getStableId).toList());
+    cache.clear();
     // This replaces the complete ordered snapshot and selection state.
     //noinspection NotifyDataSetChanged
     notifyDataSetChanged();
@@ -165,6 +167,8 @@ public final class ConversationModelAdapter
     if (record.isGroupAction()) return MESSAGE_TYPE_UPDATE;
     if (hasAudio(record)) return record.isOutgoing() ? MESSAGE_TYPE_AUDIO_OUTGOING
                                                      : MESSAGE_TYPE_AUDIO_INCOMING;
+    if (hasThumbnail(record)) return record.isOutgoing() ? MESSAGE_TYPE_THUMBNAIL_OUTGOING
+                                                         : MESSAGE_TYPE_THUMBNAIL_INCOMING;
     return record.isOutgoing() ? MESSAGE_TYPE_OUTGOING : MESSAGE_TYPE_INCOMING;
   }
 
@@ -178,7 +182,7 @@ public final class ConversationModelAdapter
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     if (viewType == FOOTER_TYPE) return new FooterViewHolder(footer);
     ConversationItem item = ViewUtil.inflate(inflater, parent, getLayoutForViewType(viewType));
-    if (viewType == MESSAGE_TYPE_INCOMING || viewType == MESSAGE_TYPE_OUTGOING) {
+    if (viewType != MESSAGE_TYPE_UPDATE) {
       if (clickListener != null) item.setMediaClickListener(clickListener);
       item.setOnClickListener(view -> {
         if (clickListener != null) clickListener.onItemClick(item);
@@ -209,8 +213,10 @@ public final class ConversationModelAdapter
   private @LayoutRes int getLayoutForViewType(int viewType) {
     switch (viewType) {
       case MESSAGE_TYPE_AUDIO_OUTGOING:
+      case MESSAGE_TYPE_THUMBNAIL_OUTGOING:
       case MESSAGE_TYPE_OUTGOING: return R.layout.conversation_item_sent;
       case MESSAGE_TYPE_AUDIO_INCOMING:
+      case MESSAGE_TYPE_THUMBNAIL_INCOMING:
       case MESSAGE_TYPE_INCOMING: return R.layout.conversation_item_received;
       case MESSAGE_TYPE_UPDATE: return R.layout.conversation_item_update;
       default: throw new IllegalArgumentException("Unsupported conversation item type");
@@ -231,6 +237,11 @@ public final class ConversationModelAdapter
   private static boolean hasAudio(MessageRecord record) {
     return record.isMms() && !record.isMmsNotification() &&
         ((MediaMmsMessageRecord) record).getSlideDeck().getAudioSlide() != null;
+  }
+
+  private static boolean hasThumbnail(MessageRecord record) {
+    return record.isMms() && !record.isMmsNotification() &&
+        ((MediaMmsMessageRecord) record).getSlideDeck().getThumbnailSlide() != null;
   }
 
   @Override

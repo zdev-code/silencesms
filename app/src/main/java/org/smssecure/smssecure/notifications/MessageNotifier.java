@@ -137,6 +137,16 @@ public class MessageNotifier {
     }
   }
 
+  public static void notifyMessageDeliveryFailedForReplay(Context context, Recipients recipients, long threadId) {
+    Intent intent = HostNavigationCommand.createConversationIntent(
+        context, recipients.getIds(), threadId, ThreadDatabase.DistributionTypes.DEFAULT,
+        false, 0L, 0L, null);
+    intent.setData(Uri.parse("custom://sms-failure/" + threadId));
+    FailedNotificationBuilder builder = new FailedNotificationBuilder(
+        context, SilencePreferences.getNotificationPrivacy(context), intent);
+    notifyWithPermissionCheck(context, (int) threadId, builder.build());
+  }
+
   private static void cancelActiveNotifications(@NonNull Context context) {
     NotificationManager notifications = ServiceUtil.getNotificationManager(context);
     notifications.cancel(SUMMARY_NOTIFICATION_ID);

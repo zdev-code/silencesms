@@ -730,4 +730,13 @@ Prijatá správa výmeny kľúčov s nesprávnou verziou protokolu.</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Transportná ikona</string>
   <!--EOF-->
+    <string name="Permissions_not_now">Teraz nie</string>
+    <string name="Permissions_continue">Pokračovať</string>
+    <string name="message_details_header__from">Od</string>
+    <string name="message_details_header__to">Pre</string>
+    <string name="message_details_header__type">Typ</string>
+    <string name="conversation_activity__via_sim_name">Cez %1$s</string>
+    <string name="contact_selection_list_fragment__show_contacts">Ukázať kontakty</string>
+    <string name="WelcomeActivity_continue">Pokračovať</string>
+    <string name="ConversationItem_via_s">cez %s</string>
 </resources>

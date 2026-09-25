@@ -418,7 +418,28 @@ public class ConversationFragment extends Fragment {
   }
 
   private void handleResendMessage(final MessageRecord message) {
-    viewModel.resend(message, new ConversationUnlockCapability(unlockSession));
+    viewModel.checkManualResendWarning(message,
+        new org.smssecure.smssecure.data.conversationthread.ConversationThreadRepository.ResendWarningCallback() {
+      @Override public void onResult(boolean required) {
+        if (!isAdded()) return;
+        if (required) {
+      new AlertDialog.Builder(requireContext())
+          .setIconAttribute(R.attr.dialog_alert_icon)
+          .setTitle(R.string.sms_resend_may_duplicate_title)
+          .setMessage(R.string.sms_resend_may_duplicate_message)
+          .setPositiveButton(R.string.sms_resend_anyway, (dialog, which) ->
+              viewModel.resend(message, new ConversationUnlockCapability(unlockSession)))
+          .setNegativeButton(R.string.no, null)
+          .show();
+        } else {
+          viewModel.resend(message, new ConversationUnlockCapability(unlockSession));
+        }
+      }
+
+      @Override public void onFailure(Exception exception) {
+        Log.w(TAG, "Unable to check SMS resend outcome", exception);
+      }
+    });
   }
 
   private void handleSaveAttachment(final MediaMmsMessageRecord message) {
