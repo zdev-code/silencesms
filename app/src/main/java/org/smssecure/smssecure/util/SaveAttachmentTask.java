@@ -77,14 +77,14 @@ public final class SaveAttachmentTask {
     switch (result) {
       case FAILURE:
         Toast.makeText(context,
-                       context.getResources().getQuantityText(R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card,
-                                                              attachmentCount),
+                       context.getResources().getQuantityString(R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card,
+                                                                attachmentCount, attachmentCount),
                        Toast.LENGTH_LONG).show();
         break;
       case SUCCESS:
         Toast.makeText(context,
-                       context.getResources().getQuantityText(R.plurals.ConversationFragment_files_saved_successfully,
-                                                              attachmentCount),
+                       context.getResources().getQuantityString(R.plurals.ConversationFragment_files_saved_successfully,
+                                                                attachmentCount, attachmentCount),
                        Toast.LENGTH_LONG).show();
         break;
       case WRITE_ACCESS_FAILURE:

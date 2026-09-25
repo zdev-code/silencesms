@@ -9,14 +9,14 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Niste še nastavili gesla!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">eno sporočilo v pogovoru</item>
+    <item quantity="one">%d sporočilo v pogovoru</item>
     <item quantity="two">%d sporočili v pogovoru</item>
     <item quantity="few">%d sporočila v pogovoru</item>
     <item quantity="other">%d sporočil v pogovoru</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Izbrišem stara sporočila?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-    <item quantity="one">To bo nemudoma obrezalo vse pogovore na zadnjega.</item>
+    <item quantity="one">To bo nemudoma obrezalo vse pogovore na %d nedavno sporočilo.</item>
     <item quantity="two">To bo nemudoma obrezalo vse pogovore na %d nedavna.</item>
     <item quantity="few">To bo nemudoma obrezalo vse pogovore na %d nedavne.</item>
     <item quantity="other">To bo nemudoma obrezalo vse pogovore na %d nedavnih.</item>
@@ -41,7 +41,7 @@ Pozor, s tem boste onemogočili šifriranje sporočil in ključev v pomnilniku n
   <string name="ApplicationPreferencesActivity_appearance_summary">Tema: %1$s, Jezik: %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">ena minuta</item>
+    <item quantity="one">%d minuta</item>
     <item quantity="two">%d minuti</item>
     <item quantity="few">%d minute</item>
     <item quantity="other">%d minut</item>
@@ -92,7 +92,7 @@ Pozor, s tem boste onemogočili šifriranje sporočil in ključev v pomnilniku n
   <string name="ConversationActivity_group_conversation">Skupinski pogovor</string>
   <string name="ConversationActivity_unnamed_group">Skupina brez imena</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">en član</item>
+    <item quantity="one">%d član</item>
     <item quantity="two">%d člana</item>
     <item quantity="few">%d člani</item>
     <item quantity="other">%d članov</item>
@@ -118,45 +118,45 @@ Pozor, s tem boste onemogočili šifriranje sporočil in ključev v pomnilniku n
   </plurals>
   <!--ConversationFragment-->
   <plurals name="ConversationFragment_delete_selected_messages">
-    <item quantity="one">Izbrišem izbrano sporočilo?</item>
-    <item quantity="two">Izbrišem izbrani sporočili?</item>
+    <item quantity="one">Izbrišem %d izbrano sporočilo?</item>
+    <item quantity="two">Izbrišem %d izbrani sporočili?</item>
     <item quantity="few">Izbrišem izbrana sporočila?</item>
     <item quantity="other">Izbrišem izbrana sporočila?</item>
   </plurals>
   <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-    <item quantity="one">To bo nepovratno izbrisalo izbrano sporočilo.</item>
+    <item quantity="one">To bo nepovratno izbrisalo %1$d izbrano sporočilo.</item>
     <item quantity="two">To bo nepovratno izbrisalo %1$d izbrani sporočili.</item>
     <item quantity="few">To bo nepovratno izbrisalo vsa %1$d izbrana sporočila.</item>
     <item quantity="other">To bo nepovratno izbrisalo vseh %1$d izbranih sporočil.</item>
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">Spravim v sistemsko shrambo?</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">Shranitev datoteke v sistemsko shrambo bo omogočila dostop do nje vsaki aplikaciji na vaši napravi.\n\nNadaljujem?</item>
+    <item quantity="one">Shranitev %1$d datoteke v sistemsko shrambo bo omogočila dostop do nje vsaki aplikaciji na vaši napravi.\n\nNadaljujem?</item>
     <item quantity="two">Shranitev datotek (%1$d) v sistemsko shrambo bo omogočila dostop do njiju vsaki aplikaciji na vaši napravi.\n\nNadaljujem?</item>
     <item quantity="few">Shranitev vseh %1$d datotek v sistemsko shrambo bo omogočila dostop do njih vsaki aplikaciji na vaši napravi.\n\nNadaljujem?</item>
     <item quantity="other">Shranitev vseh %1$d datotek v sistemsko shrambo bo omogočila dostop do njih vsaki aplikaciji na vaši napravi.\n\nNadaljujem?</item>
   </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-    <item quantity="one">Napaka pri shranjevanju priponke v shrambo!</item>
-    <item quantity="two">Napaka pri shranjevanju priponk v shrambo!</item>
+    <item quantity="one">Napaka pri shranjevanju %d priponke v shrambo!</item>
+    <item quantity="two">Napaka pri shranjevanju %d priponk v shrambo!</item>
     <item quantity="few">Napaka pri shranjevanju priponk v shrambo!</item>
     <item quantity="other">Napaka pri shranjevanju priponk v shrambo!</item>
   </plurals>
   <plurals name="ConversationFragment_files_saved_successfully">
-    <item quantity="one">Datoteka je bila uspešno shranjena.</item>
-    <item quantity="two">Datoteki sta bili uspešno shranjeni.</item>
+    <item quantity="one">%d datoteka je bila uspešno shranjena.</item>
+    <item quantity="two">%d datoteki sta bili uspešno shranjeni.</item>
     <item quantity="few">Datoteke so bile uspešno shranjene.</item>
     <item quantity="other">Datoteke so bile uspešno shranjene.</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Ne morem shranjevati v sistemsko shrambo!</string>
   <plurals name="ConversationFragment_saving_n_attachments">
-    <item quantity="one">Shranjujem priponko</item>
+    <item quantity="one">Shranjujem %1$d priponko</item>
     <item quantity="two">Shranjujem %1$d priponki</item>
     <item quantity="few">Shranjujem %1$d priponke</item>
     <item quantity="other">Shranjujem %1$d priponk</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">Shranjujem priponko v shrambo…</item>
+    <item quantity="one">Shranjujem %1$d priponko v shrambo…</item>
     <item quantity="two">Shranjujem %1$d priponki v shrambo…</item>
     <item quantity="few">Shranjujem %1$d priponke v shrambo…</item>
     <item quantity="other">Shranjujem %1$d priponk v shrambo…</item>
@@ -171,13 +171,13 @@ Pozor, s tem boste onemogočili šifriranje sporočil in ključev v pomnilniku n
   <string name="ConversationListActivity_search">Iskanje</string>
   <!--ConversationListFragment-->
   <plurals name="ConversationListFragment_delete_selected_conversations">
-    <item quantity="one">Izbrišem izbran pogovor?</item>
-    <item quantity="two">Izbrišem izbrana pogovora?</item>
+    <item quantity="one">Izbrišem %d izbran pogovor?</item>
+    <item quantity="two">Izbrišem %d izbrana pogovora?</item>
     <item quantity="few">Izbrišem izbrane pogovore?</item>
     <item quantity="other">Izbrišem izbrane pogovore?</item>
   </plurals>
   <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-    <item quantity="one">To bo nepovratno izbrisalo izbrani pogovor.</item>
+    <item quantity="one">To bo nepovratno izbrisalo %1$d izbrani pogovor.</item>
     <item quantity="two">To bo nepovratno izbrisalo %1$d izbrana pogovora.</item>
     <item quantity="few">To bo nepovratno izbrisalo vse %1$d izbrane pogovore.</item>
     <item quantity="other">To bo nepovratno izbrisalo vseh %1$d izbranih pogovorov.</item>
@@ -185,14 +185,14 @@ Pozor, s tem boste onemogočili šifriranje sporočil in ključev v pomnilniku n
   <string name="ConversationListFragment_deleting">Brisanje</string>
   <string name="ConversationListFragment_deleting_selected_conversations">Brišem izbrana sporočila…</string>
   <plurals name="ConversationListFragment_conversations_archived">
-    <item quantity="one">Pogovor arhiviran</item>
+    <item quantity="one">%d pogovor arhiviran</item>
     <item quantity="two">%d pogovora arhivirana</item>
     <item quantity="few">%d pogovori arhivirani</item>
     <item quantity="other">%d pogovorov arhiviranih</item>
   </plurals>
   <string name="ConversationListFragment_undo">RAZVELJAVI</string>
   <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-    <item quantity="one">Pogovor je premaknjen v nabiralnik</item>
+    <item quantity="one">%d pogovor je premaknjen v nabiralnik</item>
     <item quantity="two">%d pogovora premaknjena v nabiralnik</item>
     <item quantity="few">%d pogovori premaknjeni v nabiralnik</item>
     <item quantity="other">%d pogovorov premaknjeno v nabiralnik</item>
@@ -748,5 +748,77 @@ Prejeto sporočilo za izmenjavo ključev za napačno različico protokola.</stri
   <string name="Permissions_permission_required">Zahtevano dovoljenje</string>
   <string name="Permissions_continue">Nadaljuj</string>
   <string name="Permissions_not_now">Ne zdaj</string>
+  <string name="AppProtectionPreferenceFragment_hours">h</string>
+  <string name="AppProtectionPreferenceFragment_minutes_short">min</string>
+  <string name="AppProtectionPreferenceFragment_seconds">s</string>
+  <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Časovna omejitev neaktivnosti</string>
+  <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Aplikacija Silence potrebuje dovoljenje za dostop do stikov, da lahko priloži podatke o stiku, vendar je bilo to dovoljenje trajno zavrnjeno. Prosimo, pojdite v meni Nastavitve aplikacij, izberite \"Dovoljenja\" in omogočite dovoljenje pod postavko \"Stiki\".</string>
+  <string name="ConversationItem_via_s">prek %s</string>
+  <string name="WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms">Aplikacija Silence potrebuje dostop do vaših stikov, stanja telefona in sporočil SMS, da se lahko povežete s prijatelji, upravljate šifrirne ključe in klepetate.</string>
+  <string name="WelcomeActivity_action_required">Potrebno je ukrepanje!</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence">Aplikaciji Silence morate odobriti nekatera dovoljenja.</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it">Za nadaljnjo uporabo morate aplikaciji Silence odobriti nekatera dovoljenja. Tapnite za nadaljevanje.</string>
+  <string name="WelcomeActivity_silence_needs_the_phone_permission_in_order_to_manage_encryption_keys_and_bind_them_to_your_sim_cards_and_sms_permission_in_order_to_receive_sms_messages">Aplikacija Silence potrebuje dovoljenje za telefon, da lahko upravlja šifrirne ključe in jih poveže z vašimi karticami SIM, ter dovoljenje za SMS, da lahko prejema sporočila SMS.</string>
+  <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">Aplikacija Silence za delovanje potrebuje dovoljenji za telefon in SMS, vendar sta bili trajno zavrnjeni. Prosimo, pojdite v nastavitve aplikacije, izberite \"Dovoljenja\" in omogočite \"Telefon\" in \"SMS\".</string>
+  <string name="ExportFragment_store_recovery_key">Ta obnovitveni ključ shranite v upravitelja gesel ali na drugo varno mesto. Potreben je za obnovo te varnostne kopije in ni shranjen v njej.</string>
+  <string name="ExportFragment_choose_recovery_key">Izberite obnovitveni ključ</string>
+  <string name="ExportFragment_choose_recovery_key_message">Uporabite obnovitveni ključ samodejnih varnostnih kopij, da en ključ obnovi obe vrsti varnostnih kopij, ali ustvarite ločen ključ za ta izvoz.</string>
+  <string name="ExportFragment_use_automatic_key">Uporabi samodejni ključ</string>
+  <string name="ExportFragment_use_new_key">Uporabi nov ključ</string>
+  <string name="ExportFragment_automatic_key_unavailable">Obnovitveni ključ samodejnih varnostnih kopij ni na voljo.</string>
+  <string name="ImportFragment_backup_already_imported">Ni bilo najdenih novih sporočil. Obstoječa sporočila niso bila ponovno uvožena.</string>
+  <string name="ImportFragment_recovery_key">Obnovitveni ključ</string>
+  <string name="ImportFragment_invalid_recovery_key">Neveljaven obnovitveni ključ.</string>
+  <string name="AutomaticBackup_failure_title">Samodejno varnostno kopiranje ni uspelo</string>
+  <string name="AutomaticBackup_failure_message">Odprite nastavitve varnostnega kopiranja aplikacije Silence in izberite razpoložljiv cilj.</string>
+  <string name="AutomaticBackup_enable">Omogoči samodejne šifrirane varnostne kopije</string>
+  <string name="AutomaticBackup_disable">Onemogoči samodejne šifrirane varnostne kopije</string>
+  <string name="AutomaticBackup_description">Med polnjenjem vsak dan ustvari varnostno kopijo in obdrži pet najnovejših kopij.</string>
+  <string name="AutomaticBackup_store_recovery_key">Ta obnovitveni ključ shranite v upravitelja gesel ali na drugo varno mesto. Brez njega samodejnih varnostnih kopij ni mogoče obnoviti.</string>
+  <string name="AutomaticBackup_reuse_recovery_key">Samodejne varnostne kopije bodo še naprej uporabljale spodaj prikazani obnovitveni ključ, tako da lahko z njim obnovite varnostne kopije izpred premora in po njem.</string>
+  <string name="AutomaticBackup_select_directory">Izberite mapo za varnostne kopije</string>
+  <string name="AutomaticBackup_disable_message">Prihodnje samodejne varnostne kopije se ne bodo več ustvarjale. Obstoječe datoteke varnostnih kopij ne bodo izbrisane, obnovitveni ključ pa bo ohranjen, tako da bo ob ponovnem vklopu uporabljen isti ključ.</string>
+  <string name="AutomaticBackup_enable_failed">Samodejnih varnostnih kopij ni mogoče omogočiti.</string>
+  <string name="KeyScanningActivity_no_identity_key">Identifikacijski ključ ni na voljo.</string>
+  <string name="KeyScanningActivity_unable_to_generate_qr_code">Kode QR ni mogoče ustvariti.</string>
+  <string name="master_secret_storage_error">Šifrirnega ključa ni mogoče shraniti. Vaše prejšnje nastavitve so ostale nespremenjene.</string>
+  <string name="retry">Poskusi znova</string>
+  <string name="PassphrasePromptActivity_unlocking">Odklepam</string>
+  <string name="NotificationChannel_messages">Sporočila</string>
+  <string name="NotificationChannel_failures">Napake</string>
+  <string name="NotificationChannel_locked_status">Stanje zaklepa</string>
+  <string name="NotificationChannel_other">Drugo</string>
+  <string name="conversation_activity__via_sim_name">Prek %1$s</string>
+  <string name="log_submit_activity__button_dont_share">Ne deli</string>
+  <string name="log_submit_activity__button_share">Deli</string>
+  <string name="log_submit_activity__this_log_will_be_shared">Ta diagnostični dnevnik bo deljen z aplikacijo, ki jo izberete. Pred deljenjem ga lahko pregledate in uredite.</string>
+  <string name="log_submit_activity__loading_logs">Nalagam dnevnike…</string>
+  <string name="log_submit_activity__choose_share_app">Deli diagnostični dnevnik</string>
+  <string name="log_submit_activity__share_failed">Diagnostičnega dnevnika ni bilo mogoče pripraviti za deljenje.</string>
+  <string name="ConversationListFragment_load_failed">Pogovorov ni mogoče naložiti.</string>
+  <string name="ConversationListFragment_delete_failed">Izbranih pogovorov ni mogoče izbrisati.</string>
+  <string name="ConversationListFragment_send_drafts_failed">Izbranih osnutkov ni mogoče poslati.</string>
+  <string name="ConversationListFragment_mutation_failed">Izbranih pogovorov ni mogoče posodobiti.</string>
+  <string name="ConversationListFragment_operation_locked">Aplikacija Silence je zaklenjena. Odklenite jo in poskusite znova.</string>
+  <string name="message_details_header__type">Vrsta</string>
+  <string name="message_details_header__to">Za</string>
+  <string name="message_details_header__from">Od</string>
+  <string name="message_details_header__with">Z</string>
+  <string name="preferences__system_theme">Sistemsko privzeto</string>
+  <string name="sms_resend_may_duplicate_title">Sporočilo je morda že bilo poslano</string>
+  <string name="sms_resend_may_duplicate_message">Nekateri ali vsi deli so morda že prispeli do prejemnika. Ponovno pošiljanje lahko ustvari dvojnik.</string>
+  <string name="sms_resend_anyway">Pošlji znova</string>
+  <string name="preferences_advanced__always_ask_for_sim_card">Vedno vprašaj za kartico SIM</string>
+  <string name="preferences_advanced__always_ask_for_the_sim_card_to_use_when_sending_messages">Pri pošiljanju sporočil vedno vprašaj, katero kartico SIM uporabiti</string>
+  <string name="accessibility__unread_message_count">Število neprebranih sporočil</string>
+  <string name="accessibility__search">Iskanje</string>
+  <string name="accessibility__switch_to_dialpad">Preklopi na številčnico</string>
+  <string name="accessibility__switch_to_keyboard">Preklopi na tipkovnico</string>
+  <string name="accessibility__clear_search">Počisti iskanje</string>
+  <string name="accessibility__cached_key">Šifrirni ključ je v predpomnilniku</string>
+  <string name="accessibility__remove_attachment">Odstrani priponko</string>
+  <string name="accessibility__select_recipients">Izberite prejemnike</string>
+  <string name="accessibility__scroll_handle">Ročica za drsenje</string>
+  <string name="accessibility__delete_recipient">Izbriši prejemnika</string>
   <!--EOF-->
 </resources>

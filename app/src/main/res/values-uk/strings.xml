@@ -16,7 +16,7 @@
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Вилучити всі старі повідомлення зараз?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-    <item quantity="one">Це одразу вкоротить усі розмови до найновішого повідомлення.</item>
+    <item quantity="one">Це одразу вкоротить усі розмови до %d найновішого повідомлення.</item>
     <item quantity="few">Це одразу вкоротить усі розмови до %d найновіших повідомлень.</item>
     <item quantity="many">Це одразу вкоротить усі розмови до %d найновіших повідомлень.</item>
     <item quantity="other">Це одразу вкоротить усі розмови до %d найновіших повідомлень.</item>
@@ -116,45 +116,45 @@
   </plurals>
   <!--ConversationFragment-->
   <plurals name="ConversationFragment_delete_selected_messages">
-    <item quantity="one">Видалити вибране повідомлення?</item>
+    <item quantity="one">Видалити %d вибране повідомлення?</item>
     <item quantity="few">Видалити вибрані повідомлення?</item>
     <item quantity="many">Видалити вибрані повідомлення?</item>
     <item quantity="other">Видалити вибрані повідомлення?</item>
   </plurals>
   <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-    <item quantity="one">Це остаточно видалить вибране повідомлення.</item>
+    <item quantity="one">Це остаточно видалить %1$d вибране повідомлення.</item>
     <item quantity="few">Це остаточно видалить усі %1$d вибрані повідомлення.</item>
     <item quantity="many">Це остаточно видалить усі %1$d вибраних повідомлень.</item>
     <item quantity="other">Це остаточно видалить усі %1$d вибраних повідомлень.</item>
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">Зберегти на пристрій?</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">Збереження цього файла на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до нього.\n\Продовжити?</item>
-    <item quantity="few">Збереження всіх %1$d файлів на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до них.\n\Продовжити?</item>
-    <item quantity="many">Збереження всіх %1$d файлів на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до них.\n\Продовжити?</item>
-    <item quantity="other">Збереження всіх %1$d файлів на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до них.\n\Продовжити?</item>
+    <item quantity="one">Збереження %1$d файла на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до нього.\n\nПродовжити?</item>
+    <item quantity="few">Збереження всіх %1$d файлів на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до них.\n\nПродовжити?</item>
+    <item quantity="many">Збереження всіх %1$d файлів на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до них.\n\nПродовжити?</item>
+    <item quantity="other">Збереження всіх %1$d файлів на пристрій дозволить будь-якому додатку на Вашому пристрої отримати доступ до них.\n\nПродовжити?</item>
   </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-    <item quantity="one">Помилка при спробі збереження вкладення на пристрій!</item>
+    <item quantity="one">Помилка при спробі збереження %d вкладення на пристрій!</item>
     <item quantity="few">Помилка при спробі збереження вкладень на пристрій!</item>
     <item quantity="many">Помилка при спробі збереження вкладень на пристрій!</item>
     <item quantity="other">Помилка при спробі збереження вкладень на пристрій!</item>
   </plurals>
   <plurals name="ConversationFragment_files_saved_successfully">
-    <item quantity="one">Файл успішно збережено.</item>
+    <item quantity="one">%d файл успішно збережено.</item>
     <item quantity="few">Файли успішно збережено.</item>
     <item quantity="many">Файли успішно збережено.</item>
     <item quantity="other">Файли успішно збережено.</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Не можу записувати на пристрій!</string>
   <plurals name="ConversationFragment_saving_n_attachments">
-    <item quantity="one">Збереження вкладення</item>
+    <item quantity="one">Збереження %1$d вкладення</item>
     <item quantity="few">Збереження %1$d вкладень</item>
     <item quantity="many">Збереження %1$d вкладень</item>
     <item quantity="other">Збереження %1$d вкладень</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">Збереження вкладення на пристрій…</item>
+    <item quantity="one">Збереження %1$d вкладення на пристрій…</item>
     <item quantity="few">Збереження %1$d вкладень на пристрій…</item>
     <item quantity="many">Збереження %1$d вкладень на пристрій…</item>
     <item quantity="other">Збереження %1$d вкладень на пристрій…</item>
@@ -169,13 +169,13 @@
   <string name="ConversationListActivity_search">Пошук</string>
   <!--ConversationListFragment-->
   <plurals name="ConversationListFragment_delete_selected_conversations">
-    <item quantity="one">Видалити вибрану розмову?</item>
+    <item quantity="one">Видалити %d вибрану розмову?</item>
     <item quantity="few">Видалити вибрані розмови?</item>
     <item quantity="many">Видалити вибрані розмови?</item>
     <item quantity="other">Видалити вибрані розмови?</item>
   </plurals>
   <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-    <item quantity="one">Вибрану розмову буде остаточно видалено.</item>
+    <item quantity="one">%1$d вибрану розмову буде остаточно видалено.</item>
     <item quantity="few">Усі %1$d вибрані розмови буде остаточно видалено.</item>
     <item quantity="many">Усі %1$d вибраних розмов буде остаточно видалено.</item>
     <item quantity="other">Усі %1$d вибраних розмов буде остаточно видалено.</item>
@@ -183,14 +183,14 @@
   <string name="ConversationListFragment_deleting">Видалення</string>
   <string name="ConversationListFragment_deleting_selected_conversations">Видалення вибраних розмов…</string>
   <plurals name="ConversationListFragment_conversations_archived">
-    <item quantity="one">Розмову архівовано</item>
+    <item quantity="one">%d розмову архівовано</item>
     <item quantity="few">%d розмови архівовано</item>
     <item quantity="many">%d розмов архівовано</item>
     <item quantity="other">%d розмов архівовано</item>
   </plurals>
   <string name="ConversationListFragment_undo">СКАСУВАТИ</string>
   <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-    <item quantity="one">Розмову переміщено до вхідних</item>
+    <item quantity="one">%d розмову переміщено до вхідних</item>
     <item quantity="few">%d розмови переміщено до вхідних</item>
     <item quantity="many">%d розмов переміщено до вхідних</item>
     <item quantity="other">%d розмов переміщено до вхідних</item>
@@ -722,5 +722,102 @@
   <string name="trimmer__old_messages_successfully_deleted">Старі повідомлення успішно видалено</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Іконка транспорту</string>
+  <string name="AppProtectionPreferenceFragment_hours">год</string>
+  <string name="AppProtectionPreferenceFragment_minutes_short">хв</string>
+  <string name="AppProtectionPreferenceFragment_seconds">с</string>
+  <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Час бездіяльності до блокування</string>
+  <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Silence потребує дозволу «Контакти», щоб прикріпити контактну інформацію, але його остаточно відхилено. Перейдіть до меню налаштувань додатка, виберіть \"Дозволи\" і ввімкніть \"Контакти\".</string>
+  <string name="ConversationItem_via_s">через %s</string>
+  <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Silence потребує дозволу SMS, щоб надіслати SMS, але його остаточно відхилено. Перейдіть до налаштувань додатка, виберіть \"Дозволи\" і ввімкніть \"SMS\".</string>
+  <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">Покращте свою приватність, спілкуйтеся з усіма</string>
+  <string name="WelcomeActivity_encrypt_your_messages">Шифруйте повідомлення з користувачами Silence, водночас використовуючи звичайні SMS/MMS з іншими.</string>
+  <string name="WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms">Silence потребує доступу до ваших контактів, стану телефону та SMS-повідомлень, щоб ви могли зв’язуватися з друзями, керувати ключами шифрування та спілкуватися.</string>
+  <string name="WelcomeActivity_continue">Продовжити</string>
+  <string name="WelcomeActivity_action_required">Потрібна дія!</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence">Потрібно надати Silence деякі дозволи.</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it">Потрібно надати Silence деякі дозволи, щоб і надалі ним користуватися. Торкніться, щоб продовжити.</string>
+  <string name="WelcomeActivity_silence_needs_the_phone_permission_in_order_to_manage_encryption_keys_and_bind_them_to_your_sim_cards_and_sms_permission_in_order_to_receive_sms_messages">Silence потребує дозволу «Телефон», щоб керувати ключами шифрування та прив’язувати їх до ваших SIM-карт, і дозволу SMS, щоб отримувати SMS-повідомлення.</string>
+  <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">Silence потребує дозволів «Телефон» і SMS для роботи, але їх остаточно відхилено. Перейдіть до налаштувань додатка, виберіть \"Дозволи\", потім увімкніть \"Телефон\" і \"SMS\".</string>
+  <string name="ExportFragment_store_recovery_key">Збережіть цей ключ відновлення в менеджері паролів або в іншому безпечному місці. Він потрібен для відновлення цієї резервної копії і не зберігається в ній.</string>
+  <string name="ExportFragment_choose_recovery_key">Виберіть ключ відновлення</string>
+  <string name="ExportFragment_choose_recovery_key_message">Використайте ключ відновлення автоматичних резервних копій, щоб один ключ відновлював обидва типи резервних копій, або створіть окремий ключ для цього експорту.</string>
+  <string name="ExportFragment_use_automatic_key">Використати автоматичний ключ</string>
+  <string name="ExportFragment_use_new_key">Використати новий ключ</string>
+  <string name="ExportFragment_automatic_key_unavailable">Ключ відновлення автоматичних резервних копій недоступний.</string>
+  <string name="ImportFragment_backup_already_imported">Нових повідомлень не знайдено. Наявні повідомлення не імпортовано повторно.</string>
+  <string name="ImportFragment_recovery_key">Ключ відновлення</string>
+  <string name="ImportFragment_invalid_recovery_key">Недійсний ключ відновлення.</string>
+  <string name="AutomaticBackup_failure_title">Не вдалося створити автоматичну резервну копію</string>
+  <string name="AutomaticBackup_failure_message">Відкрийте налаштування резервного копіювання Silence, щоб вибрати доступне місце збереження.</string>
+  <string name="AutomaticBackup_enable">Увімкнути автоматичні зашифровані резервні копії</string>
+  <string name="AutomaticBackup_disable">Вимкнути автоматичні зашифровані резервні копії</string>
+  <string name="AutomaticBackup_description">Щодня створювати резервну копію під час заряджання та зберігати п’ять найновіших копій.</string>
+  <string name="AutomaticBackup_store_recovery_key">Збережіть цей ключ відновлення в менеджері паролів або в іншому безпечному місці. Без нього автоматичні резервні копії неможливо відновити.</string>
+  <string name="AutomaticBackup_reuse_recovery_key">Автоматичне резервне копіювання й надалі використовуватиме ключ відновлення, показаний нижче, тож ним можна відновити резервні копії, створені як до паузи, так і після неї.</string>
+  <string name="AutomaticBackup_select_directory">Вибрати теку для резервних копій</string>
+  <string name="AutomaticBackup_disable_message">Подальші автоматичні резервні копії не створюватимуться. Наявні файли резервних копій не буде видалено, а ключ відновлення буде збережено, тож після повторного ввімкнення використовуватиметься той самий ключ.</string>
+  <string name="AutomaticBackup_enable_failed">Не вдалося ввімкнути автоматичні резервні копії.</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">Silence потребує дозволу SMS, щоб імпортувати SMS-повідомлення, але його остаточно відхилено. Перейдіть до налаштувань додатка, виберіть \"Дозволи\" і ввімкніть \"SMS\".</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">Silence потребує дозволу SMS, щоб імпортувати SMS-повідомлення</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied">Silence потребує дозволу «Пам’ять», щоб читати із зовнішньої пам’яті, але його остаточно відхилено. Перейдіть до налаштувань додатка, виберіть \"Дозволи\", потім увімкніть \"Пам’ять\".</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage">Silence потребує дозволу «Пам’ять», щоб читати із зовнішньої пам’яті.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silence потребує дозволу «Пам’ять», щоб записувати до зовнішньої пам’яті, але його остаточно відхилено. Перейдіть до налаштувань додатка, виберіть \"Дозволи\", потім увімкніть \"Пам’ять\".</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage">Silence потребує дозволу «Пам’ять», щоб записувати до зовнішньої пам’яті.</string>
+  <string name="KeyScanningActivity_no_identity_key">Ключ ідентифікації недоступний.</string>
+  <string name="KeyScanningActivity_unable_to_generate_qr_code">Не вдалося згенерувати QR-код.</string>
+  <string name="master_secret_storage_error">Не вдалося зберегти ключ шифрування. Попередні налаштування не змінено.</string>
+  <string name="retry">Повторити</string>
+  <string name="PassphrasePromptActivity_unlocking">Розблокування</string>
+  <string name="NotificationChannel_messages">Повідомлення</string>
+  <string name="NotificationChannel_failures">Помилки</string>
+  <string name="NotificationChannel_locked_status">Стан блокування</string>
+  <string name="NotificationChannel_other">Інше</string>
+  <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Silence потребує дозволу «Контакти», щоб показувати ваші контакти, але його остаточно відхилено. Перейдіть до меню налаштувань додатка, виберіть \"Дозволи\" і ввімкніть \"Контакти\".</string>
+  <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Silence потребує доступу до ваших контактів, щоб їх показати.</string>
+  <string name="contact_selection_list_fragment__show_contacts">Показати контакти</string>
+  <string name="conversation_activity__via_sim_name">Через %1$s</string>
+  <string name="log_submit_activity__button_dont_share">Не ділитися</string>
+  <string name="log_submit_activity__button_share">Поділитися</string>
+  <string name="log_submit_activity__this_log_will_be_shared">Цей діагностичний журнал буде передано вибраному вами додатку. Ви можете переглянути та відредагувати його перед надсиланням.</string>
+  <string name="log_submit_activity__loading_logs">Завантаження журналів…</string>
+  <string name="log_submit_activity__choose_share_app">Поділитися діагностичним журналом</string>
+  <string name="log_submit_activity__share_failed">Не вдалося підготувати діагностичний журнал для надсилання.</string>
+  <string name="ConversationListFragment_load_failed">Не вдалося завантажити розмови.</string>
+  <string name="ConversationListFragment_delete_failed">Не вдалося видалити вибрані розмови.</string>
+  <string name="ConversationListFragment_send_drafts_failed">Не вдалося надіслати вибрані чернетки.</string>
+  <string name="ConversationListFragment_mutation_failed">Не вдалося оновити вибрані розмови.</string>
+  <string name="ConversationListFragment_operation_locked">Silence заблоковано. Розблокуйте його та спробуйте ще раз.</string>
+  <string name="message_details_header__type">Тип</string>
+  <string name="message_details_header__to">Кому</string>
+  <string name="message_details_header__from">Від</string>
+  <string name="message_details_header__with">З</string>
+  <string name="preferences__system_theme">Як у системі</string>
+  <string name="sms_resend_may_duplicate_title">Можливо, повідомлення вже надіслано</string>
+  <string name="sms_resend_may_duplicate_message">Деякі або всі частини могли вже дійти до одержувача. Повторне надсилання може створити дублікат.</string>
+  <string name="sms_resend_anyway">Надіслати ще раз</string>
+  <string name="preferences_advanced__always_ask_for_sim_card">Завжди запитувати SIM-карту</string>
+  <string name="preferences_advanced__always_ask_for_the_sim_card_to_use_when_sending_messages">Завжди запитувати, яку SIM-карту використовувати для надсилання повідомлень</string>
+  <string name="share_identity_fingerprint">Поділитися відбитком своєї особи</string>
+  <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silence потребує дозволу «Пам’ять», щоб зберігати файли в зовнішній пам’яті, але його остаточно відхилено. Перейдіть до налаштувань додатка, виберіть \"Дозволи\" і ввімкніть \"Пам’ять\".</string>
+  <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">Неможливо зберегти в зовнішню пам’ять без дозволів</string>
+  <string name="accessibility__unread_message_count">Кількість непрочитаних повідомлень</string>
+  <string name="accessibility__search">Пошук</string>
+  <string name="accessibility__switch_to_dialpad">Перейти до цифрової клавіатури</string>
+  <string name="accessibility__switch_to_keyboard">Перейти до клавіатури</string>
+  <string name="accessibility__clear_search">Очистити пошук</string>
+  <string name="accessibility__cached_key">Ключ шифрування в кеші</string>
+  <string name="accessibility__remove_attachment">Вилучити вкладення</string>
+  <string name="accessibility__select_recipients">Вибрати одержувачів</string>
+  <string name="accessibility__scroll_handle">Повзунок прокручування</string>
+  <string name="accessibility__delete_recipient">Видалити одержувача</string>
+  <string name="RingtonePreference_ringtone_default">Стандартна мелодія дзвінка</string>
+  <string name="RingtonePreference_ringtone_silent">Немає</string>
+  <string name="RingtonePreference_notification_sound_default">Стандартний звук сповіщення</string>
+  <string name="RingtonePreference_alarm_sound_default">Стандартний звук будильника</string>
+  <string name="RingtonePreference_add_ringtone_text">Додати мелодію</string>
+  <string name="RingtonePreference_unable_to_add_ringtone">Не вдалося додати власну мелодію</string>
+  <string name="Permissions_permission_required">Потрібен дозвіл</string>
+  <string name="Permissions_continue">Продовжити</string>
+  <string name="Permissions_not_now">Не зараз</string>
   <!--EOF-->
 </resources>

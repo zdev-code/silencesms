@@ -14,7 +14,7 @@
     </plurals>
     <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Supprimer tous les anciens messages maintenant ?</string>
     <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-        <item quantity="one">Ceci réduira immédiatement toutes les conversations au message le plus récent.</item>
+        <item quantity="one">Ceci réduira immédiatement toutes les conversations au %d message le plus récent.</item>
         <item quantity="other">Ceci réduira immédiatement toutes les conversations aux %d messages les plus récents.</item>
     </plurals>
     <string name="ApplicationPreferencesActivity_delete">Supprimer</string>
@@ -112,33 +112,33 @@ en mesure de les lire.</string>
     </plurals>
     <!--ConversationFragment-->
     <plurals name="ConversationFragment_delete_selected_messages">
-        <item quantity="one">Supprimer le message sélectionné ?</item>
+        <item quantity="one">Supprimer %d message sélectionné ?</item>
         <item quantity="other">Supprimer les messages sélectionnés ?</item>
     </plurals>
     <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-        <item quantity="one">Ceci supprimera définitivement le message sélectionné.</item>
+        <item quantity="one">Ceci supprimera définitivement %1$d message sélectionné.</item>
         <item quantity="other">Ceci supprimera définitivement les %1$d messages sélectionnés.</item>
     </plurals>
     <string name="ConversationFragment_save_to_sd_card">Sauvegarder sur la mémoire ?</string>
     <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-        <item quantity="one">Sauvegarder ce média sur la mémoire permettra à toutes les autres applications du téléphone d\'y accéder.\n\nContinuer ?</item>
+        <item quantity="one">Sauvegarder %1$d média sur la mémoire permettra à toutes les autres applications du téléphone d\'y accéder.\n\nContinuer ?</item>
         <item quantity="other">Sauvegarder ces %1$d médias sur la mémoire permettra à toutes les autres applications du téléphone d\'y accéder.\n\nContinuer ?</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-        <item quantity="one">Erreur lors de l\'enregistrement de la pièce jointe sur l\'espace de stockage !</item>
+        <item quantity="one">Erreur lors de l\'enregistrement de %d pièce jointe sur l\'espace de stockage !</item>
         <item quantity="other">Erreur lors de l\'enregistrement des pièces jointes sur l\'espace de stockage !</item>
     </plurals>
     <plurals name="ConversationFragment_files_saved_successfully">
-        <item quantity="one">Fichier sauvegardé avec succès.</item>
+        <item quantity="one">%d fichier sauvegardé avec succès.</item>
         <item quantity="other">Fichiers sauvegardés avec succès.</item>
     </plurals>
     <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Impossible d’écrire sur la mémoire !</string>
     <plurals name="ConversationFragment_saving_n_attachments">
-        <item quantity="one">Sauvegarde de la pièce jointe</item>
+        <item quantity="one">Sauvegarde de %1$d pièce jointe</item>
         <item quantity="other">Sauvegarde des %1$d pièces jointes</item>
     </plurals>
     <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-        <item quantity="one">Enregistrement de la pièce jointe vers l\'espace de stockage…</item>
+        <item quantity="one">Enregistrement de %1$d pièce jointe vers l\'espace de stockage…</item>
         <item quantity="other">Sauvegarde des %1$d pièces jointes vers l\'espace de stockage…</item>
     </plurals>
     <string name="ConversationFragment_collecting_attahments">Récupération des pièces jointes…</string>
@@ -151,22 +151,22 @@ en mesure de les lire.</string>
     <string name="ConversationListActivity_search">Chercher</string>
     <!--ConversationListFragment-->
     <plurals name="ConversationListFragment_delete_selected_conversations">
-        <item quantity="one">Supprimer la conversation sélectionnée ?</item>
+        <item quantity="one">Supprimer %d conversation sélectionnée ?</item>
         <item quantity="other">Supprimer les conversations sélectionnées ?</item>
     </plurals>
     <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-        <item quantity="one">Ceci supprimera définitivement la conversation sélectionnée.</item>
+        <item quantity="one">Ceci supprimera définitivement %1$d conversation sélectionnée.</item>
         <item quantity="other">Ceci supprimera définitivement les %1$d conversations sélectionnées.</item>
     </plurals>
     <string name="ConversationListFragment_deleting">Suppression</string>
     <string name="ConversationListFragment_deleting_selected_conversations">Suppression des conversations sélectionnées…</string>
     <plurals name="ConversationListFragment_conversations_archived">
-        <item quantity="one">Conversation archivée</item>
+        <item quantity="one">%d conversation archivée</item>
         <item quantity="other">%d conversations archivées</item>
     </plurals>
     <string name="ConversationListFragment_undo">ANNULER</string>
     <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-        <item quantity="one">La conversation n\'est plus archivée</item>
+        <item quantity="one">%d conversation n\'est plus archivée</item>
         <item quantity="other">%d conversations ne sont plus archivées</item>
     </plurals>
     <string name="ConversationListFragment_send_drafts">Envoyer les brouillons</string>
@@ -735,6 +735,59 @@ Réception d\'un message d\'échange de clés pour une version invalide du proto
     <string name="Permissions_permission_required">Permission requise</string>
     <string name="Permissions_continue">Continuer</string>
     <string name="Permissions_not_now">Pas maintenant</string>
+    <string name="AppProtectionPreferenceFragment_hours">h</string>
+    <string name="AppProtectionPreferenceFragment_minutes_short">min</string>
+    <string name="AppProtectionPreferenceFragment_seconds">s</string>
+    <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Délai d\'inactivité</string>
+    <string name="ExportFragment_store_recovery_key">Conservez cette clé de récupération dans votre gestionnaire de mots de passe ou dans un autre endroit sûr. Elle est nécessaire pour restaurer cette sauvegarde et n\'y est pas stockée.</string>
+    <string name="ExportFragment_choose_recovery_key">Choisir la clé de récupération</string>
+    <string name="ExportFragment_choose_recovery_key_message">Utilisez la clé de récupération des sauvegardes automatiques pour qu\'une seule clé restaure les deux types de sauvegarde, ou créez une clé distincte pour cet export.</string>
+    <string name="ExportFragment_use_automatic_key">Utiliser la clé automatique</string>
+    <string name="ExportFragment_use_new_key">Utiliser une nouvelle clé</string>
+    <string name="ExportFragment_automatic_key_unavailable">La clé de récupération des sauvegardes automatiques n\'est pas disponible.</string>
+    <string name="ImportFragment_backup_already_imported">Aucun nouveau message trouvé. Les messages existants n\'ont pas été importés à nouveau.</string>
+    <string name="ImportFragment_recovery_key">Clé de récupération</string>
+    <string name="ImportFragment_invalid_recovery_key">Clé de récupération invalide.</string>
+    <string name="AutomaticBackup_failure_title">Échec de la sauvegarde automatique</string>
+    <string name="AutomaticBackup_failure_message">Ouvrez les paramètres de sauvegarde de Silence pour sélectionner une destination disponible.</string>
+    <string name="AutomaticBackup_enable">Activer les sauvegardes chiffrées automatiques</string>
+    <string name="AutomaticBackup_disable">Désactiver les sauvegardes chiffrées automatiques</string>
+    <string name="AutomaticBackup_description">Crée une sauvegarde quotidienne pendant la charge et conserve les cinq copies les plus récentes.</string>
+    <string name="AutomaticBackup_store_recovery_key">Conservez cette clé de récupération dans votre gestionnaire de mots de passe ou dans un autre endroit sûr. Les sauvegardes automatiques ne peuvent pas être restaurées sans elle.</string>
+    <string name="AutomaticBackup_reuse_recovery_key">Les sauvegardes automatiques continueront d\'utiliser la clé de récupération affichée ci-dessous, afin qu\'elle puisse restaurer les sauvegardes antérieures et postérieures à la pause.</string>
+    <string name="AutomaticBackup_select_directory">Sélectionner le dossier de sauvegarde</string>
+    <string name="AutomaticBackup_disable_message">Les prochaines sauvegardes automatiques seront arrêtées. Les fichiers de sauvegarde existants ne seront pas supprimés et la clé de récupération sera conservée afin que la réactivation utilise la même clé.</string>
+    <string name="AutomaticBackup_enable_failed">Impossible d\'activer les sauvegardes automatiques.</string>
+    <string name="KeyScanningActivity_no_identity_key">Aucune clé d\'identité disponible.</string>
+    <string name="KeyScanningActivity_unable_to_generate_qr_code">Impossible de générer le QR code.</string>
+    <string name="master_secret_storage_error">Impossible d\'enregistrer la clé de chiffrement. Vos paramètres précédents n\'ont pas été modifiés.</string>
+    <string name="retry">Réessayer</string>
+    <string name="PassphrasePromptActivity_unlocking">Déverrouillage</string>
+    <string name="log_submit_activity__button_dont_share">Ne pas partager</string>
+    <string name="log_submit_activity__button_share">Partager</string>
+    <string name="log_submit_activity__this_log_will_be_shared">Ce journal de diagnostic sera partagé avec l\'application de votre choix. Vous pouvez l\'examiner et le modifier avant de le partager.</string>
+    <string name="log_submit_activity__loading_logs">Chargement des journaux…</string>
+    <string name="log_submit_activity__choose_share_app">Partager le journal de diagnostic</string>
+    <string name="log_submit_activity__share_failed">Impossible de préparer le journal de diagnostic pour le partage.</string>
+    <string name="ConversationListFragment_load_failed">Impossible de charger les conversations.</string>
+    <string name="ConversationListFragment_delete_failed">Impossible de supprimer les conversations sélectionnées.</string>
+    <string name="ConversationListFragment_send_drafts_failed">Impossible d\'envoyer les brouillons sélectionnés.</string>
+    <string name="ConversationListFragment_mutation_failed">Impossible de mettre à jour les conversations sélectionnées.</string>
+    <string name="ConversationListFragment_operation_locked">Silence est verrouillé. Déverrouillez-le et réessayez.</string>
+    <string name="preferences__system_theme">Par défaut du système</string>
+    <string name="sms_resend_may_duplicate_title">Le message a peut-être déjà été envoyé</string>
+    <string name="sms_resend_may_duplicate_message">Une partie ou la totalité du message a peut-être atteint le destinataire. Un nouvel envoi pourrait créer un doublon.</string>
+    <string name="sms_resend_anyway">Renvoyer</string>
+    <string name="accessibility__unread_message_count">Nombre de messages non lus</string>
+    <string name="accessibility__search">Rechercher</string>
+    <string name="accessibility__switch_to_dialpad">Passer au pavé numérique</string>
+    <string name="accessibility__switch_to_keyboard">Passer au clavier</string>
+    <string name="accessibility__clear_search">Effacer la recherche</string>
+    <string name="accessibility__cached_key">Clé de chiffrement en cache</string>
+    <string name="accessibility__remove_attachment">Retirer la pièce jointe</string>
+    <string name="accessibility__select_recipients">Sélectionner les destinataires</string>
+    <string name="accessibility__scroll_handle">Poignée de défilement</string>
+    <string name="accessibility__delete_recipient">Supprimer le destinataire</string>
     <!--EOF-->
     <string name="NotificationChannel_other">Autre</string>
     <string name="NotificationChannel_locked_status">État du verrouillage</string>

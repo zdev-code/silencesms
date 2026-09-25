@@ -88,7 +88,7 @@
   <string name="ConversationActivity_group_conversation">مکالمات گروه</string>
   <string name="ConversationActivity_unnamed_group">گروه بی نام</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">۱ عضو</item>
+    <item quantity="one">%d عضو</item>
     <item quantity="other">%d عضو</item>
   </plurals>
   <string name="ConversationActivity_invalid_recipient">گیرنده وجود ندارد!</string>
@@ -109,33 +109,33 @@
   </plurals>
   <!--ConversationFragment-->
   <plurals name="ConversationFragment_delete_selected_messages">
-    <item quantity="one">حذف پیام انتخاب شده؟</item>
+    <item quantity="one">حذف %d پیام انتخاب شده؟</item>
     <item quantity="other">حذف پیام های انتخاب شده؟</item>
   </plurals>
   <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-    <item quantity="one">این کار پیام انتخاب شده را به صورت دائم پاک خواهد کرد.</item>
+    <item quantity="one">این کار %1$d پیام انتخاب شده را به صورت دائم پاک خواهد کرد.</item>
     <item quantity="other">این کار به صورت دائم تمام %1$d پیام های انتخاب شده را پاک خواهد کرد.</item>
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">ذخیره در انبار؟</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">ذخیره این رسانه در انبار به سایر برنامه های روی دستگاه شما اجازه دسترسی به آن را به آنها میدهد.n\n\ادامه؟</item>
-    <item quantity="other">ذخیره %1$d رسانه در حافظه به هر برنامه دیگری روی دستگاه شما اجازه می دهد تا به آن ها دسترسی داشته باشند.n\n\ ادامه؟</item>
+    <item quantity="one">ذخیره %1$d رسانه در انبار به سایر برنامه های روی دستگاه شما اجازه دسترسی به آن را میدهد.\n\nادامه؟</item>
+    <item quantity="other">ذخیره %1$d رسانه در حافظه به هر برنامه دیگری روی دستگاه شما اجازه می دهد تا به آن ها دسترسی داشته باشند.\n\nادامه؟</item>
   </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-    <item quantity="one">خطا در هنگام ذخیره پیوست در انبار!</item>
+    <item quantity="one">خطا در هنگام ذخیره %d پیوست در انبار!</item>
     <item quantity="other">خطا در هنگام ذخیره پیوست ها در انبار!</item>
   </plurals>
   <plurals name="ConversationFragment_files_saved_successfully">
-    <item quantity="one">فایل با موفقیت ذخیره شد.</item>
+    <item quantity="one">%d فایل با موفقیت ذخیره شد.</item>
     <item quantity="other">فایل ها با موفقیت ذخیره شدند.</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">ناتوانی در نوشتن در حافظه!</string>
   <plurals name="ConversationFragment_saving_n_attachments">
-    <item quantity="one">ذخیره پیوست</item>
+    <item quantity="one">ذخیره %1$d پیوست</item>
     <item quantity="other">ذخیره %1$d پیوست</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">ذخیره پیوست در انبار…</item>
+    <item quantity="one">ذخیره %1$d پیوست در انبار…</item>
     <item quantity="other">ذخیره %1$d پیوست در انبار…</item>
   </plurals>
   <string name="ConversationFragment_collecting_attahments">جمع آوری ضمیمه ها…</string>
@@ -148,22 +148,22 @@
   <string name="ConversationListActivity_search">جستجو</string>
   <!--ConversationListFragment-->
   <plurals name="ConversationListFragment_delete_selected_conversations">
-    <item quantity="one">حذف مکالمه انتخاب شده؟</item>
+    <item quantity="one">حذف %d مکالمه انتخاب شده؟</item>
     <item quantity="other">حذف مکالمات انتخاب شده؟</item>
   </plurals>
   <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-    <item quantity="one">این کار مکالمه انتخاب شده را به صورت دائم پاک خواهد کرد.</item>
+    <item quantity="one">این کار %1$d مکالمه انتخاب شده را به صورت دائم پاک خواهد کرد.</item>
     <item quantity="other">این کار %1$d مکالمه انتخاب شده را به صورت دائم پاک خواهد کرد.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">در حال حذف</string>
   <string name="ConversationListFragment_deleting_selected_conversations">حذف مکالمات انتخاب شده…</string>
   <plurals name="ConversationListFragment_conversations_archived">
-    <item quantity="one">مکالمه آرشیو شده</item>
+    <item quantity="one">%d مکالمه آرشیو شده</item>
     <item quantity="other">%d مکالمه آرشیو شده</item>
   </plurals>
   <string name="ConversationListFragment_undo">واگرد</string>
   <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-    <item quantity="one">مکالمه به ورودی جابجا شد</item>
+    <item quantity="one">%d مکالمه به ورودی جابجا شد</item>
     <item quantity="other">%d مکالمه به ورودی جابجا شد</item>
   </plurals>
   <string name="ConversationListFragment_send_drafts">فرستادن پیشنویس ها</string>
@@ -697,5 +697,102 @@
   <string name="trimmer__old_messages_successfully_deleted">پیام های قدیمی با موفقیت پاک شدند</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">آیکون انتقال</string>
+  <string name="AppProtectionPreferenceFragment_hours">ساعت</string>
+  <string name="AppProtectionPreferenceFragment_minutes_short">دقیقه</string>
+  <string name="AppProtectionPreferenceFragment_seconds">ثانیه</string>
+  <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">بازه پایان زمان عدم فعالیت</string>
+  <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Silence برای پیوست کردن اطلاعات تماس به مجوز مخاطبان نیاز دارد، اما این مجوز برای همیشه رد شده است. لطفاً به منوی تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید و «مخاطبان» را فعال کنید.</string>
+  <string name="ConversationItem_via_s">از طریق %s</string>
+  <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Silence برای ارسال SMS به مجوز SMS نیاز دارد، اما این مجوز برای همیشه رد شده است. لطفاً به تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید و «SMS» را فعال کنید.</string>
+  <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">حریم خصوصی خود را بهبود دهید، با همه گفتگو کنید</string>
+  <string name="WelcomeActivity_encrypt_your_messages">پیام‌های خود با کاربران Silence را رمزنگاری کنید و با دیگران از پیام‌های SMS/MMS معمولی استفاده کنید.</string>
+  <string name="WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms">Silence برای ارتباط با دوستان، مدیریت کلیدهای رمزنگاری و گفتگو به دسترسی به مخاطبان، وضعیت تلفن و پیام‌های SMS شما نیاز دارد.</string>
+  <string name="WelcomeActivity_continue">ادامه</string>
+  <string name="WelcomeActivity_action_required">اقدام لازم است!</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence">باید برخی مجوزها را به Silence بدهید.</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it">برای ادامهٔ استفاده از Silence باید برخی مجوزها را به آن بدهید. برای ادامه ضربه بزنید.</string>
+  <string name="WelcomeActivity_silence_needs_the_phone_permission_in_order_to_manage_encryption_keys_and_bind_them_to_your_sim_cards_and_sms_permission_in_order_to_receive_sms_messages">Silence برای مدیریت کلیدهای رمزنگاری و پیوند دادن آن‌ها به سیم‌کارت‌های شما به مجوز تلفن، و برای دریافت پیام‌های SMS به مجوز SMS نیاز دارد.</string>
+  <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">Silence برای کار کردن به مجوزهای تلفن و SMS نیاز دارد، اما این مجوزها برای همیشه رد شده‌اند. لطفاً به تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید، سپس «تلفن» و «SMS» را فعال کنید.</string>
+  <string name="ExportFragment_store_recovery_key">این کلید بازیابی را در مدیر گذرواژه یا مکان امن دیگری نگه دارید. این کلید برای بازگردانی این پشتیبان لازم است و درون آن ذخیره نمی‌شود.</string>
+  <string name="ExportFragment_choose_recovery_key">انتخاب کلید بازیابی</string>
+  <string name="ExportFragment_choose_recovery_key_message">از کلید بازیابی پشتیبان خودکار استفاده کنید تا یک کلید هر دو نوع پشتیبان را بازگردانی کند، یا یک کلید جداگانه برای این خروجی بسازید.</string>
+  <string name="ExportFragment_use_automatic_key">استفاده از کلید خودکار</string>
+  <string name="ExportFragment_use_new_key">استفاده از کلید جدید</string>
+  <string name="ExportFragment_automatic_key_unavailable">کلید بازیابی پشتیبان خودکار در دسترس نیست.</string>
+  <string name="ImportFragment_backup_already_imported">هیچ پیام جدیدی یافت نشد. پیام‌های موجود دوباره درون‌برد نشدند.</string>
+  <string name="ImportFragment_recovery_key">کلید بازیابی</string>
+  <string name="ImportFragment_invalid_recovery_key">کلید بازیابی نامعتبر است.</string>
+  <string name="AutomaticBackup_failure_title">پشتیبان‌گیری خودکار ناموفق بود</string>
+  <string name="AutomaticBackup_failure_message">تنظیمات پشتیبان Silence را باز کنید تا مقصدی در دسترس انتخاب کنید.</string>
+  <string name="AutomaticBackup_enable">فعال کردن پشتیبان‌های رمزنگاری‌شدهٔ خودکار</string>
+  <string name="AutomaticBackup_disable">غیرفعال کردن پشتیبان‌های رمزنگاری‌شدهٔ خودکار</string>
+  <string name="AutomaticBackup_description">ساخت پشتیبان روزانه هنگام شارژ شدن و نگه‌داری پنج نسخهٔ جدیدتر.</string>
+  <string name="AutomaticBackup_store_recovery_key">این کلید بازیابی را در مدیر گذرواژه یا مکان امن دیگری نگه دارید. پشتیبان‌های خودکار بدون آن قابل بازگردانی نیستند.</string>
+  <string name="AutomaticBackup_reuse_recovery_key">پشتیبان‌های خودکار همچنان از کلید بازیابی نمایش‌داده‌شده در زیر استفاده می‌کنند، تا بتوان با آن پشتیبان‌های پیش و پس از توقف را بازگردانی کرد.</string>
+  <string name="AutomaticBackup_select_directory">انتخاب پوشهٔ پشتیبان</string>
+  <string name="AutomaticBackup_disable_message">پشتیبان‌گیری‌های خودکار آینده متوقف می‌شوند. فایل‌های پشتیبان موجود حذف نمی‌شوند و کلید بازیابی نگه داشته می‌شود تا فعال‌سازی دوباره از همان کلید استفاده کند.</string>
+  <string name="AutomaticBackup_enable_failed">فعال کردن پشتیبان‌های خودکار ممکن نیست.</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">Silence برای درون‌برد پیام‌های SMS به مجوز SMS نیاز دارد، اما این مجوز برای همیشه رد شده است. لطفاً به تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید و «SMS» را فعال کنید.</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">Silence برای درون‌برد پیام‌های SMS به مجوز SMS نیاز دارد</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied">Silence برای خواندن از حافظهٔ خارجی به مجوز حافظه نیاز دارد، اما این مجوز برای همیشه رد شده است. لطفاً به تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید، سپس «حافظه» را فعال کنید.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage">Silence برای خواندن از حافظهٔ خارجی به مجوز حافظه نیاز دارد.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silence برای نوشتن در حافظهٔ خارجی به مجوز حافظه نیاز دارد، اما این مجوز برای همیشه رد شده است. لطفاً به تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید، سپس «حافظه» را فعال کنید.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage">Silence برای نوشتن در حافظهٔ خارجی به مجوز حافظه نیاز دارد.</string>
+  <string name="KeyScanningActivity_no_identity_key">هیچ کلید هویتی در دسترس نیست.</string>
+  <string name="KeyScanningActivity_unable_to_generate_qr_code">ساخت کد QR ممکن نیست.</string>
+  <string name="master_secret_storage_error">ذخیرهٔ کلید رمزنگاری ممکن نیست. تنظیمات قبلی شما تغییری نکرده است.</string>
+  <string name="retry">تلاش دوباره</string>
+  <string name="PassphrasePromptActivity_unlocking">در حال باز کردن قفل</string>
+  <string name="NotificationChannel_messages">پیام‌ها</string>
+  <string name="NotificationChannel_failures">خطاها</string>
+  <string name="NotificationChannel_locked_status">وضعیت قفل</string>
+  <string name="NotificationChannel_other">سایر</string>
+  <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Silence برای نمایش مخاطبان شما به مجوز مخاطبان نیاز دارد، اما این مجوز برای همیشه رد شده است. لطفاً به منوی تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید و «مخاطبان» را فعال کنید.</string>
+  <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Silence برای نمایش مخاطبان شما به دسترسی به آن‌ها نیاز دارد.</string>
+  <string name="contact_selection_list_fragment__show_contacts">نمایش مخاطبان</string>
+  <string name="conversation_activity__via_sim_name">از طریق %1$s</string>
+  <string name="log_submit_activity__button_dont_share">اشتراک‌گذاری نکن</string>
+  <string name="log_submit_activity__button_share">اشتراک‌گذاری</string>
+  <string name="log_submit_activity__this_log_will_be_shared">این گزارش عیب‌یابی با برنامه‌ای که انتخاب می‌کنید به اشتراک گذاشته می‌شود. می‌توانید پیش از اشتراک‌گذاری آن را بررسی و ویرایش کنید.</string>
+  <string name="log_submit_activity__loading_logs">در حال بارگیری گزارش‌ها…</string>
+  <string name="log_submit_activity__choose_share_app">اشتراک‌گذاری گزارش عیب‌یابی</string>
+  <string name="log_submit_activity__share_failed">آماده‌سازی گزارش عیب‌یابی برای اشتراک‌گذاری ممکن نشد.</string>
+  <string name="ConversationListFragment_load_failed">بارگیری مکالمات ممکن نیست.</string>
+  <string name="ConversationListFragment_delete_failed">حذف مکالمات انتخاب‌شده ممکن نیست.</string>
+  <string name="ConversationListFragment_send_drafts_failed">ارسال پیش‌نویس‌های انتخاب‌شده ممکن نیست.</string>
+  <string name="ConversationListFragment_mutation_failed">به‌روزرسانی مکالمات انتخاب‌شده ممکن نیست.</string>
+  <string name="ConversationListFragment_operation_locked">Silence قفل است. قفل آن را باز کنید و دوباره تلاش کنید.</string>
+  <string name="message_details_header__type">نوع</string>
+  <string name="message_details_header__to">به</string>
+  <string name="message_details_header__from">از</string>
+  <string name="message_details_header__with">با</string>
+  <string name="preferences__system_theme">پیش‌فرض سیستم</string>
+  <string name="sms_resend_may_duplicate_title">ممکن است پیام قبلاً ارسال شده باشد</string>
+  <string name="sms_resend_may_duplicate_message">ممکن است برخی یا همهٔ بخش‌ها به گیرنده رسیده باشند. ارسال دوباره می‌تواند پیام تکراری ایجاد کند.</string>
+  <string name="sms_resend_anyway">ارسال دوباره</string>
+  <string name="preferences_advanced__always_ask_for_sim_card">همیشه پرسیدن سیم‌کارت</string>
+  <string name="preferences_advanced__always_ask_for_the_sim_card_to_use_when_sending_messages">هنگام ارسال پیام، همیشه بپرس از کدام سیم‌کارت استفاده شود</string>
+  <string name="share_identity_fingerprint">اشتراک‌گذاری اثرانگشت هویت شما</string>
+  <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Silence برای ذخیره در حافظهٔ خارجی به مجوز حافظه نیاز دارد، اما این مجوز برای همیشه رد شده است. لطفاً به تنظیمات برنامه بروید، «مجوزها» را انتخاب کنید و «حافظه» را فعال کنید.</string>
+  <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">ذخیره در حافظهٔ خارجی بدون مجوز ممکن نیست</string>
+  <string name="accessibility__unread_message_count">تعداد پیام‌های خوانده‌نشده</string>
+  <string name="accessibility__search">جستجو</string>
+  <string name="accessibility__switch_to_dialpad">رفتن به صفحه‌شماره‌گیر</string>
+  <string name="accessibility__switch_to_keyboard">رفتن به صفحه‌کلید</string>
+  <string name="accessibility__clear_search">پاک کردن جستجو</string>
+  <string name="accessibility__cached_key">کلید رمزنگاری در حافظهٔ موقت است</string>
+  <string name="accessibility__remove_attachment">حذف پیوست</string>
+  <string name="accessibility__select_recipients">انتخاب گیرندگان</string>
+  <string name="accessibility__scroll_handle">دستگیرهٔ پیمایش</string>
+  <string name="accessibility__delete_recipient">حذف گیرنده</string>
+  <string name="RingtonePreference_ringtone_default">آهنگ زنگ پیش‌فرض</string>
+  <string name="RingtonePreference_ringtone_silent">هیچ</string>
+  <string name="RingtonePreference_notification_sound_default">صدای نوتیفیکیشن پیش‌فرض</string>
+  <string name="RingtonePreference_alarm_sound_default">صدای هشدار پیش‌فرض</string>
+  <string name="RingtonePreference_add_ringtone_text">افزودن آهنگ زنگ</string>
+  <string name="RingtonePreference_unable_to_add_ringtone">افزودن آهنگ زنگ سفارشی ممکن نیست</string>
+  <string name="Permissions_permission_required">مجوز لازم است</string>
+  <string name="Permissions_continue">ادامه</string>
+  <string name="Permissions_not_now">اکنون نه</string>
   <!--EOF-->
 </resources>

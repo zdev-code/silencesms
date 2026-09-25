@@ -14,7 +14,7 @@
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Apagar todas as mensagens antigas?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-    <item quantity="one">Isto irá apagar todas as mensagens exceto a mais recente.</item>
+    <item quantity="one">Isto irá apagar todas as mensagens exceto a %d mais recente.</item>
     <item quantity="other">Isto irá apagar todas as mensagens exceto as %d mais recentes.</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete">Apagar</string>
@@ -36,7 +36,7 @@
   <string name="ApplicationPreferencesActivity_appearance_summary">Tema %1$s, idioma %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 minuto</item>
+    <item quantity="one">%d minuto</item>
     <item quantity="other">%d minutos</item>
   </plurals>
   <!--DraftDatabase-->
@@ -85,7 +85,7 @@
   <string name="ConversationActivity_group_conversation">Conversa de grupo</string>
   <string name="ConversationActivity_unnamed_group">Grupo sem nome</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1  membro</item>
+    <item quantity="one">%d membro</item>
     <item quantity="other">%d membros</item>
   </plurals>
   <string name="ConversationActivity_invalid_recipient">Destinatário inválido!</string>
@@ -106,33 +106,33 @@
   </plurals>
   <!--ConversationFragment-->
   <plurals name="ConversationFragment_delete_selected_messages">
-    <item quantity="one">Apagar mensagem selecionada?</item>
+    <item quantity="one">Apagar %d mensagem selecionada?</item>
     <item quantity="other">Apagar mensagens selecionadas?</item>
   </plurals>
   <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-    <item quantity="one">Isto irá apagar permanentemente a mensagem selecionada.</item>
+    <item quantity="one">Isto irá apagar permanentemente %1$d mensagem selecionada.</item>
     <item quantity="other">Isto irá apagar permanentemente as %1$d mensagens selecionadas.</item>
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">Guardar no armazenamento?</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">Se guardar este ficheiro no armazenamento, permite que quaisquer outras aplicações lhe possam aceder.\n\nContinuar?</item>
+    <item quantity="one">Se guardar %1$d ficheiro no armazenamento, permite que quaisquer outras aplicações lhe possam aceder.\n\nContinuar?</item>
     <item quantity="other">Se guardar estes %1$d ficheiros no armazenamento, permite que quaisquer outras aplicações lhes possam aceder.\n\nContinuar?</item>
   </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-    <item quantity="one">Ocorreu um erro ao guardar o anexo!</item>
+    <item quantity="one">Ocorreu um erro ao guardar %d anexo!</item>
     <item quantity="other">Ocorreu um erro ao guardar os anexos!</item>
   </plurals>
   <plurals name="ConversationFragment_files_saved_successfully">
-    <item quantity="one">Ficheiro guardado com sucesso.</item>
+    <item quantity="one">%d ficheiro guardado com sucesso.</item>
     <item quantity="other">Ficheiros guardados com sucesso.</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Não é possível guardar no armazenamento!</string>
   <plurals name="ConversationFragment_saving_n_attachments">
-    <item quantity="one">A guardar anexo</item>
+    <item quantity="one">A guardar %1$d anexo</item>
     <item quantity="other">A guardar %1$d anexos</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">A guardar anexo no armazenamento</item>
+    <item quantity="one">A guardar %1$d anexo no armazenamento…</item>
     <item quantity="other">A guardar %1$d anexos no armazenamento…</item>
   </plurals>
   <string name="ConversationFragment_collecting_attahments">A obter anexos…</string>
@@ -145,22 +145,22 @@
   <string name="ConversationListActivity_search">Pesquisar</string>
   <!--ConversationListFragment-->
   <plurals name="ConversationListFragment_delete_selected_conversations">
-    <item quantity="one">Apagar conversa selecionada?</item>
+    <item quantity="one">Apagar %d conversa selecionada?</item>
     <item quantity="other">Apagar conversas selecionadas?</item>
   </plurals>
   <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-    <item quantity="one">Isto irá apagar permanentemente a mensagem selecionada.</item>
-    <item quantity="other">Isto irá apagar permanentemente as %1$d mensagens selecionadas.</item>
+    <item quantity="one">Isto irá apagar permanentemente %1$d conversa selecionada.</item>
+    <item quantity="other">Isto irá apagar permanentemente as %1$d conversas selecionadas.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">A apagar</string>
   <string name="ConversationListFragment_deleting_selected_conversations">A apagar conversas selecionadas…</string>
   <plurals name="ConversationListFragment_conversations_archived">
-    <item quantity="one">1 conversa arquivada</item>
+    <item quantity="one">%d conversa arquivada</item>
     <item quantity="other">%d conversas arquivadas</item>
   </plurals>
   <string name="ConversationListFragment_undo">Anular</string>
   <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-    <item quantity="one">1 conversa movida para a caixa de entrada</item>
+    <item quantity="one">%d conversa movida para a caixa de entrada</item>
     <item quantity="other">%d conversas movidas para a caixa de entrada</item>
   </plurals>
   <string name="ConversationListFragment_send_drafts">Enviar rascunhos</string>
@@ -686,6 +686,59 @@ Se você já importou este backup anteriormente, uma nova importação poderá o
   <string name="trimmer__old_messages_successfully_deleted">Mensagens antigas apagadas com sucesso</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Ícone de transporte</string>
+  <string name="AppProtectionPreferenceFragment_hours">h</string>
+  <string name="AppProtectionPreferenceFragment_minutes_short">min</string>
+  <string name="AppProtectionPreferenceFragment_seconds">s</string>
+  <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Intervalo do tempo limite por inatividade</string>
+  <string name="ExportFragment_store_recovery_key">Guarde esta chave de recuperação no seu gestor de palavras-passe ou noutro local seguro. É necessária para restaurar esta cópia de segurança e não é guardada nela.</string>
+  <string name="ExportFragment_choose_recovery_key">Escolher chave de recuperação</string>
+  <string name="ExportFragment_choose_recovery_key_message">Utilize a chave de recuperação das cópias de segurança automáticas para que uma só chave restaure ambos os tipos de cópia de segurança, ou crie uma chave separada para esta exportação.</string>
+  <string name="ExportFragment_use_automatic_key">Utilizar chave automática</string>
+  <string name="ExportFragment_use_new_key">Utilizar nova chave</string>
+  <string name="ExportFragment_automatic_key_unavailable">A chave de recuperação das cópias de segurança automáticas não está disponível.</string>
+  <string name="ImportFragment_backup_already_imported">Não foram encontradas mensagens novas. As mensagens existentes não foram importadas novamente.</string>
+  <string name="ImportFragment_recovery_key">Chave de recuperação</string>
+  <string name="ImportFragment_invalid_recovery_key">Chave de recuperação inválida.</string>
+  <string name="AutomaticBackup_failure_title">A cópia de segurança automática falhou</string>
+  <string name="AutomaticBackup_failure_message">Abra as definições de cópia de segurança do Silence para selecionar um destino disponível.</string>
+  <string name="AutomaticBackup_enable">Ativar cópias de segurança cifradas automáticas</string>
+  <string name="AutomaticBackup_disable">Desativar cópias de segurança cifradas automáticas</string>
+  <string name="AutomaticBackup_description">Criar uma cópia de segurança diária durante o carregamento e manter as cinco cópias mais recentes.</string>
+  <string name="AutomaticBackup_store_recovery_key">Guarde esta chave de recuperação no seu gestor de palavras-passe ou noutro local seguro. Sem ela, não é possível restaurar as cópias de segurança automáticas.</string>
+  <string name="AutomaticBackup_reuse_recovery_key">As cópias de segurança automáticas continuarão a utilizar a chave de recuperação mostrada abaixo, para que esta possa restaurar cópias de segurança de antes e depois da pausa.</string>
+  <string name="AutomaticBackup_select_directory">Selecionar pasta das cópias de segurança</string>
+  <string name="AutomaticBackup_disable_message">As futuras cópias de segurança automáticas serão interrompidas. Os ficheiros de cópia de segurança existentes não serão apagados e a chave de recuperação será mantida, pelo que a reativação utilizará a mesma chave.</string>
+  <string name="AutomaticBackup_enable_failed">Não foi possível ativar as cópias de segurança automáticas.</string>
+  <string name="KeyScanningActivity_no_identity_key">Nenhuma chave de identidade disponível.</string>
+  <string name="KeyScanningActivity_unable_to_generate_qr_code">Não foi possível gerar o código QR.</string>
+  <string name="master_secret_storage_error">Não foi possível guardar a chave de cifra. As suas definições anteriores não foram alteradas.</string>
+  <string name="retry">Tentar novamente</string>
+  <string name="PassphrasePromptActivity_unlocking">A desbloquear</string>
+  <string name="log_submit_activity__button_dont_share">Não partilhar</string>
+  <string name="log_submit_activity__button_share">Partilhar</string>
+  <string name="log_submit_activity__this_log_will_be_shared">Este registo de diagnóstico será partilhado com uma aplicação à sua escolha. Pode examiná-lo e editá-lo antes de o partilhar.</string>
+  <string name="log_submit_activity__loading_logs">A carregar registos…</string>
+  <string name="log_submit_activity__choose_share_app">Partilhar registo de diagnóstico</string>
+  <string name="log_submit_activity__share_failed">Não foi possível preparar o registo de diagnóstico para partilha.</string>
+  <string name="ConversationListFragment_load_failed">Não foi possível carregar as conversas.</string>
+  <string name="ConversationListFragment_delete_failed">Não foi possível apagar as conversas selecionadas.</string>
+  <string name="ConversationListFragment_send_drafts_failed">Não foi possível enviar os rascunhos selecionados.</string>
+  <string name="ConversationListFragment_mutation_failed">Não foi possível atualizar as conversas selecionadas.</string>
+  <string name="ConversationListFragment_operation_locked">O Silence está bloqueado. Desbloqueie-o e tente novamente.</string>
+  <string name="preferences__system_theme">Predefinição do sistema</string>
+  <string name="sms_resend_may_duplicate_title">A mensagem pode já ter sido enviada</string>
+  <string name="sms_resend_may_duplicate_message">Algumas ou todas as partes podem já ter chegado ao destinatário. Enviar novamente pode criar um duplicado.</string>
+  <string name="sms_resend_anyway">Enviar novamente</string>
+  <string name="accessibility__unread_message_count">Número de mensagens não lidas</string>
+  <string name="accessibility__search">Pesquisar</string>
+  <string name="accessibility__switch_to_dialpad">Mudar para o teclado numérico</string>
+  <string name="accessibility__switch_to_keyboard">Mudar para o teclado</string>
+  <string name="accessibility__clear_search">Limpar pesquisa</string>
+  <string name="accessibility__cached_key">Chave de cifra em cache</string>
+  <string name="accessibility__remove_attachment">Remover anexo</string>
+  <string name="accessibility__select_recipients">Selecionar destinatários</string>
+  <string name="accessibility__scroll_handle">Controlo de deslocamento</string>
+  <string name="accessibility__delete_recipient">Apagar destinatário</string>
   <!--EOF-->
     <string name="Permissions_not_now">Não prosseguir</string>
     <string name="Permissions_continue">Prosseguir</string>

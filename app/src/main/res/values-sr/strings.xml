@@ -9,13 +9,13 @@
   <!--ApplicationPreferencesActivity-->
   <string name="ApplicationPreferenceActivity_you_havent_set_a_passphrase_yet">Још нисте поставили лозинку!</string>
   <plurals name="ApplicationPreferencesActivity_messages_per_conversation">
-    <item quantity="one">1 порука по преписци</item>
+    <item quantity="one">%d порука по преписци</item>
     <item quantity="few">%d поруке по преписци</item>
     <item quantity="other">%d порука по преписци</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Обрисати старе поруке сада?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-    <item quantity="one">Ово ће одмах да скрати све преписке на најскорију поруку.</item>
+    <item quantity="one">Ово ће одмах да скрати све преписке на %d најскорију поруку.</item>
     <item quantity="few">Ово ће одмах да скрати све преписке на %d најскорије поруке.</item>
     <item quantity="other">Ово ће одмах да скрати све преписке на %d најскоријих порука.</item>
   </plurals>
@@ -41,7 +41,7 @@
   <string name="ApplicationPreferencesActivity_appearance_summary">Тема %1$s, језик %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 минута</item>
+    <item quantity="one">%d минута</item>
     <item quantity="few">%d минуте</item>
     <item quantity="other">%d минута</item>
   </plurals>
@@ -91,7 +91,7 @@
   <string name="ConversationActivity_group_conversation">Групна преписка</string>
   <string name="ConversationActivity_unnamed_group">Неименована група</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 члан</item>
+    <item quantity="one">%d члан</item>
     <item quantity="few">%d члана</item>
     <item quantity="other">%d чланова</item>
   </plurals>
@@ -114,39 +114,39 @@
   </plurals>
   <!--ConversationFragment-->
   <plurals name="ConversationFragment_delete_selected_messages">
-    <item quantity="one">Обрисати изабрану поруку?</item>
+    <item quantity="one">Обрисати %d изабрану поруку?</item>
     <item quantity="few">Обрисати изабране поруке?</item>
     <item quantity="other">Обрисати изабране поруке?</item>
   </plurals>
   <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-    <item quantity="one">Ово ће трајно да обрише изабрану поруку.</item>
+    <item quantity="one">Ово ће трајно да обрише %1$d изабрану поруку.</item>
     <item quantity="few">Ово ће трајно да обрише све %1$d изабране поруке.</item>
     <item quantity="other">Ово ће трајно да обрише свих %1$d изабраних порука.</item>
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">Сачувати у складиште?</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">Упис овог медијума у складиште ће омогућити било којој апликацији на вашем уређају да му приступи.\n\nДа наставим?</item>
+    <item quantity="one">Упис %1$d медијума у складиште ће омогућити било којој апликацији на вашем уређају да му приступи.\n\nДа наставим?</item>
     <item quantity="few">Упис ова %1$d медијума у складиште ће омогућити било којој апликацији на вашем уређају да му приступи.\n\nДа наставим?</item>
     <item quantity="other">Упис ових %1$d медијума у складиште ће омогућити било којој апликацији на вашем уређају да му приступи.\n\nДа наставим?</item>
   </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-    <item quantity="one">Грешка уписа прилога у складиште!</item>
+    <item quantity="one">Грешка уписа %d прилога у складиште!</item>
     <item quantity="few">Грешка уписа прилога у складиште!</item>
     <item quantity="other">Грешка уписа прилога у складиште!</item>
   </plurals>
   <plurals name="ConversationFragment_files_saved_successfully">
-    <item quantity="one">Фајл је успешно сачуван.</item>
+    <item quantity="one">%d фајл је успешно сачуван.</item>
     <item quantity="few">Фајлови су успешно сачувани.</item>
     <item quantity="other">Фајлови су успешно сачувани.</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Не могу да упишем у складиште!</string>
   <plurals name="ConversationFragment_saving_n_attachments">
-    <item quantity="one">Уписивање прилога</item>
+    <item quantity="one">Уписивање %1$d прилога</item>
     <item quantity="few">Уписивање %1$d прилога</item>
     <item quantity="other">Уписивање %1$d прилога</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">Уписујем прилог у складиште…</item>
+    <item quantity="one">Уписујем %1$d прилог у складиште…</item>
     <item quantity="few">Уписујем %1$d прилога у складиште…</item>
     <item quantity="other">Уписујем %1$d прилога у складиште…</item>
   </plurals>
@@ -160,25 +160,25 @@
   <string name="ConversationListActivity_search">Тражи</string>
   <!--ConversationListFragment-->
   <plurals name="ConversationListFragment_delete_selected_conversations">
-    <item quantity="one">Обрисати изабрану преписку?</item>
+    <item quantity="one">Обрисати %d изабрану преписку?</item>
     <item quantity="few">Обрисати изабране преписке?</item>
     <item quantity="other">Обрисати изабране преписке?</item>
   </plurals>
   <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-    <item quantity="one">Ово ће трајно да обрише изабрану преписку.</item>
+    <item quantity="one">Ово ће трајно да обрише %1$d изабрану преписку.</item>
     <item quantity="few">Ово ће трајно да обрише све %1$d изабране преписке.</item>
     <item quantity="other">Ово ће трајно да обрише свих %1$d изабраних преписки.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">Брисање</string>
   <string name="ConversationListFragment_deleting_selected_conversations">Бришем изабране преписке…</string>
   <plurals name="ConversationListFragment_conversations_archived">
-    <item quantity="one">Преписка архивирана</item>
+    <item quantity="one">%d преписка архивирана</item>
     <item quantity="few">%d преписке архивиране</item>
     <item quantity="other">%d преписки архивирано</item>
   </plurals>
   <string name="ConversationListFragment_undo">ВРАТИ</string>
   <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-    <item quantity="one">Преписка премештена у пријем</item>
+    <item quantity="one">%d преписка премештена у пријем</item>
     <item quantity="few">%d преписке премештене у пријем</item>
     <item quantity="other">%d преписки премештено у пријем</item>
   </plurals>
@@ -717,5 +717,102 @@
   <string name="trimmer__old_messages_successfully_deleted">Старе поруке успешно обрисане</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Икона преноса</string>
+  <string name="AppProtectionPreferenceFragment_hours">ч</string>
+  <string name="AppProtectionPreferenceFragment_minutes_short">мин</string>
+  <string name="AppProtectionPreferenceFragment_seconds">с</string>
+  <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Интервал истека због неактивности</string>
+  <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">Сајленсу је потребна дозвола за контакте да би приложио податке о контакту, али је она трајно одбијена. Наставите на мени поставки апликације, изаберите „Дозволе“ и омогућите „Контакти“.</string>
+  <string name="ConversationItem_via_s">преко %s</string>
+  <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">Сајленсу је потребна дозвола за СМС да би послао СМС, али је она трајно одбијена. Наставите на поставке апликације, изаберите „Дозволе“ и омогућите „СМС“.</string>
+  <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">Побољшајте приватност, разговарајте са свима</string>
+  <string name="WelcomeActivity_encrypt_your_messages">Шифрујте поруке са корисницима Сајленса, а са осталима користите обичне СМС/ММС поруке.</string>
+  <string name="WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms">Сајленсу је потребан приступ вашим контактима, стању телефона и СМС порукама да би се повезао са пријатељима, управљао вашим кључевима за шифровање и омогућио ћаскање.</string>
+  <string name="WelcomeActivity_continue">Настави</string>
+  <string name="WelcomeActivity_action_required">Потребна је радња!</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence">Морате да доделите неке дозволе Сајленсу.</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it">Морате да доделите неке дозволе Сајленсу да бисте наставили да га користите. Тапните да наставите.</string>
+  <string name="WelcomeActivity_silence_needs_the_phone_permission_in_order_to_manage_encryption_keys_and_bind_them_to_your_sim_cards_and_sms_permission_in_order_to_receive_sms_messages">Сајленсу је потребна дозвола за телефон да би управљао кључевима за шифровање и везао их за ваше СИМ картице, као и дозвола за СМС да би примао СМС поруке.</string>
+  <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">Сајленсу су потребне дозволе за телефон и СМС да би радио, али су оне трајно одбијене. Наставите на поставке апликације, изаберите „Дозволе“, па омогућите „Телефон“ и „СМС“.</string>
+  <string name="ExportFragment_store_recovery_key">Сачувајте овај кључ за опоравак у менаџеру лозинки или на другом безбедном месту. Неопходан је за враћање ове резерве и није сачуван у њој.</string>
+  <string name="ExportFragment_choose_recovery_key">Изаберите кључ за опоравак</string>
+  <string name="ExportFragment_choose_recovery_key_message">Користите кључ за опоравак аутоматске резерве, тако да један кључ враћа обе врсте резерве, или направите засебан кључ за овај извоз.</string>
+  <string name="ExportFragment_use_automatic_key">Користи аутоматски кључ</string>
+  <string name="ExportFragment_use_new_key">Користи нови кључ</string>
+  <string name="ExportFragment_automatic_key_unavailable">Кључ за опоравак аутоматске резерве није доступан.</string>
+  <string name="ImportFragment_backup_already_imported">Нису нађене нове поруке. Постојеће поруке нису поново увезене.</string>
+  <string name="ImportFragment_recovery_key">Кључ за опоравак</string>
+  <string name="ImportFragment_invalid_recovery_key">Неисправан кључ за опоравак.</string>
+  <string name="AutomaticBackup_failure_title">Аутоматско прављење резерве није успело</string>
+  <string name="AutomaticBackup_failure_message">Отворите поставке резерве у Сајленсу да бисте изабрали доступно одредиште.</string>
+  <string name="AutomaticBackup_enable">Укључи аутоматске шифроване резерве</string>
+  <string name="AutomaticBackup_disable">Искључи аутоматске шифроване резерве</string>
+  <string name="AutomaticBackup_description">Прави дневну резерву током пуњења и чува пет најновијих копија.</string>
+  <string name="AutomaticBackup_store_recovery_key">Сачувајте овај кључ за опоравак у менаџеру лозинки или на другом безбедном месту. Аутоматске резерве не могу да се врате без њега.</string>
+  <string name="AutomaticBackup_reuse_recovery_key">Аутоматске резерве ће и даље користити кључ за опоравак приказан испод, тако да њиме могу да се врате резерве настале пре и после паузе.</string>
+  <string name="AutomaticBackup_select_directory">Изаберите фасциклу за резерве</string>
+  <string name="AutomaticBackup_disable_message">Будуће аутоматске резерве ће бити заустављене. Постојећи фајлови резерве неће бити обрисани, а кључ за опоравак ће бити задржан, тако да се при поновном укључивању користи исти кључ.</string>
+  <string name="AutomaticBackup_enable_failed">Не могу да укључим аутоматске резерве.</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">Сајленсу је потребна дозвола за СМС да би увезао СМС поруке, али је она трајно одбијена. Наставите на поставке апликације, изаберите „Дозволе“ и омогућите „СМС“.</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">Сајленсу је потребна дозвола за СМС да би увезао СМС поруке</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied">Сајленсу је потребна дозвола за складиште да би читао са спољашњег складишта, али је она трајно одбијена. Наставите на поставке апликације, изаберите „Дозволе“, па омогућите „Складиште“.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage">Сајленсу је потребна дозвола за складиште да би читао са спољашњег складишта.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Сајленсу је потребна дозвола за складиште да би уписивао у спољашње складиште, али је она трајно одбијена. Наставите на поставке апликације, изаберите „Дозволе“, па омогућите „Складиште“.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage">Сајленсу је потребна дозвола за складиште да би уписивао у спољашње складиште.</string>
+  <string name="KeyScanningActivity_no_identity_key">Кључ идентитета није доступан.</string>
+  <string name="KeyScanningActivity_unable_to_generate_qr_code">Не могу да направим бар-кôд.</string>
+  <string name="master_secret_storage_error">Не могу да сачувам кључ за шифровање. Ваше претходне поставке нису измењене.</string>
+  <string name="retry">Покушај поново</string>
+  <string name="PassphrasePromptActivity_unlocking">Откључавање</string>
+  <string name="NotificationChannel_messages">Поруке</string>
+  <string name="NotificationChannel_failures">Неуспеси</string>
+  <string name="NotificationChannel_locked_status">Стање закључавања</string>
+  <string name="NotificationChannel_other">Остало</string>
+  <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">Сајленсу је потребна дозвола за контакте да би приказао ваше контакте, али је она трајно одбијена. Наставите на мени поставки апликације, изаберите „Дозволе“ и омогућите „Контакти“.</string>
+  <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">Сајленсу је потребан приступ вашим контактима да би их приказао.</string>
+  <string name="contact_selection_list_fragment__show_contacts">Прикажи контакте</string>
+  <string name="conversation_activity__via_sim_name">Преко %1$s</string>
+  <string name="log_submit_activity__button_dont_share">Не дели</string>
+  <string name="log_submit_activity__button_share">Дели</string>
+  <string name="log_submit_activity__this_log_will_be_shared">Овај дијагностички дневник ће бити подељен са апликацијом коју изаберете. Можете да га прегледате и измените пре дељења.</string>
+  <string name="log_submit_activity__loading_logs">Учитавам дневнике…</string>
+  <string name="log_submit_activity__choose_share_app">Подели дијагностички дневник</string>
+  <string name="log_submit_activity__share_failed">Не могу да припремим дијагностички дневник за дељење.</string>
+  <string name="ConversationListFragment_load_failed">Не могу да учитам преписке.</string>
+  <string name="ConversationListFragment_delete_failed">Не могу да обришем изабране преписке.</string>
+  <string name="ConversationListFragment_send_drafts_failed">Не могу да пошаљем изабране нацрте.</string>
+  <string name="ConversationListFragment_mutation_failed">Не могу да ажурирам изабране преписке.</string>
+  <string name="ConversationListFragment_operation_locked">Сајленс је закључан. Откључајте га и покушајте поново.</string>
+  <string name="message_details_header__type">Тип</string>
+  <string name="message_details_header__to">За</string>
+  <string name="message_details_header__from">Од</string>
+  <string name="message_details_header__with">Са</string>
+  <string name="preferences__system_theme">Системска подразумевана</string>
+  <string name="sms_resend_may_duplicate_title">Порука је можда већ послата</string>
+  <string name="sms_resend_may_duplicate_message">Неки или сви делови су можда већ стигли до примаоца. Поновно слање може да направи дупликат.</string>
+  <string name="sms_resend_anyway">Пошаљи поново</string>
+  <string name="preferences_advanced__always_ask_for_sim_card">Увек питај за СИМ картицу</string>
+  <string name="preferences_advanced__always_ask_for_the_sim_card_to_use_when_sending_messages">Увек питај коју СИМ картицу користити при слању порука</string>
+  <string name="share_identity_fingerprint">Подели отисак свог идентитета</string>
+  <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">Сајленсу је потребна дозвола за складиште да би сачувао у спољашње складиште, али је она трајно одбијена. Наставите на поставке апликације, изаберите „Дозволе“ и омогућите „Складиште“.</string>
+  <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">Не могу да сачувам у спољашње складиште без дозвола</string>
+  <string name="accessibility__unread_message_count">Број непрочитаних порука</string>
+  <string name="accessibility__search">Тражи</string>
+  <string name="accessibility__switch_to_dialpad">Пребаци на бројчаник</string>
+  <string name="accessibility__switch_to_keyboard">Пребаци на тастатуру</string>
+  <string name="accessibility__clear_search">Очисти претрагу</string>
+  <string name="accessibility__cached_key">Кључ за шифровање је кеширан</string>
+  <string name="accessibility__remove_attachment">Уклони прилог</string>
+  <string name="accessibility__select_recipients">Изабери примаоце</string>
+  <string name="accessibility__scroll_handle">Ручица за клизање</string>
+  <string name="accessibility__delete_recipient">Обриши примаоца</string>
+  <string name="RingtonePreference_ringtone_default">Подразумевана мелодија звона</string>
+  <string name="RingtonePreference_ringtone_silent">Ништа</string>
+  <string name="RingtonePreference_notification_sound_default">Подразумевани звук обавештења</string>
+  <string name="RingtonePreference_alarm_sound_default">Подразумевани звук аларма</string>
+  <string name="RingtonePreference_add_ringtone_text">Додај мелодију звона</string>
+  <string name="RingtonePreference_unable_to_add_ringtone">Не могу да додам прилагођену мелодију звона</string>
+  <string name="Permissions_permission_required">Потребна је дозвола</string>
+  <string name="Permissions_continue">Настави</string>
+  <string name="Permissions_not_now">Не сада</string>
   <!--EOF-->
 </resources>

@@ -16,7 +16,7 @@
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Удалить все старые сообщения?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-    <item quantity="one">Все разговоры будут обрезаны до 1 последнего сообщений.</item>
+    <item quantity="one">Все разговоры будут обрезаны до %d последнего сообщения.</item>
     <item quantity="few">Все разговоры будут обрезаны до %d последних сообщений.</item>
     <item quantity="many">Все разговоры будут обрезаны до %d последних сообщений.</item>
     <item quantity="other">Все разговоры будут обрезаны до %d последних сообщений.</item>
@@ -123,45 +123,45 @@
   </plurals>
   <!--ConversationFragment-->
   <plurals name="ConversationFragment_delete_selected_messages">
-    <item quantity="one">Удалить выбранное сообщение?</item>
+    <item quantity="one">Удалить %d выбранное сообщение?</item>
     <item quantity="few">Удалить выбранные сообщения?</item>
     <item quantity="many">Удалить выбранные сообщения?</item>
     <item quantity="other">Удалить выбранные сообщения?</item>
   </plurals>
   <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-    <item quantity="one">Выбранное сообщение будет удалено навсегда.</item>
+    <item quantity="one">%1$d выбранное сообщение будет удалено навсегда.</item>
     <item quantity="few">%1$d выбранных сообщения будут удалены навсегда.</item>
     <item quantity="many">%1$d выбранных сообщений будут удалены навсегда.</item>
     <item quantity="other">%1$d выбранных сообщений будут навсегда удалены.</item>
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">Сохранить в хранилище?</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">Сохранение этого файла в памяти сделает его доступным для других приложений на вашем устройстве.\n\nПродолжить?</item>
+    <item quantity="one">Сохранение %1$d файла в памяти сделает его доступным для других приложений на вашем устройстве.\n\nПродолжить?</item>
     <item quantity="few">Сохранение этих %1$d файлов в памяти сделает их доступными для других приложений на вашем устройстве.\n\nПродолжить?</item>
     <item quantity="many">Сохранение этих %1$d файлов в памяти сделает их доступными для других приложений на вашем устройстве.\n\nПродолжить?</item>
     <item quantity="other">Сохранение всех %1$d файлов в хранилище сделает их доступными для других приложений на вашем устройстве.\n\nПродолжить?</item>
   </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-    <item quantity="one">Ошибка при сохранении вложения в хранилище!</item>
+    <item quantity="one">Ошибка при сохранении %d вложения в хранилище!</item>
     <item quantity="few">Ошибка при сохранении вложений в хранилище!</item>
     <item quantity="many">Ошибка при сохранении вложений в хранилище!</item>
     <item quantity="other">Ошибка при сохранении вложений в хранилище!</item>
   </plurals>
   <plurals name="ConversationFragment_files_saved_successfully">
-    <item quantity="one">Файл успешно сохранен.</item>
+    <item quantity="one">%d файл успешно сохранен.</item>
     <item quantity="few">Файлы успешно сохранены.</item>
     <item quantity="many">Файлы успешно сохранены.</item>
     <item quantity="other">Файлы успешно сохранены.</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Невозможно записать в хранилище!</string>
   <plurals name="ConversationFragment_saving_n_attachments">
-    <item quantity="one">Сохранение вложения</item>
+    <item quantity="one">Сохранение %1$d вложения</item>
     <item quantity="few">Сохранение %1$d вложений</item>
     <item quantity="many">Сохранение %1$d вложений</item>
     <item quantity="other">Сохранение %1$d вложений</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">Сохранение вложения в хранилище…</item>
+    <item quantity="one">Сохранение %1$d вложения в хранилище…</item>
     <item quantity="few">Сохранение %1$d вложений в хранилище…</item>
     <item quantity="many">Сохранение %1$d вложений в хранилище…</item>
     <item quantity="other">Сохранение %1$d вложений в хранилище…</item>
@@ -176,13 +176,13 @@
   <string name="ConversationListActivity_search">Поиск</string>
   <!--ConversationListFragment-->
   <plurals name="ConversationListFragment_delete_selected_conversations">
-    <item quantity="one">Удалить выбранный разговор?</item>
+    <item quantity="one">Удалить %d выбранный разговор?</item>
     <item quantity="few">Удалить выбранные разговоры?</item>
     <item quantity="many">Удалить выбранные разговоры?</item>
     <item quantity="other">Удалить выбранные разговоры?</item>
   </plurals>
   <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-    <item quantity="one">Выбранный разговор будет удален навсегда.</item>
+    <item quantity="one">%1$d выбранный разговор будет удален навсегда.</item>
     <item quantity="few">%1$d выбранных разговора будут удалены навсегда.</item>
     <item quantity="many">%1$d выбранных разговоров будут удалены навсегда.</item>
     <item quantity="other">%1$d выбранных разговоров будут удалены навсегда.</item>
@@ -190,14 +190,14 @@
   <string name="ConversationListFragment_deleting">Удаление</string>
   <string name="ConversationListFragment_deleting_selected_conversations">Удаление выбранных разговоров…</string>
   <plurals name="ConversationListFragment_conversations_archived">
-    <item quantity="one">Разговор архивирован</item>
+    <item quantity="one">%d разговор архивирован</item>
     <item quantity="few">%d разговора архивировано</item>
     <item quantity="many">%d разговоров архивировано</item>
     <item quantity="other">%d разговоров архивировано</item>
   </plurals>
   <string name="ConversationListFragment_undo">ОТМЕНИТЬ</string>
   <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-    <item quantity="one">Разговор перемещен во Входящие</item>
+    <item quantity="one">%d разговор перемещен во Входящие</item>
     <item quantity="few">%d разговора перемещено во Входящие</item>
     <item quantity="many">%d разговоров перемещено во Входящие</item>
     <item quantity="other">%d разговоров перемещено во входящие</item>
@@ -778,5 +778,63 @@
   <string name="Permissions_permission_required">Требуется разрешение</string>
   <string name="Permissions_continue">Продолжить</string>
   <string name="Permissions_not_now">Не сейчас</string>
+  <string name="AppProtectionPreferenceFragment_hours">ч</string>
+  <string name="AppProtectionPreferenceFragment_minutes_short">мин</string>
+  <string name="AppProtectionPreferenceFragment_seconds">с</string>
+  <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Тайм-аут бездействия</string>
+  <string name="ExportFragment_store_recovery_key">Сохраните этот ключ восстановления в менеджере паролей или в другом надежном месте. Он необходим для восстановления этой резервной копии и не хранится в ней.</string>
+  <string name="ExportFragment_choose_recovery_key">Выбрать ключ восстановления</string>
+  <string name="ExportFragment_choose_recovery_key_message">Используйте ключ восстановления автоматических резервных копий, чтобы один ключ восстанавливал оба типа копий, или создайте отдельный ключ для этого экспорта.</string>
+  <string name="ExportFragment_use_automatic_key">Использовать автоматический ключ</string>
+  <string name="ExportFragment_use_new_key">Использовать новый ключ</string>
+  <string name="ExportFragment_automatic_key_unavailable">Ключ восстановления автоматических резервных копий недоступен.</string>
+  <string name="ImportFragment_backup_already_imported">Новых сообщений не найдено. Существующие сообщения не были импортированы повторно.</string>
+  <string name="ImportFragment_recovery_key">Ключ восстановления</string>
+  <string name="ImportFragment_invalid_recovery_key">Неверный ключ восстановления.</string>
+  <string name="AutomaticBackup_failure_title">Ошибка автоматического резервного копирования</string>
+  <string name="AutomaticBackup_failure_message">Откройте настройки резервного копирования Silence, чтобы выбрать доступное место сохранения.</string>
+  <string name="AutomaticBackup_enable">Включить автоматические зашифрованные резервные копии</string>
+  <string name="AutomaticBackup_disable">Отключить автоматические зашифрованные резервные копии</string>
+  <string name="AutomaticBackup_description">Ежедневно создавать резервную копию во время зарядки и хранить пять последних копий.</string>
+  <string name="AutomaticBackup_store_recovery_key">Сохраните этот ключ восстановления в менеджере паролей или в другом надежном месте. Без него автоматические резервные копии невозможно восстановить.</string>
+  <string name="AutomaticBackup_reuse_recovery_key">Автоматические резервные копии будут и дальше использовать ключ восстановления, показанный ниже, поэтому им можно будет восстановить копии, созданные как до, так и после паузы.</string>
+  <string name="AutomaticBackup_select_directory">Выбрать папку для резервных копий</string>
+  <string name="AutomaticBackup_disable_message">Новые автоматические резервные копии создаваться не будут. Существующие файлы резервных копий не будут удалены, а ключ восстановления будет сохранен, чтобы при повторном включении использовался тот же ключ.</string>
+  <string name="AutomaticBackup_enable_failed">Не удалось включить автоматическое резервное копирование.</string>
+  <string name="KeyScanningActivity_no_identity_key">Идентификационный ключ недоступен.</string>
+  <string name="KeyScanningActivity_unable_to_generate_qr_code">Не удалось создать QR-код.</string>
+  <string name="master_secret_storage_error">Не удалось сохранить ключ шифрования. Предыдущие настройки не изменены.</string>
+  <string name="retry">Повторить</string>
+  <string name="PassphrasePromptActivity_unlocking">Разблокировка</string>
+  <string name="log_submit_activity__button_dont_share">Не делиться</string>
+  <string name="log_submit_activity__button_share">Поделиться</string>
+  <string name="log_submit_activity__this_log_will_be_shared">Этот журнал диагностики будет передан выбранному вами приложению. Перед отправкой вы можете просмотреть и отредактировать его.</string>
+  <string name="log_submit_activity__loading_logs">Загрузка журналов…</string>
+  <string name="log_submit_activity__choose_share_app">Поделиться журналом диагностики</string>
+  <string name="log_submit_activity__share_failed">Не удалось подготовить журнал диагностики к отправке.</string>
+  <string name="ConversationListFragment_load_failed">Не удалось загрузить разговоры.</string>
+  <string name="ConversationListFragment_delete_failed">Не удалось удалить выбранные разговоры.</string>
+  <string name="ConversationListFragment_send_drafts_failed">Не удалось отправить выбранные черновики.</string>
+  <string name="ConversationListFragment_mutation_failed">Не удалось обновить выбранные разговоры.</string>
+  <string name="ConversationListFragment_operation_locked">Silence заблокирован. Разблокируйте его и повторите попытку.</string>
+  <string name="preferences__system_theme">Системная</string>
+  <string name="sms_resend_may_duplicate_title">Сообщение, возможно, уже отправлено</string>
+  <string name="sms_resend_may_duplicate_message">Некоторые или все части могли уже дойти до получателя. Повторная отправка может создать дубликат.</string>
+  <string name="sms_resend_anyway">Отправить снова</string>
+  <string name="accessibility__unread_message_count">Количество непрочитанных сообщений</string>
+  <string name="accessibility__search">Поиск</string>
+  <string name="accessibility__switch_to_dialpad">Переключиться на цифровую клавиатуру</string>
+  <string name="accessibility__switch_to_keyboard">Переключиться на клавиатуру</string>
+  <string name="accessibility__clear_search">Очистить поиск</string>
+  <string name="accessibility__cached_key">Ключ шифрования в кэше</string>
+  <string name="accessibility__remove_attachment">Удалить вложение</string>
+  <string name="accessibility__select_recipients">Выбрать получателей</string>
+  <string name="accessibility__scroll_handle">Ползунок прокрутки</string>
+  <string name="accessibility__delete_recipient">Удалить получателя</string>
+  <string name="NotificationChannel_messages">Сообщения</string>
+  <string name="NotificationChannel_failures">Сбои</string>
+  <string name="NotificationChannel_locked_status">Статус блокировки</string>
+  <string name="NotificationChannel_other">Другое</string>
+  <string name="message_details_header__type">Тип</string>
   <!--EOF-->
 </resources>

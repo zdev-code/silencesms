@@ -14,7 +14,7 @@
   </plurals>
   <string name="ApplicationPreferencesActivity_delete_all_old_messages_now">Apagar todas as mensagens antigas?</string>
   <plurals name="ApplicationPreferencesActivity_this_will_immediately_trim_all_conversations_to_the_d_most_recent_messages">
-    <item quantity="one">Isso vai apagar todas as mensagens exceto a mais recente.</item>
+    <item quantity="one">Isso vai apagar todas as mensagens exceto a %d mais recente.</item>
     <item quantity="other">Isso vai apagar todas as mensagens exceto as  %d mais recentes.</item>
   </plurals>
   <string name="ApplicationPreferencesActivity_delete">Apagar</string>
@@ -39,7 +39,7 @@
   <string name="ApplicationPreferencesActivity_appearance_summary">Tema %1$s, idioma %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
-    <item quantity="one">1 minuto</item>
+    <item quantity="one">%d minuto</item>
     <item quantity="other">%d minutos</item>
   </plurals>
   <!--DraftDatabase-->
@@ -88,7 +88,7 @@
   <string name="ConversationActivity_group_conversation">Conversa de grupo</string>
   <string name="ConversationActivity_unnamed_group">Grupo sem nome</string>
   <plurals name="ConversationActivity_d_recipients_in_group">
-    <item quantity="one">1 membro</item>
+    <item quantity="one">%d membro</item>
     <item quantity="other">%d membros</item>
   </plurals>
   <string name="ConversationActivity_invalid_recipient">Destinatário inválido!</string>
@@ -109,33 +109,33 @@
   </plurals>
   <!--ConversationFragment-->
   <plurals name="ConversationFragment_delete_selected_messages">
-    <item quantity="one">Apagar mensagem selecionada?</item>
+    <item quantity="one">Apagar %d mensagem selecionada?</item>
     <item quantity="other">Apagar mensagens selecionadas?</item>
   </plurals>
   <plurals name="ConversationFragment_this_will_permanently_delete_all_n_selected_messages">
-    <item quantity="one">Isso vai apagar permanentemente a mensagem selecionada.</item>
+    <item quantity="one">Isso vai apagar permanentemente %1$d mensagem selecionada.</item>
     <item quantity="other">Isso vai apagar permanentemente todas as %1$d mensagens selecionadas.</item>
   </plurals>
   <string name="ConversationFragment_save_to_sd_card">Salvar no armazenamento?</string>
   <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-    <item quantity="one">Salvar este arquivo no armazenamento permite que qualquer outro aplicativo o acesse.\n\nContinuar?</item>
+    <item quantity="one">Salvar %1$d arquivo no armazenamento permite que qualquer outro aplicativo o acesse.\n\nContinuar?</item>
     <item quantity="other">Salvar estes %1$d arquivos no armazenamento permite que qualquer outro aplicativo os acessem.\n\nContinuar?</item>
   </plurals>
   <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
-    <item quantity="one">Ocorreu um erro ao salvar o anexo!</item>
+    <item quantity="one">Ocorreu um erro ao salvar %d anexo!</item>
     <item quantity="other">Ocorreu um erro ao salvar os anexos!</item>
   </plurals>
   <plurals name="ConversationFragment_files_saved_successfully">
-    <item quantity="one">Arquivo salvo com sucesso.</item>
+    <item quantity="one">%d arquivo salvo com sucesso.</item>
     <item quantity="other">Arquivos salvos com sucesso.</item>
   </plurals>
   <string name="ConversationFragment_unable_to_write_to_sd_card_exclamation">Não foi possível salvar no armazenamento!</string>
   <plurals name="ConversationFragment_saving_n_attachments">
-    <item quantity="one">Salvando anexo</item>
+    <item quantity="one">Salvando %1$d anexo</item>
     <item quantity="other">Salvando %1$d anexos</item>
   </plurals>
   <plurals name="ConversationFragment_saving_n_attachments_to_sd_card">
-    <item quantity="one">Salvando anexo no armazenamento…</item>
+    <item quantity="one">Salvando %1$d anexo no armazenamento…</item>
     <item quantity="other">Salvando %1$d anexos no armazenamento…</item>
   </plurals>
   <string name="ConversationFragment_collecting_attahments">Obtendo anexos…</string>
@@ -148,22 +148,22 @@
   <string name="ConversationListActivity_search">Pesquisar</string>
   <!--ConversationListFragment-->
   <plurals name="ConversationListFragment_delete_selected_conversations">
-    <item quantity="one">Apagar conversa selecionada?</item>
+    <item quantity="one">Apagar %d conversa selecionada?</item>
     <item quantity="other">Apagar conversas selecionadas?</item>
   </plurals>
   <plurals name="ConversationListFragment_this_will_permanently_delete_all_n_selected_conversations">
-    <item quantity="one">Isso vai apagar permanentemente a conversa selecionada.</item>
+    <item quantity="one">Isso vai apagar permanentemente %1$d conversa selecionada.</item>
     <item quantity="other">Isso vai apagar permanentemente todas as %1$d conversas selecionadas.</item>
   </plurals>
   <string name="ConversationListFragment_deleting">Apagando</string>
   <string name="ConversationListFragment_deleting_selected_conversations">Apagando conversas selecionadas…</string>
   <plurals name="ConversationListFragment_conversations_archived">
-    <item quantity="one">Conversas arquivada</item>
-    <item quantity="other">%dconversas arquivadas</item>
+    <item quantity="one">%d conversa arquivada</item>
+    <item quantity="other">%d conversas arquivadas</item>
   </plurals>
   <string name="ConversationListFragment_undo">Desfazer</string>
   <plurals name="ConversationListFragment_moved_conversations_to_inbox">
-    <item quantity="one">Conversa movida para a caixa de entrada</item>
+    <item quantity="one">%d conversa movida para a caixa de entrada</item>
     <item quantity="other">%d conversas movidas para a caixa de entrada</item>
   </plurals>
   <string name="ConversationListFragment_send_drafts">Enviar rascunhos</string>
@@ -699,5 +699,102 @@ Uma mensagem de troca de chaves para uma versão inválida do protocolo foi rece
   <string name="trimmer__old_messages_successfully_deleted">Mensagens antigas apagadas com sucesso</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Ícone de transporte</string>
+  <string name="AppProtectionPreferenceFragment_hours">h</string>
+  <string name="AppProtectionPreferenceFragment_minutes_short">min</string>
+  <string name="AppProtectionPreferenceFragment_seconds">s</string>
+  <string name="AppProtectionPreferenceFragment_inactivity_timeout_interval">Intervalo de tempo limite por inatividade</string>
+  <string name="AttachmentManager_silence_requires_contacts_permission_in_order_to_attach_contact_information">O Silence precisa da permissão de Contatos para anexar informações de contato, mas ela foi negada permanentemente. Acesse o menu de configurações do aplicativo, selecione \"Permissões\" e ative \"Contatos\".</string>
+  <string name="ConversationItem_via_s">via %s</string>
+  <string name="ConversationActivity_silence_needs_sms_permission_in_order_to_send_an_sms">O Silence precisa da permissão de SMS para enviar um SMS, mas ela foi negada permanentemente. Acesse as configurações do aplicativo, selecione \"Permissões\" e ative \"SMS\".</string>
+  <string name="WelcomeActivity_improve_your_privacy_talk_to_everyone">Melhore sua privacidade, converse com todos</string>
+  <string name="WelcomeActivity_encrypt_your_messages">Criptografe suas mensagens com usuários do Silence e use mensagens SMS/MMS comuns com os demais.</string>
+  <string name="WelcomeActivity_silence_needs_access_to_your_contacts_phone_status_and_sms">O Silence precisa de acesso aos seus contatos, ao estado do telefone e às mensagens SMS para se conectar com amigos, gerenciar suas chaves de criptografia e conversar.</string>
+  <string name="WelcomeActivity_continue">Continuar</string>
+  <string name="WelcomeActivity_action_required">Ação necessária!</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence">Você precisa conceder algumas permissões ao Silence.</string>
+  <string name="WelcomeActivity_you_need_to_grant_some_permissions_to_silence_in_order_to_continue_to_use_it">Você precisa conceder algumas permissões ao Silence para continuar a usá-lo. Toque para continuar.</string>
+  <string name="WelcomeActivity_silence_needs_the_phone_permission_in_order_to_manage_encryption_keys_and_bind_them_to_your_sim_cards_and_sms_permission_in_order_to_receive_sms_messages">O Silence precisa da permissão de Telefone para gerenciar as chaves de criptografia e vinculá-las aos seus cartões SIM, e da permissão de SMS para receber mensagens SMS.</string>
+  <string name="WelcomeActivity_silence_requires_the_phone_and_sms_permissions_in_order_to_work_but_it_has_been_permanently_denied">O Silence precisa das permissões de Telefone e SMS para funcionar, mas elas foram negadas permanentemente. Acesse as configurações do aplicativo, selecione \"Permissões\" e ative \"Telefone\" e \"SMS\".</string>
+  <string name="ExportFragment_store_recovery_key">Guarde esta chave de recuperação no seu gerenciador de senhas ou em outro local seguro. Ela é necessária para restaurar este backup e não fica armazenada nele.</string>
+  <string name="ExportFragment_choose_recovery_key">Escolher chave de recuperação</string>
+  <string name="ExportFragment_choose_recovery_key_message">Use a chave de recuperação do backup automático para que uma única chave restaure os dois tipos de backup, ou crie uma chave separada para esta exportação.</string>
+  <string name="ExportFragment_use_automatic_key">Usar chave automática</string>
+  <string name="ExportFragment_use_new_key">Usar nova chave</string>
+  <string name="ExportFragment_automatic_key_unavailable">A chave de recuperação do backup automático não está disponível.</string>
+  <string name="ImportFragment_backup_already_imported">Nenhuma mensagem nova foi encontrada. As mensagens existentes não foram importadas novamente.</string>
+  <string name="ImportFragment_recovery_key">Chave de recuperação</string>
+  <string name="ImportFragment_invalid_recovery_key">Chave de recuperação inválida.</string>
+  <string name="AutomaticBackup_failure_title">Falha no backup automático</string>
+  <string name="AutomaticBackup_failure_message">Abra as configurações de backup do Silence para selecionar um destino disponível.</string>
+  <string name="AutomaticBackup_enable">Ativar backups criptografados automáticos</string>
+  <string name="AutomaticBackup_disable">Desativar backups criptografados automáticos</string>
+  <string name="AutomaticBackup_description">Cria um backup diário durante o carregamento e mantém as cinco cópias mais recentes.</string>
+  <string name="AutomaticBackup_store_recovery_key">Guarde esta chave de recuperação no seu gerenciador de senhas ou em outro local seguro. Os backups automáticos não podem ser restaurados sem ela.</string>
+  <string name="AutomaticBackup_reuse_recovery_key">Os backups automáticos continuarão usando a chave de recuperação mostrada abaixo, para que ela possa restaurar backups de antes e depois da pausa.</string>
+  <string name="AutomaticBackup_select_directory">Selecionar pasta de backup</string>
+  <string name="AutomaticBackup_disable_message">Os próximos backups automáticos serão interrompidos. Os arquivos de backup existentes não serão apagados, e a chave de recuperação será mantida para que a reativação use a mesma chave.</string>
+  <string name="AutomaticBackup_enable_failed">Não foi possível ativar os backups automáticos.</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages">O Silence precisa da permissão de SMS para importar mensagens SMS, mas ela foi negada permanentemente. Acesse as configurações do aplicativo, selecione \"Permissões\" e ative \"SMS\".</string>
+  <string name="ImportExportFragment_silence_needs_the_sms_permission_in_order_to_import_sms_messages_toast">O Silence precisa da permissão de SMS para importar mensagens SMS</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage_but_it_has_been_permanently_denied">O Silence precisa da permissão de Armazenamento para ler do armazenamento externo, mas ela foi negada permanentemente. Acesse as configurações do aplicativo, selecione \"Permissões\" e ative \"Armazenamento\".</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_read_from_external_storage">O Silence precisa da permissão de Armazenamento para ler do armazenamento externo.</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">O Silence precisa da permissão de Armazenamento para gravar no armazenamento externo, mas ela foi negada permanentemente. Acesse as configurações do aplicativo, selecione \"Permissões\" e ative \"Armazenamento\".</string>
+  <string name="ImportExportFragment_silence_needs_the_storage_permission_in_order_to_write_to_external_storage">O Silence precisa da permissão de Armazenamento para gravar no armazenamento externo.</string>
+  <string name="KeyScanningActivity_no_identity_key">Nenhuma chave de identidade disponível.</string>
+  <string name="KeyScanningActivity_unable_to_generate_qr_code">Não foi possível gerar o código QR.</string>
+  <string name="master_secret_storage_error">Não foi possível salvar a chave de criptografia. Suas configurações anteriores não foram alteradas.</string>
+  <string name="retry">Tentar novamente</string>
+  <string name="PassphrasePromptActivity_unlocking">Desbloqueando</string>
+  <string name="NotificationChannel_messages">Mensagens</string>
+  <string name="NotificationChannel_failures">Falhas</string>
+  <string name="NotificationChannel_locked_status">Status de bloqueio</string>
+  <string name="NotificationChannel_other">Outros</string>
+  <string name="ContactSelectionListFragment_silence_requires_the_contacts_permission_in_order_to_display_your_contacts">O Silence precisa da permissão de Contatos para exibir seus contatos, mas ela foi negada permanentemente. Acesse o menu de configurações do aplicativo, selecione \"Permissões\" e ative \"Contatos\".</string>
+  <string name="contact_selection_list_fragment__silence_needs_access_to_your_contacts_in_order_to_display_them">O Silence precisa de acesso aos seus contatos para exibi-los.</string>
+  <string name="contact_selection_list_fragment__show_contacts">Mostrar contatos</string>
+  <string name="conversation_activity__via_sim_name">Via %1$s</string>
+  <string name="log_submit_activity__button_dont_share">Não compartilhar</string>
+  <string name="log_submit_activity__button_share">Compartilhar</string>
+  <string name="log_submit_activity__this_log_will_be_shared">Este registro de diagnóstico será compartilhado com um aplicativo de sua escolha. Você pode examiná-lo e editá-lo antes de compartilhar.</string>
+  <string name="log_submit_activity__loading_logs">Carregando registros…</string>
+  <string name="log_submit_activity__choose_share_app">Compartilhar registro de diagnóstico</string>
+  <string name="log_submit_activity__share_failed">Não foi possível preparar o registro de diagnóstico para compartilhamento.</string>
+  <string name="ConversationListFragment_load_failed">Não foi possível carregar as conversas.</string>
+  <string name="ConversationListFragment_delete_failed">Não foi possível apagar as conversas selecionadas.</string>
+  <string name="ConversationListFragment_send_drafts_failed">Não foi possível enviar os rascunhos selecionados.</string>
+  <string name="ConversationListFragment_mutation_failed">Não foi possível atualizar as conversas selecionadas.</string>
+  <string name="ConversationListFragment_operation_locked">O Silence está bloqueado. Desbloqueie-o e tente novamente.</string>
+  <string name="message_details_header__type">Tipo</string>
+  <string name="message_details_header__to">Para</string>
+  <string name="message_details_header__from">De</string>
+  <string name="message_details_header__with">Com</string>
+  <string name="preferences__system_theme">Padrão do sistema</string>
+  <string name="sms_resend_may_duplicate_title">A mensagem pode já ter sido enviada</string>
+  <string name="sms_resend_may_duplicate_message">Algumas ou todas as partes podem ter chegado ao destinatário. Enviar novamente pode criar uma mensagem duplicada.</string>
+  <string name="sms_resend_anyway">Enviar novamente</string>
+  <string name="preferences_advanced__always_ask_for_sim_card">Sempre perguntar o cartão SIM</string>
+  <string name="preferences_advanced__always_ask_for_the_sim_card_to_use_when_sending_messages">Sempre perguntar qual cartão SIM usar ao enviar mensagens</string>
+  <string name="share_identity_fingerprint">Compartilhar sua impressão digital de identidade</string>
+  <string name="MediaPreviewActivity_silence_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied">O Silence precisa da permissão de Armazenamento para salvar no armazenamento externo, mas ela foi negada permanentemente. Acesse as configurações do aplicativo, selecione \"Permissões\" e ative \"Armazenamento\".</string>
+  <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission">Não é possível salvar no armazenamento externo sem permissões</string>
+  <string name="accessibility__unread_message_count">Número de mensagens não lidas</string>
+  <string name="accessibility__search">Pesquisar</string>
+  <string name="accessibility__switch_to_dialpad">Alternar para o teclado numérico</string>
+  <string name="accessibility__switch_to_keyboard">Alternar para o teclado</string>
+  <string name="accessibility__clear_search">Limpar pesquisa</string>
+  <string name="accessibility__cached_key">Chave de criptografia em cache</string>
+  <string name="accessibility__remove_attachment">Remover anexo</string>
+  <string name="accessibility__select_recipients">Selecionar destinatários</string>
+  <string name="accessibility__scroll_handle">Controle de rolagem</string>
+  <string name="accessibility__delete_recipient">Apagar destinatário</string>
+  <string name="RingtonePreference_ringtone_default">Toque padrão</string>
+  <string name="RingtonePreference_ringtone_silent">Nenhum</string>
+  <string name="RingtonePreference_notification_sound_default">Som de notificação padrão</string>
+  <string name="RingtonePreference_alarm_sound_default">Som de alarme padrão</string>
+  <string name="RingtonePreference_add_ringtone_text">Adicionar toque</string>
+  <string name="RingtonePreference_unable_to_add_ringtone">Não foi possível adicionar o toque personalizado</string>
+  <string name="Permissions_permission_required">Permissão necessária</string>
+  <string name="Permissions_continue">Continuar</string>
+  <string name="Permissions_not_now">Agora não</string>
   <!--EOF-->
 </resources>
