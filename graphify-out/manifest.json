@@ -240,15 +240,15 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationFragment.java": {
-    "mtime": 1790351197.1880174,
-    "seen": 1790352039.3339658,
+    "mtime": 1790352149.71815,
+    "seen": 1790353496.056417,
     "ast_hash": "c1a5100ee7807952e064860a3f56623a",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationItem.java": {
-    "mtime": 1790350939.2524428,
-    "seen": 1790352039.3339665,
-    "ast_hash": "66b0c68566304b342f130d1d47c4dc78",
+    "mtime": 1790355558.6535635,
+    "seen": 1790355625.7455468,
+    "ast_hash": "60e4f7e73d45e293a1cfe0024e6aa436",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationListActivity.java": {
@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationUpdateItem.java": {
-    "mtime": 1790087300.64796,
-    "seen": 1790088703.6750827,
-    "ast_hash": "09275ee10043f251563d03a4208e239d",
+    "mtime": 1790355078.6459987,
+    "seen": 1790355224.9611459,
+    "ast_hash": "7dbe7023be905087b0b37eef3ca5ba18",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/DummyActivity.java": {
@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/MessageRecipientListItem.java": {
-    "mtime": 1790350939.9087894,
-    "seen": 1790352039.3340037,
-    "ast_hash": "36106bf7899bad8ac7c3ac0995f7c5ba",
+    "mtime": 1790355078.6485083,
+    "seen": 1790355224.9611716,
+    "ast_hash": "c6a6b7daac7483f4e55d31d46ca13a6a",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/MuteDialog.java": {
@@ -372,9 +372,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ReceiveKeyDialog.java": {
-    "mtime": 1788518710.2675257,
-    "seen": 1788520873.266612,
-    "ast_hash": "097670557d7ce5e18abc698e855b6d20",
+    "mtime": 1790354504.805103,
+    "seen": 1790354557.7593951,
+    "ast_hash": "fd246efa622928f70027823f29c921f1",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ShareActivity.java": {
@@ -1026,9 +1026,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/crypto/KeyExchangeInitiator.java": {
-    "mtime": 1790087300.646456,
-    "seen": 1790088703.675216,
-    "ast_hash": "26437a2cb2b39744771864f391ae1fb3",
+    "mtime": 1790353326.3021777,
+    "seen": 1790353496.056562,
+    "ast_hash": "1e248a74cc02e0b3d731101ac213739b",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/crypto/MasterCipher.java": {
@@ -1116,9 +1116,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/crypto/storage/SilenceIdentityKeyStore.java": {
-    "mtime": 1785765988.5336316,
-    "seen": 1788370476.5557766,
-    "ast_hash": "067c6dcc90fc14b653551cb035930bfe",
+    "mtime": 1790353857.381332,
+    "seen": 1790354473.648311,
+    "ast_hash": "27f2586dc7a8bd18b727f390c8039516",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/crypto/storage/SilencePreKeyStore.java": {
@@ -1146,9 +1146,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/crypto/storage/VendoredIdentityKeyStore.java": {
-    "mtime": 1785765988.5362065,
-    "seen": 1788370476.5557797,
-    "ast_hash": "946cce53cc7efddf7fcf1652e4bced7a",
+    "mtime": 1790353857.38433,
+    "seen": 1790354473.6483147,
+    "ast_hash": "7ffe84f88b4403590d8a22fc90269bc7",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/crypto/storage/VendoredPreKeyStore.java": {
@@ -1452,9 +1452,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/jobs/MmsDownloadJob.java": {
-    "mtime": 1785765988.5499563,
-    "seen": 1788370476.5558317,
-    "ast_hash": "07b275ad5370d4c349b21939d0cc1772",
+    "mtime": 1790353410.8699975,
+    "seen": 1790353496.0566602,
+    "ast_hash": "73ff6939a03bc25c7c70bed524e02714",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/jobs/MmsReceiveJob.java": {
@@ -1476,9 +1476,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/jobs/SmsDecryptJob.java": {
-    "mtime": 1790350939.263965,
-    "seen": 1790352039.3346243,
-    "ast_hash": "b9e63bad35d009460ea6a6d1f7b9f13e",
+    "mtime": 1790354801.370743,
+    "seen": 1790355224.9613817,
+    "ast_hash": "744287d3dee87fdf463c18fc3136b553",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/jobs/SmsReceiveJob.java": {
@@ -2352,9 +2352,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/util/Base64.java": {
-    "mtime": 1765920810.1589537,
-    "seen": 1788370476.5559442,
-    "ast_hash": "3b2779dbc404c9351f5ecaa5c4ae37c3",
+    "mtime": 1790353608.1148036,
+    "seen": 1790354473.6485567,
+    "ast_hash": "95a562ef90ded708960db28a99d53136",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/util/BitmapDecodingException.java": {
@@ -2526,8 +2526,8 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/util/SaveAttachmentTask.java": {
-    "mtime": 1790351197.211113,
-    "seen": 1790352039.3348954,
+    "mtime": 1790352149.71815,
+    "seen": 1790353496.056849,
     "ast_hash": "78dd2151b91a3bd3e6c9d76590e9de0b",
     "semantic_hash": ""
   },
@@ -3900,9 +3900,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/domain/conversation/SendSelectedDrafts.java": {
-    "mtime": 1788298510.4637275,
-    "seen": 1788370476.5558267,
-    "ast_hash": "d64cb33b1dc242b1a3279117d90528b9",
+    "mtime": 1790353410.881517,
+    "seen": 1790353496.056646,
+    "ast_hash": "20546f57aec2e14389a01ed1eda665d7",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ui/conversationlist/ConversationListStateStore.java": {
@@ -3936,9 +3936,9 @@
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/domain/conversation/SendSelectedDraftsTest.java": {
-    "mtime": 1788298510.473138,
-    "seen": 1788370476.5560055,
-    "ast_hash": "40f696c6f2f8b205b68f1f4eab334626",
+    "mtime": 1790353326.3133664,
+    "seen": 1790353496.0569127,
+    "ast_hash": "8127f3bebf57e0440091b00d1371d41b",
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/ui/conversationlist/ConversationListStateStoreTest.java": {
@@ -4668,9 +4668,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationScreenFragment.java": {
-    "mtime": 1790087300.527218,
-    "seen": 1790088703.6750803,
-    "ast_hash": "d0fd4913bd2fb2ce6afc92fa550e217b",
+    "mtime": 1790353354.9819243,
+    "seen": 1790353496.0564299,
+    "ast_hash": "3e445d33fec2b5b1e067d544718407fd",
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ConversationScreenHost.java": {
@@ -5016,9 +5016,9 @@
     "semantic_hash": ""
   },
   "app/src/main/java/org/smssecure/smssecure/ui/passphrasecreate/PassphraseCreateController.java": {
-    "mtime": 1790087300.543901,
-    "seen": 1790088703.6754382,
-    "ast_hash": "a6bd8e060a72554d7af37de28f1f99df",
+    "mtime": 1790353354.9849243,
+    "seen": 1790353496.0568135,
+    "ast_hash": "ae20d9ded441a92d08cdac7118fcf10f",
     "semantic_hash": ""
   },
   "app/src/test/java/org/smssecure/smssecure/ui/authentication/AuthenticationCompletionCoordinatorTest.java": {
@@ -5661,6 +5661,30 @@
     "mtime": 1790350086.578417,
     "seen": 1790350502.719783,
     "ast_hash": "3f25269cd1a7453d59d009236ff839c0",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/org/smssecure/smssecure/util/Base64Test.java": {
+    "mtime": 1790353130.5913584,
+    "seen": 1790353496.0569565,
+    "ast_hash": "ffce7192311f76bfaf0aa7734a3002ba",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/org/smssecure/smssecure/ReceiveKeyDialogIdentityTest.java": {
+    "mtime": 1790354312.553987,
+    "seen": 1790354473.6486173,
+    "ast_hash": "c6a6585b284bb64daa326201cbc35f93",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/org/smssecure/smssecure/jobs/SmsDecryptJobIdentityTest.java": {
+    "mtime": 1790354966.1782556,
+    "seen": 1790355224.961677,
+    "ast_hash": "aa82c6ec52e6c090a680e11dcb2fba5d",
+    "semantic_hash": ""
+  },
+  "app/src/test/java/org/smssecure/smssecure/ConversationItemKeyExchangeTest.java": {
+    "mtime": 1790355558.7138343,
+    "seen": 1790355625.7463615,
+    "ast_hash": "74614c6d114aaf5727dc4c007a0b8260",
     "semantic_hash": ""
   }
 }

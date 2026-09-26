@@ -13,10 +13,12 @@ import org.smssecure.smssecure.crypto.SecurityEvent;
 import org.smssecure.smssecure.crypto.SmsCipher;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.EncryptingSmsDatabase;
+import org.smssecure.smssecure.database.IdentityDatabase;
 import org.smssecure.smssecure.database.NoSuchMessageException;
 import org.smssecure.smssecure.database.model.SmsMessageRecord;
 import org.smssecure.smssecure.jobs.requirements.MasterSecretRequirement;
 import org.smssecure.smssecure.notifications.MessageNotifier;
+import org.smssecure.smssecure.protocol.KeyExchangeMessage;
 import org.smssecure.smssecure.recipients.RecipientFactory;
 import org.smssecure.smssecure.recipients.Recipients;
 import org.smssecure.smssecure.service.KeyCachingService;
@@ -26,6 +28,7 @@ import org.smssecure.smssecure.sms.IncomingKeyExchangeMessage;
 import org.smssecure.smssecure.sms.IncomingPreKeyBundleMessage;
 import org.smssecure.smssecure.sms.IncomingTextMessage;
 import org.smssecure.smssecure.sms.IncomingXmppExchangeMessage;
+import org.smssecure.smssecure.sms.IncomingIdentityUpdateMessage;
 import org.smssecure.smssecure.sms.MessageSender;
 import org.smssecure.smssecure.sms.OutgoingKeyExchangeMessage;
 import org.smssecure.smssecure.util.dualsim.SubscriptionInfoCompat;
@@ -36,9 +39,13 @@ import org.signal.libsignal.protocol.DuplicateMessageException;
 import org.signal.libsignal.protocol.InvalidMessageException;
 import org.signal.libsignal.protocol.InvalidVersionException;
 import org.signal.libsignal.protocol.LegacyMessageException;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.InvalidKeyException;
 import org.signal.libsignal.protocol.NoSessionException;
 import org.whispersystems.libsignal.StaleKeyExchangeException;
 import org.whispersystems.libsignal.UntrustedIdentityException;
+import org.smssecure.smssecure.recipients.Recipient;
+import org.smssecure.smssecure.util.Base64;
 import java.util.Optional;
 
 import java.io.IOException;
@@ -151,8 +158,8 @@ public class SmsDecryptJob extends MasterSecretJob {
     if (message.isEndSession()) SecurityEvent.broadcastSecurityUpdateEvent(context, threadId);
   }
 
-  private void handlePreKeySignalMessage(MasterSecret masterSecret, long messageId, long threadId,
-                                          IncomingPreKeyBundleMessage message)
+  void handlePreKeySignalMessage(MasterSecret masterSecret, long messageId, long threadId,
+                                 IncomingPreKeyBundleMessage message)
       throws NoSessionException, DuplicateMessageException,
       InvalidMessageException, LegacyMessageException
   {
@@ -170,23 +177,52 @@ public class SmsDecryptJob extends MasterSecretJob {
       database.markAsInvalidVersionKeyExchange(messageId);
     } catch (UntrustedIdentityException e) {
       Log.w(TAG, e);
+      recordIdentityMismatch(database, messageId, threadId, message.getSender(), e.getUntrustedIdentity());
     }
   }
 
-  private void handleKeyExchangeMessage(MasterSecret masterSecret, long messageId, long threadId,
-                                      IncomingKeyExchangeMessage message)
+  void handleKeyExchangeMessage(MasterSecret masterSecret, long messageId, long threadId,
+                                IncomingKeyExchangeMessage message)
   {
     EncryptingSmsDatabase database = DatabaseFactory.getEncryptingSmsDatabase(context);
+    boolean shouldSend = shouldSend();
+
+    if (message.isIdentityUpdate()) {
+      IdentityKey identityKey = getIdentityUpdateKey((IncomingIdentityUpdateMessage) message);
+      if (identityKey != null && !DatabaseFactory.getIdentityDatabase(context)
+          .isValidIdentity(masterSecret,
+                           RecipientFactory.getRecipientsFromString(context, message.getSender(), true)
+                                           .getPrimaryRecipient().getRecipientId(),
+                           identityKey)) {
+        recordIdentityMismatch(database, messageId, threadId, message.getSender(), identityKey);
+        return;
+      }
+    }
+
+    KeyExchangeMessage exchangeMessage = message.isIdentityUpdate() ? null : parseKeyExchangeMessage(message);
+
+    if (!shouldSend && exchangeMessage != null && exchangeMessage.isInitiate()) {
+      Recipient recipient = RecipientFactory.getRecipientsFromString(context, message.getSender(), true)
+                                             .getPrimaryRecipient();
+      IdentityKey identityKey = toNew(exchangeMessage.getIdentityKey());
+
+      if (!DatabaseFactory.getIdentityDatabase(context)
+                           .isValidIdentity(masterSecret, recipient.getRecipientId(), identityKey)) {
+        recordIdentityMismatch(database, messageId, threadId, message.getSender(), exchangeMessage.getIdentityKey());
+      }
+
+      return;
+    }
 
     try {
       SmsCipher                  cipher   = new SmsCipher(context, masterSecret, message.getSubscriptionId());
       OutgoingKeyExchangeMessage response = cipher.process(context, message);
 
-      if (shouldSend()) {
+      if (shouldSend || (exchangeMessage != null && !exchangeMessage.isInitiate())) {
         database.markAsProcessedKeyExchange(messageId);
         SecurityEvent.broadcastSecurityUpdateEvent(context, threadId);
 
-        if (response != null) {
+        if (response != null && shouldSend) {
           MessageSender.send(context, masterSecret, response, threadId, true);
         }
       }
@@ -199,7 +235,7 @@ public class SmsDecryptJob extends MasterSecretJob {
     } catch (LegacyMessageException e) {
       Log.w(TAG, e);
       database.markAsLegacyVersion(messageId);
-      if (shouldSend()) {
+      if (shouldSend) {
         Log.w(TAG, "Legacy message found, sending updated key exchange message...");
         Recipients recipients = RecipientFactory.getRecipientsFromString(context, message.getSender(), false);
         KeyExchangeInitiator.initiate(context, masterSecret, recipients, false, message.getSubscriptionId());
@@ -210,6 +246,53 @@ public class SmsDecryptJob extends MasterSecretJob {
       database.markAsStaleKeyExchange(messageId);
     } catch (UntrustedIdentityException e) {
       Log.w(TAG, e);
+      recordIdentityMismatch(database, messageId, threadId, message.getSender(), e.getUntrustedIdentity());
+    }
+  }
+
+  private IdentityKey getIdentityUpdateKey(IncomingIdentityUpdateMessage message) {
+    try {
+      return new IdentityKey(Base64.decodeWithoutPadding(message.getMessageBody()), 0);
+    } catch (IOException | InvalidKeyException e) {
+      Log.w(TAG, e);
+      return null;
+    }
+  }
+
+  private KeyExchangeMessage parseKeyExchangeMessage(IncomingKeyExchangeMessage message) {
+    try {
+      return new KeyExchangeMessage(Base64.decodeWithoutPadding(message.getMessageBody()));
+    } catch (IOException | org.whispersystems.libsignal.InvalidMessageException |
+             org.whispersystems.libsignal.InvalidVersionException |
+             org.whispersystems.libsignal.LegacyMessageException e) {
+      return null;
+    }
+  }
+
+  private void recordIdentityMismatch(EncryptingSmsDatabase database,
+                                      long messageId,
+                                      long threadId,
+                                      String sender,
+                                      org.whispersystems.libsignal.IdentityKey identityKey) {
+    if (identityKey == null) return;
+    recordIdentityMismatch(database, messageId, threadId, sender, toNew(identityKey));
+  }
+
+  private void recordIdentityMismatch(EncryptingSmsDatabase database,
+                                      long messageId,
+                                      long threadId,
+                                      String sender,
+                                      IdentityKey identityKey) {
+    Recipient recipient = RecipientFactory.getRecipientsFromString(context, sender, true).getPrimaryRecipient();
+    database.addMismatchedIdentity(messageId, recipient.getRecipientId(), identityKey);
+    database.notifyMessageStateChanged(messageId);
+  }
+
+  private static IdentityKey toNew(org.whispersystems.libsignal.IdentityKey identityKey) {
+    try {
+      return new IdentityKey(identityKey.serialize(), 0);
+    } catch (InvalidKeyException e) {
+      throw new AssertionError(e);
     }
   }
 

@@ -105,7 +105,7 @@ public class MessageRecipientListItem extends RelativeLayout
       conflictButton.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          conflictDialog = new ReceiveKeyDialog(getContext(), masterSecret, record);
+          conflictDialog = new ReceiveKeyDialog(getContext(), masterSecret, record, keyMismatch);
           conflictDialog.show();
         }
       });

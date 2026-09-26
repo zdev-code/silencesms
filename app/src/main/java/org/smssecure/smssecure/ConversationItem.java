@@ -52,6 +52,7 @@ import org.smssecure.smssecure.database.AttachmentDatabase;
 import org.smssecure.smssecure.database.DatabaseFactory;
 import org.smssecure.smssecure.database.MmsDatabase;
 import org.smssecure.smssecure.database.SmsDatabase;
+import org.smssecure.smssecure.database.documents.IdentityKeyMismatch;
 import org.smssecure.smssecure.database.model.MediaMmsMessageRecord;
 import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.database.model.NotificationMmsMessageRecord;
@@ -476,10 +477,12 @@ public class ConversationItem extends LinearLayout
            shouldInterceptKeyExchangeMessage(messageRecord));
   }
 
-  private boolean shouldInterceptKeyExchangeMessage(MessageRecord keyExchangeMessage) {
+  static boolean shouldInterceptKeyExchangeMessage(MessageRecord keyExchangeMessage) {
     return keyExchangeMessage.isKeyExchange()          &&
           !keyExchangeMessage.isProcessedKeyExchange() &&
-          !keyExchangeMessage.isOutgoing();
+          !keyExchangeMessage.isOutgoing()             &&
+          !keyExchangeMessage.isCorruptedKeyExchange() &&
+          !keyExchangeMessage.isInvalidVersionKeyExchange();
   }
 
   private void setGroupMessageStatus(MessageRecord messageRecord, Recipient recipient) {
@@ -546,7 +549,7 @@ public class ConversationItem extends LinearLayout
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            KeyExchangeInitiator.initiate(context, masterSecret, recipients, true);
+            KeyExchangeInitiator.initiate(context, masterSecret, recipients, true, subscriptionId);
           }
         });
         builder.show();
@@ -564,7 +567,18 @@ public class ConversationItem extends LinearLayout
   /// Event handlers
 
   private void handleKeyExchangeClicked() {
-    new ReceiveKeyDialog(context, masterSecret, messageRecord).show();
+    new ReceiveKeyDialog(context, masterSecret, messageRecord, getKeyMismatch(messageRecord)).show();
+  }
+
+  private IdentityKeyMismatch getKeyMismatch(MessageRecord record) {
+    if (record.isIdentityMismatchFailure()) {
+      for (IdentityKeyMismatch mismatch : record.getIdentityKeyMismatches()) {
+        if (mismatch.getRecipientId() == record.getIndividualRecipient().getRecipientId()) {
+          return mismatch;
+        }
+      }
+    }
+    return null;
   }
 
   private void handleLegacyKeyExchangeClicked() {
@@ -704,10 +718,8 @@ public class ConversationItem extends LinearLayout
         parent.onClick(v);
       } else if (messageRecord.isFailed()) {
         if (parent != null) parent.onClick(v);
-      } else if (messageRecord.isKeyExchange()           &&
-                 !messageRecord.isOutgoing()             &&
-                 !messageRecord.isProcessedKeyExchange() &&
-                 !messageRecord.isStaleKeyExchange()     &&
+      } else if (shouldInterceptKeyExchangeMessage(messageRecord) &&
+                 !messageRecord.isStaleKeyExchange()                &&
                  !messageRecord.isLegacyMessage())
       {
         handleKeyExchangeClicked();

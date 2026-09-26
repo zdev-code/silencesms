@@ -55,8 +55,8 @@ public class VendoredIdentityKeyStore implements IdentityKeyStore {
   public boolean isTrustedIdentity(SignalProtocolAddress address, IdentityKey identityKey, Direction direction) {
     synchronized (LOCK) {
       switch (direction) {
-        case SENDING:   return isTrustedIdentity(address, identityKey);
-        case RECEIVING: return true;
+        case SENDING:
+        case RECEIVING: return isTrustedIdentity(address, identityKey);
         default:        throw new AssertionError("Unknown direction: " + direction);
       }
     }

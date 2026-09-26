@@ -52,7 +52,7 @@ public class SendSelectedDraftsTest extends BaseUnitTest {
 
     SendSelectedDrafts.Result result = operation.run(input(11L), masterSecret);
 
-    assertThat(draftSender.sent).containsExactly("text:11:true:hello");
+    assertThat(draftSender.sent).containsExactly("text:11:true:7:hello");
     assertThat(draftStore.cleared).containsExactly(11L);
     assertThat(observedSubscriptionId).isEqualTo(7);
     assertThat(result.getSentDraftCount()).isEqualTo(1);
@@ -66,7 +66,7 @@ public class SendSelectedDraftsTest extends BaseUnitTest {
 
     operation.run(input(12L), masterSecret);
 
-    assertThat(draftSender.sent).containsExactly("media:12:false:content://image:caption");
+    assertThat(draftSender.sent).containsExactly("media:12:false:7:content://image:caption");
     assertThat(draftStore.cleared).containsExactly(12L);
   }
 
@@ -119,17 +119,17 @@ public class SendSelectedDraftsTest extends BaseUnitTest {
     private RuntimeException failure;
 
     @Override
-    public void sendText(MasterSecret masterSecret, Recipients recipients, boolean secure,
+    public void sendText(MasterSecret masterSecret, Recipients recipients, boolean secure, int subscriptionId,
                          DraftDatabase.Draft draft, long threadId) {
       if (failure != null) throw failure;
-      sent.add("text:" + threadId + ":" + secure + ":" + draft.getValue());
+      sent.add("text:" + threadId + ":" + secure + ":" + subscriptionId + ":" + draft.getValue());
     }
 
     @Override
-    public void sendMedia(MasterSecret masterSecret, Recipients recipients, boolean secure,
+    public void sendMedia(MasterSecret masterSecret, Recipients recipients, boolean secure, int subscriptionId,
                           DraftDatabase.Draft draft, long threadId, String forcedValue) {
       if (failure != null) throw failure;
-      sent.add("media:" + threadId + ":" + secure + ":" + draft.getValue() + ":" + forcedValue);
+      sent.add("media:" + threadId + ":" + secure + ":" + subscriptionId + ":" + draft.getValue() + ":" + forcedValue);
     }
   }
 }

@@ -734,15 +734,20 @@ public class ConversationScreenFragment extends Fragment
 
       for (SubscriptionInfoCompat subscriptionInfo : activeSubscriptions) {
         final int subscriptionId = subscriptionInfo.getSubscriptionId();
-        identitiesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, subscriptionInfo.getDisplayName())
-                      .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                          handleVerifyIdentity(subscriptionId);
-                          return true;
-                        }
-                      });
+
+        if (useMasterSecret(secret -> SessionUtil.hasSession(requireContext(), secret,
+          recipients.getPrimaryRecipient().getNumber(), subscriptionId), false)) {
+          identitiesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, subscriptionInfo.getDisplayName())
+                        .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                          @Override
+                          public boolean onMenuItemClick(MenuItem item) {
+                            handleVerifyIdentity(subscriptionId);
+                            return true;
+                          }
+                        });
+        }
       }
+      if (identitiesMenu.size() == 0) menu.findItem(R.id.menu_verify_identity_dual_sim).setVisible(false);
     } else {
       menu.findItem(R.id.menu_verify_identity_dual_sim).setVisible(false);
     }
@@ -768,6 +773,9 @@ public class ConversationScreenFragment extends Fragment
                                   }
                                 });
         }
+      }
+      if (startSecureSessionMenu.size() == 0) {
+        menu.findItem(R.id.menu_start_secure_session_dual_sim).setVisible(false);
       }
     } else {
       menu.findItem(R.id.menu_start_secure_session_dual_sim).setVisible(false);
@@ -797,8 +805,11 @@ public class ConversationScreenFragment extends Fragment
                                 });
         }
       }
+      if (abortSecureSessionMenu.size() == 0) {
+        menu.findItem(R.id.menu_abort_session_dual_sim).setVisible(false);
+      }
     } else {
-      menu.findItem(R.id.menu_abort_session).setVisible(false);
+      menu.findItem(R.id.menu_abort_session_dual_sim).setVisible(false);
     }
   }
 

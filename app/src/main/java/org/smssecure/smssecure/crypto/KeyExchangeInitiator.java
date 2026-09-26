@@ -17,14 +17,9 @@
  */
 package org.smssecure.smssecure.crypto;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
 import android.widget.Toast;
 
 import org.smssecure.smssecure.R;
@@ -50,48 +45,11 @@ import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SessionStore;
 import org.whispersystems.libsignal.state.SignedPreKeyStore;
 
-import java.util.List;
-
-import androidx.core.content.ContextCompat;
-
 public class KeyExchangeInitiator {
 
   public static void abort(final Context context, final MasterSecret masterSecret, final Recipients recipients, final int subscriptionId) {
     OutgoingEndSessionMessage endSessionMessage = new OutgoingEndSessionMessage(new OutgoingTextMessage(recipients, "TERMINATE", subscriptionId));
     MessageSender.send(context, masterSecret, endSessionMessage, -1, false);
-  }
-
-  public static void initiate(final Context context, final MasterSecret masterSecret, final Recipients recipients, boolean promptOnExisting) {
-    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-      initiate(context, masterSecret, recipients, promptOnExisting, -1);
-      return;
-    }
-
-    SubscriptionManager subscriptionManager = getSubscriptionManager(context);
-
-      if (subscriptionManager == null) {
-        initiate(context, masterSecret, recipients, promptOnExisting, -1);
-        return;
-      }
-
-      try {
-        List<SubscriptionInfo> listSubscriptionInfo = subscriptionManager.getActiveSubscriptionInfoList();
-
-        if (listSubscriptionInfo == null || listSubscriptionInfo.isEmpty()) {
-          initiate(context, masterSecret, recipients, promptOnExisting, -1);
-          return;
-        }
-
-        for (SubscriptionInfo subscriptionInfo : listSubscriptionInfo) {
-          initiate(context, masterSecret, recipients, promptOnExisting, subscriptionInfo.getSubscriptionId());
-        }
-      } catch (SecurityException securityException) {
-        initiate(context, masterSecret, recipients, promptOnExisting, -1);
-      }
-  }
-
-  private static SubscriptionManager getSubscriptionManager(Context context) {
-    return context.getSystemService(SubscriptionManager.class);
   }
 
   public static void initiate(final Context context, final MasterSecret masterSecret, final Recipients recipients, boolean promptOnExisting, final int subscriptionId) {

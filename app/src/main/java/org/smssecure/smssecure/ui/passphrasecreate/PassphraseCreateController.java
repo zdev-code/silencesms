@@ -113,7 +113,7 @@ public final class PassphraseCreateController implements AutoCloseable {
 
     SubscriptionManagerCompat subscriptionManager = SubscriptionManagerCompat.from(context);
     List<SubscriptionInfoCompat> activeSubscriptions =
-      subscriptionManager.getActiveSubscriptionInfoList();
+      subscriptionManager.updateActiveSubscriptionInfoList();
     DualSimUtil.generateKeysIfDoNotExist(
       context, masterSecret, activeSubscriptions, false);
 

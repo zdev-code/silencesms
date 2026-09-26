@@ -35,6 +35,7 @@ import org.smssecure.smssecure.notifications.MessageNotifier;
 import org.smssecure.smssecure.protocol.WirePrefix;
 import org.smssecure.smssecure.providers.SingleUseBlobProvider;
 import org.smssecure.smssecure.service.KeyCachingService;
+import org.smssecure.smssecure.util.dualsim.DualSimUtil;
 import org.smssecure.smssecure.util.Util;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.jobqueue.requirements.NetworkRequirement;
@@ -105,6 +106,9 @@ public class MmsDownloadJob extends MasterSecretJob {
 
       String contentLocation = notification.get().getContentLocation();
       byte[] transactionId   = new byte[0];
+      int    deviceSubscriptionId = notification.get().getSubscriptionId();
+      int    appSubscriptionId = deviceSubscriptionId == -1 ? -1 :
+          DualSimUtil.getSubscriptionIdFromDeviceSubscriptionId(context, deviceSubscriptionId);
 
       try {
         transactionId = notification.get().getTransactionId().getBytes(CharacterSets.MIMENAME_ISO_8859_1);
@@ -119,21 +123,21 @@ public class MmsDownloadJob extends MasterSecretJob {
         throw new MmsException("Invalid content location: "+contentLocation);
       }
 
-      RetrieveConf retrieveConf = new CompatMmsConnection(context).retrieve(contentLocation, transactionId, notification.get().getSubscriptionId());
+      RetrieveConf retrieveConf = new CompatMmsConnection(context).retrieve(contentLocation, transactionId, deviceSubscriptionId);
 
       if (retrieveConf == null) {
         throw new MmsException("RetrieveConf was null");
       }
 
       if (retrieveConf.getSubject() != null && WirePrefix.isEncryptedMmsSubject(retrieveConf.getSubject().getString())) {
-        MmsCipher            mmsCipher    = new MmsCipher(context, masterSecret, notification.get().getSubscriptionId());
+        MmsCipher            mmsCipher    = new MmsCipher(context, masterSecret, appSubscriptionId);
         MultimediaMessagePdu plaintextPdu = (MultimediaMessagePdu) mmsCipher.decrypt(context, retrieveConf);
 
         storeRetrievedMms(masterSecret, contentLocation, messageId, threadId, retrieveConf.getFrom(), retrieveConf.getTo(), retrieveConf.getCc(),
-                          plaintextPdu.getBody(), retrieveConf.getDate(), true, notification.get().getSubscriptionId());
+                          plaintextPdu.getBody(), retrieveConf.getDate(), true, appSubscriptionId);
       } else {
         storeRetrievedMms(masterSecret, contentLocation, messageId, threadId, retrieveConf.getFrom(), retrieveConf.getTo(), retrieveConf.getCc(),
-                          retrieveConf.getBody(), retrieveConf.getDate(), false, notification.get().getSubscriptionId());
+                          retrieveConf.getBody(), retrieveConf.getDate(), false, appSubscriptionId);
       }
     } catch (ApnUnavailableException e) {
       Log.w(TAG, e);
@@ -240,7 +244,7 @@ public class MmsDownloadJob extends MasterSecretJob {
     }
 
     database.delete(messageId);
-    MessageNotifier.updateNotification(context, masterSecret, message.getSubscriptionId());
+    MessageNotifier.updateNotification(context, masterSecret, messageAndThreadId.second);
   }
 
   private void handleDownloadError(MasterSecret masterSecret, long messageId, long threadId,

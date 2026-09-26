@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import org.smssecure.smssecure.crypto.MasterSecret;
+import org.smssecure.smssecure.database.documents.IdentityKeyMismatch;
 import org.smssecure.smssecure.database.model.MessageRecord;
 import org.smssecure.smssecure.recipients.Recipient;
 import org.smssecure.smssecure.recipients.Recipients;
@@ -25,6 +26,7 @@ public class ConversationUpdateItem extends LinearLayout
   private static final String TAG = ConversationUpdateItem.class.getSimpleName();
 
   private TextView      body;
+  private MasterSecret  masterSecret;
   private Recipient     sender;
   private MessageRecord messageRecord;
 
@@ -52,6 +54,7 @@ public class ConversationUpdateItem extends LinearLayout
                    @NonNull Set<MessageRecord> batchSelected,
                    @NonNull Recipients conversationRecipients)
   {
+    this.masterSecret = masterSecret;
     bind(messageRecord);
   }
 
@@ -93,9 +96,26 @@ public class ConversationUpdateItem extends LinearLayout
   @Override
   public void onClick(View v) {
     if (messageRecord.isIdentityUpdate()) {
+      IdentityKeyMismatch mismatch = getKeyMismatch(messageRecord);
+      if (mismatch != null) {
+        new ReceiveKeyDialog(getContext(), masterSecret, messageRecord, mismatch).show();
+        return;
+      }
+
       getContext().startActivity(HostNavigationCommand.createRecipientPreferencesIntent(
           getContext(), new long[] {messageRecord.getIndividualRecipient().getRecipientId()}));
     }
+  }
+
+  private IdentityKeyMismatch getKeyMismatch(MessageRecord record) {
+    if (record.isIdentityMismatchFailure()) {
+      for (IdentityKeyMismatch mismatch : record.getIdentityKeyMismatches()) {
+        if (mismatch.getRecipientId() == record.getIndividualRecipient().getRecipientId()) {
+          return mismatch;
+        }
+      }
+    }
+    return null;
   }
 
   @Override

@@ -21,6 +21,7 @@ import org.smssecure.smssecure.sms.OutgoingEncryptedMessage;
 import org.smssecure.smssecure.sms.OutgoingTextMessage;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor;
 import org.smssecure.smssecure.util.concurrent.AppTaskExecutor.TaskHandle;
+import org.smssecure.smssecure.util.dualsim.DualSimUtil;
 import org.smssecure.smssecure.util.dualsim.SubscriptionManagerCompat;
 
 import java.util.ArrayList;
@@ -46,7 +47,11 @@ public final class SendSelectedDrafts {
         SessionUtil.hasSession(applicationContext, secret,
             recipients.getPrimaryRecipient().getNumber(), subscriptionId);
     this.draftSender          = new MessageDraftSender(applicationContext);
-    this.subscriptionResolver = () -> SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
+    this.subscriptionResolver = () -> {
+      int deviceSubscriptionId = SubscriptionManagerCompat.getDefaultMessagingSubscriptionId().orElse(-1);
+      return deviceSubscriptionId == -1 ? -1 :
+          DualSimUtil.getSubscriptionIdFromDeviceSubscriptionId(applicationContext, deviceSubscriptionId);
+    };
   }
 
   SendSelectedDrafts(AppTaskExecutor executor, DraftStore draftStore,
@@ -88,18 +93,18 @@ public final class SendSelectedDrafts {
       }
 
       boolean singleRecipient = recipients.isSingleRecipient() && !recipients.isGroupRecipient();
-      int subscriptionId = subscriptionResolver.getDefaultMessagingSubscriptionId();
+      int subscriptionId = subscriptionResolver.getDefaultAppSubscriptionId();
       boolean secure = singleRecipient && securityResolver.hasSession(masterSecret, recipients, subscriptionId);
       if (drafts.size() > 1 && !DraftDatabase.Draft.TEXT.equals(drafts.get(1).getType())) {
-        draftSender.sendMedia(masterSecret, recipients, secure, drafts.get(1), target.getThreadId(),
+        draftSender.sendMedia(masterSecret, recipients, secure, subscriptionId, drafts.get(1), target.getThreadId(),
                               drafts.get(0).getValue());
         sentDraftCount++;
       } else {
         for (DraftDatabase.Draft draft : drafts) {
           if (DraftDatabase.Draft.TEXT.equals(draft.getType())) {
-            draftSender.sendText(masterSecret, recipients, secure, draft, target.getThreadId());
+            draftSender.sendText(masterSecret, recipients, secure, subscriptionId, draft, target.getThreadId());
           } else {
-            draftSender.sendMedia(masterSecret, recipients, secure, draft, target.getThreadId(), null);
+            draftSender.sendMedia(masterSecret, recipients, secure, subscriptionId, draft, target.getThreadId(), null);
           }
           sentDraftCount++;
         }
@@ -161,12 +166,12 @@ public final class SendSelectedDrafts {
   interface SecurityResolver {
     boolean hasSession(MasterSecret masterSecret, Recipients recipients, int subscriptionId);
   }
-  interface SubscriptionResolver { int getDefaultMessagingSubscriptionId(); }
+  interface SubscriptionResolver { int getDefaultAppSubscriptionId(); }
 
   interface DraftSender {
-    void sendText(MasterSecret masterSecret, Recipients recipients, boolean secure,
+    void sendText(MasterSecret masterSecret, Recipients recipients, boolean secure, int subscriptionId,
                   DraftDatabase.Draft draft, long threadId);
-    void sendMedia(MasterSecret masterSecret, Recipients recipients, boolean secure,
+    void sendMedia(MasterSecret masterSecret, Recipients recipients, boolean secure, int subscriptionId,
                    DraftDatabase.Draft draft, long threadId, String forcedValue);
   }
 
@@ -191,22 +196,22 @@ public final class SendSelectedDrafts {
     private MessageDraftSender(Context context) { this.context = context; }
 
     @Override
-    public void sendText(MasterSecret masterSecret, Recipients recipients, boolean secure,
+    public void sendText(MasterSecret masterSecret, Recipients recipients, boolean secure, int subscriptionId,
                          DraftDatabase.Draft draft, long threadId) {
       OutgoingTextMessage message = secure
-          ? new OutgoingEncryptedMessage(recipients, draft.getValue(), -1)
-          : new OutgoingTextMessage(recipients, draft.getValue(), -1);
+          ? new OutgoingEncryptedMessage(recipients, draft.getValue(), subscriptionId)
+          : new OutgoingTextMessage(recipients, draft.getValue(), subscriptionId);
       MessageSender.send(context, masterSecret, message, threadId, false);
     }
 
     @Override
-    public void sendMedia(MasterSecret masterSecret, Recipients recipients, boolean secure,
+    public void sendMedia(MasterSecret masterSecret, Recipients recipients, boolean secure, int subscriptionId,
                           DraftDatabase.Draft draft, long threadId, String forcedValue) {
       List<Attachment> attachments = new ArrayList<>();
       attachments.add(new UriAttachment(Uri.parse(draft.getValue()), draft.getType() + "/*",
                                         AttachmentDatabase.TRANSFER_PROGRESS_DONE));
       OutgoingMediaMessage message = new OutgoingMediaMessage(recipients,
-          forcedValue != null ? forcedValue : "", attachments, System.currentTimeMillis(), -1,
+          forcedValue != null ? forcedValue : "", attachments, System.currentTimeMillis(), subscriptionId,
           ThreadDatabase.DistributionTypes.BROADCAST);
       if (secure) message = new OutgoingSecureMediaMessage(message);
       MessageSender.send(context, masterSecret, message, threadId, false);
